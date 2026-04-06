@@ -60,6 +60,56 @@ npm run test:report
 
 ---
 
+## Modo sin navegador (headless)
+
+El modo **headless** ejecuta los tests sin abrir ninguna ventana de navegador. Es el modo por defecto y el recomendado para entornos CI/CD.
+
+### Formas de ejecutarlo
+
+```bash
+# Usando el script de npm (headless por defecto)
+npm test
+
+# Forzando headless explícitamente con flag
+npx playwright test --headed=false
+
+# Con variable de entorno (útil en pipelines CI)
+HEADLESS=true npx playwright test
+```
+
+### Ejecutar un fichero o test concreto en headless
+
+```bash
+# Un fichero específico
+npx playwright test tests/login.spec.ts
+
+# Un test por su nombre (grep)
+npx playwright test --grep "debería redirigir a la página de inventario"
+
+# Varios ficheros a la vez
+npx playwright test tests/login.spec.ts tests/checkout.spec.ts
+```
+
+### Otras opciones útiles en headless
+
+```bash
+# Ejecutar en paralelo con N workers
+npx playwright test --workers=4
+
+# Mostrar los pasos por consola mientras se ejecuta
+npx playwright test --reporter=line
+
+# Reintentar tests fallidos hasta 2 veces
+npx playwright test --retries=2
+
+# Activar tracing para depurar fallos (genera un .zip por test)
+npx playwright test --trace=on
+```
+
+> **Nota:** el modo headed (`npm run test:headed`) abre el navegador y es útil para depurar tests en local. En CI siempre debe usarse headless para evitar dependencias de entorno gráfico.
+
+---
+
 ## Configuración
 
 El fichero `playwright.config.ts` centraliza la configuración principal:
