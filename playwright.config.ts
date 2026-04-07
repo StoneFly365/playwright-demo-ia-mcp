@@ -10,6 +10,7 @@ export default defineConfig({
   use: {
     baseURL: 'https://www.saucedemo.com',
     trace: 'on-first-retry',
+    video: 'retain-on-failure',
   },
   projects: [
     {
