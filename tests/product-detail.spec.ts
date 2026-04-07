@@ -14,28 +14,49 @@ test.describe('Detalle de producto', () => {
   });
 
   test('debería mostrar el nombre, descripción y precio del producto correctamente', async () => {
-    await expect(productDetailPage.productName).toBeVisible();
-    await expect(productDetailPage.productDescription).toBeVisible();
-    await expect(productDetailPage.productPrice).toBeVisible();
-    await expect(productDetailPage.productPrice).toContainText('$');
+    await expect(
+      productDetailPage.productName,
+      'El nombre del producto debería ser visible en la página de detalle',
+    ).toBeVisible();
+    await expect(
+      productDetailPage.productDescription,
+      'La descripción del producto debería ser visible en la página de detalle',
+    ).toBeVisible();
+    await expect(
+      productDetailPage.productPrice,
+      'El precio del producto debería ser visible en la página de detalle',
+    ).toBeVisible();
+    await expect(
+      productDetailPage.productPrice,
+      'El precio del producto debería incluir el símbolo de dólar',
+    ).toContainText('$');
   });
 
   test('debería añadir el producto al carrito desde el detalle', async () => {
     await productDetailPage.addToCart();
 
-    await expect(productDetailPage.cartBadge).toHaveText('1');
+    await expect(
+      productDetailPage.cartBadge,
+      'El badge del carrito debería mostrar 1 tras añadir el producto desde la página de detalle',
+    ).toHaveText('1');
   });
 
   test('debería eliminar el producto del carrito desde el detalle', async () => {
     await productDetailPage.addToCart();
     await productDetailPage.removeFromCart();
 
-    await expect(productDetailPage.cartBadge).not.toBeVisible();
+    await expect(
+      productDetailPage.cartBadge,
+      'El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle',
+    ).not.toBeVisible();
   });
 
   test('debería volver al inventario al pulsar "Volver a productos"', async ({ page }) => {
     await productDetailPage.backToProducts();
 
-    await expect(page).toHaveURL('/inventory.html');
+    await expect(
+      page,
+      'El usuario debería ser redirigido a la página de inventario al pulsar "Volver a productos"',
+    ).toHaveURL(/.*\/inventory\.html$/);
   });
 });
