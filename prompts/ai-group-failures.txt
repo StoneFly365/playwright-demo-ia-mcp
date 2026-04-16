@@ -1,0 +1,34 @@
+Entrada por stdin: test-results.json (reporter JSON de Playwright).
+Tu tarea es crear SOLO un JSON válido (sin markdown, sin comentarios) con fallos agrupados.
+
+Reglas:
+- NO inventes tests ni campos que no estén en el input.
+- Solo usa información existente: títulos, estado, errores, ubicación si existe (file/line/column), duración si existe.
+- Considera SOLO fallos (failed). Ignora passed/skipped salvo para marcar flaky si ves señales de retry.
+- Debes agrupar por "causa raíz probable" usando un fingerprint consistente:
+  - primera línea del mensaje de error
+  - + ubicación (file y line si existe)
+  - + 1-2 líneas iniciales del stack si existe
+- Si falta stack o ubicación, agrupa por primera línea del error.
+
+Salida JSON (estructura exacta):
+{
+  "risk_level": "high | medium | low",
+  "generated_at": "ISO8601",
+  "source": "playwright-json",
+  "total_failed_tests": number,
+  "total_groups": number,
+  "groups": [
+    {
+      "group_id": "G001",
+      "fingerprint": "string",
+      "error_message": "string",
+      "count": number,
+      "affected_tests": [
+        { "title": "string", "file": "string|null", "line": number|null, "duration_ms": number|null }
+      ]
+    }
+  ]
+}
+
+Devuelve SOLO ese JSON (sin markdown). NO uses ```.

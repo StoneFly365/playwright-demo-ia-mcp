@@ -1,0 +1,3047 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\playwright.config.ts",
+    "rootDir": "C:/Users/raul.molina/Documents/3. workspace/playwright/playwright-demo-ia-mcp/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 7
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/raul.molina/Documents/3. workspace/playwright/playwright-demo-ia-mcp/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/raul.molina/Documents/3. workspace/playwright/playwright-demo-ia-mcp/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 7,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "add-tshirt-to-cart.spec.ts",
+      "file": "add-tshirt-to-cart.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Carrito de compra",
+          "file": "add-tshirt-to-cart.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería añadir la Sauce Labs Bolt T-Shirt al carrito tras el login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6483,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.071Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "21d0595f98cf5b97d077-fc9517104d8440e2af49",
+              "file": "add-tshirt-to-cart.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "debería añadir múltiples productos al carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4828,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.261Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "21d0595f98cf5b97d077-6d7a7b297c9fcf5f59cc",
+              "file": "add-tshirt-to-cart.spec.ts",
+              "line": 27,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar el número correcto en el badge del carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4100,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.044Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "21d0595f98cf5b97d077-f46eb4d5b55d9ee7cd56",
+              "file": "add-tshirt-to-cart.spec.ts",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "debería eliminar un producto desde el inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4495,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.272Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "21d0595f98cf5b97d077-155e1d6326bf40657bef",
+              "file": "add-tshirt-to-cart.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "debería eliminar un producto desde el carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4170,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.278Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "21d0595f98cf5b97d077-72238843dadec2dfc6a0",
+              "file": "add-tshirt-to-cart.spec.ts",
+              "line": 58,
+              "column": 7
+            },
+            {
+              "title": "debería volver al inventario al pulsar \"Continuar comprando\"",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5521,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.236Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "21d0595f98cf5b97d077-957219db221e36870da0",
+              "file": "add-tshirt-to-cart.spec.ts",
+              "line": 69,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "cart-badge.spec.ts",
+      "file": "cart-badge.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Gestión del badge del carrito",
+          "file": "cart-badge.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería no mostrar el badge al cargar el inventario con carrito vacío",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 4025,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:41.287Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "140cb8745baaff1f5156-f1fc43a3edefa8957cee",
+              "file": "cart-badge.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar badge con valor 4 al añadir cuatro productos distintos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6046,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:45.634Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "140cb8745baaff1f5156-017b17c2db62a3d3d05e",
+              "file": "cart-badge.spec.ts",
+              "line": 28,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar badge con valor 5 al añadir cinco productos distintos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 5732,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:45.988Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "140cb8745baaff1f5156-48c1dd93f275f7632bb5",
+              "file": "cart-badge.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "debería persistir el badge tras recargar la página del inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6644,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:46.136Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "140cb8745baaff1f5156-f3ce9cf6cac9e58745af",
+              "file": "cart-badge.spec.ts",
+              "line": 53,
+              "column": 7
+            },
+            {
+              "title": "debería persistir el badge al navegar a la página de detalle de un producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4193,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:46.314Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "140cb8745baaff1f5156-2c2ac8bab5f31c262f8a",
+              "file": "cart-badge.spec.ts",
+              "line": 74,
+              "column": 7
+            },
+            {
+              "title": "debería restablecer el badge al usar \"Reset App State\" desde el menú lateral",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6273,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:46.579Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "140cb8745baaff1f5156-b46d8abd5376d69961ed",
+              "file": "cart-badge.spec.ts",
+              "line": 94,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "cart-edge-cases.spec.ts",
+      "file": "cart-edge-cases.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Casos límite y escenarios de borde del carrito",
+          "file": "cart-edge-cases.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería volver a añadir un producto después de haberlo eliminado desde el inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5256,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:47.259Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-ec00d15adcd30247fedd",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 24,
+              "column": 7
+            },
+            {
+              "title": "debería volver a añadir desde el inventario un producto eliminado desde el carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4856,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:48.034Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-c3b79e0b67dde3e7fc7e",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 49,
+              "column": 7
+            },
+            {
+              "title": "debería impedir añadir el mismo producto dos veces (interfaz no lo permite)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4782,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:50.543Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-b3f09a44d6084ec1495d",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 73,
+              "column": 7
+            },
+            {
+              "title": "debería acceder directamente por URL a un producto (id=1) y añadirlo al carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4675,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:51.709Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-476a7e12f809f9b746ee",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 97,
+              "column": 7
+            },
+            {
+              "title": "debería añadir productos al carrito con el inventario ordenado por precio ascendente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3926,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:51.761Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-a0be152bb641d7a4a36b",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 125,
+              "column": 7
+            },
+            {
+              "title": "debería añadir productos al carrito con el inventario ordenado por nombre de Z a A",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3038,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:52.535Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-4b6909193fdc2d712203",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 142,
+              "column": 7
+            },
+            {
+              "title": "debería verificar el comportamiento del carrito tras logout y nuevo login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4519,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:52.809Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "936de3731f697dab9b13-78b21ac9f30778a4fcff",
+              "file": "cart-edge-cases.spec.ts",
+              "line": 159,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "cart-sync.spec.ts",
+      "file": "cart-sync.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Sincronización del estado entre inventario y carrito",
+          "file": "cart-sync.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería mostrar los productos añadidos desde el inventario en la página del carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3697,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:52.884Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b928db8c1fd212bd26c-89e057f89704abff5393",
+              "file": "cart-sync.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "debería mantener el contenido del carrito al navegar entre inventario y carrito repetidamente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4104,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:52.932Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b928db8c1fd212bd26c-2b128bfd32858a0fa220",
+              "file": "cart-sync.spec.ts",
+              "line": 36,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar correctamente en el carrito el producto añadido desde el detalle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4275,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:55.423Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b928db8c1fd212bd26c-1797d52a1c140fecae46",
+              "file": "cart-sync.spec.ts",
+              "line": 64,
+              "column": 7
+            },
+            {
+              "title": "debería reflejar en el inventario los botones \"Remove\" de los productos en carrito al volver desde el carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2960,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:55.602Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b928db8c1fd212bd26c-75149684ec59df5d345b",
+              "file": "cart-sync.spec.ts",
+              "line": 83,
+              "column": 7
+            },
+            {
+              "title": "debería eliminar múltiples productos desde el carrito y dejar el carrito vacío",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3265,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:55.716Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "0b928db8c1fd212bd26c-d5a61701ec2391e533d4",
+              "file": "cart-sync.spec.ts",
+              "line": 103,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "checkout.spec.ts",
+      "file": "checkout.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Checkout",
+          "file": "checkout.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería completar el proceso de compra con datos válidos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2969,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:56.443Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-3945db556e1e8de48ddd",
+              "file": "checkout.spec.ts",
+              "line": 24,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error si el nombre es obligatorio",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2864,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:56.616Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-2665017c4df4c2ca079d",
+              "file": "checkout.spec.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error si el apellido es obligatorio",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3798,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:57.074Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-5cd8c8cd0aa3a7ae91fe",
+              "file": "checkout.spec.ts",
+              "line": 53,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error si el código postal es obligatorio",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3442,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:57.361Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-381bfa6cbcc3dbfc752f",
+              "file": "checkout.spec.ts",
+              "line": 67,
+              "column": 7
+            },
+            {
+              "title": "debería cancelar el checkout desde el paso 1 y volver al carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3926,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:58.594Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-fd3ec3d16793f715e7fc",
+              "file": "checkout.spec.ts",
+              "line": 81,
+              "column": 7
+            },
+            {
+              "title": "debería cancelar el checkout desde el paso 2 y volver al inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3184,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:59.016Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-f4e4181d5f2669d8700c",
+              "file": "checkout.spec.ts",
+              "line": 90,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar el resumen de precios correctamente en el paso 2",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2632,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:59.440Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-cf1d85ea5e50a1b1268a",
+              "file": "checkout.spec.ts",
+              "line": 101,
+              "column": 7
+            },
+            {
+              "title": "debería volver al inventario tras finalizar el pedido",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3480,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:59.508Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "25ab1bfc84c57e3e3a45-ad9fc1bfb8b69db63118",
+              "file": "checkout.spec.ts",
+              "line": 119,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "inventory-add-to-cart.spec.ts",
+      "file": "inventory-add-to-cart.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Añadir productos individuales desde el inventario",
+          "file": "inventory-add-to-cart.spec.ts",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería añadir la Sauce Labs Backpack al carrito como único producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1956,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:04:59.731Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-56e5be727647f3c9d31e",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 15,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs Bike Light al carrito como único producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2379,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:00.833Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-44820feef58d7323f74e",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 24,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs Fleece Jacket al carrito como único producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2306,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:00.905Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-0fc105218136bdda89f1",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs Onesie al carrito como único producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 2653,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:01.705Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-904f8efb769df65d7db7",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs (Red) T-Shirt al carrito como único producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2443,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:02.121Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-82614df986dda1e3afde",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "debería añadir los 6 productos al carrito y mostrar badge con valor 6",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 2816,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:02.233Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-47d371e19574ede58931",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "debería cambiar el botón de \"Add to cart\" a \"Remove\" tras añadir un producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2609,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:02.547Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-ea8f53d0bb4a52917e25",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 74,
+              "column": 7
+            },
+            {
+              "title": "debería restablecer el botón a \"Add to cart\" tras eliminar el producto desde el inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2583,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:03.017Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-a3d6efb2ef9953b7ef30",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 92,
+              "column": 7
+            },
+            {
+              "title": "debería decrementar el badge al eliminar un producto con otros en el carrito",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2384,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:03.234Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "aa5fa9508637c754f5ed-8011702ce3c7120aea84",
+              "file": "inventory-add-to-cart.spec.ts",
+              "line": 112,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "inventory.spec.ts",
+      "file": "inventory.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Inventario",
+          "file": "inventory.spec.ts",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería mostrar 6 productos en el inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2507,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:03.244Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "491382254a121adeeb47-7578d1b3868f789cb237",
+              "file": "inventory.spec.ts",
+              "line": 15,
+              "column": 7
+            },
+            {
+              "title": "debería ordenar los productos por nombre de Z a A",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3027,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:04.389Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "491382254a121adeeb47-d9c3856256179694be20",
+              "file": "inventory.spec.ts",
+              "line": 22,
+              "column": 7
+            },
+            {
+              "title": "debería ordenar los productos por precio de menor a mayor",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2693,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:04.606Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "491382254a121adeeb47-98599d2992d1cb6aceea",
+              "file": "inventory.spec.ts",
+              "line": 38,
+              "column": 7
+            },
+            {
+              "title": "debería ordenar los productos por precio de mayor a menor",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3036,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:05.077Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "491382254a121adeeb47-fd9b52c6fa2ea54a7fe3",
+              "file": "inventory.spec.ts",
+              "line": 55,
+              "column": 7
+            },
+            {
+              "title": "debería navegar al detalle del producto al hacer clic en el nombre",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2825,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:05.190Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "491382254a121adeeb47-44dad26adcef44d2bef6",
+              "file": "inventory.spec.ts",
+              "line": 72,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "login.spec.ts",
+      "file": "login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Login",
+          "file": "login.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería redirigir a la página de inventario con login exitoso",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2445,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:05.624Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-55ca17d93faad37a1e3b",
+              "file": "login.spec.ts",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error cuando las credenciales no corresponden a ningún usuario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3609,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:05.646Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-10d492bfea3807840b95",
+              "file": "login.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error cuando el usuario está bloqueado",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3760,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:05.779Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-666900f60fde363f7146",
+              "file": "login.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error cuando el campo de usuario está vacío",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 5155,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:07.333Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-6a5e8725e6e72ec837a8",
+              "file": "login.spec.ts",
+              "line": 47,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error cuando el campo de contraseña está vacío",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5847,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:07.441Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-aa8c698352e84c5016fe",
+              "file": "login.spec.ts",
+              "line": 60,
+              "column": 7
+            },
+            {
+              "title": "debería mostrar error cuando ambos campos están vacíos",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6164,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:08.048Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-2074e49b98685e6204ee",
+              "file": "login.spec.ts",
+              "line": 73,
+              "column": 7
+            },
+            {
+              "title": "debería permitir acceder con el usuario problem_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5636,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:08.088Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-1eadd3a0914df1b52fd9",
+              "file": "login.spec.ts",
+              "line": 86,
+              "column": 7
+            },
+            {
+              "title": "debería permitir acceder con el usuario performance_glitch_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 10951,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:08.154Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "41d3fd2474a19feb00a1-8b6e3182f13623ea1bf7",
+              "file": "login.spec.ts",
+              "line": 95,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "menu.spec.ts",
+      "file": "menu.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Menú lateral",
+          "file": "menu.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería cerrar sesión al pulsar Logout",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6140,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:09.286Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "73ebff718611fd089a03-da30ff1c747915b2f946",
+              "file": "menu.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "debería resetear el estado del carrito al pulsar Reset App State",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6113,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:09.566Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "73ebff718611fd089a03-f497bae73971b941795f",
+              "file": "menu.spec.ts",
+              "line": 31,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "performance-glitch-user-cart.spec.ts",
+      "file": "performance-glitch-user-cart.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Comportamiento con performance_glitch_user",
+          "file": "performance-glitch-user-cart.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería añadir un producto al carrito con performance_glitch_user a pesar de la latencia",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 9665,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:12.521Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d4a9f1fb4bd12acbe7e7-54472044e97651ac851d",
+              "file": "performance-glitch-user-cart.spec.ts",
+              "line": 22,
+              "column": 7
+            },
+            {
+              "title": "debería completar el flujo añadir-navegar-verificar carrito con performance_glitch_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 9082,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:13.316Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d4a9f1fb4bd12acbe7e7-ae7cb583f6c2b33f8b86",
+              "file": "performance-glitch-user-cart.spec.ts",
+              "line": 31,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "problem-user-cart.spec.ts",
+      "file": "problem-user-cart.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Comportamiento con problem_user",
+          "file": "problem-user-cart.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería verificar el comportamiento del badge al añadir Sauce Labs Backpack con problem_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3955,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:13.754Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5422979592b2d733bd81-d2f9b64e2b6c9d99e57c",
+              "file": "problem-user-cart.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "debería verificar cuántos de los 6 productos responden al \"Add to cart\" con problem_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 4049,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:14.253Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5422979592b2d733bd81-929a3f4c85ee843f0eb1",
+              "file": "problem-user-cart.spec.ts",
+              "line": 35,
+              "column": 7
+            },
+            {
+              "title": "debería verificar consistencia entre estado del botón y badge con problem_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3452,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:15.452Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5422979592b2d733bd81-87a6e1b775f269b857c7",
+              "file": "problem-user-cart.spec.ts",
+              "line": 50,
+              "column": 7
+            },
+            {
+              "title": "debería verificar que el carrito no contiene productos fantasma con problem_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3734,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:15.713Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5422979592b2d733bd81-fd7afae2107e8a90962e",
+              "file": "problem-user-cart.spec.ts",
+              "line": 69,
+              "column": 7
+            },
+            {
+              "title": "debería verificar el botón \"Add to cart\" en la página de detalle con problem_user",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5812,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:17.731Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5422979592b2d733bd81-a8c5b32797fb136808ff",
+              "file": "problem-user-cart.spec.ts",
+              "line": 90,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "product-detail-add-to-cart.spec.ts",
+      "file": "product-detail-add-to-cart.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Añadir productos desde la página de detalle",
+          "file": "product-detail-add-to-cart.spec.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería añadir la Sauce Labs Backpack al carrito desde su página de detalle (id=4)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7938,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:18.333Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-b4f1d8ae060f602b6ef4",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs Bolt T-Shirt al carrito desde su página de detalle (id=6)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4936,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:18.925Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-1235fd34a8b2058007d8",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 34,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs Fleece Jacket al carrito desde su página de detalle (id=5)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 6232,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:19.131Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-0848c3f79aa648b7cb61",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5599,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:19.476Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-0be611ba2a0f5d478b62",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 54,
+              "column": 7
+            },
+            {
+              "title": "debería añadir la Sauce Labs (Red) T-Shirt al carrito desde su página de detalle (id=3)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4858,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:22.213Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-ec7fd3df86d45800dbaf",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 64,
+              "column": 7
+            },
+            {
+              "title": "debería cambiar el botón a \"Remove\" en detalle tras añadir el producto",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5748,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:22.425Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-bdf5d0fd9b6feac1b21b",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 74,
+              "column": 7
+            },
+            {
+              "title": "debería eliminar la Sauce Labs Fleece Jacket desde su detalle y hacer desaparecer el badge",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5483,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:23.588Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-9c5d41357eddec84e207",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 98,
+              "column": 7
+            },
+            {
+              "title": "debería navegar al detalle desde la imagen del producto en el inventario",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4411,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:23.875Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-84bbb419147f5e39a385",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 115,
+              "column": 7
+            },
+            {
+              "title": "debería persistir el badge al volver al inventario después de añadir desde el detalle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4692,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:25.090Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ec81f5d603a4ccfce2e8-9678d2a8b30c6f5b5a59",
+              "file": "product-detail-add-to-cart.spec.ts",
+              "line": 132,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "product-detail.spec.ts",
+      "file": "product-detail.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Detalle de producto",
+          "file": "product-detail.spec.ts",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería mostrar el nombre, descripción y precio del producto correctamente",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 4340,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:25.391Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "62d53a362a4fbb3b09ca-7db729294e761c94472d",
+              "file": "product-detail.spec.ts",
+              "line": 16,
+              "column": 7
+            },
+            {
+              "title": "debería añadir el producto al carrito desde el detalle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 4713,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:26.291Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "62d53a362a4fbb3b09ca-5f7325d325f404724cd6",
+              "file": "product-detail.spec.ts",
+              "line": 35,
+              "column": 7
+            },
+            {
+              "title": "debería eliminar el producto del carrito desde el detalle",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4307,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:27.094Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "62d53a362a4fbb3b09ca-906065df0242c1c6cb14",
+              "file": "product-detail.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "debería volver al inventario al pulsar \"Volver a productos\"",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4519,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:28.192Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "62d53a362a4fbb3b09ca-010ff075966374f4537f",
+              "file": "product-detail.spec.ts",
+              "line": 54,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "route-protection.spec.ts",
+      "file": "route-protection.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Protección de rutas",
+          "file": "route-protection.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
+            {
+              "title": "debería redirigir al login si se accede a /inventory.html sin sesión",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3763,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:28.308Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "505066eb275c9c26d374-429d843ca80fdd9111b6",
+              "file": "route-protection.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "debería redirigir al login si se accede a /cart.html sin sesión",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 3436,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:29.087Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "505066eb275c9c26d374-2d262c5a482ec7857bec",
+              "file": "route-protection.spec.ts",
+              "line": 17,
+              "column": 7
+            },
+            {
+              "title": "debería redirigir al login si se accede a /checkout-step-one.html sin sesión",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 3225,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:29.751Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "505066eb275c9c26d374-0e1892189ea24ad145d2",
+              "file": "route-protection.spec.ts",
+              "line": 30,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "seed.spec.ts",
+      "file": "seed.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Test group",
+          "file": "seed.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "seed",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3174,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-16T15:05:29.803Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "11ceb7af692008938f3b-e93327a24cf4dbee4058",
+              "file": "seed.spec.ts",
+              "line": 5,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-16T15:04:37.514Z",
+    "duration": 55569.221000000005,
+    "expected": 80,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

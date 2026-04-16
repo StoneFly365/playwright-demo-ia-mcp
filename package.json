@@ -4,11 +4,14 @@
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "report:ai": "cross-env CLAUDE_CODE_GIT_BASH_PATH=\"C:\\Users\\raul.molina\\AppData\\Local\\Programs\\Git\\usr\\bin\\bash.exe\" node scripts/report-ai.mjs",
+    "test:ai": "npm run test && npm run report:ai"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
     "@types/node": "^20.19.39",
+    "cross-env": "^10.1.0",
     "typescript": "^5.0.0"
   }
 }

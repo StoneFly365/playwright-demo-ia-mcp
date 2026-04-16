@@ -1,0 +1,31 @@
+Entrada por stdin: ai-failures-grouped.json
+Devuelve SOLO Markdown (sin fences exteriores) con posibles correcciones técnicas para los fallos detectados.
+
+Estructura obligatoria:
+
+# Posibles Correcciones – Playwright E2E
+
+## Resumen de fallos agrupados
+
+| Grupo | Pruebas afectadas | Error principal |
+|-------|------------------|-----------------|
+[Una fila por grupo con group_id, count y error_message recortado a 80 chars]
+
+## Correcciones por grupo
+
+[Por cada grupo, en este formato:]
+
+### [group_id] – [error_message recortado]
+
+**Hipótesis de causa:** [selector roto / timeout / datos de prueba / entorno / otro]
+
+**Pasos para corregir:**
+1. [acción concreta]
+2. [acción concreta]
+3. [acción concreta si aplica]
+
+**Tests afectados:** [lista de títulos]
+
+---
+
+No inventes datos. Usa solo lo que está en la entrada.

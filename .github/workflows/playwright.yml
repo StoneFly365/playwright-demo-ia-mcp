@@ -35,6 +35,23 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
+      - name: Install Claude CLI
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Generate AI report
+        if: always()
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run report:ai
+
+      - name: Show AI summary
+        if: always()
+        run: |
+          echo "## AI Test Report Summary" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
         if: always()

@@ -1,0 +1,31 @@
+Entrada por stdin: JSON con dos campos:
+- "stats": estadísticas globales { total, passed, failed, skipped, flaky, duration_ms }
+- "grouped": agrupación de fallos con campos generated_at, total_failed_tests, total_groups, groups[]
+
+Devuelve SOLO texto plano, sin markdown, sin asteriscos, sin guiones de viñeta decorativos.
+El texto debe poder enviarse directamente por correo electrónico a dirección no técnica.
+
+Estructura obligatoria (respeta este orden y estos títulos exactos):
+
+RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E
+Fecha: [usa generated_at de grouped, formateada en español legible]
+
+RESULTADO GLOBAL
+Total de pruebas ejecutadas: [stats.total]
+Pruebas correctas:           [stats.passed]
+Pruebas fallidas:            [stats.failed]
+Pruebas omitidas:            [stats.skipped]
+Pruebas inestables (flaky):  [stats.flaky]
+
+[Si stats.failed == 0, escribe: "Todos los tests pasaron correctamente. No se requiere acción inmediata." y omite las secciones ATENCIÓN y ACCIONES.]
+
+ATENCIÓN REQUERIDA
+[Lista hasta 3 grupos de fallos ordenados de mayor a menor impacto. Cada entrada en una línea, en lenguaje no técnico: qué funcionalidad falla y cuántas pruebas afecta. Ejemplo: "El flujo de inicio de sesión falla en 8 pruebas (error de selector de botón)."]
+
+CONCLUSIÓN
+[2-3 frases en lenguaje de negocio. Indica qué funciona, qué está en riesgo y si hay bloqueos críticos para producción. Sin tecnicismos.]
+
+ACCIONES RECOMENDADAS
+[Máximo 4 acciones concretas y priorizadas, una por línea, numeradas del 1 al 4. Orientadas a resolver los fallos con mayor impacto primero.]
+
+No inventes datos. Usa exclusivamente los valores del JSON de entrada.
