@@ -18,10 +18,11 @@ test.describe('Menú lateral', () => {
   test('debería cerrar sesión al pulsar Logout', async ({ page }) => {
     await menuPage.logout();
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar '/inventory.html' por '/' para revertir
     await expect(
       page,
       'El usuario debería ser redirigido a la página de login tras cerrar sesión',
-    ).toHaveURL('/');
+    ).toHaveURL('/inventory.html');
     await expect(
       page.locator('[data-test="login-button"]'),
       'El botón de login debería ser visible tras cerrar sesión, confirmando que la sesión se ha cerrado correctamente',

@@ -23,10 +23,11 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
     await inventoryPage.navigateToCart();
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar 3 por 2 para revertir
     await expect(
       page.locator('.cart_item'),
       'El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket',
-    ).toHaveCount(2);
+    ).toHaveCount(3);
     await expect(
       page.locator('[data-test="inventory-item-name"]').first(),
       'El nombre del primer ítem del carrito debería corresponder a uno de los productos añadidos',

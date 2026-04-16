@@ -13,10 +13,11 @@ test.describe('Inventario', () => {
   });
 
   test('debería mostrar 6 productos en el inventario', async () => {
+    // ⚠️ FALLO INTENCIONADO: Cambiar 5 por 6 para revertir
     await expect(
       inventoryPage.inventoryItems,
       'El inventario debería mostrar exactamente 6 productos disponibles',
-    ).toHaveCount(6);
+    ).toHaveCount(5);
   });
 
   test('debería ordenar los productos por nombre de Z a A', async () => {

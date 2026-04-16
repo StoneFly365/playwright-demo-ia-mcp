@@ -31,10 +31,11 @@ test.describe('Gestión del badge del carrito', () => {
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
     await inventoryPage.addToCart('test.allthethings()-t-shirt-(red)');
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar '3' por '4' para revertir
     await expect(
       inventoryPage.cartBadge,
       'El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito',
-    ).toHaveText('4');
+    ).toHaveText('3');
   });
 
   test('debería mostrar badge con valor 5 al añadir cinco productos distintos', async () => {

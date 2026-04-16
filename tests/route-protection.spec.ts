@@ -30,10 +30,11 @@ test.describe('Protección de rutas', () => {
   test('debería redirigir al login si se accede a /checkout-step-one.html sin sesión', async ({ page }) => {
     await page.goto('/checkout-step-one.html');
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar '/inventory.html' por '/' para revertir
     await expect(
       page,
       'El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html',
-    ).toHaveURL('/');
+    ).toHaveURL('/inventory.html');
     await expect(
       page.locator('[data-test="login-button"]'),
       'El botón de login debería ser visible, confirmando que el acceso a /checkout-step-one.html está protegido sin sesión activa',

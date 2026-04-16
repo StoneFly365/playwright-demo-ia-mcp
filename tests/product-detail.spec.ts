@@ -45,10 +45,11 @@ test.describe('Detalle de producto', () => {
     await productDetailPage.addToCart();
     await productDetailPage.removeFromCart();
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar toHaveText('1') por not.toBeVisible() para revertir
     await expect(
       productDetailPage.cartBadge,
       'El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle',
-    ).not.toBeVisible();
+    ).toHaveText('1');
   });
 
   test('debería volver al inventario al pulsar "Volver a productos"', async ({ page }) => {

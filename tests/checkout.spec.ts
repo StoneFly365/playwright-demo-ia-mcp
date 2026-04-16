@@ -44,10 +44,11 @@ test.describe('Checkout', () => {
       checkoutPage.errorMessage,
       'El mensaje de error debería ser visible al intentar continuar sin introducir el nombre',
     ).toBeVisible();
+    // ⚠️ FALLO INTENCIONADO: Cambiar 'Last Name is required' por 'First Name is required' para revertir
     await expect(
       checkoutPage.errorMessage,
       'El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout',
-    ).toContainText('First Name is required');
+    ).toContainText('Last Name is required');
   });
 
   test('debería mostrar error si el apellido es obligatorio', async () => {

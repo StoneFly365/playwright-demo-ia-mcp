@@ -88,12 +88,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 6483,
+                      "duration": 7768,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.071Z",
+                      "startTime": "2026-04-16T16:00:58.359Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -122,12 +122,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4828,
+                      "duration": 7289,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.261Z",
+                      "startTime": "2026-04-16T16:00:58.500Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -156,12 +156,12 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 4100,
+                      "duration": 7927,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.044Z",
+                      "startTime": "2026-04-16T16:00:58.613Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -190,12 +190,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 4495,
+                      "duration": 8596,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.272Z",
+                      "startTime": "2026-04-16T16:00:58.647Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -224,12 +224,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 4170,
+                      "duration": 8735,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.278Z",
+                      "startTime": "2026-04-16T16:00:58.632Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -258,12 +258,12 @@
                       "workerIndex": 5,
                       "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 5521,
+                      "duration": 7332,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.236Z",
+                      "startTime": "2026-04-16T16:00:58.640Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -309,12 +309,12 @@
                       "workerIndex": 6,
                       "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 4025,
+                      "duration": 7421,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:41.287Z",
+                      "startTime": "2026-04-16T16:00:58.660Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -329,7 +329,7 @@
             },
             {
               "title": "debería mostrar badge con valor 4 al añadir cuatro productos distintos",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -340,20 +340,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
-                      "status": "passed",
-                      "duration": 6046,
-                      "errors": [],
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 9101,
+                      "error": {
+                        "message": "Error: El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"3\"\u001b[39m\nReceived: \u001b[31m\"4\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">4</span>\u001b[22m\n\u001b[2m      - unexpected value \"4\"\u001b[22m\n",
+                        "stack": "Error: El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"3\"\u001b[39m\nReceived: \u001b[31m\"4\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">4</span>\u001b[22m\n\u001b[2m      - unexpected value \"4\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts:38:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts",
+                          "column": 7,
+                          "line": 38
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 36 |\u001b[39m       inventoryPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 37 |\u001b[39m       \u001b[32m'El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'3'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 40 |\u001b[39m\n \u001b[90m 41 |\u001b[39m   test(\u001b[32m'debería mostrar badge con valor 5 al añadir cinco productos distintos'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts",
+                            "column": 7,
+                            "line": 38
+                          },
+                          "message": "Error: El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"3\"\u001b[39m\nReceived: \u001b[31m\"4\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">4</span>\u001b[22m\n\u001b[2m      - unexpected value \"4\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 36 |\u001b[39m       inventoryPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 37 |\u001b[39m       \u001b[32m'El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'3'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 40 |\u001b[39m\n \u001b[90m 41 |\u001b[39m   test(\u001b[32m'debería mostrar badge con valor 5 al añadir cinco productos distintos'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts:38:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:45.634Z",
+                      "startTime": "2026-04-16T16:01:06.711Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\cart-badge-Gestión-del-bad-81662--cuatro-productos-distintos-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\cart-badge-Gestión-del-bad-81662--cuatro-productos-distintos-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts",
+                        "column": 7,
+                        "line": 38
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "140cb8745baaff1f5156-017b17c2db62a3d3d05e",
@@ -374,15 +409,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 5732,
+                      "duration": 3945,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:45.988Z",
+                      "startTime": "2026-04-16T16:01:06.717Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -392,7 +427,7 @@
               ],
               "id": "140cb8745baaff1f5156-48c1dd93f275f7632bb5",
               "file": "cart-badge.spec.ts",
-              "line": 40,
+              "line": 41,
               "column": 7
             },
             {
@@ -408,15 +443,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 6644,
+                      "duration": 6292,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:46.136Z",
+                      "startTime": "2026-04-16T16:01:06.780Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -426,7 +461,7 @@
               ],
               "id": "140cb8745baaff1f5156-f3ce9cf6cac9e58745af",
               "file": "cart-badge.spec.ts",
-              "line": 53,
+              "line": 54,
               "column": 7
             },
             {
@@ -442,15 +477,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 4193,
+                      "duration": 4568,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:46.314Z",
+                      "startTime": "2026-04-16T16:01:07.161Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -460,7 +495,7 @@
               ],
               "id": "140cb8745baaff1f5156-2c2ac8bab5f31c262f8a",
               "file": "cart-badge.spec.ts",
-              "line": 74,
+              "line": 75,
               "column": 7
             },
             {
@@ -476,15 +511,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 6273,
+                      "duration": 5166,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:46.579Z",
+                      "startTime": "2026-04-16T16:01:07.266Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -494,7 +529,7 @@
               ],
               "id": "140cb8745baaff1f5156-b46d8abd5376d69961ed",
               "file": "cart-badge.spec.ts",
-              "line": 94,
+              "line": 95,
               "column": 7
             }
           ]
@@ -527,15 +562,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 5256,
+                      "duration": 4306,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:47.259Z",
+                      "startTime": "2026-04-16T16:01:07.971Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -561,15 +596,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 4856,
+                      "duration": 4960,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:48.034Z",
+                      "startTime": "2026-04-16T16:01:08.078Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -595,15 +630,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4782,
+                      "duration": 4968,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:50.543Z",
+                      "startTime": "2026-04-16T16:01:10.685Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -629,15 +664,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 4675,
+                      "duration": 5425,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:51.709Z",
+                      "startTime": "2026-04-16T16:01:11.759Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -663,15 +698,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 3926,
+                      "duration": 5447,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:51.761Z",
+                      "startTime": "2026-04-16T16:01:12.291Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -697,15 +732,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 3038,
+                      "duration": 5143,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:52.535Z",
+                      "startTime": "2026-04-16T16:01:12.447Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -734,12 +769,12 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 4519,
+                      "duration": 6472,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:52.809Z",
+                      "startTime": "2026-04-16T16:01:13.050Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -771,7 +806,7 @@
           "specs": [
             {
               "title": "debería mostrar los productos añadidos desde el inventario en la página del carrito",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -782,20 +817,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 3697,
-                      "errors": [],
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 10570,
+                      "error": {
+                        "message": "Error: El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.cart_item')\nExpected: \u001b[32m3\u001b[39m\nReceived: \u001b[31m2\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.cart_item')\u001b[22m\n\u001b[2m    9 × locator resolved to 2 elements\u001b[22m\n\u001b[2m      - unexpected value \"2\"\u001b[22m\n",
+                        "stack": "Error: El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.cart_item')\nExpected: \u001b[32m3\u001b[39m\nReceived: \u001b[31m2\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.cart_item')\u001b[22m\n\u001b[2m    9 × locator resolved to 2 elements\u001b[22m\n\u001b[2m      - unexpected value \"2\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts:30:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts",
+                          "column": 7,
+                          "line": 30
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 28 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'.cart_item'\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 29 |\u001b[39m       \u001b[32m'El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 30 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveCount(\u001b[35m3\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\n \u001b[90m 32 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-test=\"inventory-item-name\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m,\u001b[39m\n \u001b[90m 33 |\u001b[39m       \u001b[32m'El nombre del primer ítem del carrito debería corresponder a uno de los productos añadidos'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts",
+                            "column": 7,
+                            "line": 30
+                          },
+                          "message": "Error: El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.cart_item')\nExpected: \u001b[32m3\u001b[39m\nReceived: \u001b[31m2\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.cart_item')\u001b[22m\n\u001b[2m    9 × locator resolved to 2 elements\u001b[22m\n\u001b[2m      - unexpected value \"2\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 28 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'.cart_item'\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 29 |\u001b[39m       \u001b[32m'El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 30 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveCount(\u001b[35m3\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 31 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\n \u001b[90m 32 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-test=\"inventory-item-name\"]'\u001b[39m)\u001b[33m.\u001b[39mfirst()\u001b[33m,\u001b[39m\n \u001b[90m 33 |\u001b[39m       \u001b[32m'El nombre del primer ítem del carrito debería corresponder a uno de los productos añadidos'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts:30:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:52.884Z",
+                      "startTime": "2026-04-16T16:01:13.094Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\cart-sync-Sincronización-d-41b6a-io-en-la-página-del-carrito-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\cart-sync-Sincronización-d-41b6a-io-en-la-página-del-carrito-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts",
+                        "column": 7,
+                        "line": 30
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "0b928db8c1fd212bd26c-89e057f89704abff5393",
@@ -816,15 +886,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4104,
+                      "duration": 5226,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:52.932Z",
+                      "startTime": "2026-04-16T16:01:15.670Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -834,7 +904,7 @@
               ],
               "id": "0b928db8c1fd212bd26c-2b128bfd32858a0fa220",
               "file": "cart-sync.spec.ts",
-              "line": 36,
+              "line": 37,
               "column": 7
             },
             {
@@ -850,15 +920,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 4275,
+                      "duration": 4522,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:55.423Z",
+                      "startTime": "2026-04-16T16:01:18.013Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -868,7 +938,7 @@
               ],
               "id": "0b928db8c1fd212bd26c-1797d52a1c140fecae46",
               "file": "cart-sync.spec.ts",
-              "line": 64,
+              "line": 65,
               "column": 7
             },
             {
@@ -884,15 +954,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2960,
+                      "duration": 4587,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:55.602Z",
+                      "startTime": "2026-04-16T16:01:17.202Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -902,7 +972,7 @@
               ],
               "id": "0b928db8c1fd212bd26c-75149684ec59df5d345b",
               "file": "cart-sync.spec.ts",
-              "line": 83,
+              "line": 84,
               "column": 7
             },
             {
@@ -918,15 +988,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 3265,
+                      "duration": 4362,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:55.716Z",
+                      "startTime": "2026-04-16T16:01:17.605Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -936,7 +1006,7 @@
               ],
               "id": "0b928db8c1fd212bd26c-d5a61701ec2391e533d4",
               "file": "cart-sync.spec.ts",
-              "line": 103,
+              "line": 104,
               "column": 7
             }
           ]
@@ -969,15 +1039,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2969,
+                      "duration": 4148,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:56.443Z",
+                      "startTime": "2026-04-16T16:01:17.761Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -992,7 +1062,7 @@
             },
             {
               "title": "debería mostrar error si el nombre es obligatorio",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -1003,20 +1073,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 2864,
-                      "errors": [],
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 8799,
+                      "error": {
+                        "message": "Error: El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test=\"error\"]')\nExpected substring: \u001b[32m\"\u001b[7mLa\u001b[27mst Name is required\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mError: Fir\u001b[27mst Name is required\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"error\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <h3 data-test=\"error\">…</h3>\u001b[22m\n\u001b[2m      - unexpected value \"Error: First Name is required\"\u001b[22m\n",
+                        "stack": "Error: El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test=\"error\"]')\nExpected substring: \u001b[32m\"\u001b[7mLa\u001b[27mst Name is required\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mError: Fir\u001b[27mst Name is required\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"error\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <h3 data-test=\"error\">…</h3>\u001b[22m\n\u001b[2m      - unexpected value \"Error: First Name is required\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts:51:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts",
+                          "column": 7,
+                          "line": 51
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 49 |\u001b[39m       checkoutPage\u001b[33m.\u001b[39merrorMessage\u001b[33m,\u001b[39m\n \u001b[90m 50 |\u001b[39m       \u001b[32m'El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     )\u001b[33m.\u001b[39mtoContainText(\u001b[32m'Last Name is required'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m\n \u001b[90m 54 |\u001b[39m   test(\u001b[32m'debería mostrar error si el apellido es obligatorio'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts",
+                            "column": 7,
+                            "line": 51
+                          },
+                          "message": "Error: El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test=\"error\"]')\nExpected substring: \u001b[32m\"\u001b[7mLa\u001b[27mst Name is required\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mError: Fir\u001b[27mst Name is required\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"error\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <h3 data-test=\"error\">…</h3>\u001b[22m\n\u001b[2m      - unexpected value \"Error: First Name is required\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 49 |\u001b[39m       checkoutPage\u001b[33m.\u001b[39merrorMessage\u001b[33m,\u001b[39m\n \u001b[90m 50 |\u001b[39m       \u001b[32m'El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 51 |\u001b[39m     )\u001b[33m.\u001b[39mtoContainText(\u001b[32m'Last Name is required'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 52 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 53 |\u001b[39m\n \u001b[90m 54 |\u001b[39m   test(\u001b[32m'debería mostrar error si el apellido es obligatorio'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts:51:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:56.616Z",
+                      "startTime": "2026-04-16T16:01:19.543Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\checkout-Checkout-debería--83197-si-el-nombre-es-obligatorio-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\checkout-Checkout-debería--83197-si-el-nombre-es-obligatorio-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts",
+                        "column": 7,
+                        "line": 51
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "25ab1bfc84c57e3e3a45-2665017c4df4c2ca079d",
@@ -1037,15 +1142,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 3798,
+                      "duration": 3736,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:57.074Z",
+                      "startTime": "2026-04-16T16:01:20.920Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1055,7 +1160,7 @@
               ],
               "id": "25ab1bfc84c57e3e3a45-5cd8c8cd0aa3a7ae91fe",
               "file": "checkout.spec.ts",
-              "line": 53,
+              "line": 54,
               "column": 7
             },
             {
@@ -1071,15 +1176,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3442,
+                      "duration": 4933,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:57.361Z",
+                      "startTime": "2026-04-16T16:01:21.807Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1089,7 +1194,7 @@
               ],
               "id": "25ab1bfc84c57e3e3a45-381bfa6cbcc3dbfc752f",
               "file": "checkout.spec.ts",
-              "line": 67,
+              "line": 68,
               "column": 7
             },
             {
@@ -1105,15 +1210,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 3926,
+                      "duration": 5407,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:58.594Z",
+                      "startTime": "2026-04-16T16:01:21.925Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1123,7 +1228,7 @@
               ],
               "id": "25ab1bfc84c57e3e3a45-fd3ec3d16793f715e7fc",
               "file": "checkout.spec.ts",
-              "line": 81,
+              "line": 82,
               "column": 7
             },
             {
@@ -1139,15 +1244,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 3184,
+                      "duration": 5352,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:59.016Z",
+                      "startTime": "2026-04-16T16:01:21.985Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1157,7 +1262,7 @@
               ],
               "id": "25ab1bfc84c57e3e3a45-f4e4181d5f2669d8700c",
               "file": "checkout.spec.ts",
-              "line": 90,
+              "line": 91,
               "column": 7
             },
             {
@@ -1173,15 +1278,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2632,
+                      "duration": 5590,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:59.440Z",
+                      "startTime": "2026-04-16T16:01:22.738Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1191,7 +1296,7 @@
               ],
               "id": "25ab1bfc84c57e3e3a45-cf1d85ea5e50a1b1268a",
               "file": "checkout.spec.ts",
-              "line": 101,
+              "line": 102,
               "column": 7
             },
             {
@@ -1207,15 +1312,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 3480,
+                      "duration": 4623,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:59.508Z",
+                      "startTime": "2026-04-16T16:01:25.831Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1225,7 +1330,7 @@
               ],
               "id": "25ab1bfc84c57e3e3a45-ad9fc1bfb8b69db63118",
               "file": "checkout.spec.ts",
-              "line": 119,
+              "line": 120,
               "column": 7
             }
           ]
@@ -1258,15 +1363,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 1956,
+                      "duration": 5044,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:04:59.731Z",
+                      "startTime": "2026-04-16T16:01:24.675Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1292,15 +1397,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2379,
+                      "duration": 4282,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:00.833Z",
+                      "startTime": "2026-04-16T16:01:26.758Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1326,15 +1431,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2306,
+                      "duration": 3979,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:00.905Z",
+                      "startTime": "2026-04-16T16:01:27.347Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1360,15 +1465,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 2653,
+                      "duration": 3954,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:01.705Z",
+                      "startTime": "2026-04-16T16:01:27.354Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1394,15 +1499,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2443,
+                      "duration": 3536,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:02.121Z",
+                      "startTime": "2026-04-16T16:01:28.340Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1417,7 +1522,7 @@
             },
             {
               "title": "debería añadir los 6 productos al carrito y mostrar badge con valor 6",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -1428,20 +1533,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
-                      "status": "passed",
-                      "duration": 2816,
-                      "errors": [],
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 8379,
+                      "error": {
+                        "message": "Error: El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"5\"\u001b[39m\nReceived: \u001b[31m\"6\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">6</span>\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n",
+                        "stack": "Error: El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"5\"\u001b[39m\nReceived: \u001b[31m\"6\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">6</span>\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory-add-to-cart.spec.ts:72:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory-add-to-cart.spec.ts",
+                          "column": 7,
+                          "line": 72
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 70 |\u001b[39m       inventoryPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 71 |\u001b[39m       \u001b[32m'El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 72 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'5'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 73 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 74 |\u001b[39m\n \u001b[90m 75 |\u001b[39m   test(\u001b[32m'debería cambiar el botón de \"Add to cart\" a \"Remove\" tras añadir un producto'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory-add-to-cart.spec.ts",
+                            "column": 7,
+                            "line": 72
+                          },
+                          "message": "Error: El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"5\"\u001b[39m\nReceived: \u001b[31m\"6\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">6</span>\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 70 |\u001b[39m       inventoryPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 71 |\u001b[39m       \u001b[32m'El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 72 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'5'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 73 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 74 |\u001b[39m\n \u001b[90m 75 |\u001b[39m   test(\u001b[32m'debería cambiar el botón de \"Add to cart\" a \"Remove\" tras añadir un producto'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory-add-to-cart.spec.ts:72:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:02.233Z",
+                      "startTime": "2026-04-16T16:01:30.123Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\inventory-add-to-cart-Añad-303fb-y-mostrar-badge-con-valor-6-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\inventory-add-to-cart-Añad-303fb-y-mostrar-badge-con-valor-6-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory-add-to-cart.spec.ts",
+                        "column": 7,
+                        "line": 72
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "aa5fa9508637c754f5ed-47d371e19574ede58931",
@@ -1462,15 +1602,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 2609,
+                      "duration": 3588,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:02.547Z",
+                      "startTime": "2026-04-16T16:01:29.732Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1480,7 +1620,7 @@
               ],
               "id": "aa5fa9508637c754f5ed-ea8f53d0bb4a52917e25",
               "file": "inventory-add-to-cart.spec.ts",
-              "line": 74,
+              "line": 75,
               "column": 7
             },
             {
@@ -1496,15 +1636,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 2583,
+                      "duration": 2759,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:03.017Z",
+                      "startTime": "2026-04-16T16:01:30.684Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1514,7 +1654,7 @@
               ],
               "id": "aa5fa9508637c754f5ed-a3d6efb2ef9953b7ef30",
               "file": "inventory-add-to-cart.spec.ts",
-              "line": 92,
+              "line": 93,
               "column": 7
             },
             {
@@ -1533,12 +1673,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 2384,
+                      "duration": 3537,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:03.234Z",
+                      "startTime": "2026-04-16T16:01:31.054Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1548,7 +1688,7 @@
               ],
               "id": "aa5fa9508637c754f5ed-8011702ce3c7120aea84",
               "file": "inventory-add-to-cart.spec.ts",
-              "line": 112,
+              "line": 113,
               "column": 7
             }
           ]
@@ -1570,7 +1710,7 @@
           "specs": [
             {
               "title": "debería mostrar 6 productos en el inventario",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -1581,20 +1721,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
-                      "status": "passed",
-                      "duration": 2507,
-                      "errors": [],
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 8549,
+                      "error": {
+                        "message": "Error: El inventario debería mostrar exactamente 6 productos disponibles\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"inventory-item\"]')\nExpected: \u001b[32m5\u001b[39m\nReceived: \u001b[31m6\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El inventario debería mostrar exactamente 6 productos disponibles with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"inventory-item\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to 6 elements\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n",
+                        "stack": "Error: El inventario debería mostrar exactamente 6 productos disponibles\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"inventory-item\"]')\nExpected: \u001b[32m5\u001b[39m\nReceived: \u001b[31m6\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El inventario debería mostrar exactamente 6 productos disponibles with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"inventory-item\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to 6 elements\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts:20:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts",
+                          "column": 7,
+                          "line": 20
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 18 |\u001b[39m       inventoryPage\u001b[33m.\u001b[39minventoryItems\u001b[33m,\u001b[39m\n \u001b[90m 19 |\u001b[39m       \u001b[32m'El inventario debería mostrar exactamente 6 productos disponibles'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 20 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveCount(\u001b[35m5\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m   test(\u001b[32m'debería ordenar los productos por nombre de Z a A'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts",
+                            "column": 7,
+                            "line": 20
+                          },
+                          "message": "Error: El inventario debería mostrar exactamente 6 productos disponibles\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"inventory-item\"]')\nExpected: \u001b[32m5\u001b[39m\nReceived: \u001b[31m6\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El inventario debería mostrar exactamente 6 productos disponibles with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"inventory-item\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to 6 elements\u001b[22m\n\u001b[2m      - unexpected value \"6\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 18 |\u001b[39m       inventoryPage\u001b[33m.\u001b[39minventoryItems\u001b[33m,\u001b[39m\n \u001b[90m 19 |\u001b[39m       \u001b[32m'El inventario debería mostrar exactamente 6 productos disponibles'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 20 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveCount(\u001b[35m5\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 21 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m   test(\u001b[32m'debería ordenar los productos por nombre de Z a A'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts:20:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:03.244Z",
+                      "startTime": "2026-04-16T16:01:31.326Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\inventory-Inventario-deber-af97c--productos-en-el-inventario-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\inventory-Inventario-deber-af97c--productos-en-el-inventario-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts",
+                        "column": 7,
+                        "line": 20
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "491382254a121adeeb47-7578d1b3868f789cb237",
@@ -1618,12 +1793,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 3027,
+                      "duration": 3245,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:04.389Z",
+                      "startTime": "2026-04-16T16:01:31.343Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1633,7 +1808,7 @@
               ],
               "id": "491382254a121adeeb47-d9c3856256179694be20",
               "file": "inventory.spec.ts",
-              "line": 22,
+              "line": 23,
               "column": 7
             },
             {
@@ -1649,15 +1824,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 2693,
+                      "duration": 3574,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:04.606Z",
+                      "startTime": "2026-04-16T16:01:31.896Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1667,7 +1842,7 @@
               ],
               "id": "491382254a121adeeb47-98599d2992d1cb6aceea",
               "file": "inventory.spec.ts",
-              "line": 38,
+              "line": 39,
               "column": 7
             },
             {
@@ -1683,15 +1858,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 3036,
+                      "duration": 3851,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:05.077Z",
+                      "startTime": "2026-04-16T16:01:33.338Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1701,7 +1876,7 @@
               ],
               "id": "491382254a121adeeb47-fd9b52c6fa2ea54a7fe3",
               "file": "inventory.spec.ts",
-              "line": 55,
+              "line": 56,
               "column": 7
             },
             {
@@ -1717,15 +1892,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 2825,
+                      "duration": 3546,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:05.190Z",
+                      "startTime": "2026-04-16T16:01:33.463Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1735,7 +1910,7 @@
               ],
               "id": "491382254a121adeeb47-44dad26adcef44d2bef6",
               "file": "inventory.spec.ts",
-              "line": 72,
+              "line": 73,
               "column": 7
             }
           ]
@@ -1757,7 +1932,7 @@
           "specs": [
             {
               "title": "debería redirigir a la página de inventario con login exitoso",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -1768,20 +1943,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
-                      "status": "passed",
-                      "duration": 2445,
-                      "errors": [],
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 9180,
+                      "error": {
+                        "message": "Error: El usuario debería ser redirigido a la página de inventario tras un login exitoso\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/home\\.html$/\u001b[39m\nReceived string:  \u001b[31m\"https://www.saucedemo.com/inventory.html\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - El usuario debería ser redirigido a la página de inventario tras un login exitoso with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/inventory.html\"\u001b[22m\n",
+                        "stack": "Error: El usuario debería ser redirigido a la página de inventario tras un login exitoso\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/home\\.html$/\u001b[39m\nReceived string:  \u001b[31m\"https://www.saucedemo.com/inventory.html\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - El usuario debería ser redirigido a la página de inventario tras un login exitoso with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/inventory.html\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts:19:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts",
+                          "column": 7,
+                          "line": 19
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 17 |\u001b[39m       page\u001b[33m,\u001b[39m\n \u001b[90m 18 |\u001b[39m       \u001b[32m'El usuario debería ser redirigido a la página de inventario tras un login exitoso'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/home\\.html$/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m\n \u001b[90m 22 |\u001b[39m   test(\u001b[32m'debería mostrar error cuando las credenciales no corresponden a ningún usuario'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts",
+                            "column": 7,
+                            "line": 19
+                          },
+                          "message": "Error: El usuario debería ser redirigido a la página de inventario tras un login exitoso\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/.*\\/home\\.html$/\u001b[39m\nReceived string:  \u001b[31m\"https://www.saucedemo.com/inventory.html\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - El usuario debería ser redirigido a la página de inventario tras un login exitoso with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/inventory.html\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 17 |\u001b[39m       page\u001b[33m,\u001b[39m\n \u001b[90m 18 |\u001b[39m       \u001b[32m'El usuario debería ser redirigido a la página de inventario tras un login exitoso'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 19 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/.*\\/home\\.html$/\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 20 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m\n \u001b[90m 22 |\u001b[39m   test(\u001b[32m'debería mostrar error cuando las credenciales no corresponden a ningún usuario'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts:19:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:05.624Z",
+                      "startTime": "2026-04-16T16:01:34.614Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\login-Login-debería-rediri-97245-nventario-con-login-exitoso-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\login-Login-debería-rediri-97245-nventario-con-login-exitoso-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts",
+                        "column": 7,
+                        "line": 19
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "41d3fd2474a19feb00a1-55ca17d93faad37a1e3b",
@@ -1802,15 +2012,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 3609,
+                      "duration": 3158,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:05.646Z",
+                      "startTime": "2026-04-16T16:01:34.610Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1820,7 +2030,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-10d492bfea3807840b95",
               "file": "login.spec.ts",
-              "line": 21,
+              "line": 22,
               "column": 7
             },
             {
@@ -1836,15 +2046,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 3760,
+                      "duration": 3562,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:05.779Z",
+                      "startTime": "2026-04-16T16:01:35.489Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1854,7 +2064,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-666900f60fde363f7146",
               "file": "login.spec.ts",
-              "line": 34,
+              "line": 35,
               "column": 7
             },
             {
@@ -1870,15 +2080,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 5155,
+                      "duration": 2588,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:07.333Z",
+                      "startTime": "2026-04-16T16:01:37.036Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1888,7 +2098,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-6a5e8725e6e72ec837a8",
               "file": "login.spec.ts",
-              "line": 47,
+              "line": 48,
               "column": 7
             },
             {
@@ -1904,15 +2114,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 5847,
+                      "duration": 2537,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:07.441Z",
+                      "startTime": "2026-04-16T16:01:37.210Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1922,7 +2132,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-aa8c698352e84c5016fe",
               "file": "login.spec.ts",
-              "line": 60,
+              "line": 61,
               "column": 7
             },
             {
@@ -1938,15 +2148,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 6164,
+                      "duration": 2571,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:08.048Z",
+                      "startTime": "2026-04-16T16:01:37.778Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1956,7 +2166,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-2074e49b98685e6204ee",
               "file": "login.spec.ts",
-              "line": 73,
+              "line": 74,
               "column": 7
             },
             {
@@ -1972,15 +2182,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 5636,
+                      "duration": 4490,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:08.088Z",
+                      "startTime": "2026-04-16T16:01:41.225Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -1990,7 +2200,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-1eadd3a0914df1b52fd9",
               "file": "login.spec.ts",
-              "line": 86,
+              "line": 87,
               "column": 7
             },
             {
@@ -2006,15 +2216,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 10951,
+                      "duration": 7507,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:08.154Z",
+                      "startTime": "2026-04-16T16:01:39.066Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2024,7 +2234,7 @@
               ],
               "id": "41d3fd2474a19feb00a1-8b6e3182f13623ea1bf7",
               "file": "login.spec.ts",
-              "line": 95,
+              "line": 96,
               "column": 7
             }
           ]
@@ -2046,7 +2256,7 @@
           "specs": [
             {
               "title": "debería cerrar sesión al pulsar Logout",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -2057,20 +2267,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 6140,
-                      "errors": [],
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 10114,
+                      "error": {
+                        "message": "Error: El usuario debería ser redirigido a la página de login tras cerrar sesión\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"https://www.saucedemo.com/\u001b[7minventory.html\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"https://www.saucedemo.com/\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El usuario debería ser redirigido a la página de login tras cerrar sesión with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/\"\u001b[22m\n",
+                        "stack": "Error: El usuario debería ser redirigido a la página de login tras cerrar sesión\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"https://www.saucedemo.com/\u001b[7minventory.html\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"https://www.saucedemo.com/\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El usuario debería ser redirigido a la página de login tras cerrar sesión with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts:25:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts",
+                          "column": 7,
+                          "line": 25
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 23 |\u001b[39m       page\u001b[33m,\u001b[39m\n \u001b[90m 24 |\u001b[39m       \u001b[32m'El usuario debería ser redirigido a la página de login tras cerrar sesión'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 25 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/inventory.html'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 26 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\n \u001b[90m 27 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-test=\"login-button\"]'\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 28 |\u001b[39m       \u001b[32m'El botón de login debería ser visible tras cerrar sesión, confirmando que la sesión se ha cerrado correctamente'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts",
+                            "column": 7,
+                            "line": 25
+                          },
+                          "message": "Error: El usuario debería ser redirigido a la página de login tras cerrar sesión\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"https://www.saucedemo.com/\u001b[7minventory.html\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"https://www.saucedemo.com/\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El usuario debería ser redirigido a la página de login tras cerrar sesión with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 23 |\u001b[39m       page\u001b[33m,\u001b[39m\n \u001b[90m 24 |\u001b[39m       \u001b[32m'El usuario debería ser redirigido a la página de login tras cerrar sesión'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 25 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/inventory.html'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 26 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\n \u001b[90m 27 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-test=\"login-button\"]'\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 28 |\u001b[39m       \u001b[32m'El botón de login debería ser visible tras cerrar sesión, confirmando que la sesión se ha cerrado correctamente'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts:25:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:09.286Z",
+                      "startTime": "2026-04-16T16:01:39.666Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\menu-Menú-lateral-debería-cerrar-sesión-al-pulsar-Logout-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\menu-Menú-lateral-debería-cerrar-sesión-al-pulsar-Logout-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts",
+                        "column": 7,
+                        "line": 25
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "73ebff718611fd089a03-da30ff1c747915b2f946",
@@ -2091,15 +2336,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 6113,
+                      "duration": 4551,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:09.566Z",
+                      "startTime": "2026-04-16T16:01:39.773Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2109,7 +2354,7 @@
               ],
               "id": "73ebff718611fd089a03-f497bae73971b941795f",
               "file": "menu.spec.ts",
-              "line": 31,
+              "line": 32,
               "column": 7
             }
           ]
@@ -2142,15 +2387,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
+                      "workerIndex": 11,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 9665,
+                      "duration": 8943,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:12.521Z",
+                      "startTime": "2026-04-16T16:01:43.117Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2179,12 +2424,12 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 9082,
+                      "duration": 11225,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:13.316Z",
+                      "startTime": "2026-04-16T16:01:40.369Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2227,15 +2472,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3955,
+                      "duration": 3650,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:13.754Z",
+                      "startTime": "2026-04-16T16:01:46.923Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2261,15 +2506,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4049,
+                      "duration": 2669,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:14.253Z",
+                      "startTime": "2026-04-16T16:01:44.354Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2295,15 +2540,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 3452,
+                      "duration": 1952,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:15.452Z",
+                      "startTime": "2026-04-16T16:01:46.102Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2329,15 +2574,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 3734,
+                      "duration": 2480,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:15.713Z",
+                      "startTime": "2026-04-16T16:01:46.595Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2366,12 +2611,12 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 5812,
+                      "duration": 5057,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:17.731Z",
+                      "startTime": "2026-04-16T16:01:47.043Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2414,15 +2659,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 7938,
+                      "duration": 5581,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:18.333Z",
+                      "startTime": "2026-04-16T16:01:48.081Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2448,15 +2693,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 4936,
+                      "duration": 6103,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:18.925Z",
+                      "startTime": "2026-04-16T16:01:49.104Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2482,15 +2727,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
+                      "workerIndex": 13,
                       "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 6232,
+                      "duration": 4213,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:19.131Z",
+                      "startTime": "2026-04-16T16:01:54.146Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2505,7 +2750,7 @@
             },
             {
               "title": "debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -2516,20 +2761,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
-                      "status": "passed",
-                      "duration": 5599,
-                      "errors": [],
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10672,
+                      "error": {
+                        "message": "Error: El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"2\"\u001b[39m\nReceived: \u001b[31m\"1\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">1</span>\u001b[22m\n\u001b[2m      - unexpected value \"1\"\u001b[22m\n",
+                        "stack": "Error: El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"2\"\u001b[39m\nReceived: \u001b[31m\"1\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">1</span>\u001b[22m\n\u001b[2m      - unexpected value \"1\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail-add-to-cart.spec.ts:62:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail-add-to-cart.spec.ts",
+                          "column": 7,
+                          "line": 62
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 60 |\u001b[39m       productDetailPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 61 |\u001b[39m       \u001b[32m'El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 62 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'2'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 63 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 64 |\u001b[39m\n \u001b[90m 65 |\u001b[39m   test(\u001b[32m'debería añadir la Sauce Labs (Red) T-Shirt al carrito desde su página de detalle (id=3)'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail-add-to-cart.spec.ts",
+                            "column": 7,
+                            "line": 62
+                          },
+                          "message": "Error: El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"2\"\u001b[39m\nReceived: \u001b[31m\"1\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\u001b[2m    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">1</span>\u001b[22m\n\u001b[2m      - unexpected value \"1\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 60 |\u001b[39m       productDetailPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 61 |\u001b[39m       \u001b[32m'El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 62 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'2'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 63 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 64 |\u001b[39m\n \u001b[90m 65 |\u001b[39m   test(\u001b[32m'debería añadir la Sauce Labs (Red) T-Shirt al carrito desde su página de detalle (id=3)'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail-add-to-cart.spec.ts:62:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:19.476Z",
+                      "startTime": "2026-04-16T16:01:50.915Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\product-detail-add-to-cart-3b3c2--su-página-de-detalle-id-2--chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\product-detail-add-to-cart-3b3c2--su-página-de-detalle-id-2--chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail-add-to-cart.spec.ts",
+                        "column": 7,
+                        "line": 62
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "ec81f5d603a4ccfce2e8-0be611ba2a0f5d478b62",
@@ -2550,15 +2830,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
-                      "parallelIndex": 2,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 4858,
+                      "duration": 4903,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:22.213Z",
+                      "startTime": "2026-04-16T16:01:51.634Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2568,7 +2848,7 @@
               ],
               "id": "ec81f5d603a4ccfce2e8-ec7fd3df86d45800dbaf",
               "file": "product-detail-add-to-cart.spec.ts",
-              "line": 64,
+              "line": 65,
               "column": 7
             },
             {
@@ -2584,15 +2864,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 5748,
+                      "duration": 5350,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:22.425Z",
+                      "startTime": "2026-04-16T16:01:52.138Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2602,7 +2882,7 @@
               ],
               "id": "ec81f5d603a4ccfce2e8-bdf5d0fd9b6feac1b21b",
               "file": "product-detail-add-to-cart.spec.ts",
-              "line": 74,
+              "line": 75,
               "column": 7
             },
             {
@@ -2618,15 +2898,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 11,
+                      "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 5483,
+                      "duration": 5072,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:23.588Z",
+                      "startTime": "2026-04-16T16:01:52.573Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2636,7 +2916,7 @@
               ],
               "id": "ec81f5d603a4ccfce2e8-9c5d41357eddec84e207",
               "file": "product-detail-add-to-cart.spec.ts",
-              "line": 98,
+              "line": 99,
               "column": 7
             },
             {
@@ -2652,15 +2932,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 4411,
+                      "duration": 5821,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:23.875Z",
+                      "startTime": "2026-04-16T16:01:53.682Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2670,7 +2950,7 @@
               ],
               "id": "ec81f5d603a4ccfce2e8-84bbb419147f5e39a385",
               "file": "product-detail-add-to-cart.spec.ts",
-              "line": 115,
+              "line": 116,
               "column": 7
             },
             {
@@ -2686,15 +2966,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 4692,
+                      "duration": 4644,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:25.090Z",
+                      "startTime": "2026-04-16T16:01:55.224Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2704,7 +2984,7 @@
               ],
               "id": "ec81f5d603a4ccfce2e8-9678d2a8b30c6f5b5a59",
               "file": "product-detail-add-to-cart.spec.ts",
-              "line": 132,
+              "line": 133,
               "column": 7
             }
           ]
@@ -2737,15 +3017,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 4340,
+                      "duration": 3797,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:25.391Z",
+                      "startTime": "2026-04-16T16:01:56.575Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2771,15 +3051,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 5,
-                      "parallelIndex": 5,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4713,
+                      "duration": 3578,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:26.291Z",
+                      "startTime": "2026-04-16T16:01:57.524Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2794,7 +3074,7 @@
             },
             {
               "title": "debería eliminar el producto del carrito desde el detalle",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -2805,20 +3085,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 2,
+                      "workerIndex": 11,
                       "parallelIndex": 2,
-                      "status": "passed",
-                      "duration": 4307,
-                      "errors": [],
+                      "status": "failed",
+                      "duration": 8771,
+                      "error": {
+                        "message": "Error: El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"1\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n",
+                        "stack": "Error: El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"1\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts:52:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts",
+                          "column": 7,
+                          "line": 52
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 50 |\u001b[39m       productDetailPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 51 |\u001b[39m       \u001b[32m'El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 52 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'1'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 53 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m\n \u001b[90m 55 |\u001b[39m   test(\u001b[32m'debería volver al inventario al pulsar \"Volver a productos\"'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts",
+                            "column": 7,
+                            "line": 52
+                          },
+                          "message": "Error: El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle\n\n\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \u001b[32m\"1\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 50 |\u001b[39m       productDetailPage\u001b[33m.\u001b[39mcartBadge\u001b[33m,\u001b[39m\n \u001b[90m 51 |\u001b[39m       \u001b[32m'El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 52 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveText(\u001b[32m'1'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 53 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m\n \u001b[90m 55 |\u001b[39m   test(\u001b[32m'debería volver al inventario al pulsar \"Volver a productos\"'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts:52:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:27.094Z",
+                      "startTime": "2026-04-16T16:01:57.680Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\product-detail-Detalle-de--fbc43-el-carrito-desde-el-detalle-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\product-detail-Detalle-de--fbc43-el-carrito-desde-el-detalle-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts",
+                        "column": 7,
+                        "line": 52
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "62d53a362a4fbb3b09ca-906065df0242c1c6cb14",
@@ -2839,15 +3154,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 3,
-                      "parallelIndex": 3,
+                      "workerIndex": 13,
+                      "parallelIndex": 6,
                       "status": "passed",
-                      "duration": 4519,
+                      "duration": 3652,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:28.192Z",
+                      "startTime": "2026-04-16T16:01:58.691Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2857,7 +3172,7 @@
               ],
               "id": "62d53a362a4fbb3b09ca-010ff075966374f4537f",
               "file": "product-detail.spec.ts",
-              "line": 54,
+              "line": 55,
               "column": 7
             }
           ]
@@ -2890,15 +3205,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 3763,
+                      "duration": 3882,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:28.308Z",
+                      "startTime": "2026-04-16T16:01:59.532Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2924,15 +3239,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "parallelIndex": 1,
+                      "workerIndex": 7,
+                      "parallelIndex": 5,
                       "status": "passed",
-                      "duration": 3436,
+                      "duration": 3698,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:29.087Z",
+                      "startTime": "2026-04-16T16:01:59.891Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -2947,7 +3262,7 @@
             },
             {
               "title": "debería redirigir al login si se accede a /checkout-step-one.html sin sesión",
-              "ok": true,
+              "ok": false,
               "tags": [],
               "tests": [
                 {
@@ -2958,20 +3273,55 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 6,
-                      "parallelIndex": 6,
-                      "status": "passed",
-                      "duration": 3225,
-                      "errors": [],
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 8499,
+                      "error": {
+                        "message": "Error: El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"https://www.saucedemo.com/\u001b[7minventory.html\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"https://www.saucedemo.com/\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/\"\u001b[22m\n",
+                        "stack": "Error: El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"https://www.saucedemo.com/\u001b[7minventory.html\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"https://www.saucedemo.com/\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/\"\u001b[22m\n\n    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\route-protection.spec.ts:37:7",
+                        "location": {
+                          "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\route-protection.spec.ts",
+                          "column": 7,
+                          "line": 37
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 35 |\u001b[39m       page\u001b[33m,\u001b[39m\n \u001b[90m 36 |\u001b[39m       \u001b[32m'El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/inventory.html'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\n \u001b[90m 39 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-test=\"login-button\"]'\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 40 |\u001b[39m       \u001b[32m'El botón de login debería ser visible, confirmando que el acceso a /checkout-step-one.html está protegido sin sesión activa'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\route-protection.spec.ts",
+                            "column": 7,
+                            "line": 37
+                          },
+                          "message": "Error: El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html\n\n\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveURL\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected: \u001b[32m\"https://www.saucedemo.com/\u001b[7minventory.html\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"https://www.saucedemo.com/\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"https://www.saucedemo.com/\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 35 |\u001b[39m       page\u001b[33m,\u001b[39m\n \u001b[90m 36 |\u001b[39m       \u001b[32m'El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html'\u001b[39m\u001b[33m,\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m     )\u001b[33m.\u001b[39mtoHaveURL(\u001b[32m'/inventory.html'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m     \u001b[36mawait\u001b[39m expect(\n \u001b[90m 39 |\u001b[39m       page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-test=\"login-button\"]'\u001b[39m)\u001b[33m,\u001b[39m\n \u001b[90m 40 |\u001b[39m       \u001b[32m'El botón de login debería ser visible, confirmando que el acceso a /checkout-step-one.html está protegido sin sesión activa'\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\route-protection.spec.ts:37:7\u001b[22m"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:29.751Z",
+                      "startTime": "2026-04-16T16:02:00.400Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\route-protection-Protecció-1ba6f-ut-step-one-html-sin-sesión-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\test-results\\route-protection-Protecció-1ba6f-ut-step-one-html-sin-sesión-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\route-protection.spec.ts",
+                        "column": 7,
+                        "line": 37
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
               "id": "505066eb275c9c26d374-0e1892189ea24ad145d2",
@@ -3009,15 +3359,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 4,
-                      "parallelIndex": 4,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 3174,
+                      "duration": 3149,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-16T15:05:29.803Z",
+                      "startTime": "2026-04-16T16:02:01.124Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -3037,11 +3387,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-04-16T15:04:37.514Z",
-    "duration": 55569.221000000005,
-    "expected": 80,
+    "startTime": "2026-04-16T16:00:53.669Z",
+    "duration": 75320.01199999999,
+    "expected": 70,
     "skipped": 0,
-    "unexpected": 0,
+    "unexpected": 10,
     "flaky": 0
   }
 }

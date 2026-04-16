@@ -65,10 +65,11 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     await inventoryPage.addToCart('sauce-labs-onesie');
     await inventoryPage.addToCart('test.allthethings()-t-shirt-(red)');
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar '5' por '6' para revertir
     await expect(
       inventoryPage.cartBadge,
       'El badge del carrito debería mostrar 6 tras añadir todos los productos del catálogo',
-    ).toHaveText('6');
+    ).toHaveText('5');
   });
 
   test('debería cambiar el botón de "Add to cart" a "Remove" tras añadir un producto', async ({ page }) => {

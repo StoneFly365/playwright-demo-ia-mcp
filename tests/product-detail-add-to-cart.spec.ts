@@ -55,10 +55,11 @@ test.describe('Añadir productos desde la página de detalle', () => {
     await productDetailPage.navigate(2);
     await productDetailPage.addToCart();
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar '2' por '1' para revertir
     await expect(
       productDetailPage.cartBadge,
       'El badge debería mostrar 1 tras añadir la Sauce Labs Onesie desde su detalle',
-    ).toHaveText('1');
+    ).toHaveText('2');
   });
 
   test('debería añadir la Sauce Labs (Red) T-Shirt al carrito desde su página de detalle (id=3)', async () => {

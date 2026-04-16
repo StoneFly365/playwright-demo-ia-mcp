@@ -13,7 +13,8 @@
       "Read(//usr/bin/**)",
       "Read(//c/Program Files/**)",
       "Bash(cygpath *)",
-      "Bash(CLAUDE_CODE_GIT_BASH_PATH=\"C:\\\\\\\\Users\\\\\\\\raul.molina\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Programs\\\\\\\\Git\\\\\\\\usr\\\\\\\\bin\\\\\\\\bash.exe\" npm run report:ai)"
+      "Bash(CLAUDE_CODE_GIT_BASH_PATH=\"C:\\\\\\\\Users\\\\\\\\raul.molina\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Programs\\\\\\\\Git\\\\\\\\usr\\\\\\\\bin\\\\\\\\bash.exe\" npm run report:ai)",
+      "Bash(ls -lh playwright-report/ai-*)"
     ]
   }
 }

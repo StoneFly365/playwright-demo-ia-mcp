@@ -12,10 +12,11 @@ test.describe('Login', () => {
   test('debería redirigir a la página de inventario con login exitoso', async ({ page }) => {
     await loginPage.login('standard_user', 'secret_sauce');
 
+    // ⚠️ FALLO INTENCIONADO: Cambiar /home\.html$ por /inventory\.html$ para revertir
     await expect(
       page,
       'El usuario debería ser redirigido a la página de inventario tras un login exitoso',
-    ).toHaveURL(/.*\/inventory\.html$/);
+    ).toHaveURL(/.*\/home\.html$/);
   });
 
   test('debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
