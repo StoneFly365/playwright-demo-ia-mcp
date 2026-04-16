@@ -55,13 +55,13 @@ test.describe('Carrito de compra', () => {
     ).not.toBeVisible();
   });
 
-  test('debería eliminar un producto desde el carrito', async () => {
+  test('debería eliminar un producto desde el carrito', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
     await inventoryPage.navigateToCart();
     await cartPage.removeItem('sauce-labs-bolt-t-shirt');
 
     await expect(
-      cartPage.cartItems,
+      page.locator('.cart_item'),
       'El carrito debería estar vacío tras eliminar el único producto desde la página del carrito',
     ).toHaveCount(0);
   });
