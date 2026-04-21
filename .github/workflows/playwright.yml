@@ -36,6 +36,7 @@ jobs:
         run: npx playwright test
 
       - name: Install Claude CLI
+        if: always()
         run: npm install -g @anthropic-ai/claude-code
 
       - name: Generate AI report
