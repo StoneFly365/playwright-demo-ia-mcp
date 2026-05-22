@@ -11,7 +11,7 @@ export default defineConfig({
     : [['html'], ['json', { outputFile: 'test-results.json' }]],
   use: {
     baseURL: 'https://www.saucedemo.com',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },
   projects: [
