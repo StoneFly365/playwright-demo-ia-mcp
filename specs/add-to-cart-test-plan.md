@@ -1,5 +1,7 @@
 # Plan de Pruebas: Añadir Productos al Carrito — SauceDemo
 
+> **Nota:** Este documento es el plan de diseño original. Para el inventario actualizado de todos los tests implementados consulta [test-index.md](test-index.md).
+
 **Aplicación bajo test:** https://www.saucedemo.com
 **Framework:** Playwright + TypeScript (Page Object Model)
 **Fecha de elaboración:** 2026-04-13
