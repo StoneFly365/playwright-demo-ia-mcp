@@ -49,9 +49,13 @@ jobs:
         if: always()
         run: |
           echo "## AI Test Report Summary" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [ -f playwright-report/ai-summary.txt ]; then
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "_AI summary not generated — check the 'Generate AI report' step for details._" >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
