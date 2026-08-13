@@ -5,7 +5,9 @@ import path from "node:path";
 
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-haiku-4-5-20251001";           // Claude CLI (suscripción, local)
+const GH_MODEL = "openai/gpt-4o-mini";               // GitHub Models (gratis, CI)
+const GH_ENDPOINT = "https://models.github.ai/inference/chat/completions";
 
 function log(msg)     { console.log(`👉 ${msg}`); }
 function success(msg) { console.log(`✅ ${msg}`); }
@@ -77,7 +79,48 @@ async function main() {
     success("AI Reporting finalizado correctamente 🎉");
 }
 
+// En CI usa GitHub Models (gratis, GITHUB_TOKEN); en local, el CLI de Claude
+// con la suscripción. La presencia de GITHUB_TOKEN decide el proveedor.
 function runClaude(promptText, stdinText, label) {
+    return process.env.GITHUB_TOKEN
+        ? runGitHubModels(promptText, stdinText, label)
+        : runClaudeCli(promptText, stdinText, label);
+}
+
+async function runGitHubModels(promptText, stdinText, label) {
+    log(`Ejecutando IA (GitHub Models): ${label}...`);
+    const start = Date.now();
+
+    const res = await fetch(GH_ENDPOINT, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            model: GH_MODEL,
+            temperature: 0,
+            messages: [
+                { role: "system", content: promptText },
+                { role: "user", content: stdinText },
+            ],
+        }),
+    });
+
+    if (!res.ok) {
+        throw new Error(`GitHub Models ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
+    }
+
+    const data = await res.json();
+    const content = data.choices?.[0]?.message?.content?.trim();
+    if (!content) throw new Error(`Respuesta vacía de GitHub Models en ${label}`);
+
+    const duration = ((Date.now() - start) / 1000).toFixed(2);
+    success(`${label} completado en ${duration}s`);
+    return content;
+}
+
+function runClaudeCli(promptText, stdinText, label) {
     log(`Ejecutando IA: ${label}...`);
     const start = Date.now();
 

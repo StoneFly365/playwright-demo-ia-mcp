@@ -7,6 +7,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  models: read          # acceso gratuito a GitHub Models para el AI report
+
 jobs:
   test:
     name: Tests (${{ matrix.browser }})
@@ -29,17 +33,10 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.browser }}
 
-      - name: Install Claude CLI
-        if: always()
-        run: npm install -g @anthropic-ai/claude-code
-
       - name: Generate AI report
         if: always()
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          # La imagen de Playwright corre como root; Claude Code rechaza
-          # --dangerously-skip-permissions como root salvo en un sandbox.
-          IS_SANDBOX: 1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run report:ai
 
       - name: Show AI summary
