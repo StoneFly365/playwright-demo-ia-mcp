@@ -99,7 +99,8 @@ function runClaude(promptText, stdinText, label) {
         child.on("close", (code) => {
             const duration = ((Date.now() - start) / 1000).toFixed(2);
             if (code !== 0) {
-                reject(new Error(`Claude salió con código ${code} en: ${label}`));
+                const detail = out.trim() ? `\nSalida de Claude:\n${out.trim().slice(0, 1000)}` : "";
+                reject(new Error(`Claude salió con código ${code} en: ${label}${detail}`));
             } else {
                 success(`${label} completado en ${duration}s`);
                 resolve(out.trim());
