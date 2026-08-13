@@ -1,4 +1,4 @@
-# Playwright SauceDemo — E2E Tests
+# Playwright E2E · SauceDemo con reporte IA de fallos
 
 Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.saucedemo.com) utilizando [Playwright](https://playwright.dev/) con TypeScript y el patrón **Page Object Model (POM)**.
 
@@ -15,7 +15,7 @@ playwright-demo-ia-mcp/
 │   ├── cart.page.ts                # POM: carrito de compras
 │   ├── checkout.page.ts            # POM: proceso de checkout
 │   └── menu.page.ts                # POM: menú lateral
-├── tests/                          # 16 ficheros, ~80 tests
+├── tests/                          # 14 ficheros, 79 tests
 ├── specs/                          # Planes de test y documentación QA
 ├── prompts/                        # Prompts usados por el reporte IA
 ├── scripts/
@@ -41,7 +41,7 @@ playwright-demo-ia-mcp/
 
 ```bash
 npm install
-npx playwright install chromium
+npx playwright install    # Chromium, Firefox y WebKit
 ```
 
 ---
@@ -247,7 +247,7 @@ La URL base se define una sola vez en `playwright.config.ts`. Los page objects u
 
 ## Tecnologías
 
-- [Playwright](https://playwright.dev/) `^1.49`
+- [Playwright](https://playwright.dev/) `1.58`
 - TypeScript `^5.0`
 - Node.js `^20`
 - Claude Code CLI (reporte IA)
