@@ -6,7 +6,7 @@ import path from "node:path";
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
 const MODEL = "claude-haiku-4-5-20251001";           // Claude CLI (suscripción, local)
-const GEMINI_MODEL = "gemini-2.5-flash";             // Google Gemini (free tier, CI)
+const GEMINI_MODEL = "gemini-flash-latest";          // Google Gemini (free tier, CI)
 const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
 function log(msg)     { console.log(`👉 ${msg}`); }
