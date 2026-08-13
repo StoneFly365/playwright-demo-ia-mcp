@@ -118,6 +118,30 @@ gh workflow run "Playwright Tests"
 gh run watch
 ```
 
+### Flujo del pipeline
+
+```mermaid
+flowchart TD
+    T["push / pull_request a main · manual"] --> M{"Matrix por navegador<br/>(3 jobs en paralelo)"}
+
+    M --> C["Job: chromium"]
+    M --> F["Job: firefox"]
+    M --> W["Job: webkit"]
+
+    subgraph JOB ["Cada job · contenedor mcr.microsoft.com/playwright"]
+        direction TB
+        S1["npm ci"] --> S2["npx playwright test --project=NAVEGADOR"]
+        S2 --> S3["AI report · Gemini free tier"]
+        S3 --> S4["Summary + artefacto playwright-report-NAVEGADOR"]
+    end
+
+    C -.-> JOB
+    F -.-> JOB
+    W -.-> JOB
+```
+
+> Los tests fallan a propósito (es una demo): el valor está en ver el **AI report** analizar fallos reales. Cada navegador genera su propio reporte y artefacto.
+
 ---
 
 ## Reporte IA (`report:ai`)
