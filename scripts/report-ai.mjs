@@ -42,6 +42,14 @@ async function main() {
         );
     }
 
+    // El modelo inventa generated_at (a menudo en UTC). Lo sobreescribimos con la
+    // hora real de Madrid para que sea fiable en local y en CI.
+    grouped.generated_at = new Date().toLocaleString("es-ES", {
+        timeZone: "Europe/Madrid",
+        dateStyle: "long",
+        timeStyle: "short",
+    });
+
     // 2️⃣ Resumen · Correcciones · Tickets — en paralelo
     const [pSummary, pCorrections, pTickets] = await Promise.all([
         readFile("prompts/ai-summary.txt", "utf8"),
