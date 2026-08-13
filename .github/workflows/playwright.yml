@@ -9,11 +9,15 @@ on:
 
 jobs:
   test:
-    name: Run Playwright Tests
+    name: Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-jammy
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
 
     steps:
       - name: Checkout repository
@@ -23,7 +27,7 @@ jobs:
         run: npm ci
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --project=${{ matrix.browser }}
 
       - name: Install Claude CLI
         if: always()
@@ -41,7 +45,7 @@ jobs:
       - name: Show AI summary
         if: always()
         run: |
-          echo "## AI Test Report Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## AI Test Report Summary — ${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
           if [ -f playwright-report/ai-summary.txt ]; then
             echo '```' >> $GITHUB_STEP_SUMMARY
             cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
@@ -54,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: playwright-report/
           retention-days: 30
 
@@ -62,6 +66,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: test-results
+          name: test-results-${{ matrix.browser }}
           path: test-results/
           retention-days: 7
