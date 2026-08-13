@@ -7,10 +7,6 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  models: read          # acceso gratuito a GitHub Models para el AI report
-
 jobs:
   test:
     name: Tests (${{ matrix.browser }})
@@ -36,7 +32,7 @@ jobs:
       - name: Generate AI report
         if: always()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run report:ai
 
       - name: Show AI summary

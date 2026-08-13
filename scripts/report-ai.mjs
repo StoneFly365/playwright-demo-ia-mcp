@@ -6,8 +6,8 @@ import path from "node:path";
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
 const MODEL = "claude-haiku-4-5-20251001";           // Claude CLI (suscripción, local)
-const GH_MODEL = "openai/gpt-4o-mini";               // GitHub Models (gratis, CI)
-const GH_ENDPOINT = "https://models.github.ai/inference/chat/completions";
+const GEMINI_MODEL = "gemini-2.5-flash";             // Google Gemini (free tier, CI)
+const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
 function log(msg)     { console.log(`👉 ${msg}`); }
 function success(msg) { console.log(`✅ ${msg}`); }
@@ -79,26 +79,26 @@ async function main() {
     success("AI Reporting finalizado correctamente 🎉");
 }
 
-// En CI usa GitHub Models (gratis, GITHUB_TOKEN); en local, el CLI de Claude
-// con la suscripción. La presencia de GITHUB_TOKEN decide el proveedor.
+// En CI usa Google Gemini (free tier, GEMINI_API_KEY); en local, el CLI de
+// Claude con la suscripción. La presencia de GEMINI_API_KEY decide el proveedor.
 function runClaude(promptText, stdinText, label) {
-    return process.env.GITHUB_TOKEN
-        ? runGitHubModels(promptText, stdinText, label)
+    return process.env.GEMINI_API_KEY
+        ? runGemini(promptText, stdinText, label)
         : runClaudeCli(promptText, stdinText, label);
 }
 
-async function runGitHubModels(promptText, stdinText, label) {
-    log(`Ejecutando IA (GitHub Models): ${label}...`);
+async function runGemini(promptText, stdinText, label) {
+    log(`Ejecutando IA (Gemini): ${label}...`);
     const start = Date.now();
 
-    const res = await fetch(GH_ENDPOINT, {
+    const res = await fetch(GEMINI_ENDPOINT, {
         method: "POST",
         headers: {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+            Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            model: GH_MODEL,
+            model: GEMINI_MODEL,
             temperature: 0,
             messages: [
                 { role: "system", content: promptText },
@@ -108,12 +108,12 @@ async function runGitHubModels(promptText, stdinText, label) {
     });
 
     if (!res.ok) {
-        throw new Error(`GitHub Models ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
+        throw new Error(`Gemini ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
     }
 
     const data = await res.json();
     const content = data.choices?.[0]?.message?.content?.trim();
-    if (!content) throw new Error(`Respuesta vacía de GitHub Models en ${label}`);
+    if (!content) throw new Error(`Respuesta vacía de Gemini en ${label}`);
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     success(`${label} completado en ${duration}s`);
