@@ -122,12 +122,21 @@ gh run watch
 
 ## Reporte IA (`report:ai`)
 
-El script `report:ai` analiza los resultados de la última ejecución usando Claude y genera cuatro ficheros de salida en `playwright-report/`.
+El script `report:ai` analiza los resultados de la última ejecución con un modelo de IA y genera cuatro ficheros de salida en `playwright-report/`.
+
+### Proveedor de IA
+
+El script elige el proveedor según el entorno:
+
+- **En local:** el CLI de Claude (`claude`) con tu suscripción. No requiere API key.
+- **En CI:** si existe la variable `GEMINI_API_KEY`, usa **Google Gemini** (`gemini-flash-latest`, free tier). Así el pipeline no consume crédito de pago.
+
+La presencia de `GEMINI_API_KEY` es lo que decide el proveedor (ver `runClaude` en [`scripts/report-ai.mjs`](scripts/report-ai.mjs)).
 
 ### Cómo funciona
 
 ```
-test-results.json  ──▶  Claude (Haiku)  ──▶  playwright-report/
+test-results.json  ──▶  IA (Claude local / Gemini CI)  ──▶  playwright-report/
                          │
                          ├── Agrupa fallos por categoría
                          ├── Genera resumen ejecutivo
@@ -135,7 +144,7 @@ test-results.json  ──▶  Claude (Haiku)  ──▶  playwright-report/
                          └── Crea tickets Jira listos para importar
 ```
 
-Las llamadas a Claude se ejecutan en **paralelo** (resumen + correcciones + tickets), por lo que el reporte completo tarda ~15 segundos independientemente del número de tests.
+El resumen, las correcciones y los tickets se ejecutan en **paralelo** tras la agrupación de fallos.
 
 ### Ficheros generados
 
@@ -159,10 +168,12 @@ npm run test:ai
 
 ### Uso en CI (GitHub Actions)
 
-El reporte se ejecuta automáticamente en cada pipeline. El resumen aparece en la pestaña **Summary** del workflow sin necesidad de descargar ningún artefacto.
+El reporte se ejecuta automáticamente en cada job (uno por navegador). El resumen aparece en la pestaña **Summary** del workflow sin necesidad de descargar ningún artefacto.
 
-Requiere el secret `ANTHROPIC_API_KEY` configurado en el repositorio:
+Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
 **Settings > Secrets and variables > Actions > New repository secret**
+
+Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 
 ---
 
