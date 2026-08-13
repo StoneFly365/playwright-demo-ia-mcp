@@ -49,14 +49,73 @@ npx playwright install chromium
 ## Ejecución de los tests
 
 ```bash
-# Modo headless (por defecto)
+# Modo headless (por defecto) — los 3 navegadores
 npm test
+npm run test:all        # alias explícito de lo anterior
+
+# Un solo navegador
+npm run test:chromium
+npm run test:firefox
+npm run test:webkit
 
 # Modo headed (navegador visible)
 npm run test:headed
 
 # Ver el informe HTML tras la ejecución
 npm run test:report
+```
+
+Los tests se ejecutan en **Chromium, Firefox y WebKit** (definidos como `projects` en `playwright.config.ts`).
+
+---
+
+## Docker
+
+El proyecto puede ejecutar los tests dentro del contenedor oficial de Playwright. La imagen trae Node, los tres navegadores y todas las dependencias del sistema preinstaladas, garantizando un **entorno idéntico** en local y en CI.
+
+> El tag de la imagen (`v1.58.2-jammy`) debe coincidir con la versión de `@playwright/test` del `package-lock.json`. Si actualizas Playwright, actualiza también el tag en el workflow y en los comandos.
+
+### ¿Cuándo usar Docker?
+
+- **CI/CD:** entorno reproducible sin instalar navegadores en cada run.
+- **Consistencia entre equipos:** mismo navegador, misma versión, mismo SO. Elimina el "en mi máquina funciona".
+- **Reproducir el CI en local** antes de subir cambios.
+
+Para el desarrollo diario iterando tests, ejecuta `npm test` directamente: Docker añade una capa más lenta sin beneficio en ese caso.
+
+### Ejecutar los tests en Docker (local)
+
+Replica exactamente el entorno del CI. Requiere **Docker Desktop** en ejecución y ejecutarse desde la raíz del proyecto.
+
+```powershell
+# PowerShell (recomendado en Windows)
+docker run --rm -v "${PWD}:/work" -w /work mcr.microsoft.com/playwright:v1.58.2-jammy bash -c "npm ci && npx playwright test"
+```
+
+```bash
+# Git Bash (desactiva la conversión de rutas de MSYS)
+MSYS_NO_PATHCONV=1 docker run --rm -v "/$(pwd):/work" -w //work mcr.microsoft.com/playwright:v1.58.2-jammy bash -c "npm ci && npx playwright test"
+```
+
+El volumen montado (`-v`) persiste el `playwright-report/` generado en tu disco. Para verlo tras el run necesitas Playwright instalado en local:
+
+```bash
+npm ci
+npm run test:report
+```
+
+### Docker en CI (GitHub Actions)
+
+El workflow [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) ejecuta el job dentro de la imagen mediante `container:`. No necesita pasos de `setup-node` ni `playwright install`: la imagen ya lo trae todo.
+
+Se dispara con `push` o `pull_request` a `main`, o manualmente:
+
+```bash
+# Lanzar el workflow manualmente (requiere gh CLI)
+gh workflow run "Playwright Tests"
+
+# Seguir el último run en vivo
+gh run watch
 ```
 
 ---
@@ -133,7 +192,7 @@ npx playwright test --retries=2 --trace=on
 | `reporter` | HTML + JSON (local) · GitHub + HTML + JSON (CI) |
 | `trace` | `on-first-retry` |
 | `video` | `retain-on-failure` |
-| Browser | Chromium (Desktop Chrome) |
+| Browsers | Chromium · Firefox · WebKit |
 | Reintentos en CI | 2 |
 
 ---
