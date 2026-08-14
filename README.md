@@ -4,6 +4,17 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
 
 ---
 
+## ¿Qué demuestra esta demo?
+
+Suite E2E lista para producción que enseña, sobre una web real, cómo damos valor en QA automation:
+
+- **Page Object Model** — 6 páginas encapsuladas, tests legibles y mantenibles.
+- **Cobertura multi-navegador** — 79 tests en Chromium, Firefox y WebKit.
+- **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
+- **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
+
+---
+
 ## Estructura del proyecto
 
 ```
@@ -31,14 +42,14 @@ playwright-demo-ia-mcp/
 
 ## Requisitos previos
 
-- [Node.js](https://nodejs.org/) v18 o superior (npm se instala con Node)
+- [Node.js](https://nodejs.org/) v20 o superior (npm se instala con Node)
 - [Claude Code CLI](https://claude.ai/code) — opcional, solo para `report:ai` en local (ver [Instalación](#instalación))
 
 > **¿Varias versiones de Node?** Usa [nvm](https://github.com/nvm-sh/nvm) para instalar y cambiar entre versiones sin conflictos:
 >
 > ```bash
-> nvm install 18   # instala Node.js 18 (incluye npm)
-> nvm use 18       # activa esa versión en la sesión actual
+> nvm install 20   # instala Node.js 20 (incluye npm)
+> nvm use 20       # activa esa versión en la sesión actual
 > ```
 >
 > En Windows usa [nvm-windows](https://github.com/coreybutler/nvm-windows) (misma sintaxis).
