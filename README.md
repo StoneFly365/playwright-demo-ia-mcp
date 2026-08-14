@@ -77,11 +77,17 @@ npm run test:webkit
 # Modo headed (navegador visible)
 npm run test:headed
 
+# Demo: separar suite verde de fallos intencionados
+npm run test:demo:green   # solo tests que pasan (excluye @demo-fail)
+npm run test:demo:fail    # solo los fallos intencionados (@demo-fail)
+
 # Ver el informe HTML tras la ejecución
 npm run test:report
 ```
 
 Los tests se ejecutan en **Chromium, Firefox y WebKit** (definidos como `projects` en `playwright.config.ts`).
+
+Los fallos intencionados llevan el tag `@demo-fail`. `test:demo:green` demuestra la suite en verde; `test:demo:fail` aísla los fallos que alimentan el AI report.
 
 ---
 

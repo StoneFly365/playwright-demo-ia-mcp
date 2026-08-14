@@ -25,6 +25,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
+      max-parallel: 1  # cuota Gemini free tier es por minuto (250k tokens); serializar evita 429 entre navegadores
       matrix:
         browser: [chromium, firefox, webkit]
 

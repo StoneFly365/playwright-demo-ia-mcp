@@ -5,17 +5,19 @@ Entrada por stdin: JSON con dos campos:
 Devuelve SOLO texto plano, sin markdown, sin asteriscos, sin guiones de viñeta decorativos.
 El texto debe poder enviarse directamente por correo electrónico a dirección no técnica.
 
+Uso de emojis: SOLO los del mapa fijo de abajo, exactamente en las líneas indicadas. Prohibido cualquier otro emoji, y prohibido usar emojis en la prosa (ATENCIÓN, CONCLUSIÓN, ACCIONES). No inventes ni sustituyas emojis; usa siempre el mismo para cada métrica.
+
 Estructura obligatoria (respeta este orden y estos títulos exactos):
 
-RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E
+RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
 Fecha: [usa generated_at de grouped, formateada en español legible]
 
 RESULTADO GLOBAL
 Total de pruebas ejecutadas: [stats.total]
-Pruebas correctas:           [stats.passed]
-Pruebas fallidas:            [stats.failed]
-Pruebas omitidas:            [stats.skipped]
-Pruebas inestables (flaky):  [stats.flaky]
+✅ Pruebas correctas:           [stats.passed]
+❌ Pruebas fallidas:            [stats.failed]
+⏭️ Pruebas omitidas:            [stats.skipped]
+⚠️ Pruebas inestables (flaky):  [stats.flaky]
 
 [Si stats.failed == 0, escribe: "Todos los tests pasaron correctamente. No se requiere acción inmediata." y omite las secciones ATENCIÓN y ACCIONES.]
 
