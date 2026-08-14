@@ -31,9 +31,17 @@ playwright-demo-ia-mcp/
 
 ## Requisitos previos
 
-- [Node.js](https://nodejs.org/) v18 o superior
-- npm v9 o superior
-- [Claude Code CLI](https://claude.ai/code) instalado y autenticado (necesario para `report:ai`)
+- [Node.js](https://nodejs.org/) v18 o superior (npm se instala con Node)
+- [Claude Code CLI](https://claude.ai/code) — opcional, solo para `report:ai` en local (ver [Instalación](#instalación))
+
+> **¿Varias versiones de Node?** Usa [nvm](https://github.com/nvm-sh/nvm) para instalar y cambiar entre versiones sin conflictos:
+>
+> ```bash
+> nvm install 18   # instala Node.js 18 (incluye npm)
+> nvm use 18       # activa esa versión en la sesión actual
+> ```
+>
+> En Windows usa [nvm-windows](https://github.com/coreybutler/nvm-windows) (misma sintaxis).
 
 ---
 
@@ -43,6 +51,14 @@ playwright-demo-ia-mcp/
 npm install
 npx playwright install    # Chromium, Firefox y WebKit
 ```
+
+### Claude Code CLI (opcional, solo para `report:ai` en local)
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+Ejecuta `claude` una vez para autenticarte y sigue el login. En CI el AI report se genera con Gemini, así que el CLI no hace falta allí.
 
 ---
 
