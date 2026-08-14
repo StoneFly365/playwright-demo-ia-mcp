@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-jammy
+      options: --cap-add=SYS_ADMIN  # runner restringe user namespaces sin privilegios; Firefox sandbox lo necesita
     timeout-minutes: 30
     strategy:
       fail-fast: false
