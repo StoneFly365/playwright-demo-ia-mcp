@@ -50,6 +50,7 @@ jobs:
 
       - name: Generate AI report
         if: always()
+        continue-on-error: true  # cuota Gemini free tier es inestable; no debe tumbar el run si los tests pasan
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run report:ai

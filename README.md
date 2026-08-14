@@ -232,6 +232,8 @@ Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
 
 Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 
+> **Mejora futura (opcional):** publicar el reporte HTML de Playwright en GitHub Pages para verlo sin descargar el artefacto (`actions/upload-pages-artifact` + `actions/deploy-pages`).
+
 ---
 
 ## Modo headless
