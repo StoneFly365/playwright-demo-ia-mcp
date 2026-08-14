@@ -9,7 +9,7 @@ test.describe('Login', () => {
     await loginPage.navigate();
   });
 
-  test('debería redirigir a la página de inventario con login exitoso', async ({ page }) => {
+  test('debería redirigir a la página de inventario con login exitoso', { tag: '@demo-fail' }, async ({ page }) => {
     await loginPage.login('standard_user', 'secret_sauce');
 
     // ⚠️ FALLO INTENCIONADO: Cambiar /home\.html$ por /inventory\.html$ para revertir

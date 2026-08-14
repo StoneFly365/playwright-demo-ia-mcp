@@ -15,7 +15,7 @@ test.describe('Menú lateral', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería cerrar sesión al pulsar Logout', async ({ page }) => {
+  test('debería cerrar sesión al pulsar Logout', { tag: '@demo-fail' }, async ({ page }) => {
     await menuPage.logout();
 
     // ⚠️ FALLO INTENCIONADO: Cambiar '/inventory.html' por '/' para revertir

@@ -27,7 +27,7 @@ test.describe('Protección de rutas', () => {
     ).toBeVisible();
   });
 
-  test('debería redirigir al login si se accede a /checkout-step-one.html sin sesión', async ({ page }) => {
+  test('debería redirigir al login si se accede a /checkout-step-one.html sin sesión', { tag: '@demo-fail' }, async ({ page }) => {
     await page.goto('/checkout-step-one.html');
 
     // ⚠️ FALLO INTENCIONADO: Cambiar '/inventory.html' por '/' para revertir

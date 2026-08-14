@@ -51,7 +51,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)', async () => {
+  test('debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)', { tag: '@demo-fail' }, async () => {
     await productDetailPage.navigate(2);
     await productDetailPage.addToCart();
 

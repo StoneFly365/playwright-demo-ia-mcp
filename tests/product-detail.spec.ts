@@ -41,7 +41,7 @@ test.describe('Detalle de producto', () => {
     ).toHaveText('1');
   });
 
-  test('debería eliminar el producto del carrito desde el detalle', async () => {
+  test('debería eliminar el producto del carrito desde el detalle', { tag: '@demo-fail' }, async () => {
     await productDetailPage.addToCart();
     await productDetailPage.removeFromCart();
 

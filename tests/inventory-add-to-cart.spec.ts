@@ -57,7 +57,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir los 6 productos al carrito y mostrar badge con valor 6', async () => {
+  test('debería añadir los 6 productos al carrito y mostrar badge con valor 6', { tag: '@demo-fail' }, async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');

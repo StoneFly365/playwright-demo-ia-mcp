@@ -36,7 +36,7 @@ test.describe('Checkout', () => {
     ).toBeVisible();
   });
 
-  test('debería mostrar error si el nombre es obligatorio', async () => {
+  test('debería mostrar error si el nombre es obligatorio', { tag: '@demo-fail' }, async () => {
     await checkoutPage.fillInfo('', 'García', '28001');
     await checkoutPage.continue();
 

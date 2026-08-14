@@ -12,7 +12,7 @@ test.describe('Inventario', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería mostrar 6 productos en el inventario', async () => {
+  test('debería mostrar 6 productos en el inventario', { tag: '@demo-fail' }, async () => {
     // ⚠️ FALLO INTENCIONADO: Cambiar 5 por 6 para revertir
     await expect(
       inventoryPage.inventoryItems,

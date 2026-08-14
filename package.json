@@ -4,6 +4,8 @@
   "scripts": {
     "test": "playwright test",
     "test:all": "playwright test",
+    "test:demo:green": "playwright test --grep-invert @demo-fail",
+    "test:demo:fail": "playwright test --grep @demo-fail",
     "test:headed": "playwright test --headed",
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",

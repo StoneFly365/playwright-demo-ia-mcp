@@ -25,7 +25,7 @@ test.describe('Gestión del badge del carrito', () => {
     ).not.toBeVisible();
   });
 
-  test('debería mostrar badge con valor 4 al añadir cuatro productos distintos', async () => {
+  test('debería mostrar badge con valor 4 al añadir cuatro productos distintos', { tag: '@demo-fail' }, async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');

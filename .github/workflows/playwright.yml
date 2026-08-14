@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      suite:
+        description: 'Test suite a ejecutar'
+        type: choice
+        default: green
+        options: [green, fail, all]
 
 env:
   TZ: 'Europe/Madrid'
@@ -29,8 +35,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Determine grep filter
+        id: suite
+        run: |
+          case "${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'green' }}" in
+            green) echo "grep=--grep-invert @demo-fail" >> "$GITHUB_OUTPUT" ;;
+            fail)  echo "grep=--grep @demo-fail"        >> "$GITHUB_OUTPUT" ;;
+            all)   echo "grep="                          >> "$GITHUB_OUTPUT" ;;
+          esac
+
       - name: Run Playwright tests
-        run: npx playwright test --project=${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }} ${{ steps.suite.outputs.grep }}
 
       - name: Generate AI report
         if: always()

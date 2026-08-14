@@ -18,7 +18,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería mostrar los productos añadidos desde el inventario en la página del carrito', async ({ page }) => {
+  test('debería mostrar los productos añadidos desde el inventario en la página del carrito', { tag: '@demo-fail' }, async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
     await inventoryPage.navigateToCart();
