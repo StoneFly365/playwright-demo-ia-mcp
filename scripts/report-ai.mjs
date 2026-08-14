@@ -95,27 +95,42 @@ function runClaude(promptText, stdinText, label) {
         : runClaudeCli(promptText, stdinText, label);
 }
 
+// Códigos transitorios de Gemini (sobrecarga/límite): merece reintentar.
+const GEMINI_RETRYABLE = new Set([429, 500, 502, 503, 504]);
+const GEMINI_MAX_RETRIES = 4;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function runGemini(promptText, stdinText, label) {
     log(`Ejecutando IA (Gemini): ${label}...`);
     const start = Date.now();
 
-    const res = await fetch(GEMINI_ENDPOINT, {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            model: GEMINI_MODEL,
-            temperature: 0,
-            messages: [
-                { role: "system", content: promptText },
-                { role: "user", content: stdinText },
-            ],
-        }),
-    });
+    let res;
+    for (let attempt = 1; ; attempt++) {
+        res = await fetch(GEMINI_ENDPOINT, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                model: GEMINI_MODEL,
+                temperature: 0,
+                messages: [
+                    { role: "system", content: promptText },
+                    { role: "user", content: stdinText },
+                ],
+            }),
+        });
 
-    if (!res.ok) {
+        if (res.ok) break;
+
+        if (GEMINI_RETRYABLE.has(res.status) && attempt < GEMINI_MAX_RETRIES) {
+            const backoff = 2 ** attempt * 1000 + Math.floor(Math.random() * 500); // 2s,4s,8s + jitter
+            log(`Gemini ${res.status} en ${label}, reintento ${attempt}/${GEMINI_MAX_RETRIES - 1} en ${backoff}ms...`);
+            await sleep(backoff);
+            continue;
+        }
+
         throw new Error(`Gemini ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
     }
 
