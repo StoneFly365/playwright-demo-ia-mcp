@@ -3,13 +3,13 @@ Devuelve SOLO Markdown (sin fences exteriores) con posibles correcciones técnic
 
 Estructura obligatoria:
 
-# Posibles Correcciones – Playwright E2E
+# 🩹 Posibles Correcciones – Playwright E2E
 
 ## Resumen de fallos agrupados
 
 | Grupo | Pruebas afectadas | Error principal |
 |-------|------------------|-----------------|
-[Una fila por grupo con group_id, count y error_message recortado a 80 chars]
+[Una fila por grupo con group_id, count y error_message recortado a 80 chars. Prefija el error con UN emoji según el tipo de fallo: 🔢 contador/badge, 🛒 carrito (count de ítems), 🔀 URL/redirección, 📝 validación de formulario, ⏱️ timeout/visibilidad. Si no encaja, sin emoji.]
 
 ## Correcciones por grupo
 
@@ -17,15 +17,16 @@ Estructura obligatoria:
 
 ### [group_id] – [error_message recortado]
 
-**Hipótesis de causa:** [selector roto / timeout / datos de prueba / entorno / otro]
+🔍 **Hipótesis de causa:** [selector roto / timeout / datos de prueba / entorno / otro]
 
-**Pasos para corregir:**
+🔧 **Pasos para corregir:**
 1. [acción concreta]
 2. [acción concreta]
 3. [acción concreta si aplica]
 
-**Tests afectados:** [lista de títulos]
+🧪 **Tests afectados:** [lista de títulos]
 
 ---
 
 No inventes datos. Usa solo lo que está en la entrada.
+Usa como máximo un emoji por línea; no añadas emojis decorativos fuera de los indicados.
