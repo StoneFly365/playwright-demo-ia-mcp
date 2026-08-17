@@ -227,6 +227,50 @@ El resumen, las correcciones y los tickets se ejecutan en **paralelo** tras la a
 | `playwright-report/ai-tickets.json` | Tickets en formato Jira (JSON importable) |
 | `playwright-report/ai-failures-grouped.json` | Fallos agrupados por categoría de error |
 
+### Ejemplo de salida
+
+> Formato real (según `prompts/ai-summary.txt` y `prompts/ai-corrections.txt`), contenido ilustrativo basado en el fallo intencionado `@demo-fail` de `login.spec.ts`.
+
+`ai-summary.txt`:
+
+```
+RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
+Fecha: 17 de agosto de 2026
+
+RESULTADO GLOBAL
+Total de pruebas ejecutadas: 79
+✅ Pruebas correctas:           76
+❌ Pruebas fallidas:            3
+⏭️ Pruebas omitidas:            0
+⚠️ Pruebas inestables (flaky):  0
+
+ATENCIÓN REQUERIDA
+El flujo de inicio de sesión no redirige a la página de inventario en 3 pruebas (URL de destino incorrecta tras login).
+
+CONCLUSIÓN
+El login y el catálogo de productos funcionan correctamente en la mayoría de los casos. El fallo detectado es aislado y no bloquea el resto de flujos (carrito, checkout). No hay riesgos críticos para producción.
+
+ACCIONES RECOMENDADAS
+1. Revisar la URL de redirección esperada tras un login exitoso en login.spec.ts.
+2. Confirmar con el equipo de producto cuál es la ruta correcta: /inventory.html o /home.html.
+3. Ajustar el selector o la aserción de URL una vez confirmada la ruta.
+```
+
+Fragmento de `ai-corrections.md`:
+
+```markdown
+### login-redirect – Expected URL to match /.*\/inventory\.html$/
+
+🔍 **Hipótesis de causa:** aserción de URL desactualizada respecto al flujo real de la aplicación
+
+🔧 **Pasos para corregir:**
+1. Verificar manualmente a qué URL redirige SauceDemo tras un login exitoso.
+2. Actualizar la expresión regular en el `expect(page).toHaveURL(...)`.
+3. Re-ejecutar `login.spec.ts` para confirmar el fix.
+
+🧪 **Tests afectados:** debería redirigir a la página de inventario con login exitoso
+```
+
 ### Uso en local
 
 ```bash
