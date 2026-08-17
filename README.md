@@ -15,6 +15,21 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 
 ---
 
+## Usuarios de SauceDemo
+
+Los tests usan estos usuarios de prueba, todos con contraseña `secret_sauce`:
+
+| Usuario | Comportamiento | Test |
+|---|---|---|
+| `standard_user` | Login correcto, flujo normal | mayoría de specs |
+| `locked_out_user` | Login bloqueado, muestra error | `login.spec.ts` |
+| `problem_user` | Login OK, bugs de UI en catálogo/carrito | `problem-user-cart.spec.ts` |
+| `performance_glitch_user` | Login OK, latencia alta | `performance-glitch-user-cart.spec.ts` |
+
+> Credenciales oficiales en la página de login de [SauceDemo](https://www.saucedemo.com); tabla aquí como referencia rápida usada por esta suite.
+
+---
+
 ## Estructura del proyecto
 
 ```
