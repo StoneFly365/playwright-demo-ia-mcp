@@ -6,6 +6,10 @@
 **Rama:** `docs/ruta-aprendizaje-playwright`
 **Alcance de este documento:** análisis y diseño. No se ha modificado ni un solo archivo del proyecto existente.
 
+> ## ⚠️ Fe de erratas — 17 de agosto de 2026
+>
+> El hallazgo **A1** de la sección 3.2 (`.cart_item` como "fuga del Page Object") se describió incorrectamente. La validación técnica del módulo 01 ([`learning/docs/module-01-technical-validation.md`](docs/module-01-technical-validation.md), hallazgo V1) demostró que `CartPage.cartItems` ([`pages/cart.page.ts:7`](../pages/cart.page.ts)) apunta a `[data-test="cart-item"]`, un atributo que **no existe en la aplicación** — el locator resuelve 0 elementos. Los tests no esquivan el Page Object por comodidad: lo esquivan porque su locator está roto. Las cuatro apariciones de A1 en este documento (secciones 3.2, 4, 10) se marcan a continuación con la corrección en línea; el texto original se conserva para mantener el registro histórico del diseño aprobado. Detalle completo en `module-01-discovery-design.md`, sección 15.1 (hallazgo V1).
+
 ---
 
 # 1. Executive Summary
@@ -301,7 +305,7 @@ Conforme al punto 17 del encargo, se documentan **sin corregir**. Cada uno lleva
 
 | # | Hallazgo | Ubicación | Uso didáctico |
 |---|---|---|---|
-| A1 | Tests acceden a selectores crudos en vez de usar el Page Object: `page.locator('.cart_item')` aparece en 4 specs mientras `CartPage.cartItems` (que usa `[data-test="cart-item"]`) queda sin usar | `cart-sync.spec.ts`, `cart-edge-cases.spec.ts`, `add-tshirt-to-cart.spec.ts`, `checkout` indirecto | **Fuga del POM + locator frágil**. `.cart_item` es una clase CSS de estilo; `[data-test="cart-item"]` es un contrato de test. Ejercicio de refactor perfecto |
+| A1 | ~~Tests acceden a selectores crudos en vez de usar el Page Object: `page.locator('.cart_item')` aparece en 4 specs mientras `CartPage.cartItems` (que usa `[data-test="cart-item"]`) queda sin usar~~ ⚠️ **Corregido — ver fe de erratas.** `CartPage.cartItems` apunta a `[data-test="cart-item"]`, atributo que **no existe** en la aplicación (0 elementos). No es una fuga por comodidad: el locator del POM está roto y 12 usos de `.cart_item` en **5** specs son el rodeo | `cart-sync.spec.ts`, `cart-edge-cases.spec.ts`, `add-tshirt-to-cart.spec.ts`, `performance-glitch-user-cart.spec.ts`, `problem-user-cart.spec.ts` | ~~**Fuga del POM + locator frágil**~~ **Locator de POM roto e invisible.** El defecto pasó inadvertido 47 commits porque ningún test lo ejecutaba. Ejercicio de diagnóstico, no de refactor directo — ver `module-01-discovery-design.md`, Lab 5, caso B |
 | A2 | Aserción condicional `if/else` sobre estado observado en runtime | `problem-user-cart.spec.ts:56-66` | **Test que no puede fallar**. Enseña por qué un test debe tener un resultado esperado, no dos ramas ambas válidas |
 | A3 | Valor esperado derivado del valor real (`expectedCount` se lee del badge y luego se afirma contra el carrito) | `problem-user-cart.spec.ts:77-87` | **Aserción tautológica parcial**. Debate: ¿es un test de consistencia legítimo o un test sin oráculo? |
 | A4 | 5 tests idénticos salvo el nombre del producto | `inventory-add-to-cart.spec.ts:15-58` | **Parametrización**: convertir 5 tests copiados en un `for...of` sobre un dataset |
@@ -444,7 +448,7 @@ Matriz de competencias del QA Automation Engineer moderno, contrastada contra el
 |---|---|---|---|---|
 | Page Object Model | Sí | `pages/` (6 clases) | Sólido | Enseñar |
 | Separación acción/aserción | Sí | ningún POM contiene `expect` | Sólido | Enseñar |
-| Encapsulación de locators | Sí, con fugas | POMs sí; `.cart_item` en tests no (A1) | Sólido con excepciones | Enseñar + Ampliar |
+| Encapsulación de locators | Sí, con un locator roto | POMs sí en general; `CartPage.cartItems` no funciona (A1, corregido) | Sólido con una excepción real | Enseñar + Ampliar |
 | Component Objects | No | — | Ausente | Añadir |
 | Fixtures como capa de composición | No | — | Ausente | Añadir |
 | Gestión de datos de prueba | No | hardcodeado (A6) | Ausente | Añadir |
@@ -825,10 +829,10 @@ Diez módulos numerados 00-09. La numeración del encargo (00-07) se mantiene re
 - **Competencias:** F (Test Architecture), G (Test Design).
 - **Conocimientos previos:** 01.
 - **Conceptos:** qué es y qué no es un Page Object; por qué los POMs no contienen aserciones; encapsulación de locators y fugas del patrón; `readonly` y parámetros de propiedad; cuándo un método pertenece al POM y cuándo al test; nombrado y organización de ficheros; detección de cobertura duplicada.
-- **Funcionalidades del repositorio usadas:** los 6 POMs; el hallazgo **A1** (`.cart_item` usado en 4 specs mientras `CartPage.cartItems` queda muerto) como ejercicio central de refactor; el hallazgo **A10** (solape entre `add-tshirt-to-cart` e `inventory-add-to-cart`) como ejercicio de diseño de suite; `menu.page.ts` como ejemplo de excepción justificada (selectores por `id` porque no hay `data-test`).
+- **Funcionalidades del repositorio usadas:** los 6 POMs; el hallazgo **A1** — ⚠️ corregido: `CartPage.cartItems` resuelve 0 elementos porque `[data-test="cart-item"]` no existe en la app, y `.cart_item` (5 specs) es el rodeo — como ejercicio de por qué un locator de POM roto puede pasar inadvertido durante 47 commits; el hallazgo **A10** (solape entre `add-tshirt-to-cart` e `inventory-add-to-cart`) como ejercicio de diseño de suite; `menu.page.ts` como ejemplo de excepción justificada (selectores por `id` porque no hay `data-test`).
 - **Dificultad:** Media.
 - **Dependencias:** 01.
-- **Resultado esperado:** el alumno crea un Page Object nuevo desde cero para una página no cubierta y elimina una fuga de POM en una copia de trabajo de la suite.
+- **Resultado esperado:** el alumno crea un Page Object nuevo desde cero para una página no cubierta y diagnostica y corrige el locator roto de `CartPage.cartItems` en una copia de trabajo de la suite — ⚠️ ver nota sobre A1 arriba: no es refactor por comodidad, es reparación de un defecto real.
 
 ## Módulo 03 — Test Architecture: Fixtures, Auth y Datos
 
@@ -937,7 +941,7 @@ Mapeo módulo ↔ concepto ↔ **archivo real**. Donde no hay material se indica
 | 01 | Ejecución filtrada | `package.json:5-13` (12 scripts) | `--project`, `--grep`, `--headed`, `show-report` |
 | 02 | POM: 6 implementaciones comparables | `pages/` (los 6 ficheros) | Qué tienen en común y en qué se diferencian |
 | 02 | POM sin aserciones | los 6 POMs (ningún `expect`) | Separación acción / verificación |
-| 02 | Fuga del POM (**A1**) | `CartPage.cartItems` (`pages/cart.page.ts:7`) sin usar, frente a `.cart_item` en `tests/cart-sync.spec.ts`, `tests/cart-edge-cases.spec.ts`, `tests/add-tshirt-to-cart.spec.ts` | Detectar y corregir el anti-patrón |
+| 02 | Locator de POM roto (**A1**, ⚠️ corregido) | `CartPage.cartItems` (`pages/cart.page.ts:7`) resuelve 0 elementos — `[data-test="cart-item"]` no existe en la app — frente a `.cart_item` en `tests/cart-sync.spec.ts`, `tests/cart-edge-cases.spec.ts`, `tests/add-tshirt-to-cart.spec.ts`, `tests/performance-glitch-user-cart.spec.ts`, `tests/problem-user-cart.spec.ts` | Diagnosticar por qué un locator roto es invisible hasta que alguien lo usa, y corregirlo |
 | 02 | Cobertura duplicada (**A10**) | `tests/add-tshirt-to-cart.spec.ts` vs `tests/inventory-add-to-cart.spec.ts` | Coste de mantener dos veces lo mismo |
 | 02 | Nombrado y organización | árbol `pages/` + `tests/` | Convención `*.page.ts` / `*.spec.ts` |
 | 03 | `beforeEach` repetido → fixture (**A5**) | los `beforeEach` de 12 specs, p. ej. `tests/checkout.spec.ts:12-22` | Refactor a `test.extend` |
