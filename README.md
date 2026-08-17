@@ -215,11 +215,10 @@ El resumen, las correcciones y los tickets se ejecutan en **paralelo** tras la a
 ### Uso en local
 
 ```bash
-# Opción 1: solo el reporte (requiere haber ejecutado los tests antes)
-npm run test
+# Requiere haber ejecutado los tests antes (ver "Ejecución de los tests")
 npm run report:ai
 
-# Opción 2: tests + reporte en un único comando
+# Alternativa: tests + reporte en un único comando
 npm run test:ai
 ```
 
@@ -271,6 +270,41 @@ npx playwright test --retries=2 --trace=on
 
 ### Page Object Model
 Cada página tiene su propia clase en `/pages`. Los tests solo orquestan el flujo de negocio; los selectores y acciones quedan encapsulados en los page objects.
+
+```typescript
+// pages/login.page.ts
+export class LoginPage {
+  readonly errorMessage: Locator;
+
+  constructor(private readonly page: Page) {
+    this.errorMessage = this.page.locator('[data-test="error"]');
+  }
+
+  async navigate(): Promise<void> {
+    await this.page.goto('/');
+  }
+
+  async login(username: string, password: string): Promise<void> {
+    await this.page.locator('[data-test="username"]').fill(username);
+    await this.page.locator('[data-test="password"]').fill(password);
+    await this.page.locator('[data-test="login-button"]').click();
+  }
+}
+```
+
+```typescript
+// tests/login.spec.ts
+test('debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
+  await loginPage.login('wrong_user', 'wrong_password');
+
+  await expect(loginPage.errorMessage).toBeVisible();
+  await expect(loginPage.errorMessage).toContainText(
+    'Username and password do not match any user in this service',
+  );
+});
+```
+
+El test no conoce selectores ni pasos de UI, solo llama métodos del page object.
 
 ### Selectores `data-test`
 Se usan exclusivamente los atributos `data-test` que provee SauceDemo. Son los más resilientes ante cambios de estilos o estructura HTML.
