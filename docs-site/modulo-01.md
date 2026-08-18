@@ -3,8 +3,11 @@
 **Hub del módulo.** Desde aquí se llega a todo lo del módulo 01: material del alumno, plan del formador y documentación de diseño. El contenido detallado vive en los documentos canónicos que se enlazan; aquí no se duplica.
 
 > **Estado:** ✅ material construido y operacionalmente preparado · ⬜ **piloto NO ejecutado**
+>
 > **Duración prevista:** 8 h dirigidas + 3 h de trabajo personal + 1 h de assessment ≈ **12 h** *(provisional: sale del diseño, no de una impartición real)*
+>
 > **Nivel dominante:** 2 · MODIFY → 4 · DESIGN, con un pico en 5 · TROUBLESHOOT
+>
 > **Depende de:** [Módulo 00](/learning/modules/00-foundations/README.md) superado
 
 Documento canónico del módulo: [`modules/01-playwright-fundamentals/README.md`](/learning/modules/01-playwright-fundamentals/README.md).

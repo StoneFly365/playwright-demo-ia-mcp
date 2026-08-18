@@ -5,16 +5,81 @@
   <title>QA Automation &amp; AI Engineering Learning Lab — HDI Seguros Chile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Portal de documentación del Learning Lab de QA Automation e IA construido sobre un proyecto Playwright real.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <style>
-    :root { --theme-color: #0b6e4f; }
-    .sidebar { font-size: 14.5px; }
-    .sidebar ul li strong { display: block; margin: 14px 0 4px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #7a8a99; }
-    .markdown-section { max-width: 960px; }
-    .markdown-section table { display: block; overflow-x: auto; white-space: normal; }
-    .markdown-section blockquote { border-left: 4px solid var(--theme-color); background: #f6f9f8; color: #34495e; }
+    :root {
+      /* Paleta de marca Atmira */
+      --ink: #0A0A0A;
+      --ink-soft: #2A2A2A;
+      --text: #0A0A0A;
+      --text-mute: #8A8A8A;
+      --paper: #FFFFFF;
+      --paper-dim: #FAFAFA;
+      --line: #E5E5E5;
+      --accent: #E81F76;
+      --accent-soft: #FBE5EF;
+      --accent-text: #E81F76;
+      --warn: #C98500;
+      --warn-soft: #FAEEDA;
+      --warn-text: #633806;
+      --danger: #A32D2D;
+      --danger-soft: #FCEBEB;
+      --danger-text: #501313;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+      /* Docsify las usa directamente en sidebar, enlaces y buscador */
+      --theme-color: var(--accent);
+    }
+
+    body { background: var(--paper); color: var(--text); font-family: var(--font-sans); }
+
+    /* Sidebar */
+    .sidebar { font-size: 14.5px; background: var(--paper-dim); border-right: 1px solid var(--line); }
+    .sidebar ul li strong { display: block; margin: 14px 0 4px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-mute); }
+    .sidebar-nav a { color: var(--ink-soft); }
+    .sidebar-nav a:hover { color: var(--accent); }
+    .sidebar-nav li.active > a { color: var(--accent-text); font-weight: 600; }
+    .sidebar-nav li.active { border-left: 3px solid var(--accent); background: var(--accent-soft); }
+
+    /* Contenido */
+    .markdown-section { max-width: 960px; font-family: var(--font-sans); }
+    .markdown-section h1, .markdown-section h2, .markdown-section h3, .markdown-section h4 { color: var(--ink); font-weight: 700; }
+    .markdown-section h2 { padding-top: 8px; border-bottom: 1px solid var(--line); }
+    .markdown-section a { color: var(--accent-text); }
+    .markdown-section a:hover { text-decoration: underline; }
+    .markdown-section strong { color: var(--ink); }
+
+    /* Tablas */
+    .markdown-section table { display: block; overflow-x: auto; white-space: normal; border-collapse: collapse; }
+    .markdown-section table th { background: var(--paper-dim); color: var(--ink); border: 1px solid var(--line); }
+    .markdown-section table td { border: 1px solid var(--line); }
+    .markdown-section table tr:nth-child(2n) { background: var(--paper-dim); }
+
+    /* Citas / avisos */
+    .markdown-section blockquote { border-left: 4px solid var(--accent); background: var(--accent-soft); color: var(--ink-soft); }
+
+    /* Código */
+    .markdown-section code, .markdown-section pre { font-family: var(--font-mono); }
+    .markdown-section pre { background: var(--ink); border-radius: 6px; }
+    .markdown-section :not(pre) > code { background: var(--paper-dim); color: var(--accent-text); border: 1px solid var(--line); border-radius: 4px; }
+
     .markdown-section .mermaid { text-align: center; margin: 24px 0; }
-    .markdown-section h2 { padding-top: 8px; border-bottom: 1px solid #eaecef; }
+
+    /* Buscador */
+    .search input { font-family: var(--font-sans); border: 1px solid var(--line); }
+    .search .results-panel { font-family: var(--font-sans); }
+    .search a:hover { color: var(--accent-text); }
+    .search .matching-post .search-keyword { background: var(--accent-soft); color: var(--accent-text); }
+
+    /* Paginación anterior/siguiente */
+    .pagination-item-label { color: var(--text-mute); }
+    .pagination-item:hover .pagination-item-title { color: var(--accent-text); }
+
+    /* Botón "editar/repo" y demás controles con --theme-color ya heredan var(--accent) */
   </style>
 </head>
 <body>
