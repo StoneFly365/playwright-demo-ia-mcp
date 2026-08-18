@@ -8,7 +8,7 @@ Sin material de consulta para la parte conceptual (A1-A8). Con el repositorio y 
 |---|---|---|---|
 | A — Conceptual | A1-A8 | 30 | 15 min |
 | B — Práctica | E1-E2 | 70 | 40 min |
-| C — Defensa técnica | D1 | Sin puntos: **apto / no apto** | 5-10 min, en la revisión del Challenge |
+| C — Defensa técnica | D1 | Sin puntos: **apto / no apto** | 5-10 min, en el bloque 1 de la **sesión 6** |
 
 **El reparto cambia respecto al módulo 00** (allí 40/60): aquí la práctica pesa el 70%. La progresión del programa es hacia el hacer.
 
@@ -157,11 +157,11 @@ Entrega el fichero corregido **y** un informe con el formato del Lab 5 (síntoma
 
 Evalúa **P3 y P8**: seleccionar, justificar y anticipar. Es la continuación directa de la Parte C del módulo 00, con la pregunta central subida de nivel: ya no es *"¿qué hiciste y por qué?"*, sino **"¿por qué ese locator y no otro, y qué pasa si la aplicación cambia?"**.
 
-No se convoca como prueba aparte: ocurre durante la revisión del Challenge o del Lab 3.
+No se convoca como prueba aparte: ocurre en el **bloque 1 de la sesión 6**, mientras el grupo hace la revisión cruzada de los `decisiones.md`. Es el primer momento del módulo en que ese entregable existe.
 
 ### D1 — Defensa de una decisión propia (5-10 min)
 
-El alumno trae su `03-decisiones.md` o su `decisiones.md` del Challenge y responde:
+**La defensa se hace sobre el `decisiones.md` del Challenge**, que es el único entregable que cubre P8; el `03-decisiones.md` del Lab 3 se usa como apoyo cuando la pregunta 1 lo requiera. Sin Challenge entregado no hay Parte C: se aplaza hasta que lo esté.
 
 | # | Pregunta | Qué demuestra |
 |---|---|---|
@@ -169,6 +169,7 @@ El alumno trae su `03-decisiones.md` o su `decisiones.md` del Challenge y respon
 | 2 | Si mañana rediseñan la maquetación sin cambiar el comportamiento, ¿cuáles de tus tests se rompen? | Anticipación de mantenibilidad |
 | 3 | Cuéntame un problema que te encontraste: ¿síntoma y causa? | Distinción síntoma / causa raíz (P7) |
 | 4 | Si esto falla mañana en CI, ¿qué mirarías primero? | Traslado del razonamiento a un contexto nuevo |
+| 5 | ¿Por qué ese reparto de tests y no otro, qué has reutilizado de la suite del proyecto y qué decidiste **no** automatizar? | **Diseño de la cobertura y sus límites (P8)** |
 
 ### Rúbrica
 
@@ -208,4 +209,4 @@ Ningún ítem evalúa contenido que no esté en [`theory.md`](../theory.md) **y*
 | A8 | P1, P7 | Teoría §2 | Lab 1 (Paso 3), Lab 5 |
 | **E1** | P3, P5, P6 | Teoría §4-§11, §13 | Labs 3 y 4 |
 | **E2** | P2, P7 | Teoría §3, §10 | Labs 2 y 5 |
-| **D1** | P3, P8 | Todo el módulo | Lab 3, Challenge |
+| **D1** | P3, P8 | Todo el módulo | **Challenge** (obligatorio; ver *Criterio de superación* en [`learning-objectives.md`](../learning-objectives.md)), con apoyo del Lab 3 |

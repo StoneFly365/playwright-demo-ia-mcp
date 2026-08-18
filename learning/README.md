@@ -9,7 +9,7 @@ Un programa de formación en automatización de pruebas construido **sobre un pr
 
 Este repositorio es una suite E2E de verdad: 79 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, ejecución en tres navegadores, pipeline de GitHub Actions dentro de un contenedor Docker y un análisis de fallos generado por IA. Funciona, se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real.
 
-El Learning Lab convierte ese proyecto en un laboratorio. No vas a leer teoría sobre Page Objects: vas a abrir los seis que hay aquí y a encontrar la fuga del patrón que tienen. No vas a estudiar cómo se depura un test: vas a diagnosticar los diez que fallan a propósito.
+El Learning Lab convierte ese proyecto en un laboratorio. No vas a leer teoría sobre Page Objects: vas a abrir los seis que hay aquí y a diagnosticar el defecto real que esconden. No vas a estudiar cómo se depura un test: vas a diagnosticar los diez que fallan a propósito.
 
 **El repositorio es el material.** Cada concepto del programa apunta a un fichero y una línea que puedes abrir ahora mismo.
 

@@ -1036,7 +1036,7 @@ Mapeo módulo ↔ concepto ↔ **archivo real**. Donde no hay material se indica
 |---|---|---|---|
 | **00 — Foundations** | 1, 2 | **FOLLOW** | Leer `pages/login.page.ts` línea a línea; cambiar el tipo de retorno de un método y ver qué dice el compilador |
 | **01 — Playwright Fundamentals** | 1, 2, 3 | **MODIFY** | Ejecutar la suite completa; cambiar un locator y observar el fallo; escribir dos tests nuevos con los POMs existentes |
-| **02 — POM & Suite** | 2, 3, 4 | **CREATE** | Crear un Page Object nuevo; eliminar la fuga `.cart_item` (**A1**); decidir qué hacer con la cobertura duplicada (**A10**) |
+| **02 — POM & Suite** | 2, 3, 4 | **CREATE** | Crear un Page Object nuevo; diagnosticar el locator roto de `CartPage.cartItems` (**A1**, ⚠️ corregido — no es una fuga: ver fe de erratas); decidir qué hacer con la cobertura duplicada (**A10**) |
 | **03 — Test Architecture** | 3, 4, 6 | **DESIGN** | Diseñar el fixture de autenticación; externalizar los datos; parametrizar los 5 tests clonados; **medir tiempo antes/después** |
 | **04 — Debugging** | 5 | **TROUBLESHOOT** | Diagnosticar los 10 `@demo-fail` con el comentario oculto; distinguir el bug real de `problem_user` de un fallo de test |
 | **05 — Más allá de la UI** | 3, 4 | **CREATE** | Escribir un test de API y uno con `page.route`; argumentar qué test E2E existente convertiría y por qué |

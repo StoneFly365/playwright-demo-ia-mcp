@@ -253,7 +253,7 @@ test.setTimeout(30000);   // este usuario tiene una latencia conocida de ~5 s
 
 ## Parte C — Defensa técnica
 
-Rúbrica completa en el [enunciado del assessment](../../modules/01-playwright-fundamentals/assessment/). Ejemplos de calibración:
+Rúbrica completa en el [enunciado del assessment](../../modules/01-playwright-fundamentals/assessment/). **Se defiende sobre el `decisiones.md` del Challenge** —único entregable que cubre P8—, con el `03-decisiones.md` del Lab 3 como apoyo; sin Challenge entregado, la defensa se aplaza. Ejemplos de calibración:
 
 | Respuesta del alumno | Nivel |
 |---|---|

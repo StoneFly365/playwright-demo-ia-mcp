@@ -6,7 +6,11 @@ Un Challenge te da un **escenario de negocio**, unas restricciones y unos criter
 
 | Challenge | Nivel | Prerrequisito | Tiempo |
 |---|---|---|---|
-| [Challenge 1 — Compra completa con validación de importes](challenge-1-compra-completa.md) | **3 CREATE + 4 DESIGN** | Labs 1-5 completos | 75 min |
+| [Challenge 1 — Compra completa con validación de importes](challenge-1-compra-completa.md) | **3 CREATE + 4 DESIGN** | Labs 1-5 completos | 90 min |
+
+**Cuándo se hace:** entre la **sesión 5** y la **sesión 6**. Antes no: el Lab 5 se hace en la sesión 5 y es prerrequisito. Se entrega con su `decisiones.md` **antes de la sesión 6**, que es donde se revisa y donde se defiende la Parte C.
+
+**El Challenge de este módulo no es opcional.** Es el único instrumento del objetivo **P8** (diseñar un E2E y justificarlo), figura en los [criterios de superación](../learning-objectives.md#criterio-de-superación) y es el entregable sobre el que se defiende la Parte C del assessment.
 
 ## Cómo se corrige
 

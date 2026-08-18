@@ -10,7 +10,21 @@
 >
 > Eso significa que **nadie ha comprobado todavía qué locators genera codegen contra SauceDemo**, que es justamente el objeto del Lab. Este enunciado está construido de forma que **no afirma ningún resultado**: todo lo que pide es que observes y compares lo que salga.
 >
-> **Formador:** ejecuta el Paso 1 tú mismo antes de proponer este Lab. Si codegen no arranca en el entorno del grupo (permisos, entorno gráfico, proxy), **descarta el Lab**: no tiene alternativa sin la herramienta. Anota lo que genere en el [plan de sesión](../../../trainer/session-plans/session-03-module-01.md).
+> **Estado a 18/08/2026: sigue NO VALIDADO, y queda FUERA del piloto de M01.** Grabar un recorrido con `codegen` exige interacción humana con su ventana de inspector, y eso no se ha hecho todavía contra esta aplicación.
+>
+> **Lo que sí se ha medido** (equipo de desarrollo del programa, 18/08/2026 — **no es K1**):
+>
+> | Comprobación | Resultado |
+> |---|---|
+> | `npx playwright codegen --help` responde | ✅ Playwright **1.58.2**, con la opción `--test-id-attribute` |
+> | Navegadores instalados | ✅ chromium · firefox · webkit |
+> | Atributos `[data-testid]` en la página de login de SauceDemo | ❌ **0** |
+> | Atributos `[data-testid]` en el catálogo | ❌ **0** |
+> | Atributos `[data-test]` (login / catálogo) | ✅ **7 / 74** |
+>
+> **Consecuencia para este Lab:** `codegen` busca `data-testid` por defecto y **no lee ninguna `playwright.config.ts`** cuando se le pasa una URL suelta. Con el comando del Paso 1 tal cual, **no puede generar ni un solo `getByTestId`** contra esta aplicación. Eso no invalida el ejercicio —el Lab es de crítica, no de resultado—, pero el formador tiene que saberlo antes de comparar la salida con la tabla del Lab 3, que sí usa `getByTestId`.
+>
+> **Formador:** ejecuta el Paso 1 tú mismo antes de proponer este Lab. Si quieres que la comparación con el Lab 3 sea justa, ejecútalo con `--test-id-attribute data-test`. Si codegen no arranca en el entorno del grupo (permisos, entorno gráfico, proxy), **descarta el Lab**: no tiene alternativa sin la herramienta. Anota lo que genere en [`solutions/01-playwright-fundamentals/lab-6.md`](../../../solutions/01-playwright-fundamentals/lab-6.md).
 
 ---
 

@@ -2,7 +2,7 @@
 ## Discovery, Locators & Reliable Tests
 
 > **Estado:** ✅ Material construido — pendiente de piloto con alumnos
-> **Duración:** 7 h dirigidas (3 sesiones) + 4 h de trabajo personal + 1 h de assessment ≈ **12 h** — desglose en [Duración](#duración)
+> **Duración:** 8 h dirigidas (4 sesiones) + 3 h de trabajo personal + 1 h de assessment ≈ **12 h** — desglose en [Duración](#duración)
 > **Nivel pedagógico dominante:** 2 · MODIFY → 4 · DESIGN, con un pico en 5 · TROUBLESHOOT
 > **Dependencias:** [módulo 00](../00-foundations/) superado.
 > **Requisito de entorno:** ⚠️ **navegadores instalados y acceso a `saucedemo.com`**. A diferencia del módulo 00, este módulo **no funciona sin red**. Ver [Puesta en marcha](#puesta-en-marcha).
@@ -51,7 +51,7 @@ No es retórica: sale del recuento del repositorio. La suite usa `[data-test="�
 | [Lab 4 — El test que falta](labs/lab-4-test-que-falta.md) | **3 CREATE** | Escribes dos tests para huecos de cobertura reales | Vacío | 60 min |
 | [Lab 5 — El test que a veces pasa](labs/lab-5-troubleshoot.md) | **5 TROUBLESHOOT** | Diagnosticas dos fallos auténticos de localización | **Rojo (2 fallos)** | 50 min |
 | [Lab 6 — Codegen](labs/lab-6-codegen.md) *(opcional)* | 2 MODIFY | Generas un test con `codegen` y lo criticas | — | 30 min |
-| [Challenge 1](challenges/challenge-1-compra-completa.md) | 3 CREATE + 4 DESIGN | Diseñas la cobertura de un escenario de negocio completo | Vacío | 75 min |
+| [Challenge 1](challenges/challenge-1-compra-completa.md) | 3 CREATE + 4 DESIGN | Diseñas la cobertura de un escenario de negocio completo | Vacío | 90 min |
 
 **El Lab 3 es el centro del módulo.** Si el tiempo aprieta, lo que se recorta es el Lab 6 y parte del Lab 1, nunca el 3.
 
@@ -104,66 +104,84 @@ El sandbox del módulo 01 tiene [su propia configuración](../../student/sandbox
 ## Ruta recomendada
 
 ```
-theory.md  →  Lab 1  →  Lab 2  →  Lab 3  →  Lab 4  →  Lab 5  →  Challenge  →  Assessment
-  45 min      45 min    45 min    60 min    60 min    50 min     75 min        60 min
+theory.md  →  Lab 1  →  Lab 2  →  Lab 3  →  Lab 4  →  Lab 5  →  Challenge  →  Parte C  →  Assessment
+  45 min      45 min    45 min    60 min    60 min    50 min     90 min       5-10 min      60 min
                                      ⭐
 ```
 
+**El orden no es una sugerencia: es una cadena de dependencias.** El Challenge exige los cinco Labs completos, y la Parte C se defiende sobre el `decisiones.md` del Challenge. Por eso el Challenge se escribe entre la sesión 5 y la sesión 6, y no antes.
+
 ## Duración
 
-Los tiempos de los Labs son **tiempo de ejercicio puro**: 260 minutos entre los cinco obligatorios, 335 con el Challenge. La estimación completa incluye apertura, teoría, puestas en común y margen para bloqueos.
+Los tiempos de los Labs son **tiempo de ejercicio puro**: 260 minutos entre los cinco obligatorios, 350 con el Challenge. La estimación completa incluye apertura, teoría, puestas en común y margen para bloqueos.
 
-### SESSION TIME — 7 h en 3 sesiones
+### SESSION TIME — 8 h en 4 sesiones
+
+Los bloques son **los mismos** que los del [plan de sesión del formador](../../trainer/session-plans/session-03-module-01.md); si las dos tablas dejan de coincidir, manda el plan de sesión.
 
 | Sesión | Bloque | Min |
 |---|---|---|
-| **1** (3 h) | Apertura: qué cambia respecto al módulo 00. Instalación de navegadores y comprobación de entorno | 30 |
+| **3** (3 h) | Apertura: qué cambia respecto al módulo 00 | 15 |
+| | Puesta en marcha: instalación de navegadores y comprobación de entorno | 15 |
 | | Teoría A (§1-4): ejecución, informes, auto-waiting, aserciones | 25 |
-| | Lab 1 + puesta en común | 55 |
+| | Lab 1 | 45 |
+| | Puesta en común del Lab 1 | 10 |
 | | Descanso | 10 |
-| | Lab 2 + puesta en común | 55 |
+| | Lab 2 | 45 |
+| | Puesta en común del Lab 2 | 10 |
 | | Cierre y reparto de trabajo personal | 5 |
-| **2** (2 h 30) | Teoría B (§5-12): estrategia de locators | 30 |
-| | **Lab 3** + puesta en común | 75 |
-| | Arranque del Lab 4 | 35 |
-| | Cierre | 10 |
-| **3** (1 h 30) | Lab 5 + puesta en común | 60 |
-| | Revisión del Challenge + **Parte C: defensa técnica** | 25 |
-| | Cierre del módulo | 5 |
+| **4** (2 h 30) | Dudas del trabajo personal | 10 |
+| | Teoría B (§5-12): estrategia de locators | 30 |
+| | **Lab 3** | 60 |
+| | Puesta en común del Lab 3 | 15 |
+| | Descanso | 10 |
+| | Lab 4 — arranque *(el segundo test se termina fuera de sesión)* | 20 |
+| | Cierre | 5 |
+| **5** (1 h 30) | Revisión del Lab 4 | 15 |
+| | Lab 5 | 50 |
+| | Puesta en común del Lab 5 | 20 |
+| | **Lanzamiento del Challenge** *(aquí, y no antes: exige los cinco Labs completos)* | 5 |
+| **6** (1 h) | Revisión cruzada del Challenge + **Parte C: defensas individuales en paralelo** | 45 |
+| | Puesta en común y cierre del módulo | 10 |
+| | Convocatoria del assessment | 5 |
 
-**La instalación de navegadores ocupa media hora de la sesión 1 y no es negociable.** Son ~500 MB por equipo; con 10 personas en la misma red, es el cuello de botella real del arranque. La suite, en cambio, **no** lo es: 79 tests en Chromium tardan ~22 s.
+**La instalación de navegadores ocupa media hora de la sesión 3 y no es negociable.** Son ~500 MB por equipo; con 10 personas en la misma red, es el cuello de botella real del arranque. La suite, en cambio, **no** lo es: 79 tests en Chromium tardan ~22 s.
 
-### SELF-STUDY TIME — 4 h
+**Por qué existe la sesión 6.** La Parte C se defiende sobre el `decisiones.md` del Challenge, y el Challenge exige los Labs 1-5. Con el Lab 5 en la sesión 5, no hay ningún minuto anterior en el que ese documento pueda existir. La sesión 6 es ese minuto.
 
-| Tarea | Min |
-|---|---|
-| Lectura previa de [`theory.md`](theory.md) | 45 |
-| Terminar el Lab 4 (segundo test) | 45 |
-| Challenge 1 con su `decisiones.md` | 75 |
-| Repaso de los Learning Points y de [`locator-reference.md`](locator-reference.md) | 30 |
-| Margen | 45 |
+### SELF-STUDY TIME — 3 h
+
+| Tarea | Min | Cuándo |
+|---|---|---|
+| Lectura previa de [`theory.md`](theory.md) | 45 | Antes de la sesión 3 |
+| Terminar el Lab 4 (segundo test) | 45 | Entre las sesiones 4 y 5 |
+| **Challenge 1 con su `decisiones.md`** | 90 | **Entre las sesiones 5 y 6** |
+
+El repaso de [`locator-reference.md`](locator-reference.md) ya no es una tarea aparte: se hace **usándolo** en la revisión cruzada de la sesión 6, sobre el `decisiones.md` de otra persona.
 
 ### ASSESSMENT — 1 h
 
-Parte A (15 min) + Parte B (40 min). La Parte C ocurre dentro de la revisión de la sesión 3.
+Parte A (15 min) + Parte B (40 min), convocado **después de la sesión 6**. La Parte C no está aquí: ocurre en el bloque 1 de la sesión 6 y son 5-10 min por alumno.
 
 ### Total
 
 | Concepto | Tiempo |
 |---|---|
-| Session time | 7 h 00 |
-| Self-study time | 4 h 00 |
+| Session time | 8 h 00 |
+| Self-study time | 3 h 00 |
 | Assessment | 1 h 00 |
 | **Total por alumno** | **12 h 00** |
+
+> **La hora que gana la sesión 6 sale del trabajo personal**, no de ampliar el módulo: desaparecen el *Repaso* (30 min, absorbido por la revisión cruzada) y el *Margen* (45 min), y el Challenge sube de 75 a 90 min. El total por alumno sigue siendo 12 h. **El margen desaparece: es el primer riesgo que el piloto tiene que medir.**
 
 ### Ajuste según el nivel del grupo
 
 | Perfil dominante | Ajuste | Session time |
 |---|---|---|
-| **BEGINNER** | Teoría troceada; Lab 3 en dos partes; Lab 5 acompañado; sin Lab 6 | 9 h |
-| **FOUNDATION** | Sin cambios. Es el caso de referencia | 7 h |
-| **INTERMEDIATE** | Teoría comprimida; entra el Lab 6 (codegen) | 5 h 30 |
-| **ADVANCED** | Solo Labs 3 y 5 + Challenge; el resto por su cuenta; rol de mentor | 3 h |
+| **BEGINNER** | Teoría troceada; Lab 3 en dos partes; Lab 5 acompañado; sin Lab 6 | 10 h |
+| **FOUNDATION** | Sin cambios. Es el caso de referencia | 8 h |
+| **INTERMEDIATE** | Teoría comprimida; Lab 1 como trabajo personal | 6 h 30 |
+| **ADVANCED** | Solo Labs 3 y 5 + Challenge; el resto por su cuenta; rol de mentor | 4 h |
 
 > **Las 12 h son provisionales.** Salen del diseño y de la construcción del material, no de un piloto. La cifra definitiva se fija tras impartirlo con un grupo real, igual que ocurrió con el módulo 00 (estimado en 6 h, construido en 8,75 h).
 
@@ -173,8 +191,9 @@ Parte A (15 min) + Parte B (40 min). La Parte C ocurre dentro de la revisión de
 2. `npx tsc --noEmit` sin errores.
 3. `git status --short` solo muestra ficheros dentro de `learning/student/sandbox/`.
 4. Tu `03-decisiones.md` justifica cada locator con **uno de los cinco criterios**, no con "porque funciona".
-5. ≥ 70 en las partes A y B del [assessment](assessment/).
-6. **Apto** en la Parte C: sabes defender por qué ese locator y no otro, y qué pasaría si la aplicación cambia.
+5. **El [Challenge](challenges/challenge-1-compra-completa.md) está entregado** con sus AC1-AC6 y su `decisiones.md`. No es opcional: es la única evidencia del objetivo P8 (diseñar un E2E y justificarlo).
+6. ≥ 70 en las partes A y B del [assessment](assessment/).
+7. **Apto** en la Parte C, que se defiende **sobre el `decisiones.md` del Challenge**: por qué ese locator y no otro, por qué ese reparto de tests, y qué pasaría si la aplicación cambia.
 
 ## Trazabilidad
 

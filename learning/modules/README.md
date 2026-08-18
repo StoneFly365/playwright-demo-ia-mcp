@@ -5,7 +5,7 @@
 | # | Módulo | Nivel | Duración | Depende de | Estado |
 |---|---|---|---|---|---|
 | 00 | [Fundamentos JS/TS para QA](00-foundations/) | 1 FOLLOW → 5 TROUBLESHOOT | 5 h + 3 h | — | ✅ **Completo** |
-| 01 | [Playwright Fundamentals](01-playwright-fundamentals/) — [diseño](../docs/module-01-discovery-design.md) · [validación técnica](../docs/module-01-technical-validation.md) | 2 MODIFY → 4 DESIGN | 7 h + 4 h + 1 h | 00 | ✅ **Completo** — pendiente de piloto |
+| 01 | [Playwright Fundamentals](01-playwright-fundamentals/) — [diseño](../docs/module-01-discovery-design.md) · [validación técnica](../docs/module-01-technical-validation.md) | 2 MODIFY → 4 DESIGN | 8 h + 3 h + 1 h | 00 | ✅ **Completo** — pendiente de piloto |
 | 02 | Page Object Model & Suite | 3 CREATE | 3 h + 2 h | 01 | ⬜ Pendiente |
 | 03 | Arquitectura: fixtures, auth y datos | 4 DESIGN | 6 h + 3 h | 02 | ⬜ Pendiente |
 | 04 | Debugging & Failure Analysis | 5 TROUBLESHOOT | 3 h + 2 h | 03 | ⬜ Pendiente |

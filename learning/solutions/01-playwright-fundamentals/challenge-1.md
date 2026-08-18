@@ -153,7 +153,7 @@ Una entrega que solo diga "no me ha dado tiempo a automatizar X" **no cumple AC6
 | AC1-AC5 | 35% | Flujo completo, importes por valor, negativo, límite, 3 navegadores | Solo el flujo feliz, o importes con `toBeVisible` |
 | Locators y justificación (AC4) | 25% | Cada uno con criterio y alternativa descartada | "Usé data-test porque es lo que usa el proyecto" |
 | Aserciones y mensajes | 20% | La aserción adecuada; mensajes de negocio | Todo `toBeVisible`; mensajes que describen el DOM |
-| Justificación escrita (AC6) | 20% | Reparto, riesgos y **qué no ha automatizado** | Falta el "qué no", o es una excusa de tiempo |
+| Justificación escrita (AC6) | 20% | Reparto, riesgos, **qué no ha automatizado** y **declaración de reutilización** de `tests/checkout.spec.ts` | Falta el "qué no", falta la declaración, o son excusas de tiempo |
 
 **Descalificatorios:** cualquier espera explícita; haber tocado `tests/` o `pages/`; leer el valor esperado de la misma pantalla que se verifica.
 
@@ -162,7 +162,7 @@ Una entrega que solo diga "no me ha dado tiempo a automatizar X" **no cumple AC6
 | Error | Cómo responder |
 |---|---|
 | Calcula el total leyéndolo del propio resumen del paso 2 | Es el error del Lab 2: el test no verifica nada. Que lea los precios del carrito |
-| Copia el `beforeEach` de `tests/checkout.spec.ts` con el producto ya añadido | Válido, pero entonces el flujo empieza a mitad y AC1 no se cumple |
+| Copia el `beforeEach` de `tests/checkout.spec.ts` con el producto ya añadido | Reutilizar el recorrido es **legítimo y esperable**; copiarlo tal cual deja el flujo empezado a mitad (AC1 sin cumplir) y, si no aparece en la declaración de reutilización de `decisiones.md`, AC6 tampoco. Lo que nunca puede venir copiado es la verificación de importes: no existe en el repositorio |
 | Un solo test gigante con 15 aserciones | Que se pregunte qué sabe cuando falla la aserción 3 |
 | Redondea con `toFixed` sobre el número sin más y le sale `$3.19` | Bienvenido a la coma flotante — módulo 00, Lab 3 |
 | Usa `.first()` para el producto del caso límite | Penalizado igual que en el Lab 5 |

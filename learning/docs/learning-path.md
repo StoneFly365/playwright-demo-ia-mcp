@@ -11,7 +11,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | # | Módulo | Nivel dominante | Duración | Depende de | Estado |
 |---|---|---|---|---|---|
 | 00 | [Fundamentos JS/TS para QA](../modules/00-foundations/) | 1 FOLLOW | 5 h + 3 h | — | ✅ Completo |
-| 01 | [Playwright Fundamentals](../modules/01-playwright-fundamentals/) | 2 MODIFY → 4 DESIGN | 7 h + 4 h + 1 h | 00 | ✅ Completo — pendiente de piloto |
+| 01 | [Playwright Fundamentals](../modules/01-playwright-fundamentals/) | 2 MODIFY → 4 DESIGN | 8 h + 3 h + 1 h | 00 | ✅ Completo — pendiente de piloto |
 | 02 | Page Object Model & Suite | 3 CREATE | 3 h + 2 h | 01 | ⬜ Pendiente |
 | 03 | Arquitectura: fixtures, auth y datos | 4 DESIGN | 6 h + 3 h | 02 | ⬜ Pendiente |
 | 04 | Debugging & Failure Analysis | 5 TROUBLESHOOT | 3 h + 2 h | 03 | ⬜ Pendiente |
@@ -62,14 +62,14 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 
 > **Estado real:** material **construido y verificado** contra la aplicación real: teoría, 5 Labs (+1 opcional), Challenge, assessment y soluciones. Pendiente de piloto con alumnos. Documentos de origen: [`module-01-discovery-design.md`](module-01-discovery-design.md) (diseño) y [`module-01-technical-validation.md`](module-01-technical-validation.md) (20 elementos × 7 estrategias de locator, medidos).
 >
-> ⚠️ **K1 sigue CONDITIONAL:** el entorno de HDI no está verificado. Ver la comprobación previa en el [plan de sesión](../trainer/session-plans/session-03-module-01.md).
+> ⚠️ **K1: `PENDIENTE — validación durante formación HDI`.** El entorno corporativo no está verificado; por decisión de programa se comprueba en la propia sesión 3, no antes. Ver el [plan de sesión](../trainer/session-plans/session-03-module-01.md).
 
 | | |
 |---|---|
 | **Objetivo** | Ejecutar la suite real, elegir y justificar el locator más apropiado para cada elemento, y escribir tests nuevos que cubran un hueco real de cobertura |
 | **Competencias** | B (Web Testing), E (Playwright) |
 | **Contenidos** | Estructura de un spec; `test`, `describe`, `beforeEach`; **selección de locator por robustez, semántica, accesibilidad y mantenibilidad** (no "las cinco estrategias"); auto-waiting y web-first assertions; por qué nunca `waitForTimeout`; mensajes de aserción; `baseURL`, `testIdAttribute` y rutas relativas; ejecución filtrada (`--grep`, `--project`); informe HTML |
-| **Duración** | 7 h sesión + 4 h personal + 1 h assessment (caso de referencia FOUNDATION); ver la tabla por nivel de entrada en el documento de diseño, sección 11 |
+| **Duración** | 8 h sesión (4 sesiones) + 3 h personal + 1 h assessment = **12 h** (caso de referencia FOUNDATION); ver la tabla por nivel de entrada en el documento de diseño, sección 11 |
 | **Nivel** | 2 MODIFY → 4 DESIGN |
 | **Dependencias** | 00 |
 | **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 12 scripts de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:34` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:117-121` (`filter` + `hasText`); 🔬 `CartPage.cartItems` (`pages/cart.page.ts:7`) — locator roto, 0 elementos, base del Lab 5 |
@@ -89,8 +89,21 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 3 h + 2 h |
 | **Nivel** | 3 CREATE |
 | **Dependencias** | 01 |
-| **Repository mapping** | Los 6 POM de `pages/`; hallazgo **A1** (`CartPage.cartItems` sin usar mientras 4 specs usan `.cart_item` directamente); hallazgo **A10** (solape entre `add-tshirt-to-cart.spec.ts` e `inventory-add-to-cart.spec.ts`); `pages/menu.page.ts` como excepción justificada (selectores por `id` porque SauceDemo no expone `data-test` en el menú) |
-| **Entregables** | Un Page Object nuevo creado desde cero; la fuga de POM eliminada en una copia de trabajo; propuesta escrita sobre la cobertura duplicada |
+| **Repository mapping** | Los 6 POM de `pages/`; hallazgo **A1 — ⚠️ premisa corregida** (ver la nota de abajo): `CartPage.cartItems` ([`pages/cart.page.ts:7`](../../pages/cart.page.ts)) apunta a `[data-test="cart-item"]`, atributo que **no existe** en la aplicación, y **ningún test lo usa** (0 usos desde `tests/`); los **12 usos de `.cart_item` en 5 specs** son el rodeo. Hallazgo **A10** (solape entre `add-tshirt-to-cart.spec.ts` e `inventory-add-to-cart.spec.ts`); `pages/menu.page.ts` como excepción justificada (selectores por `id` porque SauceDemo no expone `data-test` en el menú) |
+| **Entregables** | Un Page Object nuevo creado desde cero; el locator roto de `CartPage.cartItems` diagnosticado y reparado **en una copia de trabajo** (nunca en el repositorio); propuesta escrita sobre la cobertura duplicada |
+
+> ### ⚠️ Nota de partida para el discovery de M02 — inventario medido (18/08/2026)
+>
+> La descripción histórica de A1 como *"fuga del Page Object"* está **invertida** y no debe usarse como premisa de diseño. Datos medidos sobre la rama actual:
+>
+> | Dato | Valor | Comando |
+> |---|---|---|
+> | `CartPage.cartItems` usado desde `tests/` | **0 usos** | `grep -ro "\.cartItems" tests/ \| wc -l` |
+> | `.cart_item` en specs | **12 usos en 5 ficheros** (`cart-sync` 7, `cart-edge-cases` 2, `add-tshirt-to-cart` 1, `performance-glitch-user-cart` 1, `problem-user-cart` 1) | `grep -rc "cart_item" tests/*.spec.ts` |
+> | DOM real de la línea de carrito | `<div class="cart_item" data-test="inventory-item">` | [`module-01-technical-validation.md`](module-01-technical-validation.md), hallazgo H1 |
+> | `MenuPage.open()` llamado desde `tests/` | **0 llamadas directas**, pero **uso interno válido** en `logout()` y `resetAppState()` ([`pages/menu.page.ts:11,16`](../../pages/menu.page.ts)) — **no es un defecto** | `grep -ro "\.open()" tests/` |
+>
+> **Consecuencia para M02:** el ejercicio previsto de *"sustituir `.cart_item` por `CartPage.cartItems`"* **rompería los 5 specs**, porque el locator del POM resuelve 0 elementos. El ejercicio válido es el contrario: diagnosticar por qué un locator de POM roto sobrevive sin que nadie lo note. Detalle en [`module-01-discovery-design.md`](module-01-discovery-design.md) §15.4 y en el [Lab 5 de M01](../modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md), caso B.
 
 ---
 

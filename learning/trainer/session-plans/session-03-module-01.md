@@ -1,8 +1,10 @@
-# Sesiones 03, 04 y 05 — Módulo 01: Playwright Fundamentals
+# Sesiones 03, 04, 05 y 06 — Módulo 01: Playwright Fundamentals
 
-**Duración:** 7 h dirigidas — sesión 3 de 3 h + sesión 4 de 2 h 30 + sesión 5 de 1 h 30 · **Formato:** presencial o remoto con pantalla compartida · **Grupo:** 8-12 personas en parejas
+**Duración:** 8 h dirigidas — sesión 3 de 3 h + sesión 4 de 2 h 30 + sesión 5 de 1 h 30 + sesión 6 de 1 h · **Formato:** presencial o remoto con pantalla compartida · **Grupo:** 8-12 personas en parejas
 
-Entre sesiones, ~4 h de trabajo personal. El assessment (1 h) se hace al final de la sesión 5 o de forma asíncrona. Desglose completo en el [README del módulo](../../modules/01-playwright-fundamentals/#duración).
+Entre sesiones, ~3 h de trabajo personal. El assessment (1 h) se convoca **después de la sesión 6**. Desglose completo en el [README del módulo](../../modules/01-playwright-fundamentals/#duración).
+
+> **La cadena de dependencias es lo que fija este calendario:** Labs 1-5 → Challenge → Parte C. El Challenge exige los cinco Labs completos y la Parte C se defiende sobre su `decisiones.md`. Por eso el Challenge se escribe **entre la sesión 5 y la sesión 6**, y por eso existe la sesión 6: es el primer momento en que ese entregable está en manos del formador.
 
 *(La numeración continúa a partir de las dos sesiones del módulo 00.)*
 
@@ -32,7 +34,7 @@ npx playwright test --project=chromium tests/login.spec.ts
 ## Resto de la lista previa
 
 - [ ] Módulo 00 cerrado y con assessment corregido en todo el grupo
-- [ ] Comprobación de entorno de arriba, hecha en un equipo de HDI ✅
+- [ ] Comprobación de entorno de arriba, hecha en un equipo de HDI — **estado a 18/08/2026: PENDIENTE.** Validada solo en el equipo de desarrollo del programa; **nadie la ha ejecutado todavía en una máquina corporativa de HDI**. **Decisión de programa: K1 se valida durante la propia formación con HDI**, en el bloque 2 de la sesión 3 (*Puesta en marcha*), y su resultado se anota aquí. Estado: `PENDIENTE — validación durante formación HDI`. Si falla en ese momento, se aplica el plan alternativo descrito arriba
 - [ ] Verificación semanal de que SauceDemo sigue igual:
 
 ```bash
@@ -41,7 +43,7 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 ```
 
 - [ ] **Aviso a los alumnos:** que ejecuten `npx playwright install` en casa antes de la sesión 3. Son ~500 MB por equipo; diez descargas simultáneas en la red de la oficina son media hora perdida
-- [ ] Decidir si entra el Lab 6 (codegen). **Si entra, ejecútalo tú primero**: no está validado ([`lab-6.md`](../../solutions/01-playwright-fundamentals/lab-6.md))
+- [ ] **Lab 6 (codegen): fuera del piloto de M01 y opcional después.** Sigue **NO VALIDADO**: nadie ha grabado todavía un recorrido con `codegen` contra SauceDemo. Si decides usarlo, ejecuta tú el Paso 1 **antes** y hazlo con `npx playwright codegen --test-id-attribute data-test https://www.saucedemo.com`: sin ese argumento, `codegen` busca `data-testid`, que en esta aplicación **no existe** (medido: 0 elementos), y no generará ni un solo `getByTestId`. Anota lo que genere en [`lab-6.md`](../../solutions/01-playwright-fundamentals/lab-6.md)
 - [ ] Parejas revisadas según el resultado del módulo 00
 
 ---
@@ -78,10 +80,20 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 |---|---|---|---|
 | **1. Revisión del Lab 4** | 0-15 | — | Los segundos huecos encontrados por el grupo. Discutir cuáles merecen un test |
 | **2. Lab 5** | 15-65 | 5 TROUBLESHOOT | En sesión, con el informe escrito **antes** de corregir |
-| **3. Puesta en común del Lab 5 + Parte C** | 65-85 | — | Los dos casos en común. **Defensas técnicas individuales** mientras el resto compara diagnósticos |
-| **4. Cierre del módulo** | 85-90 | — | Convocatoria del assessment; entrega del Challenge |
+| **3. Puesta en común del Lab 5** | 65-85 | — | Los dos casos en común, comparando diagnósticos por parejas |
+| **4. Lanzamiento del Challenge** | 85-90 | — | Entrega del enunciado y fecha de entrega: el `decisiones.md` incluido, **antes de la sesión 6**. Los cinco Labs quedan completos justo aquí: el prerrequisito del Challenge se cumple en este minuto y no antes |
 
-**Cómo encajar la Parte C:** igual que en el módulo 00 — mientras el grupo compara diagnósticos por parejas, llama de uno en uno, 5-10 minutos. Con 10 personas no da tiempo a todos: prioriza a quien justificó con "porque funciona" en el Lab 3, y completa el resto en la revisión del Challenge.
+## Guion — Sesión 6 (1 h)
+
+**Prerrequisito de la sesión:** el Challenge entregado, con su `decisiones.md`. Sin ese documento no hay Parte C.
+
+| Bloque | Min | Nivel | Qué se hace |
+|---|---|---|---|
+| **1. Revisión cruzada del Challenge** | 0-45 | 4 DESIGN | Por parejas: cada alumno lee el `decisiones.md` del compañero y contesta tres preguntas sobre él — qué reparto de tests eligió, qué decidió **no** automatizar, y qué fila de su tabla de locators cambiaría. **En paralelo, el formador llama de uno en uno para la Parte C** |
+| **2. Puesta en común** | 45-55 | — | Los "qué NO he automatizado" del grupo y la decisión importes fijos/calculados. Cierre del módulo y conexión con M02 |
+| **3. Convocatoria del assessment** | 55-60 | — | Partes A y B, 1 h, en sesión aparte o de forma asíncrona |
+
+**Cómo encajar la Parte C:** ocurre en la **sesión 6, bloque 1**, y no antes: es el primer momento en que existe el `decisiones.md` sobre el que se defiende. Mientras el grupo hace la revisión cruzada, llama de uno en uno, 5-10 minutos. **El presupuesto de 12 h es por alumno:** cada uno gasta sus 5-10 minutos dentro del bloque. Lo que escala con el tamaño del grupo es **tu tiempo**, no el suyo: con 8-9 personas caben todas las defensas en los 45 minutos; con 10-12, prevé una segunda tanda al corregir el Challenge. Prioriza a quien justificó con "porque funciona" en el Lab 3.
 
 ---
 
@@ -177,10 +189,10 @@ Cierra conectando con el módulo 02: *"la pregunta de por qué la arquitectura p
 
 | Situación | Ajuste | Session time |
 |---|---|---|
-| Mayoría BEGINNER | Cuatro sesiones: teoría troceada, Lab 3 en dos partes, Lab 5 acompañado paso a paso. Sin Lab 6 | 9 h |
-| Mayoría FOUNDATION | Guion tal cual. Es el caso de referencia | 7 h |
-| Mayoría INTERMEDIATE | Teoría comprimida a 20 min por bloque; Lab 1 como trabajo personal; entra el Lab 6 | 5 h 30 |
-| Grupo mixto (lo normal) | Guion tal cual, con parejas equilibradas | 7 h |
+| Mayoría BEGINNER | Cinco sesiones: teoría troceada, Lab 3 en dos partes, Lab 5 acompañado paso a paso. Sin Lab 6 | 10 h |
+| Mayoría FOUNDATION | Guion tal cual. Es el caso de referencia | 8 h |
+| Mayoría INTERMEDIATE | Teoría comprimida a 20 min por bloque; Lab 1 como trabajo personal | 6 h 30 |
+| Grupo mixto (lo normal) | Guion tal cual, con parejas equilibradas | 8 h |
 | Un ADVANCED presente | Mentor de su pareja; que dirija la puesta en común del bloque 3.5; solo hace Labs 3 y 5 + Challenge | — |
 
 ## Criterios de corrección rápidos
@@ -194,7 +206,7 @@ Lo que miras primero al revisar una entrega:
 | **`03-decisiones.md`** | Justificaciones sin criterio; alternativas descartadas genéricas; menos de 12 filas |
 | `04-cobertura.spec.ts` | Segundo test sin justificación de riesgo; comparación contra lista escrita a mano |
 | `05-diagnostico.md` | Casilla "Comprobación" vacía; dos causas raíz iguales |
-| Challenge | Importes con `toBeVisible`; falta el "qué no he automatizado" |
+| Challenge | Importes con `toBeVisible`; falta el "qué no he automatizado"; falta la declaración de reutilización de `tests/checkout.spec.ts` (AC6) |
 | Cualquiera | `git diff --stat pages/ tests/` no vacío |
 
 ## Cierre de la sesión 3
@@ -204,21 +216,23 @@ Lo que miras primero al revisar una entrega:
 
 ## Cierre de la sesión 4
 
-- [ ] Terminar el Lab 4 (segundo test con su justificación)
-- [ ] Empezar el Challenge
+- [ ] Terminar el Lab 4 (segundo test con su justificación). **El Challenge todavía no se empieza:** exige el Lab 5, que es la sesión siguiente
 
 ## Cierre de la sesión 5
 
-- [ ] Challenge con su `decisiones.md`
+- [ ] Challenge con su `decisiones.md` — **entrega obligatoria antes de la sesión 6**. Es el único instrumento del objetivo P8 y el material sobre el que se defiende la Parte C. Presupuesto: 90 min de trabajo personal
+
+## Cierre de la sesión 6
+
 - [ ] Assessment (1 h): partes A y B
-- [ ] Defensas de la Parte C pendientes → revisión del Challenge
+- [ ] Defensas de la Parte C que no hayan cabido en el bloque 1 → segunda tanda al corregir el Challenge. **Sin Challenge entregado, la Parte C se aplaza**
 
 **Publica al grupo** las soluciones de los Labs 1 y 2 al terminar la sesión 3; la del Lab 3 al terminar la sesión 4; las de los Labs 4 y 5 al terminar la sesión 5; la del Challenge al cerrar el módulo. La clave del assessment, **nunca**.
 
 ## Post-sesión
 
 - [ ] Anotar dudas recurrentes: si tres o más se atascan en lo mismo, el material necesita ajuste
-- [ ] **Anotar el tiempo real de cada Lab.** La duración de 12 h es provisional y solo se puede fijar con datos de un grupo real
+- [ ] **Anotar el tiempo real de cada Lab.** La duración de 12 h es provisional y solo se puede fijar con datos de un grupo real. Durante el piloto, todo esto se anota en [`module-01-pilot-run-log.md`](../../docs/module-01-pilot-run-log.md), no de memoria
 - [ ] Comprobar la integridad del proyecto:
 
 ```bash

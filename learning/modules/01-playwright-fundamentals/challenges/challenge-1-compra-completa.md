@@ -1,6 +1,7 @@
 # Challenge 1 — Compra completa con validación de importes
 
-**Nivel:** 3 · CREATE + 4 · DESIGN · **Tiempo:** 75 min · **Objetivos:** P3, P5, P6, **P8**
+**Nivel:** 3 · CREATE + 4 · DESIGN · **Tiempo:** 90 min · **Objetivos:** P3, P5, P6, **P8**
+**Cuándo:** entre la sesión 5 y la sesión 6, con los Labs 1-5 ya completos. **Entrega antes de la sesión 6.**
 
 ---
 
@@ -26,6 +27,18 @@ Tú decides:
 - **Qué aserciones** aplicar, y con qué mensajes.
 - **Qué riesgos** cubres con cada test.
 
+## Qué puedes reutilizar y qué tiene que ser tuyo
+
+En un equipo real nadie escribe desde cero lo que ya existe. Aquí tampoco — pero **lo que reutilizas se declara**.
+
+| | Qué es | Ejemplo concreto |
+|---|---|---|
+| **Material para aprender** | Lo que lees para entender cómo se hacen las cosas en este proyecto | [`tests/checkout.spec.ts`](../../../../tests/checkout.spec.ts) entero, los 6 Page Objects, la teoría |
+| **Reutilización legítima** ✅ | Mecánica ya resuelta que no aporta nada volver a inventar. **Se declara en `decisiones.md`** | El recorrido login → añadir producto → carrito → checkout de [`tests/checkout.spec.ts:12-36`](../../../../tests/checkout.spec.ts); los métodos de `pages/` |
+| **Evidencia propia** ❌ no copiable | Lo que se evalúa. No existe en el repositorio: si aparece copiado, no es tuyo | La verificación de los tres importes **por valor** (AC2), el caso límite y el negativo (AC3), la tabla de locators (AC4) y el apartado de qué **no** has automatizado (AC6) |
+
+**El flujo no es el ejercicio: el flujo es el andamio.** `tests/checkout.spec.ts:102-118` comprueba que los importes **se ven**; ninguna línea del repositorio comprueba que **sean correctos**. Ahí empieza tu trabajo.
+
 ## Restricciones
 
 1. Todo el código vive en `learning/student/sandbox/01-playwright/`. **No se toca `tests/` ni `pages/`** — aunque puedes **importar** los Page Objects existentes y usarlos.
@@ -41,11 +54,11 @@ Tú decides:
 | # | Criterio |
 |---|---|
 | **AC1** | El flujo completo está cubierto: login → catálogo → carrito → checkout paso 1 → paso 2 → confirmación |
-| **AC2** | Los tres importes (subtotal, impuestos, total) se verifican **con valores**, no solo con visibilidad. Este es el criterio que más pesa: [`tests/checkout.spec.ts:101-118`](../../../../tests/checkout.spec.ts) solo comprueba que se ven, y tu trabajo mejora esa cobertura en vez de repetirla |
+| **AC2** | Los tres importes (subtotal, impuestos, total) se verifican **con valores**, no solo con visibilidad. Este es el criterio que más pesa: [`tests/checkout.spec.ts:102-118`](../../../../tests/checkout.spec.ts) solo comprueba que se ven, y tu trabajo mejora esa cobertura en vez de repetirla |
 | **AC3** | Hay al menos un test negativo de validación del formulario de checkout |
 | **AC4** | Tres o más estrategias de locator, con su tabla de justificación en `decisiones.md` |
 | **AC5** | Verde en `chromium`, `firefox` y `webkit` |
-| **AC6** | `decisiones.md` entregado: por qué esos locators, por qué ese reparto en tests, y **qué no has automatizado y por qué** |
+| **AC6** | `decisiones.md` entregado: por qué esos locators, por qué ese reparto en tests, **qué no has automatizado y por qué**, y la **declaración de reutilización**: qué has tomado de `tests/checkout.spec.ts` y en qué mejora tu cobertura la suya |
 
 ### Sobre AC2 — los importes
 
@@ -77,6 +90,7 @@ learning/student/sandbox/01-playwright/
 3. **Decisión sobre los importes:** valores fijos o calculados, y por qué.
 4. **Riesgos:** qué puede romper tus tests sin que haya un bug de la aplicación.
 5. **Qué NO has automatizado y por qué.** Es la pregunta que más dice de un QA. Hay cosas en ese escenario que no merecen un test automático, y saber cuáles es criterio.
+6. **Declaración de reutilización.** Dos líneas: qué has reutilizado de `tests/checkout.spec.ts` (o de cualquier otro spec) y **en qué mejora tu cobertura la suya**. Reutilizar está bien y declararlo es obligatorio; lo que no vale es entregar como propio un flujo copiado sin decirlo ni mejorarlo.
 
 ## Validación
 
@@ -105,16 +119,17 @@ git commit -m "feat(challenge-1): cobertura del flujo de compra con validación 
 | Criterios de aceptación AC1-AC5 | 35% | Cobertura del flujo, importes por valor, caso negativo, tres navegadores |
 | Elección de locators y su justificación (AC4) | 25% | Que cada uno tenga un criterio y una alternativa descartada |
 | Aserciones y mensajes | 20% | La aserción adecuada al caso; mensajes que se entienden sin abrir el código |
-| Justificación escrita (AC6) | 20% | Reparto, riesgos y **lo que no has automatizado** |
+| Justificación escrita (AC6) | 20% | Reparto, riesgos, **lo que no has automatizado** y la declaración de reutilización |
 
 ## Preguntas de la defensa técnica (Parte C)
 
-Prepara estas cuatro. Son las que se te van a hacer:
+La defensa se hace **sobre este `decisiones.md`**: el Challenge es el entregable que evalúa P8 y sin él no hay Parte C. Prepara estas cinco preguntas, que son las que se te van a hacer:
 
 1. **¿Por qué ese locator y no otro?** Elige el que más te haya costado decidir.
 2. **Si la aplicación cambia de maquetación sin cambiar de comportamiento, ¿cuáles de tus tests se rompen?**
 3. **Cuéntame un problema que te encontraste:** cuál era el síntoma y cuál la causa.
 4. **Si mañana esto falla en CI, ¿qué mirarías primero?**
+5. **¿Por qué ese reparto de tests, qué has reutilizado de la suite y qué decidiste no automatizar?**
 
 ## Por qué este escenario
 

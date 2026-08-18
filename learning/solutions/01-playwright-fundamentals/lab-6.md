@@ -36,11 +36,34 @@ El Lab es de **crítica**, no de resultado. Se corrige sobre el criterio del alu
 
 Un alumno que entregue la tabla del Paso 2 **coincidiendo con lo que "se supone" que genera codegen**, sin haberlo ejecutado, comete el mismo error que este documento evita: afirmar un resultado que no ha medido. Contrástalo con su fichero generado.
 
+## Lo que sí se ha medido (18/08/2026)
+
+Validación parcial en el **equipo de desarrollo del programa**. **No es K1**: K1 es la comprobación de entorno en una máquina corporativa de HDI y sigue `PENDIENTE — validación durante formación HDI`.
+
+| Comprobación | Resultado | Cómo |
+|---|---|---|
+| CLI de `codegen` disponible | ✅ Playwright **1.58.2** | `npx playwright codegen --help` |
+| Navegadores instalados | ✅ chromium · firefox · webkit | `ms-playwright/` |
+| `[data-testid]` en login / catálogo de SauceDemo | ❌ **0 / 0** | Sonda con `playwright` contra la aplicación real |
+| `[data-test]` en login / catálogo | ✅ **7 / 74** | Ídem |
+| `getByRole('button', { name: 'Add to cart' })` | **6** | Ídem — coincide con `locator-reference.md` |
+| `getByRole('link', { name: 'Sauce Labs Backpack' })` | **2** | Ídem — coincide con la solución del Lab 5 |
+| **Recorrido grabado con `codegen`** | ❌ **NO EJECUTADO** | Requiere interacción humana con la ventana del inspector |
+
+**Consecuencia:** `codegen` usa `data-testid` por defecto y, con una URL suelta, no lee ninguna configuración. Con el comando del Paso 1 tal cual **no generará ningún `getByTestId`** en esta aplicación. Para que la comparación con la tabla del Lab 3 sea justa, hay que ejecutarlo así:
+
+```bash
+npx playwright codegen --test-id-attribute data-test https://www.saucedemo.com
+```
+
+**Lo que sigue sin saberse:** qué locators concretos emite el generador para cada elemento. Eso solo se sabe grabando el recorrido.
+
 ## Estado
 
 | Campo | Valor |
 |---|---|
-| Validación técnica de `codegen` | ❌ **Pendiente** |
-| Bloquea | Solo este Lab (opcional) |
+| Validación técnica de `codegen` | ⚠️ **Parcial** — entorno y atributos medidos; **salida del generador, no** |
+| Entra en el piloto de M01 | ❌ **No.** Queda explícitamente fuera |
+| Bloquea | Nada. El Lab es opcional y no sostiene ningún objetivo P1-P8 en solitario |
 | Riesgo asociado | K14 del [diseño del módulo](../../docs/module-01-discovery-design.md), impacto LOW |
-| Decisión pendiente | Validar y completar este fichero, o retirar el Lab del temario |
+| Decisión pendiente | Tras el piloto: grabar el recorrido y completar este fichero, o retirar el Lab del temario |
