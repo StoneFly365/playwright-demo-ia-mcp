@@ -83,7 +83,8 @@ learning/
 │
 ├── assessment/                  Pre-assessment y niveles de entrada
 ├── modules/                     Un directorio por módulo
-│   └── 00-foundations/          ✅ completo
+│   ├── 00-foundations/          ✅ completo
+│   └── 01-playwright-fundamentals/  ✅ completo
 ├── student/                     Tu zona de trabajo (sandbox ejecutable)
 ├── solutions/                   Soluciones verificadas, publicación diferida
 └── trainer/                     Planes de sesión
@@ -171,7 +172,7 @@ Y cada módulo incluye un `repository-mapping.md` que responde a la pregunta que
 | Módulo | Estado |
 |---|---|
 | 00 — Fundamentos JS/TS para QA | ✅ **Completo** |
-| 01 — Playwright Fundamentals | 🔬 [Diseño validado](docs/module-01-discovery-design.md) — material sin construir |
+| 01 — Playwright Fundamentals | ✅ **Completo** — [módulo](modules/01-playwright-fundamentals/) · pendiente de piloto |
 | 02 — Page Object Model & Suite | ⬜ Pendiente |
 | 03 — Arquitectura: fixtures, auth y datos | ⬜ Pendiente |
 | 04 — Debugging & Failure Analysis | ⬜ Pendiente |

@@ -11,7 +11,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | # | Módulo | Nivel dominante | Duración | Depende de | Estado |
 |---|---|---|---|---|---|
 | 00 | [Fundamentos JS/TS para QA](../modules/00-foundations/) | 1 FOLLOW | 5 h + 3 h | — | ✅ Completo |
-| 01 | Playwright Fundamentals — [diseño](module-01-discovery-design.md) · [validación técnica](module-01-technical-validation.md) | 2 MODIFY | 7 h + 4 h + 1 h | 00 | 🔬 Diseño validado — pendiente construir |
+| 01 | [Playwright Fundamentals](../modules/01-playwright-fundamentals/) | 2 MODIFY → 4 DESIGN | 7 h + 4 h + 1 h | 00 | ✅ Completo — pendiente de piloto |
 | 02 | Page Object Model & Suite | 3 CREATE | 3 h + 2 h | 01 | ⬜ Pendiente |
 | 03 | Arquitectura: fixtures, auth y datos | 4 DESIGN | 6 h + 3 h | 02 | ⬜ Pendiente |
 | 04 | Debugging & Failure Analysis | 5 TROUBLESHOOT | 3 h + 2 h | 03 | ⬜ Pendiente |
@@ -58,9 +58,11 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 
 ---
 
-## 01 — Playwright Fundamentals 🔬 Diseño validado
+## 01 — Playwright Fundamentals ✅
 
-> **Estado real:** discovery, diseño y validación técnica **completos y aprobados**. El material del módulo (theory, Labs, Challenge, assessment, soluciones) **aún no está construido**. Documentos completos: [`module-01-discovery-design.md`](module-01-discovery-design.md) (diseño, actualizado con la validación) y [`module-01-technical-validation.md`](module-01-technical-validation.md) (20 elementos × 7 estrategias de locator, medidos contra la aplicación real).
+> **Estado real:** material **construido y verificado** contra la aplicación real: teoría, 5 Labs (+1 opcional), Challenge, assessment y soluciones. Pendiente de piloto con alumnos. Documentos de origen: [`module-01-discovery-design.md`](module-01-discovery-design.md) (diseño) y [`module-01-technical-validation.md`](module-01-technical-validation.md) (20 elementos × 7 estrategias de locator, medidos).
+>
+> ⚠️ **K1 sigue CONDITIONAL:** el entorno de HDI no está verificado. Ver la comprobación previa en el [plan de sesión](../trainer/session-plans/session-03-module-01.md).
 
 | | |
 |---|---|
@@ -71,7 +73,9 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Nivel** | 2 MODIFY → 4 DESIGN |
 | **Dependencias** | 00 |
 | **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 12 scripts de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:34` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:117-121` (`filter` + `hasText`); 🔬 `CartPage.cartItems` (`pages/cart.page.ts:7`) — locator roto, 0 elementos, base del Lab 5 |
-| **Entregables previstos** | Suite ejecutada en los tres navegadores (🔬 medido: 79 tests, 21,8 s, 69 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
+| **Entregables** | Suite ejecutada en los tres navegadores (🔬 medido: 79 tests, 21,8 s, 69 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
+
+→ **[Ir al módulo](../modules/01-playwright-fundamentals/)**
 
 ---
 

@@ -158,9 +158,23 @@ Los Labs dan los pasos; los Challenges no. Un Challenge da objetivo, restriccion
 
 Cada uno está desarrollado, con síntoma y corrección, en las soluciones del módulo.
 
+### Módulo 01 (documentados y verificados)
+
+| Error | Frecuencia | Origen |
+|---|---|---|
+| Justificar un locator con "porque funciona" | Muy alta | No ha interiorizado que todos los candidatos funcionan |
+| Resolver una ambigüedad con `.first()` | Muy alta | Hace desaparecer el error, no el problema |
+| Predecir **después** de ejecutar en el Lab 2 | Alta | La predicción es la mitad del ejercicio |
+| Verificar el valor del desplegable en vez del orden de los productos (Lab 4) | Alta | Confunde el control con el comportamiento |
+| **"Arreglar" `pages/cart.page.ts` en el Lab 5** | Media pero **crítica** | Reflejo de corregir; destruye el material del módulo 02 |
+| Calcular el importe esperado leyendo la misma pantalla que verifica | Media | Problema de oráculo; ya aparece en el Lab 2 |
+| Añadir `waitForTimeout` por desconfianza en el auto-waiting | Media | Frecuente en perfiles de Selenium |
+| Escribir el diagnóstico del Lab 5 después de corregir | Media | Se detecta: la casilla "Comprobación" está vacía |
+
+Cada uno está desarrollado en las soluciones del módulo. **Plan de sesión:** [`session-03-module-01.md`](../trainer/session-plans/session-03-module-01.md), que incluye la comprobación de entorno obligatoria antes de convocar al grupo.
+
 ### Módulos posteriores (previsión de la Fase 1)
 
-- **01:** desconfianza en el auto-waiting → tendencia a añadir `waitForTimeout`, sobre todo en perfiles de Selenium.
 - **02:** confundir "más métodos en el POM" con "mejor POM".
 - **03:** el módulo más denso del programa; concentra 4 gaps CRITICAL. Prevé que se alargue.
 - **04:** intentar "arreglar" los `@demo-fail` en vez de diagnosticarlos.

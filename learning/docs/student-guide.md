@@ -26,6 +26,8 @@ Debe salir `7 failed` y `13 passed`. **Los 7 fallos son correctos**: son el punt
 Guía de instalación detallada, con problemas típicos de Windows: [setup-guide.md](setup-guide.md).
 
 > **`npx playwright install` solo hace falta a partir del módulo 01.** El módulo 00 no abre navegador y funciona sin conexión.
+>
+> En el módulo 01 sí: navegadores instalados (~500 MB) y acceso a `saucedemo.com`. Comprueba que tu equipo lo permite con `npx playwright test --project=chromium tests/login.spec.ts` — debe dar `7 passed, 1 failed`. Si falla por red o proxy, avísale al formador: no es un problema tuyo.
 
 ## 2. Cómo ejecutar el proyecto
 
@@ -34,9 +36,13 @@ Hay **dos suites separadas** y conviene no confundirlas.
 ### Tus ejercicios (el sandbox)
 
 ```bash
-npx playwright test -c learning/student/sandbox                                  # todos
+npx playwright test -c learning/student/sandbox                                  # todos (módulo 00)
 npx playwright test -c learning/student/sandbox 00-foundations/02-arrays.spec.ts # uno
 npx playwright test -c learning/student/sandbox --grep "ordenar"                 # por nombre
+
+# Módulo 01 — configuración propia, abre navegador
+npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
+npx playwright test -c learning/student/sandbox/01-playwright --project=chromium 03-locators.spec.ts
 ```
 
 ### La suite del proyecto (material de lectura)

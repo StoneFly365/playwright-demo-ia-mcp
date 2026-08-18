@@ -10,7 +10,7 @@ Aquí es donde escribes código. En ningún otro sitio.
 
 | Zona | Permiso |
 |---|---|
-| `learning/student/sandbox/` | ✅ Tu zona |
+| `learning/student/sandbox/` | ✅ Tu zona (módulo 00 en `00-foundations/`, módulo 01 en `01-playwright/`) |
 | `learning/student/progreso.md` | ✅ Tu registro personal |
 | `pages/`, `tests/`, `scripts/`, `prompts/`, `specs/` | ❌ Solo lectura |
 | `playwright.config.ts`, `package.json`, `tsconfig.json`, `.github/` | ❌ No se tocan |
@@ -49,19 +49,28 @@ student/
 └── sandbox/
     ├── README.md      Cómo funciona el sandbox
     ├── playwright.config.ts
-    └── 00-foundations/
-        ├── 01-values.spec.ts       Lab 1 — dado, en verde
-        ├── 02-arrays.spec.ts       Lab 2 — lo modificas
-        ├── 03-price-utils.ts       Lab 3 — lo implementas
-        ├── 03-price-utils.spec.ts  Lab 3 — contrato, no se toca
-        └── 04-broken.spec.ts       Lab 4 — lo diagnosticas
+    ├── 00-foundations/
+    │   ├── 01-values.spec.ts       Lab 1 — dado, en verde
+    │   ├── 02-arrays.spec.ts       Lab 2 — lo modificas
+    │   ├── 03-price-utils.ts       Lab 3 — lo implementas
+    │   ├── 03-price-utils.spec.ts  Lab 3 — contrato, no se toca
+    │   └── 04-broken.spec.ts       Lab 4 — lo diagnosticas
+    └── 01-playwright/              MÓDULO 01 — abre navegador
+        ├── README.md
+        ├── playwright.config.ts    baseURL + 3 navegadores + testIdAttribute
+        ├── 02-auto-waiting.spec.ts Lab 2 — lo amplias
+        ├── 03-locators.spec.ts     Lab 3 — lo amplias
+        └── 05-diagnostico.spec.ts  Lab 5 — lo diagnosticas (llega en rojo)
 ```
 
 ## Comandos que usarás a diario
 
 ```bash
-# Todos tus ejercicios
+# Todos tus ejercicios del módulo 00 (sin navegador)
 npx playwright test -c learning/student/sandbox
+
+# Los del módulo 01 (abren navegador y necesitan saucedemo.com)
+npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 
 # Uno concreto
 npx playwright test -c learning/student/sandbox 00-foundations/02-arrays.spec.ts

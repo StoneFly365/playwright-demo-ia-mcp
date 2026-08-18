@@ -50,8 +50,9 @@ learning/
 ├── student/
 │   ├── README.md                      Reglas de trabajo
 │   └── sandbox/                       Zona de trabajo EJECUTABLE
-│       ├── playwright.config.ts       Configuración independiente
-│       └── NN-nombre/                 Ficheros de ejercicio por módulo
+│       ├── playwright.config.ts       Configuración del módulo 00 (sin navegador)
+│       ├── 00-foundations/            Ficheros de ejercicio del módulo 00
+│       └── 01-playwright/             Módulo 01: config propia con navegador
 │
 ├── solutions/
 │   ├── README.md                      Política de publicación

@@ -2,6 +2,8 @@
 
 Zona ejecutable de los ejercicios. Tiene su propia configuración de Playwright y **no ve la suite del proyecto**.
 
+> **Módulo 01:** sus ejercicios abren navegador, así que viven en [`01-playwright/`](01-playwright/) con **su propia configuración** (`baseURL`, tres navegadores y `testIdAttribute`) y quedan excluidos de esta con `testIgnore`. Se ejecutan con `npx playwright test -c learning/student/sandbox/01-playwright --project=chromium`. Todo lo que sigue en este documento se refiere al módulo 00.
+
 ---
 
 ## Cómo se ejecuta
@@ -21,6 +23,7 @@ npx playwright test -c learning/student/sandbox
 export default defineConfig({
   testDir: '.',
   testMatch: '**/*.spec.ts',
+  testIgnore: '01-playwright/**',
   fullyParallel: true,
   retries: 0,
   reporter: [['list']],
@@ -32,6 +35,7 @@ export default defineConfig({
 | `testDir: '.'` | Solo ve los ejercicios de esta carpeta |
 | La config raíz usa `testDir: './tests'` | `npm test` y el CI **nunca** ejecutan tus ejercicios |
 | Sin `baseURL` ni `projects` de navegador | Los ejercicios del módulo 00 son lógica pura: no abren navegador ni necesitan internet |
+| `testIgnore: '01-playwright/**'` | Los ejercicios del módulo 01 no se ejecutan aquí: tienen su propia configuración con navegador |
 | `retries: 0` | Un fallo es un fallo. Nada se enmascara |
 | `reporter: list` | Salida legible en terminal, sin abrir un informe HTML |
 

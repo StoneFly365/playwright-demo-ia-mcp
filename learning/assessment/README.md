@@ -6,6 +6,7 @@ Instrumentos de evaluación transversales: los de cada módulo viven en `modules
 |---|---|---|---|
 | **Pre-assessment** | ⬜ Diseñado, banco de preguntas pendiente | 5-10 días antes del inicio | Diseño en [Fase 1, sección 8](../phase-1-learning-lab-design.md) |
 | **Assessment módulo 00** | ✅ Completo | Al cierre del módulo 00 | [`../modules/00-foundations/assessment/`](../modules/00-foundations/assessment/) |
+| **Assessment módulo 01** | ✅ Completo | Al cierre del módulo 01 | [`../modules/01-playwright-fundamentals/assessment/`](../modules/01-playwright-fundamentals/assessment/) |
 | **Checkpoints (semanas 2 y 4)** | ⬜ Pendiente | Durante el programa | — |
 | **Post-assessment** | ⬜ Pendiente | Al finalizar | — |
 | **Rúbrica general** | ✅ Completa | Tres aplicaciones | [`../docs/assessment-rubric.md`](../docs/assessment-rubric.md) |

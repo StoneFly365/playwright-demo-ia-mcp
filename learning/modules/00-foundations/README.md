@@ -163,6 +163,6 @@ El desglose competencia → anclaje → ejercicio → validación → evaluació
 
 ## Siguiente módulo
 
-**01 — Playwright Fundamentals** (aún no desarrollado). Requiere haber superado este.
+**[01 — Playwright Fundamentals](../01-playwright-fundamentals/)**. Requiere haber superado este.
 
 Ahí empieza el navegador: locators, aserciones web-first, `playwright.config.ts` y la ejecución real de los 79 tests del proyecto.
