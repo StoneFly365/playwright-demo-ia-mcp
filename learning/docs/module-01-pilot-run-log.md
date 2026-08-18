@@ -170,6 +170,8 @@ El plan de sesión tiene una tabla *"Qué va a pasar (previsión)"* con 13 filas
 
 | Participante | P1 | P2 | P3 | P4 |
 |---|---|---|---|---|
+| Inicio | | | | |
+| Fin | | | | |
 | **Duración total E2** | | | | |
 | └ Caso 1 — diagnóstico | | | | |
 | └ Caso 1 — corrección | | | | |
@@ -214,7 +216,26 @@ La sesión 6 es **material nuevo, sin rodar**. Nació al resolver F1 del dry-run
 | ¿La revisión cruzada se agota antes de los 45 min? | ☐ sí, en el min ___ ☐ no |
 | ¿Quedan defensas sin hacer al terminar? | ☐ sí, ___ personas ☐ no |
 
-> **Nota de ejecución con 2-4 participantes:** la revisión cruzada es por parejas. Con **3** participantes, el formador hace de tercer revisor. Con **2**, se revisan mutuamente. Anotarlo, porque cambia el tiempo del bloque.
+### Cómo se organiza la revisión cruzada según el número de participantes
+
+La revisión cruzada es **por parejas**, y **cada participante revisa el `decisiones.md` de otro participante**. No hay que deducir nada:
+
+| Participantes | Organización |
+|---|---|
+| **2** | Una pareja. P1 revisa el de P2 y P2 el de P1 |
+| **3** | Una pareja (P1 ↔ P2) y **el formador hace de tercer revisor** del de P3. P3 revisa el de P1 o el de P2 — el que elija el formador |
+| **4** | **Dos parejas**: P1 ↔ P2 y P3 ↔ P4. Cada participante revisa el Challenge de **un** compañero. El formador no revisa: queda libre para las defensas |
+
+**Registrar siempre:**
+
+| Campo | Anotación |
+|---|---|
+| Parejas formadas | |
+| ¿Intervino el formador como revisor? | ☐ sí, del de P___ ☐ no |
+| ¿Hubo que **redistribuir** parejas? | ☐ sí ☐ no |
+| Motivo de la redistribución *(falta un `decisiones.md`, ausencia, nivel muy dispar, otro)* | |
+
+Anotarlo importa: cambia el tiempo del bloque y, si el formador tiene que revisar, le quita minutos de defensa.
 
 ## 6.2 Parte C — una fila por participante
 
@@ -461,12 +482,44 @@ Cosas detectadas **antes** de ejecutar el piloto. **Ninguna se ha corregido**: s
   npx playwright test -c learning/student/sandbox/01-playwright --project=chromium    # 4 passed, 2 failed
   ```
   Si el sandbox no da exactamente **4 passed / 2 failed**, algo se ha tocado antes de tiempo: **no empezar**
+- [ ] **Resultado del preflight anotado aquí mismo**, con fecha:
+
+| Comprobación | Fecha | Resultado | Esperado |
+|---|---|---|---|
+| `npm ci` | | | termina sin error |
+| `npx playwright install` | | | termina sin error |
+| `npm run test:chromium` | | | 69 passed, 10 failed |
+| Sandbox M01 `--project=chromium` | | | 4 passed, 2 failed |
+
+> **VERIFICACIÓN TÉCNICA — NO ES K1.** Ninguna de estas cuatro ejecuciones cambia el estado de K1, que sigue `PENDIENTE — validación durante formación HDI`. Tampoco son datos del piloto: no se vuelcan a §10.
 - [ ] Cada participante ha ejecutado `npx playwright install` en su equipo **antes** de la sesión 3 (~500 MB)
 - [ ] Cronómetro y este registro abiertos. Un reloj por participante, no uno para el aula
 - [ ] Copiar la ficha de §3 tantas veces como participantes
 - [ ] Leídas las 13 filas de *"Qué va a pasar (previsión)"* del plan de sesión — es lo que rellena la columna *"¿Previsto?"* de §4
 - [ ] **El Lab 6 no se propone**
 - [ ] Decidido quién observa: si el formador imparte y observa a la vez, los tiempos se degradan. Con 4 participantes, conviene una segunda persona anotando
+
+### Material accesible
+
+- [ ] **Material de M01 accesible a los participantes:** README del módulo, `theory.md`, los cinco Labs, `repository-mapping.md` y `locator-reference.md`
+- [ ] **Enunciado del Challenge accesible**, para poder entregarlo en el bloque 4 de la sesión 5
+- [ ] **Assessment preparado** (partes A y B). **La clave de corrección NO se comparte con el grupo, nunca**
+- [ ] **El Lab 6 no se propone** *(ya listado arriba; se repite porque es el olvido más fácil)*
+
+### Calendario y tiempo del formador
+
+- [ ] **Sala y hueco reservados para la sesión 6** (60 min). Es sesión nueva y es la que se cae al planificar
+- [ ] **Tiempo del formador reservado para la Parte C:** 5-10 min × participante, **dentro** del bloque 1 de la sesión 6. Con 2-4 personas caben todas; reservarlo igualmente
+- [ ] Ventana de trabajo personal entre la sesión 5 y la 6 comunicada al grupo (Challenge, 90 min)
+
+### K1 — localizado, no ejecutado
+
+- [ ] **Procedimiento K1 localizado**: [`session-03-module-01.md`](../trainer/session-plans/session-03-module-01.md) → *"⚠️ Antes de la sesión — comprobación de entorno OBLIGATORIA"*
+- [ ] Entendido que **K1 no forma parte de este piloto interno**: no se ejecuta aquí, no se declara aquí, y sigue `PENDIENTE — validación durante formación HDI`. Los bloqueos de entorno del piloto se etiquetan **E** en §4 y no tocan su estado
+
+### Protección de datos
+
+- [ ] Ningún dato personal en este registro: solo `P1…P4`. Sin nombres, correos, `hostname`, IPs ni rutas de usuario. La correspondencia con personas reales la guarda el formador **fuera** de este fichero
 
 ## Durante cada sesión
 

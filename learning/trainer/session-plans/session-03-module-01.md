@@ -62,6 +62,8 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 | **7. Puesta en común** | 165-175 | — | **El momento clave del módulo**: las tres versiones del Paso 3 |
 | **8. Cierre** | 175-180 | — | Trabajo personal: leer la teoría §5-§12 antes de la sesión 4 |
 
+> 📋 **PILOTO — bloque 7.** Captura las **palabras literales** con las que cada participante describe un test que unas veces pasa y otras no. Cópialas tal cual, sin resumirlas. → 🟡-1, [run-log §7](../../docs/module-01-pilot-run-log.md).
+
 ## Guion — Sesión 4 (2 h 30)
 
 | Bloque | Min | Nivel | Qué se hace |
@@ -74,6 +76,8 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 | **5. Lab 4** | 125-145 | 3 CREATE | Ordenación A→Z en sesión; el segundo test, en casa |
 | **6. Cierre** | 145-150 | — | Reparto: terminar Lab 4 + Challenge |
 
+> 📋 **PILOTO — bloque 4, al cerrar el Lab 3.** Formula la pregunta y **registra las respuestas literales**: *"¿qué tres filas de `locator-reference.md` cambiarían en la aplicación de HDI?"*. Anota también quién no sabe responder. → 🟡-5, [run-log §7](../../docs/module-01-pilot-run-log.md).
+
 ## Guion — Sesión 5 (1 h 30)
 
 | Bloque | Min | Nivel | Qué se hace |
@@ -82,6 +86,8 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 | **2. Lab 5** | 15-65 | 5 TROUBLESHOOT | En sesión, con el informe escrito **antes** de corregir |
 | **3. Puesta en común del Lab 5** | 65-85 | — | Los dos casos en común, comparando diagnósticos por parejas |
 | **4. Lanzamiento del Challenge** | 85-90 | — | Entrega del enunciado y fecha de entrega: el `decisiones.md` incluido, **antes de la sesión 6**. Los cinco Labs quedan completos justo aquí: el prerrequisito del Challenge se cumple en este minuto y no antes |
+
+> 📋 **PILOTO — bloque 2.** El **caso B se cronometra por separado** del caso A: cronómetro aparte al empezarlo y al terminarlo. Y registra, por participante, si **formuló una hipótesis antes** de ejecutar los `grep` del Paso 4. → 🟡-2, [run-log §3](../../docs/module-01-pilot-run-log.md) fila 6b y [§7](../../docs/module-01-pilot-run-log.md).
 
 ## Guion — Sesión 6 (1 h)
 
@@ -92,6 +98,8 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 | **1. Revisión cruzada del Challenge** | 0-45 | 4 DESIGN | Por parejas: cada alumno lee el `decisiones.md` del compañero y contesta tres preguntas sobre él — qué reparto de tests eligió, qué decidió **no** automatizar, y qué fila de su tabla de locators cambiaría. **En paralelo, el formador llama de uno en uno para la Parte C** |
 | **2. Puesta en común** | 45-55 | — | Los "qué NO he automatizado" del grupo y la decisión importes fijos/calculados. Cierre del módulo y conexión con M02 |
 | **3. Convocatoria del assessment** | 55-60 | — | Partes A y B, 1 h, en sesión aparte o de forma asíncrona |
+
+> 📋 **PILOTO — bloque 1.** Registra: cuántos llegan con el Challenge **completo** y cuántos **incompleto** (con el motivo declarado), la **duración real** de la revisión cruzada, la **duración de cada defensa** de la Parte C, y si quedan defensas pendientes al minuto 45. → [run-log §6](../../docs/module-01-pilot-run-log.md).
 
 **Cómo encajar la Parte C:** ocurre en la **sesión 6, bloque 1**, y no antes: es el primer momento en que existe el `decisiones.md` sobre el que se defiende. Mientras el grupo hace la revisión cruzada, llama de uno en uno, 5-10 minutos. **El presupuesto de 12 h es por alumno:** cada uno gasta sus 5-10 minutos dentro del bloque. Lo que escala con el tamaño del grupo es **tu tiempo**, no el suyo: con 8-9 personas caben todas las defensas en los 45 minutos; con 10-12, prevé una segunda tanda al corregir el Challenge. Prioriza a quien justificó con "porque funciona" en el Lab 3.
 
@@ -225,6 +233,8 @@ Lo que miras primero al revisar una entrega:
 ## Cierre de la sesión 6
 
 - [ ] Assessment (1 h): partes A y B
+
+> 📋 **PILOTO — assessment.** **E1 y E2 se cronometran por separado**, no como un único bloque de Parte B. Anota inicio y fin de cada uno. → F3, [run-log §5](../../docs/module-01-pilot-run-log.md).
 - [ ] Defensas de la Parte C que no hayan cabido en el bloque 1 → segunda tanda al corregir el Challenge. **Sin Challenge entregado, la Parte C se aplaza**
 
 **Publica al grupo** las soluciones de los Labs 1 y 2 al terminar la sesión 3; la del Lab 3 al terminar la sesión 4; las de los Labs 4 y 5 al terminar la sesión 5; la del Challenge al cerrar el módulo. La clave del assessment, **nunca**.
