@@ -1,0 +1,57 @@
+name: Docs (Docsify → GitHub Pages)
+
+# Solo documentación: no ejecuta tests ni toca el pipeline de Playwright.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs-site/**'
+      - 'learning/**'
+      - '!learning/solutions/**'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publicar portal de documentación
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Ensamblar el sitio
+        # learning/ es la fuente de verdad: se copia, no se duplica en el repositorio.
+        # solutions/ queda fuera por la política de publicación diferida.
+        run: |
+          rm -rf _site
+          mkdir -p _site
+          cp -r docs-site/. _site/
+          rsync -a --exclude 'solutions/' learning/ _site/learning/
+          touch _site/.nojekyll
+          test -f _site/index.html
+          test -f _site/learning/README.md
+          test ! -e _site/learning/solutions
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

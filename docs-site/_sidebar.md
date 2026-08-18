@@ -1,0 +1,64 @@
+- [Inicio](/)
+
+- **Programa**
+  - [Qué es el Learning Lab](/learning/README.md)
+  - [Mapa del programa](/mapa.md)
+  - [Documentación canónica](/documentacion.md)
+  - [Learning path — 10 módulos](/learning/docs/learning-path.md)
+  - [Prerrequisitos](/learning/docs/prerequisites.md)
+  - [Guía de instalación](/learning/docs/setup-guide.md)
+  - [Arquitectura del Learning Lab](/learning/docs/architecture.md)
+  - [Rúbrica general](/learning/docs/assessment-rubric.md)
+  - [Pre-assessment y evaluación](/learning/assessment/README.md)
+  - [Índice de módulos](/learning/modules/README.md)
+
+- **Alumno**
+  - [Guía del alumno](/learning/docs/student-guide.md)
+  - [Zona de trabajo (sandbox)](/learning/student/README.md)
+
+- **Formador**
+  - [Guía del formador](/learning/docs/trainer-guide.md)
+  - [Planes de sesión](/planes-de-sesion.md)
+  - [Sesiones 01-02 — Módulo 00](/learning/trainer/session-plans/session-01-module-00.md)
+  - [Sesiones 03-06 — Módulo 01](/learning/trainer/session-plans/session-03-module-01.md)
+
+- **Módulo 00 — Fundamentos JS/TS**
+  - [Overview del módulo](/learning/modules/00-foundations/README.md)
+  - [Objetivos de aprendizaje](/learning/modules/00-foundations/learning-objectives.md)
+  - [Teoría](/learning/modules/00-foundations/theory.md)
+  - [Anclajes en el repositorio](/learning/modules/00-foundations/repository-mapping.md)
+  - [Labs — índice](/learning/modules/00-foundations/labs/README.md)
+    - [Lab 1 — Follow](/learning/modules/00-foundations/labs/lab-1-follow.md)
+    - [Lab 2 — Modify](/learning/modules/00-foundations/labs/lab-2-modify.md)
+    - [Lab 3 — Create](/learning/modules/00-foundations/labs/lab-3-create.md)
+    - [Lab 4 — Troubleshoot](/learning/modules/00-foundations/labs/lab-4-troubleshoot.md)
+  - [Challenge — índice](/learning/modules/00-foundations/challenges/README.md)
+    - [Challenge 1 — Cart summary](/learning/modules/00-foundations/challenges/challenge-1-cart-summary.md)
+  - [Assessment](/learning/modules/00-foundations/assessment/README.md)
+
+- **Módulo 01 — Playwright Fundamentals**
+  - [Overview del módulo](/modulo-01.md)
+  - [README canónico del módulo](/learning/modules/01-playwright-fundamentals/README.md)
+  - [Objetivos de aprendizaje](/learning/modules/01-playwright-fundamentals/learning-objectives.md)
+  - [Teoría](/learning/modules/01-playwright-fundamentals/theory.md)
+  - [Referencia de locators](/learning/modules/01-playwright-fundamentals/locator-reference.md)
+  - [Anclajes en el repositorio](/learning/modules/01-playwright-fundamentals/repository-mapping.md)
+  - [Labs — índice](/learning/modules/01-playwright-fundamentals/labs/README.md)
+    - [Lab 1 — La suite real](/learning/modules/01-playwright-fundamentals/labs/lab-1-suite-real.md)
+    - [Lab 2 — Auto-waiting](/learning/modules/01-playwright-fundamentals/labs/lab-2-auto-waiting.md)
+    - [Lab 3 — Locators](/learning/modules/01-playwright-fundamentals/labs/lab-3-locators.md)
+    - [Lab 4 — El test que falta](/learning/modules/01-playwright-fundamentals/labs/lab-4-test-que-falta.md)
+    - [Lab 5 — Troubleshoot](/learning/modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md)
+    - [Lab 6 — Codegen (opcional)](/learning/modules/01-playwright-fundamentals/labs/lab-6-codegen.md)
+  - [Challenge — índice](/learning/modules/01-playwright-fundamentals/challenges/README.md)
+    - [Challenge 1 — Compra completa](/learning/modules/01-playwright-fundamentals/challenges/challenge-1-compra-completa.md)
+  - [Assessment](/learning/modules/01-playwright-fundamentals/assessment/README.md)
+
+- **Piloto / Diseño**
+  - [Cómo funciona el piloto](/piloto.md)
+  - [Plan de piloto — M01](/learning/docs/module-01-pilot-plan.md)
+  - [Registro de ejecución — M01](/learning/docs/module-01-pilot-run-log.md)
+  - [Diseño Fase 1 del programa](/learning/phase-1-learning-lab-design.md)
+  - [Discovery & Design — M01](/learning/docs/module-01-discovery-design.md)
+  - [Validación técnica — M01](/learning/docs/module-01-technical-validation.md)
+  - [Revisión pedagógica — M01](/learning/docs/module-01-pedagogical-review.md)
