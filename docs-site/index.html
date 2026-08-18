@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>QA Automation &amp; AI Engineering Learning Lab — HDI Seguros Chile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portal de documentación del Learning Lab de QA Automation e IA construido sobre un proyecto Playwright real.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <style>
+    :root { --theme-color: #0b6e4f; }
+    .sidebar { font-size: 14.5px; }
+    .sidebar ul li strong { display: block; margin: 14px 0 4px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #7a8a99; }
+    .markdown-section { max-width: 960px; }
+    .markdown-section table { display: block; overflow-x: auto; white-space: normal; }
+    .markdown-section blockquote { border-left: 4px solid var(--theme-color); background: #f6f9f8; color: #34495e; }
+    .markdown-section .mermaid { text-align: center; margin: 24px 0; }
+    .markdown-section h2 { padding-top: 8px; border-bottom: 1px solid #eaecef; }
+  </style>
+</head>
+<body>
+  <div id="app">Cargando el portal…</div>
+  <script>
+    var REPO = 'https://github.com/StoneFly365/playwright-demo-ia-mcp';
+    var BLOB = REPO + '/blob/main/';
+
+    // Los Markdown canónicos enlazan ficheros del repositorio que no forman parte
+    // del portal: código (../../pages/login.page.ts) y documentos fuera de learning/
+    // (../../specs/test-index.md). Docsify los enrutaría como páginas inexistentes;
+    // se redirigen al fichero real en GitHub.
+    //
+    // La regla NO enumera las páginas propias del portal (docs-site/*.md): eso
+    // obligaría a mantener una lista cada vez que se añade una página nueva. En su
+    // lugar usa la lista de directorios de solo-lectura del proyecto ya declarada
+    // en learning/README.md y learning/student/README.md ("Regla de oro"): un
+    // enlace relativo solo sale hacia GitHub si es código, o si apunta dentro de
+    // uno de esos directorios externos. Cualquier otro nombre de fichero suelto
+    // (sin carpeta) se asume página del portal.
+    var EXTERNAL_ROOTS = ['tests/', 'pages/', 'scripts/', 'specs/', 'prompts/', '.github/'];
+    function codeFileLinks(hook) {
+      hook.doneEach(function () {
+        var links = document.querySelectorAll('.markdown-section a[href*="#/"]');
+        Array.prototype.forEach.call(links, function (a) {
+          var path = (a.getAttribute('href') || '').split('#/')[1];
+          if (!path) return;
+          path = path.split('?')[0].replace(/^\//, '');
+          var isCode = /\.(ts|tsx|js|mjs|cjs|json|ya?ml|txt|html|css)$/i.test(path);
+          var isExternalRoot = EXTERNAL_ROOTS.some(function (root) { return path.indexOf(root) === 0; });
+          var inPortal = path.indexOf('learning/') === 0 || (path.indexOf('/') === -1 && !isExternalRoot);
+          if (!isCode && inPortal) return;
+          // Docsify trata los enlaces .md como rutas internas y les quita la
+          // extensión al resolverlos (a diferencia de .ts/.json/etc., que la
+          // conservan). Para un .md externo hay que devolvérsela o el enlace a
+          // GitHub queda roto (404 real en GitHub, sin extensión de fichero).
+          var lastSegment = path.split('/').pop();
+          if (!isCode && lastSegment.indexOf('.') === -1) path += '.md';
+          a.setAttribute('href', BLOB + path);
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener');
+          a.setAttribute('title', 'Se abre en GitHub: ' + path);
+        });
+      });
+    }
+
+    function mermaidBlocks(hook) {
+      hook.doneEach(function () {
+        if (!window.mermaid) return;
+        var nodes = document.querySelectorAll('.markdown-section .mermaid');
+        if (nodes.length) window.mermaid.run({ nodes: nodes });
+      });
+    }
+
+    window.$docsify = {
+      name: 'Learning Lab QA + IA',
+      nameLink: '#/',
+      repo: REPO,
+      loadSidebar: true,
+      relativePath: true,
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md',
+        // El directorio de planes de sesión no tiene README propio en learning/.
+        '/learning/trainer/session-plans/?(README.md)?': '/planes-de-sesion.md',
+        // learning/solutions/** no existe en el artefacto (publicación diferida).
+        // Alias de router, no reescritura de enlace: intercepta ANTES del fetch,
+        // así que no hay petición 404 en consola ni al hacer click ni al teclear
+        // la URL directamente ni al refrescar sobre una ruta de solución.
+        '/learning/solutions/.*': '/no-publicado.md'
+      },
+      subMaxLevel: 3,
+      maxLevel: 4,
+      auto2top: true,
+      notFoundPage: 'no-publicado.md',
+      search: {
+        paths: 'auto',
+        placeholder: 'Buscar en la documentación…',
+        noData: 'Sin resultados.',
+        depth: 3
+      },
+      pagination: { previousText: 'Anterior', nextText: 'Siguiente', crossChapter: true },
+      markdown: {
+        renderer: {
+          code: function (code, lang) {
+            if (lang === 'mermaid') return '<div class="mermaid">' + code + '</div>';
+            return this.origin.code.apply(this, arguments);
+          }
+        }
+      },
+      plugins: [codeFileLinks, mermaidBlocks]
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>window.mermaid && window.mermaid.initialize({ startOnLoad: false, theme: 'neutral' });</script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-typescript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
+</body>
+</html>

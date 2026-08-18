@@ -31,3 +31,6 @@ test-results.json
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Docsify site build output
+_site/
