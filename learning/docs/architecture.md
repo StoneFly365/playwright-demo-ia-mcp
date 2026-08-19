@@ -23,6 +23,11 @@ learning/
 ├── README.md                          Punto de entrada del programa
 ├── phase-1-learning-lab-design.md     Análisis del repositorio y diseño (Fase 1)
 │
+├── ruta-qa/                           🎯 Recorrido curado de 6 h (ver más abajo)
+│   ├── README.md                      Índice de la ruta
+│   ├── 00-introduccion.md … 07-reto-final.md
+│   └── prompts-para-tu-proyecto.md    Anexo llevable
+│
 ├── docs/                              Documentación transversal
 │   ├── learning-path.md               Mapa de los 10 módulos
 │   ├── student-guide.md               Guía práctica del alumno
@@ -61,6 +66,25 @@ learning/
 └── trainer/
     └── session-plans/                 Guion por sesión
 ```
+
+## Dos ejes: módulos y rutas
+
+El material tiene **dos ejes distintos**, y conviene no confundirlos:
+
+| Eje | Qué es | Dónde vive |
+|---|---|---|
+| **Módulos** | La unidad de construcción. Cada uno cubre un área a fondo, con teoría, Labs, Challenge y assessment | `modules/NN-nombre/` |
+| **Rutas** | Un recorrido curado con un objetivo y un presupuesto de tiempo concretos. Selecciona, comprime y reordena material | `ruta-qa/` |
+
+La [Ruta QA — 6 h](../ruta-qa/README.md) es la primera ruta. Sus reglas:
+
+1. **No duplica material canónico: lo enlaza.** Cuando resume teoría de un módulo, dice de dónde sale y enlaza la versión completa.
+2. **Es un recorrido, no un módulo.** No lleva assessment ni rúbrica: cierra con un reto práctico.
+3. **No modifica `modules/`.** Si la ruta necesita un enfoque distinto del de un módulo, se escribe en la ruta.
+4. **Tiene su propio sandbox**, `student/sandbox/ruta-qa/`, independiente de los de módulo.
+5. **Materializa parte del módulo 08** (AI-Augmented QA), que sigue sin construir como módulo completo. Ver la nota en [`learning-path.md`](learning-path.md).
+
+Una ruta puede quedarse obsoleta cuando el módulo del que bebe cambia. Es el coste asumido de tener un camino corto: la fuente de verdad sigue siendo el módulo.
 
 ## Qué contiene cada zona
 

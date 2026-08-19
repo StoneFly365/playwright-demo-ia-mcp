@@ -1,0 +1,23 @@
+RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
+Fecha: 19 de agosto de 2026 a las 8:46
+
+RESULTADO GLOBAL
+Total de pruebas ejecutadas: 10
+✅ Pruebas correctas: 0
+❌ Pruebas fallidas: 10
+⏭️ Pruebas omitidas: 0
+⚠️ Pruebas inestables (flaky): 0
+
+ATENCIÓN REQUERIDA
+El carrito de compras no actualiza el número de productos. Afecta a 4 pruebas de añadir y eliminar artículos.
+La autenticación no redirige correctamente tras login. Afecta a 3 pruebas de inicio de sesión y protección de acceso.
+El carrito no sincroniza los productos con el inventario. Afecta a 2 pruebas de visualización de artículos.
+
+CONCLUSIÓN
+La aplicación no funciona en operaciones críticas. El carrito de compras no actualiza, los usuarios no pueden iniciar sesión ni acceder a secciones protegidas, y los datos no se sincronizan correctamente. Estos son bloqueos que impiden cualquier funcionalidad básica. Se requiere corrección inmediata antes de continuar con las pruebas.
+
+ACCIONES RECOMENDADAS
+1. Reparar la actualización del contador del carrito de compras (soluciona 4 pruebas).
+2. Verificar la sincronización de productos entre inventario y carrito.
+3. Comprobar las rutas de autenticación y redirección tras login.
+4. Validar que los formularios muestren mensajes de error cuando faltan datos obligatorios.

@@ -10,7 +10,7 @@ Aquí es donde escribes código. En ningún otro sitio.
 
 | Zona | Permiso |
 |---|---|
-| `learning/student/sandbox/` | ✅ Tu zona (módulo 00 en `00-foundations/`, módulo 01 en `01-playwright/`) |
+| `learning/student/sandbox/` | ✅ Tu zona (módulo 00 en `00-foundations/`, módulo 01 en `01-playwright/`, [Ruta QA](../ruta-qa/README.md) en `ruta-qa/`) |
 | `learning/student/progreso.md` | ✅ Tu registro personal |
 | `pages/`, `tests/`, `scripts/`, `prompts/`, `specs/` | ❌ Solo lectura |
 | `playwright.config.ts`, `package.json`, `tsconfig.json`, `.github/` | ❌ No se tocan |

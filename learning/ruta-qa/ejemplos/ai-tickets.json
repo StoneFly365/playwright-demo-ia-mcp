@@ -1,0 +1,72 @@
+[
+  {
+    "titulo": "G001: Badge del carrito no muestra contador correcto",
+    "severidad": "alta",
+    "componente": "cart-badge",
+    "descripcion": "El elemento [data-test=\"shopping-cart-badge\"] no muestra el valor esperado tras añadir productos. Afecta a 4 tests en carrito, inventario y detalle de producto. Error: expect(locator).toHaveText failed - mismatch entre valor esperado y recibido.",
+    "pasos_para_reproducir": [
+      "debería mostrar badge con valor 4 al añadir cuatro productos distintos",
+      "debería añadir los 6 productos al carrito y mostrar badge con valor 6",
+      "debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)",
+      "debería eliminar el producto del carrito desde el detalle"
+    ],
+    "solucion_sugerida": [
+      "Verificar que el estado del carrito se actualiza antes de que el locator evalúe toHaveText",
+      "Revisar que el contador se renderiza correctamente en el DOM tras cada add/remove",
+      "Comprobar si hay race conditions entre actualización de estado y renderizado del badge",
+      "Validar el selector [data-test=\"shopping-cart-badge\"] y su estructura HTML"
+    ],
+    "etiquetas": ["playwright", "e2e", "ai-triage"]
+  },
+  {
+    "titulo": "G002: Recuento de elementos falla en sincronización carrito-inventario",
+    "severidad": "media",
+    "componente": "inventory",
+    "descripcion": "expect(locator).toHaveCount falla validando cantidad de productos. Afecta a 2 tests que verifican sincronización entre inventario y carrito. Error: Expected/Received count mismatch.",
+    "pasos_para_reproducir": [
+      "debería mostrar los productos añadidos desde el inventario en la página del carrito",
+      "debería mostrar 6 productos en el inventario"
+    ],
+    "solucion_sugerida": [
+      "Añadir wait explícito (page.waitForLoadState o waitForSelector) antes de contar elementos",
+      "Revisar que todos los elementos están renderizados y visibles antes del assert",
+      "Validar que no hay elementos ocultos, eliminados dinámicamente o en proceso de carga",
+      "Comprobar que el mock data o API devuelve los 6 productos correctamente"
+    ],
+    "etiquetas": ["playwright", "e2e", "ai-triage"]
+  },
+  {
+    "titulo": "G003: Redirección de URL falla en autenticación y rutas protegidas",
+    "severidad": "bloqueante",
+    "componente": "authentication",
+    "descripcion": "expect(page).toHaveURL falla en 3 tests críticos: login exitoso, logout y protección de rutas. El sistema de autenticación no redirige a las URLs esperadas. Error: URL mismatch on navigation assertions.",
+    "pasos_para_reproducir": [
+      "debería redirigir a la página de inventario con login exitoso",
+      "debería cerrar sesión al pulsar Logout",
+      "debería redirigir al login si se accede a /checkout-step-one.html sin sesión"
+    ],
+    "solucion_sugerida": [
+      "Verificar que el middleware de autenticación ejecuta la redirección tras login/logout exitoso",
+      "Revisar que las rutas protegidas validan la sesión/token antes de permitir acceso",
+      "Comprobar que la redirección no ocurre en múltiples pasos (cadena de redirects)",
+      "Validar que waitForURL o waitForNavigation espera tiempo suficiente para la redirección"
+    ],
+    "etiquetas": ["playwright", "e2e", "ai-triage"]
+  },
+  {
+    "titulo": "G004: Mensaje de error no aparece en validación de nombre checkout",
+    "severidad": "media",
+    "componente": "checkout",
+    "descripcion": "expect(locator).toContainText falla en elemento [data-test=\"error\"]. El mensaje de validación por nombre obligatorio no se renderiza en la página de checkout. Error: Expected substring not found.",
+    "pasos_para_reproducir": [
+      "debería mostrar error si el nombre es obligatorio"
+    ],
+    "solucion_sugerida": [
+      "Verificar que el validador de formulario dispara el error cuando el campo nombre está vacío",
+      "Comprobar que el elemento [data-test=\"error\"] existe en el DOM y no está oculto",
+      "Revisar que el mensaje de error se inserta en el HTML cuando falla la validación",
+      "Validar que no hay CSS (display:none, visibility:hidden) ocultando el mensaje"
+    ],
+    "etiquetas": ["playwright", "e2e", "ai-triage"]
+  }
+]

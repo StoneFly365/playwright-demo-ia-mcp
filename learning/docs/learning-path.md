@@ -199,6 +199,12 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Repository mapping** | `scripts/report-ai.mjs` completo (225 líneas); los 4 `prompts/*.txt`; `.mcp.json`; los 3 subagentes de `.claude/agents/`; los pasos de IA del workflow (52-69); `specs/add-to-cart-test-plan.md` como evidencia del flujo planner→generator. Hallazgos **D4** (el modelo inventaba `generated_at` y el código lo corrige), **D3** (validación solo con `JSON.parse`), **D1**/**D2** (permisos y superficie de inyección), **B1** (la ruta absoluta que rompe `report:ai` fuera de una máquina) |
 | **Entregables** | Un prompt modificado con su efecto documentado; pipeline IA ejecutado sobre una ejecución con fallos; un test generado por agente **y revisado críticamente**; tres riesgos identificados de aplicar esto a una app de HDI con datos reales |
 
+> ### 🎯 Parte de este módulo ya existe: la Ruta QA — 6 h
+>
+> La [**Ruta QA**](../ruta-qa/README.md) materializa buena parte de este temario en formato corto y práctico: límites y alucinación con evidencia del propio `report-ai.mjs`, prompting con contrato de salida sobre los cuatro `prompts/*.txt`, generación de tests y su revisión crítica, MCP y subagentes con herramientas acotadas, y debugging asistido sobre los diez `@demo-fail`.
+>
+> **El módulo 08 sigue sin construir como módulo completo.** Lo que la ruta no cubre y este módulo sí deberá: coste y elección de modelo, prompt chaining, validación estructurada más allá de `JSON.parse` (hallazgo D3), auto-reparación y su peligro, y el análisis a fondo de los pasos de IA del workflow (`.github/workflows/playwright.yml:52-69`).
+
 ---
 
 ## 09 — HDI Capstone ⬜

@@ -1,28 +1,51 @@
 - [Inicio](/)
 
-- **Programa**
-  - [Qué es el Learning Lab](/learning/README.md)
-  - [Mapa del programa](/mapa.md)
-  - [Documentación canónica](/documentacion.md)
-  - [Learning path — 10 módulos](/learning/docs/learning-path.md)
-  - [Prerrequisitos](/learning/docs/prerequisites.md)
-  - [Guía de instalación](/learning/docs/setup-guide.md)
-  - [Arquitectura del Learning Lab](/learning/docs/architecture.md)
-  - [Rúbrica general](/learning/docs/assessment-rubric.md)
-  - [Pre-assessment y evaluación](/learning/assessment/README.md)
-  - [Índice de módulos](/learning/modules/README.md)
+- **🛠️ Antes de empezar**
+  - [Pre-work técnico — 20-40 min](/learning/ruta-qa/pre-work.md)
 
-- **Alumno**
+- **🎯 Ruta QA — 6 horas**
+  - [Empieza aquí](/learning/ruta-qa/README.md)
+  - [0 · Introducción — 10 min](/learning/ruta-qa/00-introduccion.md)
+  - [1 · IA aplicada a QA — 35 min](/learning/ruta-qa/01-ia-para-qa.md)
+  - [2 · Prompting para QA — 30 min](/learning/ruta-qa/02-prompting.md)
+  - [3 · Generación de tests — 45 min](/learning/ruta-qa/03-generacion-tests.md)
+  - [4 · Playwright + IA — 90 min](/learning/ruta-qa/04-playwright-ia.md)
+  - [5 · MCP para QA — 45 min](/learning/ruta-qa/05-mcp-para-qa.md)
+  - [6 · Debugging con IA — 45 min](/learning/ruta-qa/06-debugging-ia.md)
+  - [7 · 🏆 Reto final — 60 min](/learning/ruta-qa/07-reto-final.md)
+
+- **🧰 Referencia rápida**
+  - [💡 Biblioteca de prompts](/learning/ruta-qa/prompts-para-tu-proyecto.md)
+  - [📦 Ejemplos — plan B](/learning/ruta-qa/ejemplos/README.md)
+  - [Tu zona de trabajo](/learning/student/sandbox/ruta-qa/README.md)
+  - [Guía de instalación](/learning/docs/setup-guide.md)
+  - [Prerrequisitos](/learning/docs/prerequisites.md)
+  - [Referencia de locators](/learning/modules/01-playwright-fundamentals/locator-reference.md)
+
+- **📚 Profundiza**
+  - [Qué es el Learning Lab](/learning/README.md)
   - [Guía del alumno](/learning/docs/student-guide.md)
   - [Zona de trabajo (sandbox)](/learning/student/README.md)
+  - [Índice de módulos](/learning/modules/README.md)
 
-- **Formador**
-  - [Guía del formador](/learning/docs/trainer-guide.md)
-  - [Planes de sesión](/planes-de-sesion.md)
-  - [Sesiones 01-02 — Módulo 00](/learning/trainer/session-plans/session-01-module-00.md)
-  - [Sesiones 03-06 — Módulo 01](/learning/trainer/session-plans/session-03-module-01.md)
+- **📚 Módulo 01 — Playwright (12 h)**
+  - [Overview del módulo](/modulo-01.md)
+  - [README canónico del módulo](/learning/modules/01-playwright-fundamentals/README.md)
+  - [Objetivos de aprendizaje](/learning/modules/01-playwright-fundamentals/learning-objectives.md)
+  - [Teoría](/learning/modules/01-playwright-fundamentals/theory.md)
+  - [Anclajes en el repositorio](/learning/modules/01-playwright-fundamentals/repository-mapping.md)
+  - [Labs — índice](/learning/modules/01-playwright-fundamentals/labs/README.md)
+    - [Lab 1 — La suite real](/learning/modules/01-playwright-fundamentals/labs/lab-1-suite-real.md)
+    - [Lab 2 — Auto-waiting](/learning/modules/01-playwright-fundamentals/labs/lab-2-auto-waiting.md)
+    - [Lab 3 — Locators](/learning/modules/01-playwright-fundamentals/labs/lab-3-locators.md)
+    - [Lab 4 — El test que falta](/learning/modules/01-playwright-fundamentals/labs/lab-4-test-que-falta.md)
+    - [Lab 5 — Troubleshoot](/learning/modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md)
+    - [Lab 6 — Codegen (opcional)](/learning/modules/01-playwright-fundamentals/labs/lab-6-codegen.md)
+  - [Challenge — índice](/learning/modules/01-playwright-fundamentals/challenges/README.md)
+    - [Challenge 1 — Compra completa](/learning/modules/01-playwright-fundamentals/challenges/challenge-1-compra-completa.md)
+  - [Assessment](/learning/modules/01-playwright-fundamentals/assessment/README.md)
 
-- **Módulo 00 — Fundamentos JS/TS**
+- **📚 Módulo 00 — Fundamentos JS/TS (8,75 h)**
   - [Overview del módulo](/learning/modules/00-foundations/README.md)
   - [Objetivos de aprendizaje](/learning/modules/00-foundations/learning-objectives.md)
   - [Teoría](/learning/modules/00-foundations/theory.md)
@@ -36,25 +59,19 @@
     - [Challenge 1 — Cart summary](/learning/modules/00-foundations/challenges/challenge-1-cart-summary.md)
   - [Assessment](/learning/modules/00-foundations/assessment/README.md)
 
-- **Módulo 01 — Playwright Fundamentals**
-  - [Overview del módulo](/modulo-01.md)
-  - [README canónico del módulo](/learning/modules/01-playwright-fundamentals/README.md)
-  - [Objetivos de aprendizaje](/learning/modules/01-playwright-fundamentals/learning-objectives.md)
-  - [Teoría](/learning/modules/01-playwright-fundamentals/theory.md)
-  - [Referencia de locators](/learning/modules/01-playwright-fundamentals/locator-reference.md)
-  - [Anclajes en el repositorio](/learning/modules/01-playwright-fundamentals/repository-mapping.md)
-  - [Labs — índice](/learning/modules/01-playwright-fundamentals/labs/README.md)
-    - [Lab 1 — La suite real](/learning/modules/01-playwright-fundamentals/labs/lab-1-suite-real.md)
-    - [Lab 2 — Auto-waiting](/learning/modules/01-playwright-fundamentals/labs/lab-2-auto-waiting.md)
-    - [Lab 3 — Locators](/learning/modules/01-playwright-fundamentals/labs/lab-3-locators.md)
-    - [Lab 4 — El test que falta](/learning/modules/01-playwright-fundamentals/labs/lab-4-test-que-falta.md)
-    - [Lab 5 — Troubleshoot](/learning/modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md)
-    - [Lab 6 — Codegen (opcional)](/learning/modules/01-playwright-fundamentals/labs/lab-6-codegen.md)
-  - [Challenge — índice](/learning/modules/01-playwright-fundamentals/challenges/README.md)
-    - [Challenge 1 — Compra completa](/learning/modules/01-playwright-fundamentals/challenges/challenge-1-compra-completa.md)
-  - [Assessment](/learning/modules/01-playwright-fundamentals/assessment/README.md)
+- **🏫 Formador**
+  - [Guía del formador](/learning/docs/trainer-guide.md)
+  - [Planes de sesión](/planes-de-sesion.md)
+  - [Sesiones 01-02 — Módulo 00](/learning/trainer/session-plans/session-01-module-00.md)
+  - [Sesiones 03-06 — Módulo 01](/learning/trainer/session-plans/session-03-module-01.md)
 
-- **Piloto / Diseño**
+- **🗂️ Programa y diseño**
+  - [Mapa del programa](/mapa.md)
+  - [Learning path — 10 módulos](/learning/docs/learning-path.md)
+  - [Documentación canónica](/documentacion.md)
+  - [Arquitectura del Learning Lab](/learning/docs/architecture.md)
+  - [Rúbrica general](/learning/docs/assessment-rubric.md)
+  - [Pre-assessment y evaluación](/learning/assessment/README.md)
   - [Cómo funciona el piloto](/piloto.md)
   - [Plan de piloto — M01](/learning/docs/module-01-pilot-plan.md)
   - [Registro de ejecución — M01](/learning/docs/module-01-pilot-run-log.md)

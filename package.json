@@ -11,8 +11,9 @@
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:report": "playwright show-report",
-    "report:ai": "cross-env CLAUDE_CODE_GIT_BASH_PATH=\"C:\\Users\\raul.molina\\AppData\\Local\\Programs\\Git\\usr\\bin\\bash.exe\" node scripts/report-ai.mjs",
-    "test:ai": "npm run test && npm run report:ai"
+    "report:ai": "node scripts/report-ai.mjs",
+    "test:ai": "npm run test && npm run report:ai",
+    "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

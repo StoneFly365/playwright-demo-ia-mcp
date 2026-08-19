@@ -5,6 +5,14 @@ Un programa de formación en automatización de pruebas construido **sobre un pr
 
 ---
 
+## 🎯 ¿Tienes seis horas y un proyecto en marcha?
+
+Antes de nada: existe un recorrido corto. **[Ruta QA — 6 horas](ruta-qa/README.md)** selecciona lo esencial del programa y lo orienta a aplicar IA en tu trabajo de QA el mismo día.
+
+El resto de este documento describe el programa completo (38 h, 10 módulos). No hace falta para seguir la ruta.
+
+---
+
 ## Qué es esto
 
 Este repositorio es una suite E2E de verdad: 79 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, ejecución en tres navegadores, pipeline de GitHub Actions dentro de un contenedor Docker y un análisis de fallos generado por IA. Funciona, se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real.
@@ -71,6 +79,8 @@ git checkout -b learning/00-foundations-<tu-nombre>
 learning/
 ├── README.md                    ← estás aquí
 ├── phase-1-learning-lab-design.md   Análisis del repositorio y diseño del programa
+│
+├── ruta-qa/                     🎯 Ruta QA — 6 h: el recorrido corto y práctico
 │
 ├── docs/                        Documentación transversal
 │   ├── learning-path.md         Mapa completo de los 10 módulos
@@ -188,6 +198,7 @@ El mapa completo de los diez módulos —objetivos, contenidos, duración, depen
 
 | Si eres… | Empieza por |
 |---|---|
-| **Alumno** | [docs/student-guide.md](docs/student-guide.md) → [modules/00-foundations/](modules/00-foundations/) |
+| **QA con 6 horas y un proyecto en marcha** | [ruta-qa/](ruta-qa/README.md) |
+| **Alumno del programa completo** | [docs/student-guide.md](docs/student-guide.md) → [modules/00-foundations/](modules/00-foundations/) |
 | **Formador** | [docs/trainer-guide.md](docs/trainer-guide.md) → [trainer/session-plans/](trainer/session-plans/) |
 | **Responsable del programa** | [phase-1-learning-lab-design.md](phase-1-learning-lab-design.md) → [docs/learning-path.md](docs/learning-path.md) |
