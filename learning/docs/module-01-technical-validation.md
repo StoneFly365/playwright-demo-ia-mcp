@@ -25,9 +25,9 @@
 
 Esta validación se ha ejecutado desde **el equipo de desarrollo actual**, que es una máquina sin proxy y con acceso directo a internet.
 
-**No es una validación del entorno de HDI Seguros Chile.** Lo que aquí se demuestra es que la aplicación, los locators y los tiempos funcionan; lo que **no** se demuestra es que una máquina corporativa de HDI, detrás de su proxy y sus políticas, pueda hacer lo mismo.
+**No es una validación del entorno del cliente.** Lo que aquí se demuestra es que la aplicación, los locators y los tiempos funcionan; lo que **no** se demuestra es que una máquina corporativa del cliente, detrás de su proxy y sus políticas, pueda hacer lo mismo.
 
-Todo el apartado K2 (locators, accesibilidad, `testIdAttribute`) es **independiente de la red** y vale para cualquier entorno. El apartado K1 hay que repetirlo en un equipo de HDI. Ver sección 10.
+Todo el apartado K2 (locators, accesibilidad, `testIdAttribute`) es **independiente de la red** y vale para cualquier entorno. El apartado K1 hay que repetirlo en un equipo del cliente. Ver sección 10.
 
 ---
 
@@ -39,7 +39,7 @@ Todo el apartado K2 (locators, accesibilidad, `testIdAttribute`) es **independie
 | HTTPS | ✅ | `HTTP 200`, 1.349 bytes, `Server: GitHub.com` |
 | Certificados | ✅ | Sin errores TLS; sin necesidad de `ignoreHTTPSErrors` |
 | Proxy | ✅ No aplica | Sin proxy en la máquina de validación |
-| **Hosting** | **GitHub Pages** | Dato relevante: bloquear GitHub Pages en HDI bloquea también SauceDemo |
+| **Hosting** | **GitHub Pages** | Dato relevante: bloquear GitHub Pages en el cliente bloquea también SauceDemo |
 | Login funcional | ✅ | Con las credenciales que **ya usa el proyecto**; ninguna credencial nueva y ninguna expuesta en este informe |
 | Flujo E2E completo | ✅ | login → catálogo → carrito → checkout paso 1 → paso 2 → confirmación, recorrido entero sin incidencias |
 
@@ -268,7 +268,7 @@ La cadena de hechos, toda verificada:
 
 | # | Riesgo original | Impacto anterior | **Impacto ahora** | Motivo |
 |---|---|---|---|---|
-| K1 | Entorno inaccesible | HIGH | **HIGH (sin cambios)** | Validado aquí, **no en HDI**. La incógnita sigue abierta donde importa |
+| K1 | Entorno inaccesible | HIGH | **HIGH (sin cambios)** | Validado aquí, **no en el cliente**. La incógnita sigue abierta donde importa |
 | K2 | Locators no verificados | HIGH | **RESUELTO** | 20 elementos × 7 estrategias, sondeados contra el DOM real |
 | K3 | Demasiado contenido | HIGH | HIGH | Sin cambios |
 | K4 | Faltan ejemplos de estrategias | MEDIUM | **MEDIUM ↓** | `getByRole`, `getByPlaceholder` y `getByTestId` funcionan de verdad; solo `getByLabel` queda sin anclaje |
@@ -299,7 +299,7 @@ La cadena de hechos, toda verificada:
 
 | Criterio | Resultado | Fundamento |
 |---|---|---|
-| **K1 — Entorno** | **CONDITIONAL** | ✅ Todo funciona en la máquina de desarrollo: DNS, HTTPS, login, flujo completo, 3 navegadores, 79 tests en 21,8 s. ❌ **Sin verificar en un equipo corporativo de HDI**, que es donde estaba el riesgo |
+| **K1 — Entorno** | **CONDITIONAL** | ✅ Todo funciona en la máquina de desarrollo: DNS, HTTPS, login, flujo completo, 3 navegadores, 79 tests en 21,8 s. ❌ **Sin verificar en un equipo corporativo del cliente**, que es donde estaba el riesgo |
 | **K2 — Locators** | **PASS** | 20 elementos sondeados con las 7 estrategias contra el DOM real. Los locators recomendados para cada elemento están confirmados. `testIdAttribute` verificado con y sin configurar. Las tres divergencias respecto al diseño (H2, H4, H5) son ajustes de enunciado, no rediseños |
 
 ## Recomendación
@@ -318,7 +318,7 @@ No es *PROCEED* porque hay tres ajustes obligatorios antes de escribir el Lab 3 
 
 ### Lo que sigue bloqueado y no depende de mí
 
-**Ejecutar los apartados 2 y 3 de este informe desde un equipo corporativo de HDI.** Concretamente:
+**Ejecutar los apartados 2 y 3 de este informe desde un equipo corporativo del cliente.** Concretamente:
 
 ```bash
 npm ci

@@ -1,5 +1,4 @@
 # QA Automation &amp; AI Engineering Learning Lab
-## HDI Seguros Chile
 
 ---
 
@@ -92,7 +91,7 @@ La Ruta QA es un recorrido curado. Debajo hay un programa completo del que sale 
 | Módulo 01 — Playwright Fundamentals | ✅ Material completo · **operacionalmente preparado**, pendiente de piloto |
 | **Piloto del Módulo 01** | ⬜ **NO ejecutado.** No hay participantes ni datos |
 | [Registro de ejecución del piloto](/learning/docs/module-01-pilot-run-log.md) | ⬜ **Vacío a propósito.** Es la plantilla, no un informe |
-| Riesgo **K1** (entorno / red HDI) | 🟠 **PENDIENTE** — se valida durante la formación en HDI |
+| Riesgo **K1** (entorno / red corporativa del cliente) | 🟠 **PENDIENTE** — se valida durante la formación en la organización del cliente |
 | Los cinco gaps 🟡 de la revisión pedagógica | ⬜ Identificados, **ninguno implementado**: se deciden con datos del piloto |
 | Módulo 02 — Page Object Model &amp; Suite | ⬜ **NO iniciado** |
 

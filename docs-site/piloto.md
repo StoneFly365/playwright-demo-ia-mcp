@@ -34,7 +34,7 @@ flowchart LR
 |---|---|
 | ¿Las 12 h por alumno son realistas? | Sin datos. La estimación sale del diseño |
 | ¿Qué pasa con los **cinco gaps 🟡** de la revisión pedagógica? | Identificados y documentados. **Ninguno implementado**: se deciden con datos |
-| ¿El entorno de HDI permite ejecutar contra `saucedemo.com` (**riesgo K1**)? | 🟠 PENDIENTE — se valida durante la formación en HDI |
+| ¿El entorno del cliente permite ejecutar contra `saucedemo.com` (**riesgo K1**)? | 🟠 PENDIENTE — se valida durante la formación en la organización del cliente |
 | ¿La revisión cruzada de la sesión 6 aporta algo? | Es un experimento explícito del piloto, sin resultado |
 
 ## Documentación de diseño del Módulo 01

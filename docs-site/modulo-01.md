@@ -97,7 +97,7 @@ flowchart LR
 
 A diferencia del módulo 00, **este módulo no funciona sin red**: necesita navegadores instalados (~500 MB por equipo) y acceso a `saucedemo.com`. La instalación ocupa media hora de la sesión 3 y no es negociable.
 
-Si la comprobación de entorno falla por red, proxy o certificados, el alumno **para y avisa al formador**: es el riesgo **K1**, tiene plan alternativo y **sigue PENDIENTE de validación durante la formación en HDI**.
+Si la comprobación de entorno falla por red, proxy o certificados, el alumno **para y avisa al formador**: es el riesgo **K1**, tiene plan alternativo y **sigue PENDIENTE de validación durante la formación en la organización del cliente**.
 
 ## Estado actual
 
@@ -106,7 +106,7 @@ Si la comprobación de entorno falla por red, proxy o certificados, el alumno **
 | Material del módulo (teoría, Labs, Challenge, Assessment, soluciones) | ✅ Completo |
 | Piloto con alumnos | ⬜ **NO ejecutado.** Sin participantes ni datos |
 | Duración de 12 h | Provisional, a confirmar con el piloto |
-| Riesgo K1 (entorno / red HDI) | 🟠 PENDIENTE |
+| Riesgo K1 (entorno / red corporativa del cliente) | 🟠 PENDIENTE |
 | Los cinco gaps 🟡 de la [revisión pedagógica](/learning/docs/module-01-pedagogical-review.md) | ⬜ Identificados, **ninguno implementado** |
 | Decisión de cierre de M01 | ⬜ Futura, con datos del piloto |
 

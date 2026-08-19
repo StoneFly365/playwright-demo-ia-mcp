@@ -13,7 +13,7 @@
 | 06 | CI/CD & Docker | 6 OPTIMIZE | 3 h + 2 h | 04 | ⬜ Pendiente |
 | 07 | Quality Engineering & Test Strategy | 4 DESIGN | 3 h + 2 h | 06 | ⬜ Pendiente |
 | 08 | AI-Augmented QA | 6 OPTIMIZE | 3 h + 2 h | 04, 06 | ⬜ Pendiente |
-| 09 | HDI Capstone | 7 ARCHITECT | 6 h + 10 h | todos | ⬜ Pendiente |
+| 09 | Capstone final | 7 ARCHITECT | 6 h + 10 h | todos | ⬜ Pendiente |
 
 ## Estructura común de un módulo
 

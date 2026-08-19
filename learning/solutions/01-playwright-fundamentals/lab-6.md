@@ -38,7 +38,7 @@ Un alumno que entregue la tabla del Paso 2 **coincidiendo con lo que "se supone"
 
 ## Lo que sí se ha medido (18/08/2026)
 
-Validación parcial en el **equipo de desarrollo del programa**. **No es K1**: K1 es la comprobación de entorno en una máquina corporativa de HDI y sigue `PENDIENTE — validación durante formación HDI`.
+Validación parcial en el **equipo de desarrollo del programa**. **No es K1**: K1 es la comprobación de entorno en una máquina corporativa del cliente y sigue `PENDIENTE — validación durante formación con el cliente`.
 
 | Comprobación | Resultado | Cómo |
 |---|---|---|

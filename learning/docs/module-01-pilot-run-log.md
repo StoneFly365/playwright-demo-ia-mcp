@@ -324,7 +324,7 @@ Evidencia observable, no impresión:
 |---|---|
 | Momento en que lo abre cada participante | P1 ___ · P2 ___ · P3 ___ · P4 ___ |
 | ¿Vuelve a los **criterios**, o copia la **fila**? | |
-| **Pregunta de cierre del Lab 3:** *"¿qué tres filas cambiarían en la aplicación de HDI?"* — respuestas literales | |
+| **Pregunta de cierre del Lab 3:** *"¿qué tres filas cambiarían en la aplicación del cliente?"* — respuestas literales | |
 | Nº de participantes que saben responder | ___ / ___ |
 | Ejemplo concreto | |
 | INTERPRETACIÓN | |
@@ -379,11 +379,11 @@ git diff --stat -- tests/ pages/ scripts/ prompts/ specs/ .github/ playwright.co
 
 # 9. K1 — no se registra aquí
 
-**K1 no forma parte de este piloto.** Su estado es `PENDIENTE — validación durante formación HDI` y se valida en la propia formación con el cliente, en una **máquina corporativa de HDI**.
+**K1 no forma parte de este piloto.** Su estado es `PENDIENTE — validación durante formación con el cliente` y se valida en la propia formación con el cliente, en una **máquina corporativa del cliente**.
 
 Su casilla de registro es única y está en el plan de sesión — [`session-03-module-01.md`](../trainer/session-plans/session-03-module-01.md), sección *"⚠️ Antes de la sesión — comprobación de entorno OBLIGATORIA"*. Allí están los tres comandos y la tabla de interpretación. **No se duplican aquí para que no existan dos versiones del estado de K1.**
 
-Cuando llegue el momento, se anota en esa casilla: comando, salida relevante, fecha, si es entorno corporativo HDI, proxy/red si procede, y `PASS` / `FAIL`.
+Cuando llegue el momento, se anota en esa casilla: comando, salida relevante, fecha, si es entorno corporativo del cliente, proxy/red si procede, y `PASS` / `FAIL`.
 
 > **Ninguna ejecución del equipo de desarrollo del programa es un PASS de K1.** Si el piloto interno se ejecuta en máquinas del programa, sus bloqueos de entorno se etiquetan **E** en §4 y **no** cambian el estado de K1.
 
@@ -491,7 +491,7 @@ Cosas detectadas **antes** de ejecutar el piloto. **Ninguna se ha corregido**: s
 | `npm run test:chromium` | | | 69 passed, 10 failed |
 | Sandbox M01 `--project=chromium` | | | 4 passed, 2 failed |
 
-> **VERIFICACIÓN TÉCNICA — NO ES K1.** Ninguna de estas cuatro ejecuciones cambia el estado de K1, que sigue `PENDIENTE — validación durante formación HDI`. Tampoco son datos del piloto: no se vuelcan a §10.
+> **VERIFICACIÓN TÉCNICA — NO ES K1.** Ninguna de estas cuatro ejecuciones cambia el estado de K1, que sigue `PENDIENTE — validación durante formación con el cliente`. Tampoco son datos del piloto: no se vuelcan a §10.
 - [ ] Cada participante ha ejecutado `npx playwright install` en su equipo **antes** de la sesión 3 (~500 MB)
 - [ ] Cronómetro y este registro abiertos. Un reloj por participante, no uno para el aula
 - [ ] Copiar la ficha de §3 tantas veces como participantes
@@ -515,7 +515,7 @@ Cosas detectadas **antes** de ejecutar el piloto. **Ninguna se ha corregido**: s
 ### K1 — localizado, no ejecutado
 
 - [ ] **Procedimiento K1 localizado**: [`session-03-module-01.md`](../trainer/session-plans/session-03-module-01.md) → *"⚠️ Antes de la sesión — comprobación de entorno OBLIGATORIA"*
-- [ ] Entendido que **K1 no forma parte de este piloto interno**: no se ejecuta aquí, no se declara aquí, y sigue `PENDIENTE — validación durante formación HDI`. Los bloqueos de entorno del piloto se etiquetan **E** en §4 y no tocan su estado
+- [ ] Entendido que **K1 no forma parte de este piloto interno**: no se ejecuta aquí, no se declara aquí, y sigue `PENDIENTE — validación durante formación con el cliente`. Los bloqueos de entorno del piloto se etiquetan **E** en §4 y no tocan su estado
 
 ### Protección de datos
 
@@ -533,7 +533,7 @@ Cosas detectadas **antes** de ejecutar el piloto. **Ninguna se ha corregido**: s
 ## Momentos que no se pueden dejar pasar
 
 - [ ] **Lab 5, caso B:** cronometrarlo aparte y anotar si formuló hipótesis **antes** de los `grep` *(🟡-2)*
-- [ ] **Cierre del Lab 3:** preguntar *"¿qué tres filas de `locator-reference.md` cambiarían en la aplicación de HDI?"* y anotar las respuestas literales *(🟡-5)*
+- [ ] **Cierre del Lab 3:** preguntar *"¿qué tres filas de `locator-reference.md` cambiarían en la aplicación del cliente?"* y anotar las respuestas literales *(🟡-5)*
 - [ ] **Lab 2, reflexión 3 y A3:** anotar las palabras exactas con que describe un test intermitente *(🟡-1)*
 - [ ] **Assessment:** cronometrar **E1 y E2 por separado** *(F3)*
 - [ ] **Sesión 6:** contar quién llega con el Challenge completo, y si quedan defensas pendientes al minuto 45

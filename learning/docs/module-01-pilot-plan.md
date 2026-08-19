@@ -24,9 +24,9 @@ El piloto **no** es una evaluación de los participantes. Su nota no cuenta.
 - **Trabajo individual, no en parejas**, aunque la sesión real sea en parejas: en pareja no se puede distinguir quién ha entendido qué.
 - Un formador observando, sin impartir de más: si el formador rescata cada bloqueo, el piloto no mide el material.
 
-## 3. K1 — `PENDIENTE — validación durante formación HDI`
+## 3. K1 — `PENDIENTE — validación durante formación con el cliente`
 
-**K1 no bloquea este piloto.** Por decisión de programa, el entorno corporativo se valida durante la propia formación con HDI, no antes; el piloto interno se ejecuta en equipos del programa, donde el entorno ya funciona. La comprobación de entorno sigue siendo obligatoria en la sesión real y ya está definida en el plan de sesión; **no se duplica aquí**:
+**K1 no bloquea este piloto.** Por decisión de programa, el entorno corporativo se valida durante la propia formación con el cliente, no antes; el piloto interno se ejecuta en equipos del programa, donde el entorno ya funciona. La comprobación de entorno sigue siendo obligatoria en la sesión real y ya está definida en el plan de sesión; **no se duplica aquí**:
 
 > [`learning/trainer/session-plans/session-03-module-01.md`](../trainer/session-plans/session-03-module-01.md) → sección *"⚠️ Antes de la sesión — comprobación de entorno OBLIGATORIA"*
 
@@ -88,7 +88,7 @@ Cualitativo, anotado en el momento y con cita literal cuando sea posible:
 - qué hace el alumno cuando un test se pone rojo: ¿lee el error, o cambia cosas hasta que pase?
 - si usa el material de referencia como método (vuelve a los criterios) o como catálogo (copia la fila);
 - qué vocabulario usa para describir lo que ha hecho — es el mejor indicador de si el concepto ha entrado;
-- si pregunta por el proyecto real de HDI, y en qué momento (indica cuándo el ejemplo deja de bastarle).
+- si pregunta por el proyecto real del cliente, y en qué momento (indica cuándo el ejemplo deja de bastarle).
 
 ## 6. Preguntas específicas que el piloto debe responder
 
@@ -100,7 +100,7 @@ Cada una con su evidencia observable y su umbral. Ninguna se responde por impres
 | 2 | **¿El Challenge discrimina criterio frente a copia?** | Comparar los entregables entre sí y con `tests/checkout.spec.ts`. Leer el apartado obligatorio de reutilización (AC6). ¿Dos entregas distintas producen decisiones distintas? | Si 3 de 4 entregas son la misma estructura con los nombres cambiados y el apartado de reutilización está vacío o es genérico, el Challenge no discrimina |
 | 3 | **¿A2 y A7 son demasiado memorísticos?** (gap 🟡-4) | Tasa de acierto de A2 y A7 frente a la media de la Parte A; y si el acierto correlaciona con haber hecho los Labs o solo con haber leído la teoría | Si A2 y A7 se aciertan muy por encima de la media y sin relación con los Labs, se les añade la cláusula de decisión prevista |
 | 4 | **¿P4 queda suficientemente cubierto?** (gap 🟡-3) | ¿Hay evidencia de que el alumno **convierte** un locator y **razona el efecto**? Buscarla en el Lab 3, en A5 y en E1 | Si la única evidencia está en el Lab 3 y el assessment no la toca, se ajusta la matriz (P4 evaluado por entregable) o se amplía E1 |
-| 5 | **¿`locator-reference.md` se usa como método o como chuleta?** (gap 🟡-5) | Observar cuándo se abre y qué se hace con él. Al cerrar el Lab 3, preguntar al grupo: *"¿qué tres filas cambiarían en la aplicación de HDI?"* | Si nadie sabe responder, el documento se está memorizando, no usando: la pregunta pasa a ser obligatoria en el plan de sesión |
+| 5 | **¿`locator-reference.md` se usa como método o como chuleta?** (gap 🟡-5) | Observar cuándo se abre y qué se hace con él. Al cerrar el Lab 3, preguntar al grupo: *"¿qué tres filas cambiarían en la aplicación del cliente?"* | Si nadie sabe responder, el documento se está memorizando, no usando: la pregunta pasa a ser obligatoria en el plan de sesión |
 | 6 | **¿Los `grep` del [Lab 5](../modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md) eliminan demasiado descubrimiento?** (gap 🟡-2) | Cronometrar el **caso B** por separado y observar si el alumno formula la hipótesis antes o después de ejecutar los `grep` que el enunciado le entrega | Si el caso B se resuelve en **menos de 10 min** y nadie formula hipótesis antes, los comandos pasan a un bloque `<details>` de pista |
 | 7 | **¿Hace falta explicitar el término *flaky*?** (gap 🟡-1) | ¿Con qué palabras describe el alumno un test que unas veces pasa y otras no (Lab 2, reflexión 3; A3)? ¿Pregunta cómo se llama eso? | Si los participantes lo describen con rodeos o preguntan por el nombre, entra la frase prevista en `theory.md` §3 |
 

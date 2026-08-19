@@ -207,7 +207,7 @@ El 50% combinado de **criterio + arquitectura** es deliberado: el programa forma
 
 ## Medición del progreso
 
-Aplicar la misma rúbrica al inicio y al final y comparar el perfil por competencia. Es el único dato objetivo de retorno de la formación que HDI podrá poner sobre la mesa.
+Aplicar la misma rúbrica al inicio y al final y comparar el perfil por competencia. Es el único dato objetivo de retorno de la formación que el cliente podrá poner sobre la mesa.
 
 | Competencia | Nivel inicial | Nivel final | Δ |
 |---|---|---|---|

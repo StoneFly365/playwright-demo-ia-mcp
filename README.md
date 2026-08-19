@@ -17,7 +17,7 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 
 ## Learning Lab
 
-Este repositorio es además el laboratorio de **QA Automation & AI Engineering Learning Lab — HDI Seguros Chile**, un programa de formación que usa el propio proyecto como material: cada concepto se enseña sobre un fichero y una línea reales, y los defectos deliberados de la suite son los ejercicios de diagnóstico.
+Este repositorio es además el laboratorio de **QA Automation & AI Engineering Learning Lab**, un programa de formación que usa el propio proyecto como material: cada concepto se enseña sobre un fichero y una línea reales, y los defectos deliberados de la suite son los ejercicios de diagnóstico.
 
 El material formativo vive íntegramente en [`learning/`](learning/) y **no modifica el código de automatización**: `tests/`, `pages/`, `scripts/`, `prompts/`, `specs/` y la configuración raíz permanecen intactos.
 

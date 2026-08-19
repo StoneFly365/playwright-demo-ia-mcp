@@ -1,5 +1,4 @@
 # QA Automation & AI Engineering Learning Lab
-## HDI Seguros Chile
 
 **Fase 1 — Análisis del repositorio y arquitectura del Learning Lab**
 **Fecha:** 17 de agosto de 2026
@@ -33,7 +32,7 @@ El repositorio `playwright-demo-ia-mcp` es una suite E2E real sobre [SauceDemo](
 
 > **Primera discrepancia detectada:** `specs/test-index.md` declara 9 fallos intencionados; en el código hay **10** tests etiquetados `@demo-fail` (uno por cada uno de estos ficheros: `login`, `inventory`, `checkout`, `menu`, `route-protection`, `inventory-add-to-cart`, `product-detail`, `product-detail-add-to-cart`, `cart-badge`, `cart-sync`). La documentación ha derivado del código.
 
-**Conclusión del análisis:** el repositorio es una **base formativa excelente pero deliberadamente incompleta**. Cubre con solvencia el 100% del arco "test E2E de UI → POM → cross-browser → CI en Docker → reporte IA", que es exactamente el recorrido que un QA de HDI necesita interiorizar. En cambio **no contiene** fixtures, autenticación por `storageState`, gestión de datos de prueba, testing de API, mocking de red, linting, ni typecheck en CI. Esas ausencias no son un defecto para un Learning Lab: son **el temario de los módulos 02 a 05**, y el propio repositorio proporciona el "antes" sobre el que el alumno construirá el "después".
+**Conclusión del análisis:** el repositorio es una **base formativa excelente pero deliberadamente incompleta**. Cubre con solvencia el 100% del arco "test E2E de UI → POM → cross-browser → CI en Docker → reporte IA", que es exactamente el recorrido que un QA del cliente necesita interiorizar. En cambio **no contiene** fixtures, autenticación por `storageState`, gestión de datos de prueba, testing de API, mocking de red, linting, ni typecheck en CI. Esas ausencias no son un defecto para un Learning Lab: son **el temario de los módulos 02 a 05**, y el propio repositorio proporciona el "antes" sobre el que el alumno construirá el "después".
 
 Además, el repositorio contiene una cantidad inusualmente alta de **material didáctico accidental**: 10 fallos intencionados documentados con el comentario exacto de cómo revertirlos, dos usuarios de SauceDemo con bugs reales (`problem_user`) y latencia real (`performance_glitch_user`), y varios anti-patrones auténticos (locators CSS frágiles, aserciones condicionales, rutas absolutas de una máquina concreta en `package.json`). Todo eso vale más como ejercicio que como código a corregir.
 
@@ -590,7 +589,7 @@ Clasificación: **CRITICAL** (sin esto el Learning Lab no cumple su objetivo) ·
 | Jerarquía de locators | Sólido con fugas | A1, A12: `.cart_item` en tests, un solo `getByRole`, sin `testIdAttribute` | Se enseña `data-test` pero no el criterio completo | Módulo 01: taller de locators sobre ejemplos buenos y malos del propio repo | **HIGH** |
 | Testing de API | Ausente | Ningún `APIRequestContext` | Sin API testing la pirámide se queda en la punta | Módulo 04: `request` fixture; SauceDemo no tiene API pública → usar API pública neutral o mock | **HIGH** |
 | Mocking de red | Ausente | Ningún `page.route` | No se pueden simular errores de backend ni escenarios raros | Módulo 04: `page.route` para forzar 500/timeout | **HIGH** |
-| Riesgos de IA (inyección, datos) | Ausente | D1, D2 sin tratar | Aplicar esto en HDI con datos reales sin formación es un riesgo | Módulo 07: sesión de seguridad y gobernanza de IA | **HIGH** |
+| Riesgos de IA (inyección, datos) | Ausente | D1, D2 sin tratar | Aplicar esto en el cliente con datos reales sin formación es un riesgo | Módulo 07: sesión de seguridad y gobernanza de IA | **HIGH** |
 | Linting y typecheck | Ausente | B3, B4, A8 | Errores triviales llegan a `main` | Módulo 05: añadir `tsc --noEmit` + ESLint y su paso de CI | **HIGH** |
 | Portabilidad del script IA | Roto fuera de una máquina | B1: ruta absoluta en `package.json:14` | Los alumnos no podrán ejecutar `report:ai` en local | Módulo 07 ejercicio 1: hacerlo portable | **HIGH** |
 | `test.step` y legibilidad de traza | Ausente | Ningún `test.step` | Trazas menos legibles en flujos largos | Módulo 03 | **MEDIUM** |
@@ -616,7 +615,7 @@ Clasificación: **CRITICAL** (sin esto el Learning Lab no cumple su objetivo) ·
 
 ## 6.1 Perfil declarado
 
-QAs de HDI Seguros Chile con experiencia previa en testing. Se asume:
+QAs del cliente con experiencia previa en testing. Se asume:
 
 - Conocen conceptos de QA: caso de prueba, defecto, severidad, regresión, ciclo de vida del bug.
 - Pueden venir de testing manual, con o sin automatización previa.
@@ -644,7 +643,7 @@ Del análisis del repositorio se deduce qué encontrará difícil cada perfil:
 2. **Ninguna sesión debe empezar con la página en blanco.** Siempre se parte de código que ya funciona (el repositorio) y se modifica.
 3. **El español es el idioma del código existente** (títulos de test, mensajes de aserción, prompts, README). Todo el material debe mantenerlo. Los términos técnicos y los nombres de API se conservan en inglés.
 4. **El contexto de negocio debe migrar a seguros** en el capstone; e-commerce es el vehículo de aprendizaje, no el destino.
-5. **Restricción de entorno corporativo:** hay que verificar antes de empezar que desde los equipos de HDI se puede acceder a `saucedemo.com`, a `npmjs.com`, a GitHub y (si se usa el reporte IA en local) al proveedor de IA. Esto es un bloqueante logístico, no técnico. Ver sección 17.
+5. **Restricción de entorno corporativo:** hay que verificar antes de empezar que desde los equipos del cliente se puede acceder a `saucedemo.com`, a `npmjs.com`, a GitHub y (si se usa el reporte IA en local) al proveedor de IA. Esto es un bloqueante logístico, no técnico. Ver sección 17.
 
 ---
 
@@ -742,7 +741,7 @@ Regla de desempate: si el total y el subíndice caen en niveles distintos, **man
 3. **Propuesta de parejas** — cada BEGINNER/FOUNDATION con un INTERMEDIATE/ADVANCED, para el trabajo en parejas de los módulos 02-05.
 4. **Decisión sobre el módulo 00**: ampliado / completo / reducido según la mediana del grupo.
 
-Se recomienda repetir una versión equivalente al final del programa (post-assessment) para medir progreso real. Es el dato que HDI necesitará para valorar el retorno de la formación.
+Se recomienda repetir una versión equivalente al final del programa (post-assessment) para medir progreso real. Es el dato que el cliente necesitará para valorar el retorno de la formación.
 
 ---
 
@@ -772,7 +771,7 @@ Se añade además el módulo **05 — Testing más allá de la UI**, que cubre l
 06 — CI/CD & Docker
 07 — Quality Engineering & Test Strategy
 08 — AI-Augmented QA
-09 — HDI Capstone
+09 — Capstone final
 ```
 
 Diez módulos numerados 00-09. La numeración del encargo (00-07) se mantiene reconocible; el desdoblamiento aporta granularidad de planificación sin cambiar el arco narrativo.
@@ -898,9 +897,9 @@ Diez módulos numerados 00-09. La numeración del encargo (00-07) se mantiene re
 - **Funcionalidades del repositorio usadas:** `scripts/report-ai.mjs` completo (225 líneas, se lee entero); los 4 `prompts/*.txt`; `.mcp.json`; los 3 subagentes de `.claude/agents/`; los pasos "Generate AI report" y "Show AI summary" del workflow; los 4 ficheros de salida en `playwright-report/`; `specs/add-to-cart-test-plan.md` como evidencia física del flujo planner→generator. Hallazgos usados como ejercicio: **D4** (el modelo inventaba la fecha y el código lo corrige — alucinación real con mitigación real), **D3** (validación por `JSON.parse` sin esquema), **D1** y **D2** (permisos y superficie de inyección), **B1** (la ruta absoluta que rompe `report:ai` fuera de una máquina).
 - **Dificultad:** Media-Alta.
 - **Dependencias:** 04, 06.
-- **Resultado esperado:** el alumno modifica un prompt y observa el cambio en la salida; ejecuta el pipeline IA sobre una ejecución con fallos; genera un test con el agente y **lo revisa críticamente**; y enumera tres riesgos de aplicar este pipeline a una aplicación de HDI con datos reales.
+- **Resultado esperado:** el alumno modifica un prompt y observa el cambio en la salida; ejecuta el pipeline IA sobre una ejecución con fallos; genera un test con el agente y **lo revisa críticamente**; y enumera tres riesgos de aplicar este pipeline a una aplicación del cliente con datos reales.
 
-## Módulo 09 — HDI Capstone
+## Módulo 09 — Capstone final
 
 - **Objetivo:** integrar todo en un entregable propio con contexto asegurador.
 - **Competencias:** todas (A-O).
@@ -1001,7 +1000,7 @@ Mapeo módulo ↔ concepto ↔ **archivo real**. Donde no hay material se indica
 | 08 | Resiliencia frente a cuota | `scripts/report-ai.mjs:98-135` | Backoff exponencial con jitter en 429/5xx |
 | 08 | Selección de proveedor y coste | `scripts/report-ai.mjs:92-96` | Claude local vs. Gemini en CI |
 | 08 | Permisos de agente (**D1**) | `scripts/report-ai.mjs:154` (`--dangerously-skip-permissions`) | Qué concedes cuando automatizas un agente |
-| 08 | Superficie de inyección (**D2**) | `scripts/report-ai.mjs:32` (JSON completo al modelo) | Riesgo con datos reales de HDI |
+| 08 | Superficie de inyección (**D2**) | `scripts/report-ai.mjs:32` (JSON completo al modelo) | Riesgo con datos reales del cliente |
 | 08 | Portabilidad rota (**B1**) | `package.json:14` (ruta absoluta de una máquina) | Ejercicio de corrección con impacto inmediato |
 | 08 | MCP | `.mcp.json` | Qué es un servidor MCP y qué expone |
 | 08 | Subagente planificador | `.claude/agents/playwright-test-planner.md` | Explorar la app y escribir el plan |
@@ -1115,11 +1114,11 @@ Supuestos comunes a las tres opciones: grupo de 8-12 personas, sesiones en direc
 | Capstone | 8 h en sesión (semanas 7-8) + 10-12 h fuera |
 | **Cobertura** | Los 10 módulos **+ extras**: accesibilidad, visual regression, `Dockerfile` propio, integración real con Jira |
 
-**Recomendable si:** el grupo es mayoritariamente BEGINNER, o si HDI quiere que el capstone se construya sobre una aplicación interna real (lo que exige tiempo de acceso, entorno y datos).
+**Recomendable si:** el grupo es mayoritariamente BEGINNER, o si el cliente quiere que el capstone se construya sobre una aplicación interna real (lo que exige tiempo de acceso, entorno y datos).
 
 **Riesgo:** ocho semanas con 5 h/semana pierden inercia. Requiere disciplina de calendario y protección real del tiempo de los participantes.
 
-## Recomendación para HDI: OPTION B (6 semanas)
+## Recomendación: OPTION B (6 semanas)
 
 Cuatro razones, todas derivadas del análisis:
 
@@ -1134,7 +1133,7 @@ Cuatro razones, todas derivadas del análisis:
 
 ## 14.1 Principio de diseño
 
-El capstone hace evolucionar el proyecto desde e-commerce hacia un escenario asegurador. **No se inventa ningún proceso específico de HDI Seguros Chile**: se usan journeys genéricos del sector, universalmente reconocibles, que HDI podrá sustituir por sus propios flujos cuando quiera y sin rediseñar el ejercicio.
+El capstone hace evolucionar el proyecto desde e-commerce hacia un escenario asegurador. **No se inventa ningún proceso específico del cliente**: se usan journeys genéricos del sector, universalmente reconocibles, que el cliente podrá sustituir por sus propios flujos cuando quiera y sin rediseñar el ejercicio.
 
 ## 14.2 Aplicación objetivo — decisión pendiente para Fase 2
 
@@ -1144,9 +1143,9 @@ Tres alternativas, con su análisis:
 |---|---|---|---|
 | **C1 — Sitio público de demo aseguradora** | Usar una web pública de demo con formularios de cotización | Realista, cero mantenimiento | Depende de un tercero; puede cambiar o caerse a mitad de curso |
 | **C2 — App de práctica local** | Una SPA mínima con los journeys de seguros, servida con `webServer` en `playwright.config.ts` | Control total, offline, se puede romper a propósito para generar fallos didácticos | Hay que construirla en Fase 2 (coste de desarrollo, no trivial) |
-| **C3 — Aplicación interna de HDI** | Un entorno de QA real de HDI | Máximo valor y transferencia inmediata | Requiere accesos, datos, VPN y aprobaciones. **Decisión de HDI, no del diseño formativo** |
+| **C3 — Aplicación interna del cliente** | Un entorno de QA real del cliente | Máximo valor y transferencia inmediata | Requiere accesos, datos, VPN y aprobaciones. **Decisión del cliente, no del diseño formativo** |
 
-**Recomendación:** **C2** como base garantizada, con **C3** como capa opcional si HDI facilita entorno a tiempo. C2 tiene además una ventaja pedagógica decisiva: al controlar la aplicación, se pueden introducir bugs deliberados y regresiones entre semanas, que es exactamente el escenario que el módulo 04 entrena. **Esta decisión debe tomarse en la primera semana de la Fase 2**, porque condiciona el material de los módulos 05 y 09.
+**Recomendación:** **C2** como base garantizada, con **C3** como capa opcional si el cliente facilita entorno a tiempo. C2 tiene además una ventaja pedagógica decisiva: al controlar la aplicación, se pueden introducir bugs deliberados y regresiones entre semanas, que es exactamente el escenario que el módulo 04 entrena. **Esta decisión debe tomarse en la primera semana de la Fase 2**, porque condiciona el material de los módulos 05 y 09.
 
 ## 14.3 Journeys genéricos de seguros propuestos
 
@@ -1361,7 +1360,7 @@ Alto en la ejecución, nulo en la validación. El pipeline se dispara solo en ca
 | IA en el pipeline de CI | `playwright.yml:52-69` | MODIFY |
 | Tolerancia deliberada a fallo de IA | `continue-on-error: true` (`playwright.yml:54`) — la IA no debe tumbar el build | DESIGN |
 | Permisos de agente | `--dangerously-skip-permissions` (`report-ai.mjs:154`) (**D1**) | DESIGN |
-| Inyección de prompt y fuga de datos | El JSON completo llega al modelo (**D2**) — crítico antes de aplicarlo a una app de HDI | DESIGN |
+| Inyección de prompt y fuga de datos | El JSON completo llega al modelo (**D2**) — crítico antes de aplicarlo a una app del cliente | DESIGN |
 | Escalado y límites de contexto | Sin límite de tamaño de entrada (**D5**) | OPTIMIZE |
 
 ## 16.3 Encuadre pedagógico: QA + IA, nunca IA en lugar de QA
@@ -1372,7 +1371,7 @@ Este principio se materializa en tres reglas de aula, no en una declaración de 
 
 2. **El peligro del healer es el contenido de la clase, no una nota al pie.** Un agente que "repara" un test hasta que pasa puede estar eliminando exactamente la detección que hacía valioso ese test. Los 10 `@demo-fail` son el laboratorio perfecto: lanzar el healer contra ellos y analizar qué "arregla" y qué destruye es, probablemente, el ejercicio más formativo del programa entero.
 
-3. **Lo que la IA no puede hacer se nombra explícitamente.** No sabe qué es crítico para el negocio de HDI. No conoce el riesgo regulatorio de una póliza mal emitida. No decide qué no automatizar. No asume la responsabilidad de un release. El QA aporta el criterio; la IA aporta velocidad de análisis y capacidad de síntesis.
+3. **Lo que la IA no puede hacer se nombra explícitamente.** No sabe qué es crítico para el negocio del cliente. No conoce el riesgo regulatorio de una póliza mal emitida. No decide qué no automatizar. No asume la responsabilidad de un release. El QA aporta el criterio; la IA aporta velocidad de análisis y capacidad de síntesis.
 
 **Fórmula operativa del módulo 08:** el pipeline actual convierte 10 fallos dispersos en 3 grupos, un resumen legible por dirección y 3 tickets, en menos de un minuto y a coste cero. Eso es tiempo de QA liberado para lo que la IA no puede hacer: decidir si eso bloquea el release.
 
@@ -1382,7 +1381,7 @@ Este principio se materializa en tres reglas de aula, no en una declaración de 
 
 | # | Riesgo | Probabilidad | Impacto | Mitigación |
 |---|---|---|---|---|
-| R1 | **Restricciones de red corporativa en HDI**: proxy o firewall bloquean `saucedemo.com`, npm, GitHub o el proveedor de IA | Alta | **Bloqueante** | **Verificar en la primera semana de Fase 2**, antes de escribir material. Plan B: registro npm interno, app local (opción C2 de la sección 14), reporte IA solo desde CI |
+| R1 | **Restricciones de red corporativa en el cliente**: proxy o firewall bloquean `saucedemo.com`, npm, GitHub o el proveedor de IA | Alta | **Bloqueante** | **Verificar en la primera semana de Fase 2**, antes de escribir material. Plan B: registro npm interno, app local (opción C2 de la sección 14), reporte IA solo desde CI |
 | R2 | **Dependencia de un sitio de terceros**: SauceDemo puede cambiar, caerse o limitar tráfico. 12 alumnos × 237 ejecuciones es tráfico no trivial contra un sitio público gratuito | Media | Alto | Escalonar ejecuciones; usar `--project=chromium` durante las prácticas y los tres navegadores solo en las demos; tener la app local (C2) como respaldo |
 | R3 | **Dispersión de nivel en el grupo**: BEGINNER y ADVANCED en la misma sala | Alta | Alto | Pre-assessment + itinerarios diferenciados + parejas mixtas + ejercicios `[+]` (secciones 8 y 12) |
 | R4 | **El módulo 03 desborda a los perfiles no técnicos**: cuatro gaps CRITICAL juntos | Media-Alta | Alto | Semana completa dedicada (opción B); refactor guiado paso a paso, no en blanco; el ADVANCED de cada pareja actúa de mentor |
@@ -1391,8 +1390,8 @@ Este principio se materializa en tres reglas de aula, no en una declaración de 
 | R7 | **La suite deja de fallar como se espera**: si SauceDemo cambia, algún `@demo-fail` podría empezar a pasar o algún test verde a fallar | Baja-Media | Alto (el módulo 04 depende de ello) | Ejecutar la suite completa al inicio de cada semana y verificar que los 10 fallos siguen siendo los 10 esperados. Si cambia, el propio incidente es material del módulo 04 |
 | R8 | **Un alumno "arregla" los tests de `tests/`** y rompe la demo o el material del módulo 04 | Media | Medio | Regla explícita: nadie toca `tests/`. Trabajo en `learning/student/` o en fork propio. Documentado en `learning/student/README.md` |
 | R9 | **La IA se percibe como amenaza al puesto** | Media | Alto (afecta a la adopción) | Encuadre explícito desde la sesión 1: QA + IA. El ejercicio del healer destruyendo un test valioso es la mejor demostración de por qué el criterio humano no es opcional |
-| R10 | **Datos sensibles de HDI enviados a un LLM externo** si el pipeline se aplica a aplicaciones internas (**D2**) | Media | **Muy alto** | Sesión dedicada en el módulo 08; involucrar a Seguridad de HDI antes de cualquier aplicación interna; documentar qué datos salen (títulos de test y mensajes de error — que pueden contener datos reales) |
-| R11 | **Tiempo real de los participantes no protegido**: se apuntan pero siguen con su carga habitual | Alta | Alto | Compromiso explícito de HDI antes de empezar: 6 h lectivas + 2-3 h de homework a la semana, bloqueadas en calendario |
+| R10 | **Datos sensibles del cliente enviados a un LLM externo** si el pipeline se aplica a aplicaciones internas (**D2**) | Media | **Muy alto** | Sesión dedicada en el módulo 08; involucrar a Seguridad del cliente antes de cualquier aplicación interna; documentar qué datos salen (títulos de test y mensajes de error — que pueden contener datos reales) |
+| R11 | **Tiempo real de los participantes no protegido**: se apuntan pero siguen con su carga habitual | Alta | Alto | Compromiso explícito del cliente antes de empezar: 6 h lectivas + 2-3 h de homework a la semana, bloqueadas en calendario |
 | R12 | **Falta de aplicación objetivo para el capstone** decidida a tiempo | Media | Alto | Decidir C1/C2/C3 en la **primera semana de Fase 2**; si es C2, hay que presupuestar su construcción |
 | R13 | **Deriva del material respecto al repositorio**: el repositorio evoluciona y el material formativo se queda obsoleto — exactamente lo que ya pasó con `specs/` y el README (**E1-E4**) | Media | Medio | Todas las referencias del material apuntan a `fichero:línea`; revisión del material al cerrar cada módulo; convertir la propia deriva en ejercicio del módulo 07 |
 | R14 | **El pipeline de CI en runs automáticos no muestra el valor de la IA** porque la suite por defecto es `green` (**C1**) | Certeza | Bajo | Para las demos, lanzar siempre con `workflow_dispatch` + `suite: fail` o `all`. Documentarlo en `learning/trainer/demo-scripts.md` |
@@ -1400,11 +1399,11 @@ Este principio se materializa en tres reglas de aula, no en una declaración de 
 
 ## Recomendaciones transversales
 
-1. **Verificar el entorno antes de escribir material.** R1 es el único riesgo capaz de invalidar el diseño entero. Una sesión de 2 horas con un equipo real de HDI, ejecutando `npm ci && npx playwright test --project=chromium`, resuelve la incógnita.
+1. **Verificar el entorno antes de escribir material.** R1 es el único riesgo capaz de invalidar el diseño entero. Una sesión de 2 horas con un equipo real del cliente, ejecutando `npm ci && npx playwright test --project=chromium`, resuelve la incógnita.
 2. **No corregir los hallazgos de la sección 3.2.** Son 30 activos didácticos. Si alguien "limpia" el repositorio antes del curso, se destruye buena parte del material de los módulos 02, 04, 06, 07 y 08.
 3. **Congelar el repositorio durante el curso.** Una rama `learning-lab-frozen` desde el commit de inicio garantiza que las referencias `fichero:línea` del material sigan siendo válidas seis semanas después.
-4. **Involucrar a Seguridad de HDI antes del módulo 08**, no después. R10 es el riesgo de mayor impacto del programa.
-5. **Medir.** Pre-assessment y post-assessment con instrumento equivalente. Es el único dato objetivo de retorno que HDI podrá poner sobre la mesa.
+4. **Involucrar a Seguridad del cliente antes del módulo 08**, no después. R10 es el riesgo de mayor impacto del programa.
+5. **Medir.** Pre-assessment y post-assessment con instrumento equivalente. Es el único dato objetivo de retorno que el cliente podrá poner sobre la mesa.
 
 ---
 
@@ -1432,12 +1431,12 @@ Este principio se materializa en tres reglas de aula, no en una declaración de 
 | Riesgos | ✅ 15 riesgos con mitigación (sección 17) |
 | **Modificaciones al código existente** | ✅ **Ninguna** |
 
-## Decisiones que HDI debe tomar antes de la Fase 2
+## Decisiones que el cliente debe tomar antes de la Fase 2
 
 | # | Decisión | Opciones | Bloquea a |
 |---|---|---|---|
 | D-1 | Duración del programa | A (4 sem) / **B (6 sem, recomendada)** / C (8 sem) | Toda la planificación |
-| D-2 | Aplicación objetivo del capstone | C1 (demo pública) / **C2 (app local, recomendada)** / C3 (app interna HDI) | Módulos 05 y 09 |
+| D-2 | Aplicación objetivo del capstone | C1 (demo pública) / **C2 (app local, recomendada)** / C3 (app interna del cliente) | Módulos 05 y 09 |
 | D-3 | Tamaño y composición del grupo | 8-12 recomendado | Pre-assessment, parejas |
 | D-4 | Modalidad | Presencial / remoto / híbrido | Guion del formador |
 | D-5 | Fechas y protección de calendario | — | Todo (riesgo R11) |
@@ -1454,9 +1453,9 @@ La Fase 2 desarrolla el Learning Lab **módulo a módulo**. No debe empezar por 
 
 ### Paso 0 — Verificación de viabilidad (antes de escribir una línea de material)
 
-**Duración estimada: 1 sesión de 2 horas con un equipo real de HDI.**
+**Duración estimada: 1 sesión de 2 horas con un equipo real del cliente.**
 
-1. Ejecutar `npm ci` desde un equipo corporativo de HDI → confirma acceso a npm.
+1. Ejecutar `npm ci` desde un equipo corporativo del cliente → confirma acceso a npm.
 2. Ejecutar `npx playwright install` → confirma descarga de navegadores (~500 MB).
 3. Ejecutar `npx playwright test --project=chromium` → confirma acceso a `saucedemo.com` y que la suite se comporta como se espera.
 4. Verificar acceso a `github.com` y capacidad de hacer fork.
@@ -1499,7 +1498,7 @@ Antes del despliegue completo, impartir los módulos 00-02 a un grupo reducido (
 2. **Los 30 hallazgos de la sección 3.2 no se corrigen.** Son el material didáctico.
 3. **Los 10 `@demo-fail` siguen fallando.** Son el módulo 04 entero.
 4. **Toda referencia al código lleva `fichero:línea`.** Es lo que impide la deriva documental que ya sufren `specs/` y el README.
-5. **Nada de contenido inventado sobre HDI.** Journeys genéricos de seguros hasta que HDI aporte los suyos.
+5. **Nada de contenido inventado sobre el cliente.** Journeys genéricos de seguros hasta que el cliente aporte los suyos.
 
 ### Propuesta inmediata
 
@@ -1507,7 +1506,7 @@ Si se aprueba este diseño, la siguiente acción concreta es:
 
 > **Ejecutar el Paso 0 (verificación de viabilidad) y, en paralelo, desarrollar el pre-assessment completo (Paso 1) junto con `learning/README.md`, `learning/docs/prerequisites.md` y `learning/docs/setup-guide.md`.**
 
-Con eso, HDI puede lanzar el pre-assessment y tener el mapa de niveles del grupo antes de que exista una sola línea del módulo 00 — que es exactamente el orden correcto, porque el resultado del pre-assessment determina cómo se escribe ese módulo.
+Con eso, el cliente puede lanzar el pre-assessment y tener el mapa de niveles del grupo antes de que exista una sola línea del módulo 00 — que es exactamente el orden correcto, porque el resultado del pre-assessment determina cómo se escribe ese módulo.
 
 ---
 

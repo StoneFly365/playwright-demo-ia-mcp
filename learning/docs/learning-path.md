@@ -19,7 +19,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | 06 | CI/CD & Docker | 6 OPTIMIZE | 3 h + 2 h | 04 | ⬜ Pendiente |
 | 07 | Quality Engineering & Test Strategy | 4 DESIGN | 3 h + 2 h | 06 | ⬜ Pendiente |
 | 08 | AI-Augmented QA | 6 OPTIMIZE | 3 h + 2 h | 04, 06 | ⬜ Pendiente |
-| 09 | HDI Capstone | 7 ARCHITECT | 6 h + 10 h | todos | ⬜ Pendiente |
+| 09 | Capstone final | 7 ARCHITECT | 6 h + 10 h | todos | ⬜ Pendiente |
 
 **Total:** 38 h lectivas + ~30 h de trabajo personal, repartidas en 6 semanas (opción B recomendada en la Fase 1, sección 13).
 
@@ -62,7 +62,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 
 > **Estado real:** material **construido y verificado** contra la aplicación real: teoría, 5 Labs (+1 opcional), Challenge, assessment y soluciones. Pendiente de piloto con alumnos. Documentos de origen: [`module-01-discovery-design.md`](module-01-discovery-design.md) (diseño) y [`module-01-technical-validation.md`](module-01-technical-validation.md) (20 elementos × 7 estrategias de locator, medidos).
 >
-> ⚠️ **K1: `PENDIENTE — validación durante formación HDI`.** El entorno corporativo no está verificado; por decisión de programa se comprueba en la propia sesión 3, no antes. Ver el [plan de sesión](../trainer/session-plans/session-03-module-01.md).
+> ⚠️ **K1: `PENDIENTE — validación durante formación con el cliente`.** El entorno corporativo no está verificado; por decisión de programa se comprueba en la propia sesión 3, no antes. Ver el [plan de sesión](../trainer/session-plans/session-03-module-01.md).
 
 | | |
 |---|---|
@@ -197,7 +197,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Nivel** | 6 OPTIMIZE |
 | **Dependencias** | 04, 06 |
 | **Repository mapping** | `scripts/report-ai.mjs` completo (225 líneas); los 4 `prompts/*.txt`; `.mcp.json`; los 3 subagentes de `.claude/agents/`; los pasos de IA del workflow (52-69); `specs/add-to-cart-test-plan.md` como evidencia del flujo planner→generator. Hallazgos **D4** (el modelo inventaba `generated_at` y el código lo corrige), **D3** (validación solo con `JSON.parse`), **D1**/**D2** (permisos y superficie de inyección), **B1** (la ruta absoluta que rompe `report:ai` fuera de una máquina) |
-| **Entregables** | Un prompt modificado con su efecto documentado; pipeline IA ejecutado sobre una ejecución con fallos; un test generado por agente **y revisado críticamente**; tres riesgos identificados de aplicar esto a una app de HDI con datos reales |
+| **Entregables** | Un prompt modificado con su efecto documentado; pipeline IA ejecutado sobre una ejecución con fallos; un test generado por agente **y revisado críticamente**; tres riesgos identificados de aplicar esto a una app del cliente con datos reales |
 
 > ### 🎯 Parte de este módulo ya existe: la Ruta QA — 6 h
 >
@@ -207,7 +207,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 
 ---
 
-## 09 — HDI Capstone ⬜
+## 09 — Capstone final ⬜
 
 | | |
 |---|---|

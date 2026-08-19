@@ -446,7 +446,7 @@ Para que no creas que te falta materia:
 
 ---
 
-## Una nota sobre HDI
+## Una nota sobre el capstone final
 
 El formulario de checkout de esta tienda —dos pasos, validación por campo, mensajes de error, resumen de importes calculados— es **estructuralmente idéntico** a un alta de póliza: datos del tomador, validación, cálculo de prima e impuestos, confirmación. Lo que aprendas aquí sobre localizar campos, elegir aserciones y verificar importes se traslada tal cual. El contexto asegurador entra en el módulo 09; la forma del problema es la misma desde hoy.
 

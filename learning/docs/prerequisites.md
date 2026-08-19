@@ -18,7 +18,7 @@ Análisis completo en la [Fase 1, sección 7](../phase-1-learning-lab-design.md)
 | **Cuenta de GitHub** | El workflow, los artefactos y los PRs son parte del temario del módulo 06 |
 | **Acceso de red** a `saucedemo.com`, npm y GitHub | `baseURL` apunta a un sitio público externo; `npm ci` descarga paquetes |
 
-> ⚠️ **El acceso de red debe verificarse antes de empezar.** Si el proxy corporativo de HDI bloquea alguno de los tres, el diseño de los módulos 01 en adelante cambia. Es el riesgo R1 de la Fase 1.
+> ⚠️ **El acceso de red debe verificarse antes de empezar.** Si el proxy corporativo del cliente bloquea alguno de los tres, el diseño de los módulos 01 en adelante cambia. Es el riesgo R1 de la Fase 1.
 
 ## SHOULD HAVE — recomendable; si falta, se cubre en el programa
 

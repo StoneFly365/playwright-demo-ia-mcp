@@ -1,5 +1,4 @@
 # QA Automation & AI Engineering Learning Lab
-## HDI Seguros Chile
 
 Un programa de formación en automatización de pruebas construido **sobre un proyecto real**, no sobre ejemplos de juguete.
 
@@ -23,7 +22,7 @@ El Learning Lab convierte ese proyecto en un laboratorio. No vas a leer teoría 
 
 ## Objetivo
 
-Que un QA de HDI pase de ejecutar pruebas a **diseñar, construir, depurar y automatizar** una estrategia de calidad completa: desde escribir su primer locator hasta razonar sobre qué merece la pena automatizar y por qué, pasando por CI/CD, Docker y el uso con criterio de la IA.
+Que un QA del cliente pase de ejecutar pruebas a **diseñar, construir, depurar y automatizar** una estrategia de calidad completa: desde escribir su primer locator hasta razonar sobre qué merece la pena automatizar y por qué, pasando por CI/CD, Docker y el uso con criterio de la IA.
 
 ## Público objetivo
 
@@ -190,7 +189,7 @@ Y cada módulo incluye un `repository-mapping.md` que responde a la pregunta que
 | 06 — CI/CD & Docker | ⬜ Pendiente |
 | 07 — Quality Engineering & Test Strategy | ⬜ Pendiente |
 | 08 — AI-Augmented QA | ⬜ Pendiente |
-| 09 — HDI Capstone | ⬜ Pendiente |
+| 09 — Capstone final | ⬜ Pendiente |
 
 El mapa completo de los diez módulos —objetivos, contenidos, duración, dependencias y anclajes en el repositorio— está en [docs/learning-path.md](docs/learning-path.md).
 

@@ -527,7 +527,7 @@ Pregunta aplicada a cada competencia: **¿esto sirve fuera de SauceDemo?**
 
 **[H]** El material ya trata de evitarlo: el propio documento se presenta como *"la plantilla del mismo ejercicio sobre tu propia aplicación"* y cierra con *"comprobar tarda diez segundos; suponer cuesta una tarde"*.
 
-**[R]** *(Gap 🟡-5)* En la puesta en común del Lab 3, pedir al grupo que nombre **qué tres cosas de la tabla cambiarían si la aplicación fuera la de HDI**. Es una pregunta de cinco minutos y separa el método de la conclusión. No requiere modificar material: es una línea en el plan de sesión.
+**[R]** *(Gap 🟡-5)* En la puesta en común del Lab 3, pedir al grupo que nombre **qué tres cosas de la tabla cambiarían si la aplicación fuera la del cliente**. Es una pregunta de cinco minutos y separa el método de la conclusión. No requiere modificar material: es una línea en el plan de sesión.
 
 ---
 
@@ -649,7 +649,7 @@ Ninguno. **[I]** No hay ningún defecto que impida considerar M01 pedagógicamen
 
 **Evidencia:** el documento contiene las conclusiones concretas de SauceDemo (títulos sin heading, 0 `<label>`, `data-test`), que son locales.
 **Impacto:** bajo si el formador lo trabaja; medio si el alumno estudia solo.
-**Recomendación:** pregunta de cierre en la puesta en común del Lab 3: *"¿qué tres filas cambiarían en la aplicación de HDI?"*. Una línea en el plan de sesión. **Ahora o después, indistinto.**
+**Recomendación:** pregunta de cierre en la puesta en común del Lab 3: *"¿qué tres filas cambiarían en la aplicación del cliente?"*. Una línea en el plan de sesión. **Ahora o después, indistinto.**
 
 ## 🟢 OK — 12 comprobaciones sin acción
 
@@ -680,13 +680,13 @@ Ninguno. **[I]** No hay ningún defecto que impida considerar M01 pedagógicamen
 
 1. **Enseña criterio, no sintaxis.** El entregable central del módulo es una tabla de decisiones escritas (`03-decisiones.md`), no un fichero de tests. Ningún elemento del Lab 3 se resuelve leyendo la documentación de Playwright: hay que medir contra la aplicación. El objetivo P3 está redactado para penalizar la variedad sin criterio, y la corrección lo respeta.
 2. **La progresión de autonomía es real y verificable.** La curva de ayuda decrece de forma continua (Lab 1 con seis pasos literales → Challenge sin ninguno) y el assessment es más duro que los Labs en los cinco pares comparados. No hay ningún nivel artificialmente fácil ni ningún salto que el plan de sesión no cubra.
-3. **El material es honesto con lo que no sabe.** El Lab 6 declara que codegen no está validado y su solución se niega a rellenar el hueco; K1 (entorno HDI) aparece en el README del módulo y en la primera sección del plan de sesión. Un material que documenta sus huecos es un material que se puede impartir con seguridad.
+3. **El material es honesto con lo que no sabe.** El Lab 6 declara que codegen no está validado y su solución se niega a rellenar el hueco; K1 (entorno del cliente) aparece en el README del módulo y en la primera sección del plan de sesión. Un material que documenta sus huecos es un material que se puede impartir con seguridad.
 
 **Por qué no es PROCEED a secas.** Hay **dos gaps IMPORTANT**, ambos de coherencia y ambos baratos: el objetivo P8 depende de un entregable que ningún criterio de superación exige, y el Challenge admite copiar su mitad mecánica de un fichero de lectura obligatoria sin declararlo. Ninguno invalida el módulo; los dos deberían resolverse antes de la primera edición porque afectan a **qué se certifica**, no a qué se enseña.
 
 **Por qué no es HOLD.** No hay ningún BLOCKER. Los objetivos están enseñados, practicados y —salvo P8— evaluados; la progresión existe; el enfoque QA domina sobre el enfoque API; y todo lo que el material afirma como real está verificado contra el repositorio o medido contra la aplicación.
 
-**Condición operativa que no depende de la pedagogía:** el módulo sigue dependiendo de **K1 (acceso a `saucedemo.com` y descarga de navegadores desde un equipo de HDI)**, que continúa **sin verificar**. Es un riesgo de entorno, no un gap pedagógico, y el plan de sesión lo trata como bloqueo previo a la convocatoria.
+**Condición operativa que no depende de la pedagogía:** el módulo sigue dependiendo de **K1 (acceso a `saucedemo.com` y descarga de navegadores desde un equipo del cliente)**, que continúa **sin verificar**. Es un riesgo de entorno, no un gap pedagógico, y el plan de sesión lo trata como bloqueo previo a la convocatoria.
 
 ---
 
@@ -698,7 +698,7 @@ Ninguno. **[I]** No hay ningún defecto que impida considerar M01 pedagógicamen
 |---|---|---|
 | 1 | **Gap 🟠-1**: decidir el estatus del Challenge (obligatorio para superar M01, o P8 no certificable en este módulo) y reflejarlo en `learning-objectives.md`, `README.md` y `assessment/README.md` | 2 líneas + una decisión de programa |
 | 2 | **Gap 🟠-2**: añadir a AC6 la declaración de reutilización de `tests/checkout.spec.ts` | 1 línea en el Challenge + 1 fila de rúbrica |
-| 3 | **K1**: ejecutar los tres comandos de comprobación en un equipo corporativo de HDI | Externo, bloqueante para impartir |
+| 3 | **K1**: ejecutar los tres comandos de comprobación en un equipo corporativo del cliente | Externo, bloqueante para impartir |
 | 4 | **Lab 6**: validar `codegen` y completar su solución, o retirarlo del temario | 30 min de ejecución |
 
 **[I]** Los cinco gaps 🟡 no bloquean nada y su mejor momento es la revisión posterior al piloto, con datos reales de tiempo y de dudas recurrentes.
@@ -729,7 +729,7 @@ Datos que M02 necesitará y que conviene medir en su fase de discovery *(esta re
 **Fase 3D — Cierre de M01 y preparación de M02**, en este orden y sin construir nada de M02:
 
 1. **Decisión de programa sobre los dos gaps 🟠** (Challenge obligatorio o P8 no certificable; declaración de reutilización). Es lo único que toca material de M01.
-2. **Comprobación de K1 en un equipo de HDI.** Sin esto, ni M01 ni M02 son impartibles: los dos necesitan la aplicación real.
+2. **Comprobación de K1 en un equipo del cliente.** Sin esto, ni M01 ni M02 son impartibles: los dos necesitan la aplicación real.
 3. **Corrección documental del hallazgo A1** en `learning-path.md` y en el análisis de Fase 1 — punto 6 de la tabla anterior. Es prerrequisito del diseño de M02, porque su ejercicio principal está descrito al revés.
 4. **Piloto de M01 con un grupo reducido** (2-4 personas, preferiblemente perfiles FOUNDATION), midiendo tiempo real por Lab y por ejercicio del assessment. Es la única forma de fijar las 12 h y de decidir sobre los gaps 🟡-2 y 🟡-4.
 5. **Solo entonces, Fase 4A: discovery y diseño de M02**, incorporando los análisis 3, 4 y 5 de §16.3 y las lecciones del piloto.

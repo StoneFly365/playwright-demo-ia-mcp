@@ -96,7 +96,7 @@ npm config set proxy http://<host>:<puerto>
 npm config set https-proxy http://<host>:<puerto>
 ```
 
-Si HDI tiene un registro npm interno, configúralo con `npm config set registry <url>`.
+Si el cliente tiene un registro npm interno, configúralo con `npm config set registry <url>`.
 
 ### `npx playwright install` no descarga los navegadores
 

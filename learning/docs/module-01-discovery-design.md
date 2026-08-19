@@ -442,7 +442,7 @@ Decidido contra el [Learning Path aprobado](learning-path.md), no por intuición
 | **Progresión** | 1 FOLLOW |
 | **Duración** | 45 min |
 | **Resultado esperado** | Tabla comparativa rellenada por el alumno: 6 formas de ejecución (todo, un navegador, un fichero, un test por `--grep`, suite verde, suite roja) con nº de tests, tiempo y resultado. Y una respuesta escrita: *¿por qué hay 10 fallos y por qué no es un problema?* |
-| **Nota de diseño** | Es el primer contacto con el navegador. Aquí es donde se descubrirá si el entorno de HDI permite ejecutar contra SauceDemo (riesgo K1) |
+| **Nota de diseño** | Es el primer contacto con el navegador. Aquí es donde se descubrirá si el entorno del cliente permite ejecutar contra SauceDemo (riesgo K1) |
 
 ## Lab 2 — Por qué nadie espera (MODIFY)
 
@@ -765,7 +765,7 @@ El [Learning Path](learning-path.md) asigna a M01 **6 h + 3 h = 9 h**. Esta esti
 
 ---
 
-# 14. HDI Context
+# 14. Contexto del cliente
 
 El módulo 01 **no** se convierte en un módulo de seguros. La instrucción del programa es clara y el análisis la respalda: el alumno tiene que dominar la herramienta antes de aplicarla a un dominio.
 
@@ -775,7 +775,7 @@ El módulo 01 **no** se convierte en un módulo de seguros. La instrucción del 
 2. **Los tipos de escenario elegidos son los que se repiten en cualquier aplicación de seguros:** autenticación, navegación entre pantallas, formulario multi-paso con validaciones, mensajes de error, verificación de importes calculados y flujo E2E completo. Un checkout de e-commerce y una contratación de póliza tienen la misma forma.
 3. **Se nombra el paralelismo una vez, sin forzarlo.** Una nota en la teoría del tipo: *"este formulario de checkout de dos pasos con validación por campo es estructuralmente idéntico a un formulario de alta de póliza; lo que aprendas aquí se traslada directamente"*. Una frase, no una sección.
 4. **Verificación de importes = cálculo de prima.** El AC2 del Challenge (comprobar que subtotal + impuestos = total) es el ejercicio genérico más cercano a validar el cálculo de una prima, que será el corazón del capstone.
-5. **Nada de procesos internos de HDI.** No se inventan ramos, productos, coberturas ni flujos. Cuando HDI aporte los suyos, se sustituyen los escenarios sin tocar la estructura del módulo.
+5. **Nada de procesos internos del cliente.** No se inventan ramos, productos, coberturas ni flujos. Cuando el cliente aporte los suyos, se sustituyen los escenarios sin tocar la estructura del módulo.
 
 ---
 
@@ -805,7 +805,7 @@ La diferencia importa pedagógicamente: la lección ya no es *"usa siempre el PO
 
 | # | Riesgo | Impacto anterior | **Impacto ahora** | Motivo |
 |---|---|---|---|---|
-| **K1** | **El entorno de HDI no permite ejecutar contra `saucedemo.com` ni descargar navegadores.** M00 estaba blindado (sin red, sin navegador); M01 **no puede estarlo** | HIGH | **HIGH — sin cambios** | 🔬 Validado **en el equipo de desarrollo**: DNS, HTTPS 200, login, flujo completo, 3 navegadores, 79 tests en 21,8 s. **No validado en HDI**, que es donde estaba el riesgo. La aplicación está en **GitHub Pages**: la política de red que permita `github.io` cubre a la vez SauceDemo y el GitHub del módulo 06 |
+| **K1** | **El entorno del cliente no permite ejecutar contra `saucedemo.com` ni descargar navegadores.** M00 estaba blindado (sin red, sin navegador); M01 **no puede estarlo** | HIGH | **HIGH — sin cambios** | 🔬 Validado **en el equipo de desarrollo**: DNS, HTTPS 200, login, flujo completo, 3 navegadores, 79 tests en 21,8 s. **No validado en el cliente**, que es donde estaba el riesgo. La aplicación está en **GitHub Pages**: la política de red que permita `github.io` cubre a la vez SauceDemo y el GitHub del módulo 06 |
 | **K2** | **Los locators propuestos no funcionan como se supone** | HIGH | **✅ RESUELTO** | 🔬 20 elementos × 7 estrategias sondeados contra el DOM real. Los locators recomendados están confirmados uno a uno |
 | **K3** | **Demasiado contenido** | HIGH | **HIGH — sin cambios** | La validación no reduce el temario. La regla sigue en pie: sin anclaje **y** sin objetivo P1-P8, el concepto se cae |
 | **K4** | **El repositorio no da ejemplos de todas las estrategias** | MEDIUM | **LOW** ↓ | 🔬 `getByRole`, `getByPlaceholder` y `getByTestId` funcionan y son construibles en el sandbox. Solo `getByLabel` queda sin anclaje, y ya no se necesita: pasa a ser pregunta de criterio |
@@ -835,7 +835,7 @@ Queda **registrado como pendiente**, no resuelto: corresponde a la fase de dise�
 
 # 16. Recommendations
 
-1. ~~**Verificar el entorno y los locators antes de escribir una línea de material**~~ ✅ **HECHO** (Fase 3A.1). K2 resuelto; K1 validado en el equipo de desarrollo pero **pendiente en HDI**.
+1. ~~**Verificar el entorno y los locators antes de escribir una línea de material**~~ ✅ **HECHO** (Fase 3A.1). K2 resuelto; K1 validado en el equipo de desarrollo pero **pendiente en el cliente**.
 
 2. **Construir el Lab 3 primero, no el Lab 1.** Sigue siendo la recomendación, y ahora con más motivo: es el Lab que más ha cambiado tras la validación y el único con un bloque sin código (3.3).
 
@@ -917,7 +917,7 @@ learning/trainer/session-plans/
 
 ### Sigue bloqueante
 
-**Verificación del entorno en HDI (K1).** Es lo único que puede cambiar el diseño de los cinco Labs. Tres comandos en un equipo corporativo:
+**Verificación del entorno en el cliente (K1).** Es lo único que puede cambiar el diseño de los cinco Labs. Tres comandos en un equipo corporativo:
 
 ```bash
 npm ci
@@ -949,7 +949,7 @@ Este documento y el de validación **siguen sin estar enlazados desde ningún í
 |---|---|
 | **Fecha de validación** | 17 de agosto de 2026 |
 | **Documento fuente** | [`module-01-technical-validation.md`](module-01-technical-validation.md) |
-| **Entorno de validación** | Equipo de desarrollo (Windows 11, sin proxy, Playwright 1.58.2). **No es un equipo de HDI** |
+| **Entorno de validación** | Equipo de desarrollo (Windows 11, sin proxy, Playwright 1.58.2). **No es un equipo del cliente** |
 | **K1 — Entorno** | **CONDITIONAL** |
 | **K2 — Locators** | **PASS** |
 | **Recomendación recibida** | ADAPT DESIGN |
@@ -974,7 +974,7 @@ Este documento y el de validación **siguen sin estar enlazados desde ningún í
 
 | # | Pendiente | Responsable | Bloquea |
 |---|---|---|---|
-| 1 | **Validar K1 en un equipo corporativo de HDI** | HDI | La construcción de M01 |
+| 1 | **Validar K1 en un equipo corporativo del cliente** | Cliente | La construcción de M01 |
 | 2 | **Validar `codegen`** contra SauceDemo | Fase de construcción | Solo el Lab 6 (opcional) |
 | 3 | **Revisar el diseño de M02**: el ejercicio de `.cart_item` rompería 5 specs | Fase de diseño de M02 | La construcción de M02 |
 | 4 | **Corregir la descripción del hallazgo A1** en el análisis de Fase 1 | Edición pendiente de aprobación | Nada; es coherencia documental |

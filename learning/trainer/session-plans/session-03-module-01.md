@@ -12,9 +12,9 @@ Entre sesiones, ~3 h de trabajo personal. El assessment (1 h) se convoca **despu
 
 # ⚠️ Antes de la sesión — comprobación de entorno OBLIGATORIA
 
-**Este módulo depende de una condición que no está verificada en el entorno de HDI.** A diferencia del módulo 00, aquí hacen falta navegadores instalados y acceso de red a `saucedemo.com`.
+**Este módulo depende de una condición que no está verificada en el entorno del cliente.** A diferencia del módulo 00, aquí hacen falta navegadores instalados y acceso de red a `saucedemo.com`.
 
-**En un equipo corporativo de HDI, y al menos una semana antes de la primera sesión:**
+**En un equipo corporativo del cliente, y al menos una semana antes de la primera sesión:**
 
 ```bash
 npm ci
@@ -34,7 +34,7 @@ npx playwright test --project=chromium tests/login.spec.ts
 ## Resto de la lista previa
 
 - [ ] Módulo 00 cerrado y con assessment corregido en todo el grupo
-- [ ] Comprobación de entorno de arriba, hecha en un equipo de HDI — **estado a 18/08/2026: PENDIENTE.** Validada solo en el equipo de desarrollo del programa; **nadie la ha ejecutado todavía en una máquina corporativa de HDI**. **Decisión de programa: K1 se valida durante la propia formación con HDI**, en el bloque 2 de la sesión 3 (*Puesta en marcha*), y su resultado se anota aquí. Estado: `PENDIENTE — validación durante formación HDI`. Si falla en ese momento, se aplica el plan alternativo descrito arriba
+- [ ] Comprobación de entorno de arriba, hecha en un equipo del cliente — **estado a 18/08/2026: PENDIENTE.** Validada solo en el equipo de desarrollo del programa; **nadie la ha ejecutado todavía en una máquina corporativa del cliente**. **Decisión de programa: K1 se valida durante la propia formación con el cliente**, en el bloque 2 de la sesión 3 (*Puesta en marcha*), y su resultado se anota aquí. Estado: `PENDIENTE — validación durante formación con el cliente`. Si falla en ese momento, se aplica el plan alternativo descrito arriba
 - [ ] Verificación semanal de que SauceDemo sigue igual:
 
 ```bash
@@ -76,7 +76,7 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 | **5. Lab 4** | 125-145 | 3 CREATE | Ordenación A→Z en sesión; el segundo test, en casa |
 | **6. Cierre** | 145-150 | — | Reparto: terminar Lab 4 + Challenge |
 
-> 📋 **PILOTO — bloque 4, al cerrar el Lab 3.** Formula la pregunta y **registra las respuestas literales**: *"¿qué tres filas de `locator-reference.md` cambiarían en la aplicación de HDI?"*. Anota también quién no sabe responder. → 🟡-5, [run-log §7](../../docs/module-01-pilot-run-log.md).
+> 📋 **PILOTO — bloque 4, al cerrar el Lab 3.** Formula la pregunta y **registra las respuestas literales**: *"¿qué tres filas de `locator-reference.md` cambiarían en la aplicación del cliente?"*. Anota también quién no sabe responder. → 🟡-5, [run-log §7](../../docs/module-01-pilot-run-log.md).
 
 ## Guion — Sesión 5 (1 h 30)
 

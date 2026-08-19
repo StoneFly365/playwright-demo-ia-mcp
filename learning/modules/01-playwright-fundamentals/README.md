@@ -209,7 +209,7 @@ La matriz completa objetivo → teoría → Lab → assessment está al final de
 
 ## Nota para el formador
 
-Este módulo depende de una condición que **no está verificada en el entorno de HDI**: el acceso a `saucedemo.com` y la descarga de navegadores desde un equipo corporativo. Ver el [plan de sesión](../../trainer/session-plans/session-03-module-01.md), sección *Antes de la sesión*, con los tres comandos que hay que ejecutar **antes** de convocar al grupo.
+Este módulo depende de una condición que **no está verificada en el entorno del cliente**: el acceso a `saucedemo.com` y la descarga de navegadores desde un equipo corporativo. Ver el [plan de sesión](../../trainer/session-plans/session-03-module-01.md), sección *Antes de la sesión*, con los tres comandos que hay que ejecutar **antes** de convocar al grupo.
 
 ## Siguiente módulo
 
