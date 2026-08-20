@@ -134,6 +134,38 @@
       });
     }
 
+    // Lectura en voz alta con la Web Speech API del navegador: sin ficheros de
+    // audio ni dependencias, cubre "quiero poder escuchar la página".
+    function ttsButton(hook) {
+      if (!window.speechSynthesis) return;
+      var btn;
+      function stop() { window.speechSynthesis.cancel(); btn.textContent = '🔊 Escuchar'; btn.setAttribute('aria-pressed', 'false'); }
+      hook.doneEach(function () {
+        stop();
+        if (!btn) {
+          btn = document.createElement('button');
+          btn.id = 'tts-toggle';
+          btn.type = 'button';
+          btn.setAttribute('aria-pressed', 'false');
+          btn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:100;padding:10px 16px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-family:var(--font-sans);font-size:14px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.12);';
+          btn.textContent = '🔊 Escuchar';
+          btn.addEventListener('click', function () {
+            if (window.speechSynthesis.speaking) { stop(); return; }
+            var section = document.querySelector('.markdown-section');
+            if (!section) return;
+            var utterance = new SpeechSynthesisUtterance(section.innerText);
+            utterance.lang = 'es-ES';
+            utterance.onend = stop;
+            utterance.onerror = stop;
+            window.speechSynthesis.speak(utterance);
+            btn.textContent = '⏹ Detener';
+            btn.setAttribute('aria-pressed', 'true');
+          });
+          document.body.appendChild(btn);
+        }
+      });
+    }
+
     window.$docsify = {
       name: 'Learning Lab QA + IA',
       nameLink: '#/',
@@ -169,7 +201,7 @@
           }
         }
       },
-      plugins: [codeFileLinks, mermaidBlocks]
+      plugins: [codeFileLinks, mermaidBlocks, ttsButton]
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
