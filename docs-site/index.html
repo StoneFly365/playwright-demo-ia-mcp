@@ -139,9 +139,8 @@
     function ttsButton(hook) {
       if (!window.speechSynthesis) return;
       var btn;
-      function stop() { window.speechSynthesis.cancel(); btn.textContent = '🔊 Escuchar'; btn.setAttribute('aria-pressed', 'false'); }
+      function stop() { window.speechSynthesis.cancel(); if (btn) { btn.textContent = '🔊 Escuchar'; btn.setAttribute('aria-pressed', 'false'); } }
       hook.doneEach(function () {
-        stop();
         if (!btn) {
           btn = document.createElement('button');
           btn.id = 'tts-toggle';
@@ -162,6 +161,8 @@
             btn.setAttribute('aria-pressed', 'true');
           });
           document.body.appendChild(btn);
+        } else {
+          stop();
         }
       });
     }
