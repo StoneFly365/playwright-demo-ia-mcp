@@ -70,7 +70,7 @@ Segunda idea del módulo, y es puro criterio de QA. En `.claude/agents/` hay tre
 
 Que el planificador no pueda escribir código no es una carencia: **es un guardarraíl**. Un agente que planifica y a la vez implementa acaba planificando lo que le resulta fácil implementar.
 
-> **La idea que te llevas, aunque mañana uses otra herramienta:** a un agente se le da el mínimo de permisos que necesita. El corolario incómodo lo viste en el módulo 1: un agente con permiso de escritura sobre tus tests puede "arreglar" un fallo cambiando la aserción.
+> **La idea que te llevas, aunque mañana uses otra herramienta:** a un agente se le da el mínimo permiso que necesite. La consecuencia incómoda de esto ya la viste en el módulo 1: un agente con permiso de escritura sobre tus tests puede "arreglar" un fallo cambiando la aserción, en vez de corregir el código real.
 
 ### Tres riesgos antes de conectarlo a algo de tu empresa
 
