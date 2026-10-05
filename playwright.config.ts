@@ -10,7 +10,7 @@ export default defineConfig({
     ? [['github'], ['html'], ['json', { outputFile: 'test-results.json' }]]
     : [['html'], ['json', { outputFile: 'test-results.json' }]],
   use: {
-    baseURL: 'https://www.saucedemo.com',
+    baseURL: process.env.BASE_URL,
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },

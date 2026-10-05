@@ -1,19 +1,16 @@
 {
-  "name": "playwright-saucedemo",
+  "name": "playwright-arquetipo",
   "version": "1.0.0",
   "scripts": {
     "test": "playwright test",
     "test:all": "playwright test",
-    "test:demo:green": "playwright test --grep-invert @demo-fail",
-    "test:demo:fail": "playwright test --grep @demo-fail",
     "test:headed": "playwright test --headed",
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:report": "playwright show-report",
     "report:ai": "node scripts/report-ai.mjs",
-    "test:ai": "npm run test && npm run report:ai",
-    "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
+    "test:ai": "npm run test && npm run report:ai"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",
