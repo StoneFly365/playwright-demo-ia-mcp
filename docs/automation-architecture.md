@@ -103,7 +103,9 @@ Ningún test usa XPath ni clases CSS directamente. Si la app añade `data-testid
 | **La app sigue repintando todo el DOM tras ocultar «Cargando…»** (arranque del motor de sincronización), y ese repintado borra lo que se esté escribiendo en una hoja (D02) | `abrir()` y `recargar()` esperan la **señal determinista de fin de arranque**: el último paso de la app es registrar el service worker, que el proyecto bloquea, y Playwright lo anuncia en consola («Service Worker registration blocked by Playwright»). Se detectó con un test intermitente y se verificó con una traza |
 | Cada aviso repinta el DOM y desengancha elementos | Localizadores perezosos resueltos en cada acción. Nunca se guardan `ElementHandle` |
 | Un aviso que caduca a mitad de un formulario de hoja lo vacía (D02) | Los tests no encadenan dos formularios de hoja seguidos. PER-01 crea el presupuesto antes que el movimiento, porque el formulario de movimiento sí sincroniza lo escrito |
-| Aserciones negativas que pasan antes de tiempo | Sincronizar primero con la respuesta de la app (ver §6) |
+| Aserciones negativas que pasan antes de tiempo | Sincronizar primero con la respuesta de la app, `app.ultimoAviso()` (ver §6) |
+| **Comprobar que algo desaparece cuando también caduca solo**. Los avisos duran 5 s, lo mismo que el timeout de `expect`: la caducidad puede dar un PASS falso, o un *flaky* bajo carga | Límite explícito menor que la vida del aviso (1 s en el test D11). Detectado en la revisión QA (FLAKY-01/02) |
+| Caída del host o de la red mostrada como un «Test timeout» genérico | `abrir()` limita el arranque a 15 s y falla con «La app no terminó de arrancar en 15 s. Revisa la red o el estado de Netlify…» (ENV-01) |
 | Datos compartidos o restos de otros tests | Contexto nuevo por test y siembra explícita |
 
 **Verificación:** la suite completa se ejecutó 3 veces seguidas (`--repeat-each=3`): 279 de 279 ejecuciones con el resultado esperado y 0 flaky.

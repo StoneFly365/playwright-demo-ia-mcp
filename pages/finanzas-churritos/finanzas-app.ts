@@ -61,11 +61,16 @@ export class FinanzasApp {
    * y Playwright lo anuncia en consola: esa es la señal determinista de «arranque terminado».
    */
   private async arrancar(navegar: () => Promise<unknown>): Promise<void> {
+    // Sin este mensaje, una caída de red o del CDN aparecería como un «Test timeout» genérico.
     const arrancada = this.page.waitForEvent('console', {
       predicate: (mensaje) => mensaje.text().includes('Service Worker registration blocked'),
+      timeout: 15_000,
+    }).catch(() => {
+      throw new Error('La app no terminó de arrancar en 15 s. '
+        + 'Revisa la red o el estado de Netlify antes de culpar al test.');
     });
-    await navegar();
-    await arrancada;
+    // Promise.all atiende las dos promesas a la vez: si la red cuelga goto(), el aviso de arriba sigue llegando.
+    await Promise.all([arrancada, navegar()]);
     await expect(this.navegacion).toBeVisible();
     await expect(this.page.getByText('Cargando tus datos…')).toBeHidden();
   }
@@ -86,6 +91,16 @@ export class FinanzasApp {
   /** Aviso flotante (role=status) que contiene el texto. */
   aviso(texto: string | RegExp): Locator {
     return this.page.getByRole('status').filter({ hasText: texto });
+  }
+
+  /**
+   * El aviso más reciente, sea cual sea: la respuesta de la app a la última acción.
+   * Se acota a la capa de avisos (#avisos) porque Ajustes tiene otro role=status (la salida del slider).
+   * Sirve para sincronizar antes de comprobar que algo NO ha cambiado, y para que un fallo
+   * muestre qué respondió realmente la app.
+   */
+  ultimoAviso(): Locator {
+    return this.page.locator('#avisos').getByRole('status').last();
   }
 
   async confirmar(boton: string): Promise<void> {

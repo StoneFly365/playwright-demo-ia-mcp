@@ -70,7 +70,7 @@ test.describe('Metas de ahorro', () => {
 
     // Primero la respuesta de la app (un aviso): sin ella, «no se ha creado» también es cierto
     // durante los milisegundos en que la app aún está guardando.
-    const respuesta = app.page.getByRole('status').first();
+    const respuesta = app.ultimoAviso();
     await expect(respuesta).toBeVisible();
     await expect(respuesta).not.toContainText('guardada');
     await expect(app.metas.tarjetas()).toHaveCount(0);
@@ -124,7 +124,7 @@ test.describe('Metas de ahorro', () => {
 
     await expect(app.aviso('Se ha deshecho el último guardado.')).toBeVisible();
     await expect(app.metas.meta('Viaje')).toContainText('0 € de 1000 €');
-    await expect(app.page.getByRole('button', { name: 'Deshacer' })).toHaveCount(0);
+    await expect(app.metas.resumen('Ya apartado')).toHaveText('0 €');
   });
 
   test('renombrar una meta la modifica sin crear otra', {

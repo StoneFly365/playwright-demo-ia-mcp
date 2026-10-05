@@ -195,8 +195,12 @@ test.describe('Deshacer el último guardado', () => {
     await expect(app.inicio.bienvenida).toBeVisible();
   });
 
-  test('el botón «Deshacer» desaparece una vez usado', { tag: '@critical' }, async ({ app }) => {
+  test('el botón «Deshacer» desaparece una vez usado', {
+    tag: ['@critical', '@bug-D11'],
+    annotation: { type: 'issue', description: 'D11: el aviso original conserva «Deshacer» (que ya no hace nada) hasta que caduca' },
+  }, async ({ app }) => {
     // UNDO-01 (botón ya usado)
+    test.fail();
     await app.alta.abrir('A mano');
     await app.alta.formulario.rellenar({ importe: '12,50', comercio: 'Mercadona' });
     await app.alta.formulario.guardar();
@@ -204,6 +208,8 @@ test.describe('Deshacer el último guardado', () => {
     await app.aviso('Gasto de 12,50 € guardado.').getByRole('button', { name: 'Deshacer' }).click();
 
     await expect(app.aviso('Se ha deshecho el último guardado.')).toBeVisible();
-    await expect(app.page.getByRole('button', { name: 'Deshacer' })).toHaveCount(0);
+    // El aviso caduca solo a los 5 s, igual que el timeout por defecto de expect: con él, la
+    // caducidad haría pasar el test aunque el botón siga ahí. 1 s basta para que la app reaccione.
+    await expect(app.page.getByRole('button', { name: 'Deshacer' })).toHaveCount(0, { timeout: 1_000 });
   });
 });

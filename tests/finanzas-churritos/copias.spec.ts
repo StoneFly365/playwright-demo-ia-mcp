@@ -104,7 +104,7 @@ test.describe('Copias de seguridad', () => {
 
       await app.ajustes.importar(archivo);
 
-      await expect(app.aviso('No se ha podido importar')).toBeVisible();
+      await expect(app.ultimoAviso()).toContainText('No se ha podido importar');
       await expect(app.ajustes.recuento).toHaveText(RECUENTO_MES_BASICO);
     });
   }

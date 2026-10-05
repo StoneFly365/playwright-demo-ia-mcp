@@ -28,7 +28,8 @@ test.describe('Alta escribiendo en lenguaje natural', () => {
     await app.irA('Movimientos');
     const detalle = await app.movimientos.abrirDetalle('Supermercado');
     await expect(detalle.dato('Origen')).toHaveText('texto');
-    await expect(detalle.hoja.getByText('Texto original')).toBeVisible();
+    await detalle.hoja.getByText('Texto original').click();
+    await expect(detalle.hoja.getByRole('group')).toContainText('Gasté 45,90 en el supermercado ayer con tarjeta');
   });
 
   test('sin texto no hay nada que interpretar', { tag: '@critical' }, async ({ app }) => {

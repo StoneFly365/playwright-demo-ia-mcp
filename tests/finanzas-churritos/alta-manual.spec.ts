@@ -78,7 +78,7 @@ test.describe('Alta manual de movimientos', () => {
     await app.alta.formulario.rellenar({ importe: '0,001' });
     await app.alta.formulario.guardar();
 
-    await expect(app.aviso('El importe tiene que ser un número mayor que cero.')).toBeVisible();
+    await expect(app.ultimoAviso()).toContainText('El importe tiene que ser un número mayor que cero.');
     await expect(app.alta.hoja).toBeVisible();
   });
 

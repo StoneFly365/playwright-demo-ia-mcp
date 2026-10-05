@@ -326,7 +326,7 @@ Observados en la UI salvo que se indique otra cosa. Cada escenario de `test-scen
 | D08 | **Crítica** | Importar un JSON con un importe negativo (−999) lo acepta y **corrompe todos los agregados**: «Gastos −880,11 €», «Previsión de cierre −5456,68 €», porcentajes negativos en el donut y la fila «− -999 €». | Captura de Inicio tras importar | BAK-04 |
 | D09 | Media | «Deshacer» tras cargar los datos de ejemplo borra los 42 movimientos pero deja 4 presupuestos y 2 metas huérfanos, y Inicio vuelve a la bienvenida. | «0 movimientos guardados, 4 presupuestos y 2 metas.» | DEMO-02 |
 | D10 | Baja | El error de importación muestra el mensaje técnico del parser, en inglés. | «Expected property name or '}' in JSON…» | BAK-03 |
-| ~~D11~~ | — | **Descartado en la automatización.** Tras deshacer, «Deshacer» desaparece correctamente, tanto en el alta como en la aportación. El discovery confundió un aviso anterior. | UNDO-01 pasa | UNDO-01 |
+| D11 | Baja | El botón «Deshacer» sigue visible en el aviso original después de usarlo, y ya no hace nada, hasta que el aviso caduca a los 5 s. **Confirmado en la revisión QA.** La automatización lo había descartado por error: la aserción esperaba los mismos 5 s que tarda en caducar el aviso. | Sonda inmediata: el botón presente 6/6 veces, en el alta y en la aportación | UNDO-01 |
 | D12 | Baja | Un día con un único gasto de 0 € muestra el subtotal «+ 0 €» (signo de ingreso). | Cabecera «Hoy + 0 €» | LIST-05 |
 
 ### Defectos encontrados durante la automatización (2026-10-05)

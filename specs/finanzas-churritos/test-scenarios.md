@@ -437,7 +437,7 @@ P1 · Functional / State transition · ✅ Happy · Riesgo: Alto · Evidencia: U
 - **Resultado esperado:**
   - Aparece el aviso «Se ha deshecho el último guardado.».
   - Se elimina exactamente lo guardado (1, 3 y 1 movimientos) y los totales vuelven al estado anterior.
-  - El botón «Deshacer» ya usado deja de mostrarse. Lo cumple: D11 quedó descartado al automatizar.
+  - El botón «Deshacer» ya usado deja de mostrarse. Hoy no lo cumple (D11, confirmado en la revisión QA).
 
 ---
 
@@ -905,4 +905,4 @@ P3 · Navigation / UI behaviour · ✅ Happy · Riesgo: Bajo · Evidencia: UI
 - ⚠️ Edge: 24.
 - Mixtos ✅/❌: 4 (LIST-02, DET-04, MET-05, DEMO-03).
 
-**Escenarios que hoy fallan, total o parcialmente, por defectos confirmados:** ALTA-02 (D14), ALTA-03 (D01), ALTA-05 (D15), ALTA-06 (D05), TXT-03 (D13), LOTE-02 (D06), LIST-05 (D12), PRE-03 (D16), PRE-08 (D02), MET-03 (D02), MET-04 (D04), MET-06 (D03), AJU-01 (D07), BAK-03 (D10), BAK-04 (D08) y DEMO-02 (D09). Actualizado tras la automatización del 2026-10-05.
+**Escenarios que hoy fallan, total o parcialmente, por defectos confirmados:** ALTA-02 (D14), ALTA-03 (D01), ALTA-05 (D15), ALTA-06 (D05), TXT-03 (D13), LOTE-02 (D06), LIST-05 (D12), PRE-03 (D16), PRE-08 (D02), MET-03 (D02), MET-04 (D04), MET-06 (D03), AJU-01 (D07), BAK-03 (D10), BAK-04 (D08), UNDO-01 (D11) y DEMO-02 (D09). Actualizado tras la revisión QA del 2026-10-05.
