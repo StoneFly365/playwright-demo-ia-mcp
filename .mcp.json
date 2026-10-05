@@ -1,10 +1,10 @@
 {
   "mcpServers": {
     "playwright-test": {
-      "command": "npx",
+      "command": "node",
       "args": [
-        "playwright",
-        "run-test-mcp-server"
+        "-e",
+        "const root = require('fs').realpathSync.native('.'); require('child_process').spawn('npx', ['playwright', 'run-test-mcp-server', '--config', JSON.stringify(require('path').join(root, 'playwright.config.ts'))], { stdio: 'inherit', shell: true, cwd: root }).on('exit', c => process.exit(c))"
       ]
     }
   }
