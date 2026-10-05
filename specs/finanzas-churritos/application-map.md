@@ -108,7 +108,7 @@ Tiene cuatro pestañas: ⌨️ Escribir · 🎤 Dictar · 📷 Foto · ✍️ A 
 | Categoría | `select` con optgroups | Solo están habilitadas las del tipo activo |
 | Comercio o concepto | `input text`, placeholder «Mercadona, nómina, alquiler…» | Opcional |
 | Forma de pago | `select` | Sin especificar, Efectivo, Tarjeta, Bizum, Transferencia, Domiciliado, PayPal, Apple Pay, Google Pay, Cheque |
-| Asignar a meta | `select` | Solo visible con el tipo Ahorro. **En «A mano» solo ofrece «Sin meta»** (ver D05) |
+| Asignar a meta | `select` | Debería verse solo con Ahorro, pero se ve siempre (D15). **En «A mano» solo ofrece «Sin meta»** (ver D05) |
 | Nota (opcional) | `textarea` | Opcional |
 | Botones | «Cancelar» y «✓ Guardar movimiento» | |
 
@@ -317,7 +317,7 @@ Observados en la UI salvo que se indique otra cosa. Cada escenario de `test-scen
 | ID | Severidad | Defecto | Evidencia | Escenario |
 |---|---|---|---|---|
 | D01 | Media | Un importe de «0,001» pasa la validación (> 0) y se guarda como **0 €**. | Movimiento `importe: 0` en IndexedDB y fila «− 0 €» | ALTA-03 |
-| D02 | Alta | Los formularios de las hojas de **meta** pierden todo lo escrito al mostrarse o caducar cualquier aviso, porque la hoja se repinta con su HTML original. Por el mismo mecanismo de código se infiere que también afecta a presupuesto y aportación. | Nombre «Viaje QA» vacío tras el aviso «El objetivo debe ser mayor que cero.» y campos vacíos 5 s después | MET-03, PRE-08 |
+| D02 | Alta | Los formularios de las hojas de **meta** y de **presupuesto** pierden todo lo escrito cada vez que la app repinta: al mostrarse o caducar un aviso, y también en el repintado que hace el motor de sincronización al terminar de arrancar. La hoja se repinta con su HTML original. Por el mismo mecanismo se infiere que afecta también a la aportación. | Nombre «Viaje QA» vacío tras el aviso «El objetivo debe ser mayor que cero.». Categoría Ocio que vuelve a Supermercado (confirmado en la automatización) | MET-03, PRE-08 |
 | D03 | Alta | **Editar una meta cambiando su nombre crea una meta nueva** y deja la original. | Dos metas en IndexedDB: «Viaje QA» y «Viaje QA 2» | MET-06 |
 | D04 | Media | «Ya tengo ahorrado» admite negativos: −50 € da un progreso de «−5 %». | Tarjeta «-50 € de 1000 €» | MET-04 |
 | D05 | Alta | En el alta **A mano** de un Ahorro, «Asignar a meta» solo ofrece «Sin meta» aunque haya metas. | Opciones: `["Sin meta"]` con 2 metas creadas | ALTA-06 |
@@ -326,5 +326,14 @@ Observados en la UI salvo que se indique otra cosa. Cada escenario de `test-scen
 | D08 | **Crítica** | Importar un JSON con un importe negativo (−999) lo acepta y **corrompe todos los agregados**: «Gastos −880,11 €», «Previsión de cierre −5456,68 €», porcentajes negativos en el donut y la fila «− -999 €». | Captura de Inicio tras importar | BAK-04 |
 | D09 | Media | «Deshacer» tras cargar los datos de ejemplo borra los 42 movimientos pero deja 4 presupuestos y 2 metas huérfanos, y Inicio vuelve a la bienvenida. | «0 movimientos guardados, 4 presupuestos y 2 metas.» | DEMO-02 |
 | D10 | Baja | El error de importación muestra el mensaje técnico del parser, en inglés. | «Expected property name or '}' in JSON…» | BAK-03 |
-| D11 | Baja | El botón «Deshacer» sigue visible en el aviso original después de deshacer, y no hace nada. | Dos avisos con «Deshacer» visibles | UNDO-01 |
+| ~~D11~~ | — | **Descartado en la automatización.** Tras deshacer, «Deshacer» desaparece correctamente, tanto en el alta como en la aportación. El discovery confundió un aviso anterior. | UNDO-01 pasa | UNDO-01 |
 | D12 | Baja | Un día con un único gasto de 0 € muestra el subtotal «+ 0 €» (signo de ingreso). | Cabecera «Hoy + 0 €» | LIST-05 |
+
+### Defectos encontrados durante la automatización (2026-10-05)
+
+| ID | Severidad | Defecto | Evidencia | Escenario |
+|---|---|---|---|---|
+| D13 | Media | «el día N» no se interpreta como fecha: «Pagué 720 de alquiler el día 2», **uno de los ejemplos de la propia app**, se guarda con la fecha de hoy. El comercio sale como «Alquiler Dia». | `parsearMovimiento` devuelve `fecha: 2026-10-05` | TXT-03 |
+| D14 | Baja | Tras un importe inválido, la app intenta llevar el foco a «Importe», pero lo hace sobre el campo antiguo, ya sustituido por el repintado del aviso. El foco se pierde (accesibilidad y teclado). | `toBeFocused` falla de forma consistente | ALTA-02 |
+| D15 | Baja | «Asignar a meta» se ve también con Gasto e Ingreso: el CSS `.campo { display: grid }` anula el atributo `hidden`. Al guardar se descarta, pero confunde. *El discovery lo daba por oculto; era un error de observación.* | `toBeHidden` falla con el tipo Gasto | ALTA-05 |
+| D16 | Baja | El porcentaje del presupuesto se redondea a una décima **antes** de compararlo con los umbrales: 79,99 € de 100 € ya avisa (80 %) y 99,99 € ya figura como «superado» (100 %). | Avisos y «· superado» con 79,99 € y 99,99 € | PRE-03 |

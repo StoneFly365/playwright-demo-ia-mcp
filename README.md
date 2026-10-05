@@ -7,10 +7,15 @@ Esqueleto mínimo para arrancar un proyecto de pruebas con [Playwright](https://
 ```
 ├── .claude/agents/        # Agentes Playwright: planner, generator, healer
 ├── .github/workflows/     # CI: tests en los 3 navegadores + reporte IA
-├── pages/                 # Page Objects
-├── specs/                 # Planes de test (los guarda el planner)
+├── docs/                  # Arquitectura de la automatización
+├── fixtures/<app>.ts      # Test extendido de cada app (reloj, page object raíz)
+├── helpers/<app>/         # Utilidades técnicas (siembra de datos…)
+├── pages/<app>/           # Page Objects
+├── specs/<app>/           # Discovery y plan de pruebas (fase planner)
+├── test-data/<app>/       # Datos de prueba explícitos
 ├── tests/
-│   └── seed.spec.ts       # Punto de partida para los agentes
+│   ├── seed.spec.ts       # Punto de partida para los agentes
+│   └── <app>/             # Specs de cada app (un project por app en la config)
 ├── prompts/               # Prompts del reporte IA
 ├── scripts/report-ai.mjs  # Análisis IA de resultados
 ├── .mcp.json              # Servidor MCP de Playwright
