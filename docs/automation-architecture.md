@@ -1,9 +1,9 @@
 # Arquitectura de la automatización
 
-Suite Playwright + TypeScript del arquetipo. La primera aplicación automatizada es **Mis Finanzas** (`finanzas-churritos`). El mismo patrón sirve para cualquier otra app o API que se añada al repositorio.
+Suite Playwright + TypeScript del arquetipo. La primera aplicación automatizada es **Mis Finanzas** (`finanzas-pareja`). El mismo patrón sirve para cualquier otra app o API que se añada al repositorio.
 
-- Especificaciones de origen: [`specs/finanzas-churritos/`](../specs/finanzas-churritos/)
-- Estado de la cobertura: [`specs/finanzas-churritos/coverage-matrix.md`](../specs/finanzas-churritos/coverage-matrix.md)
+- Especificaciones de origen: [`specs/finanzas-pareja/`](../specs/finanzas-pareja/)
+- Estado de la cobertura: [`specs/finanzas-pareja/coverage-matrix.md`](../specs/finanzas-pareja/coverage-matrix.md)
 
 ## 1. Estructura
 
@@ -23,20 +23,20 @@ Para **añadir una app nueva** hay que dar tres pasos:
 2. Añadir su project en `playwright.config.ts`.
 3. Incluirla en `APPS`, para que los projects genéricos (chromium, firefox, webkit, usados por la seed de los agentes) no la ejecuten sin su `baseURL`.
 
-### finanzas-churritos
+### finanzas-pareja
 
 | Carpeta | Contenido |
 |---|---|
-| `tests/finanzas-churritos/` | `arranque-navegacion`, `alta-manual`, `alta-texto`, `logica-pura`, `movimientos`, `inicio`, `presupuestos`, `metas`, `copias`, `datos-ejemplo`, `persistencia` |
-| `pages/finanzas-churritos/` | `finanzas-app` (armazón y entrada), `alta-movimiento`, `formulario-movimiento`, `movimientos` (+ `DetalleMovimiento`), `inicio`, `presupuestos`, `metas`, `ajustes`, `cifra` |
-| `fixtures/finanzas-churritos.ts` | `test` y `expect` de la app |
-| `test-data/finanzas-churritos/` | `fechas`, `datos` (tipos, builders `gasto` / `ingreso` / `ahorro`, `MES_BASICO`), `interpretacion` (tablas de importes y frases), `importaciones` (archivos inválidos) |
-| `helpers/finanzas-churritos/` | `modulos-app` (`llamar`: ejecuta una función de un módulo de la app en el navegador) y `almacen` (`sembrar`) |
+| `tests/finanzas-pareja/` | `arranque-navegacion`, `alta-manual`, `alta-texto`, `logica-pura`, `movimientos`, `inicio`, `presupuestos`, `metas`, `copias`, `datos-ejemplo`, `persistencia` |
+| `pages/finanzas-pareja/` | `finanzas-app` (armazón y entrada), `alta-movimiento`, `formulario-movimiento`, `movimientos` (+ `DetalleMovimiento`), `inicio`, `presupuestos`, `metas`, `ajustes`, `cifra` |
+| `fixtures/finanzas-pareja.ts` | `test` y `expect` de la app |
+| `test-data/finanzas-pareja/` | `fechas`, `datos` (tipos, builders `gasto` / `ingreso` / `ahorro`, `MES_BASICO`), `interpretacion` (tablas de importes y frases), `importaciones` (archivos inválidos) |
+| `helpers/finanzas-pareja/` | `modulos-app` (`llamar`: ejecuta una función de un módulo de la app en el navegador) y `almacen` (`sembrar`) |
 
 Comandos:
 - `npm run test:finanzas`: ejecuta la suite.
 - `npm run typecheck`: comprueba los tipos.
-- `npx playwright test --project=finanzas-churritos --grep @smoke`: solo el smoke.
+- `npx playwright test --project=finanzas-pareja --grep @smoke`: solo el smoke.
 
 ## 2. Estrategia de localizadores
 
@@ -63,7 +63,7 @@ Ningún test usa XPath ni clases CSS directamente. Si la app añade `data-testid
 
 ## 4. Fixtures
 
-`fixtures/finanzas-churritos.ts` extiende `test` con:
+`fixtures/finanzas-pareja.ts` extiende `test` con:
 
 | Fixture | Qué hace |
 |---|---|
@@ -112,8 +112,8 @@ Ningún test usa XPath ni clases CSS directamente. Si la app añade `data-testid
 
 ## 9. Limitaciones y pendientes conocidos
 
-- **CI.** El workflow `.github/workflows/playwright.yml` ejecuta `--project=chromium|firefox|webkit`, y esos projects excluyen las carpetas de apps. Hace falta añadir `finanzas-churritos` a la matriz. No se ha tocado el workflow en esta fase.
+- **CI.** El workflow `.github/workflows/playwright.yml` ejecuta `--project=chromium|firefox|webkit`, y esos projects excluyen las carpetas de apps. Hace falta añadir `finanzas-pareja` a la matriz. No se ha tocado el workflow en esta fase.
 - **Navegadores.** De momento solo Chromium de escritorio, como fija la estrategia. Firefox, WebKit y móvil quedan para la ola P2.
 - **Dependencia de `serviceWorkers: 'block'`** para la señal de arranque. PER-02 (offline, P3) necesitará un project con el service worker permitido y otra señal de arranque.
 - **Lint.** El proyecto no tiene ESLint configurado. Solo hay `tsc --noEmit` (`npm run typecheck`).
-- **Siembra acoplada a `/js/db.js`.** Si la app cambia su capa de persistencia, solo cambia `helpers/finanzas-churritos/almacen.ts` (supuesto OQ-04).
+- **Siembra acoplada a `/js/db.js`.** Si la app cambia su capa de persistencia, solo cambia `helpers/finanzas-pareja/almacen.ts` (supuesto OQ-04).

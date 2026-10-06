@@ -1,4 +1,4 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
+import { expect, test } from '../../fixtures/finanzas-pareja';
 
 test.describe('Alta manual de movimientos', () => {
   test.beforeEach(async ({ app }) => {

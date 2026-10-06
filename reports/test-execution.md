@@ -1,7 +1,7 @@
-# Informe de ejecución · finanzas-churritos
+# Informe de ejecución · finanzas-pareja
 
 - **Fecha:** 2026-10-05
-- **Suite:** project `finanzas-churritos` (Chromium escritorio), 93 tests en 11 ficheros
+- **Suite:** project `finanzas-pareja` (Chromium escritorio), 93 tests en 11 ficheros
 - **Commit base:** `9e932ff`, más las correcciones de esta revisión (sin commitear)
 - **Entorno:** Windows 11, Node 22, Playwright 1.58.2, contra producción (`https://finanzas-churritos.netlify.app`)
 

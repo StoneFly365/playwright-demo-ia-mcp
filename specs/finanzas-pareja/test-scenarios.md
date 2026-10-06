@@ -1,4 +1,4 @@
-# Inventario de escenarios · Mis Finanzas (finanzas-churritos)
+# Inventario de escenarios · Mis Finanzas (finanzas-pareja)
 
 **Leyenda de cada escenario:**
 - **Prioridad:**

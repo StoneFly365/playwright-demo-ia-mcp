@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { sembrar } from '../../helpers/finanzas-churritos/almacen';
-import type { DatosSemilla } from '../../test-data/finanzas-churritos/datos';
+import { sembrar } from '../../helpers/finanzas-pareja/almacen';
+import type { DatosSemilla } from '../../test-data/finanzas-pareja/datos';
 import { Ajustes } from './ajustes';
 import { AltaMovimiento } from './alta-movimiento';
 import { Inicio } from './inicio';

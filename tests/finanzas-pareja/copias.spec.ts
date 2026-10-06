@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { ahorro, gasto, MES_BASICO, RECUENTO_MES_BASICO } from '../../test-data/finanzas-churritos/datos';
-import { ARCHIVOS_CORRUPTOS, IMPORTES_INVALIDOS } from '../../test-data/finanzas-churritos/importaciones';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { ahorro, gasto, MES_BASICO, RECUENTO_MES_BASICO } from '../../test-data/finanzas-pareja/datos';
+import { ARCHIVOS_CORRUPTOS, IMPORTES_INVALIDOS } from '../../test-data/finanzas-pareja/importaciones';
 
 test.describe('Copias de seguridad', () => {
   test('el usuario exporta sus datos en JSON y en CSV', { tag: '@critical' }, async ({ app }) => {

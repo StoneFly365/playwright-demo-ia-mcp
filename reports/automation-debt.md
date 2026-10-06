@@ -1,4 +1,4 @@
-# Deuda de automatización · finanzas-churritos
+# Deuda de automatización · finanzas-pareja
 
 - **Fecha:** 2026-10-05
 - **Escala de prioridad:**
@@ -8,7 +8,7 @@
 
 | ID | Prio | Deuda | Impacto si no se aborda | Propuesta | Esfuerzo |
 |---|---|---|---|---|---|
-| AD-01 | 🔴 | **El CI no ejecuta la suite.** `playwright.yml` lanza `--project=chromium\|firefox\|webkit`, y esos projects excluyen `tests/finanzas-churritos/`. | Las regresiones y los arreglos de defectos no se detectan en los PR | Añadir `finanzas-churritos` a la matriz del workflow (o un job propio) y un paso `--grep @smoke` en cada push | S |
+| AD-01 | 🔴 | **El CI no ejecuta la suite.** `playwright.yml` lanza `--project=chromium\|firefox\|webkit`, y esos projects excluyen `tests/finanzas-pareja/`. | Las regresiones y los arreglos de defectos no se detectan en los PR | Añadir `finanzas-pareja` a la matriz del workflow (o un job propio) y un paso `--grep @smoke` en cada push | S |
 | AD-02 | 🔴 | **`retries: 2` en CI sin `failOnFlakyTests`.** | Un test intermitente queda en verde y solo se ve como *flaky* en el informe, que nadie mira | `failOnFlakyTests: !!process.env.CI`, o publicar el número de *flaky* como métrica que bloquea | XS |
 | AD-03 | 🟠 | La **señal de fin de arranque** depende del texto de un mensaje interno de Playwright («Service Worker registration blocked by Playwright»). | Si cambia en una actualización de Playwright, **todos** los tests se agotan en `abrir()` con un *timeout* genérico | Añadir un `timeout` propio y un mensaje claro a la espera; fijar la versión de `@playwright/test` (hoy `^1.49.0`). Alternativa: pedir a la app una señal explícita (`data-listo` en `#app`) | S |
 | AD-04 | 🟠 | Acoplamiento a la estructura de la app donde no hay semántica: 4 clases de bloques de cifras (`cifra.ts`), `#avisos`, `option:enabled` y `section`. | Un rediseño visual rompe esos localizadores, aunque concentrados en 6 líneas de page objects | Pedir `data-testid` en KPIs, totales y la capa de avisos, y configurar `testIdAttribute` | S (app) + XS (tests) |

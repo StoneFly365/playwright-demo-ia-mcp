@@ -1,5 +1,5 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { ahorro, gasto, type Meta } from '../../test-data/finanzas-churritos/datos';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { ahorro, gasto, type Meta } from '../../test-data/finanzas-pareja/datos';
 
 const VIAJE: Meta = { id: 'meta-viaje', nombre: 'Viaje', objetivo: 1000, inicial: 0 };
 

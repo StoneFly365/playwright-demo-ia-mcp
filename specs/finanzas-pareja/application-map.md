@@ -1,4 +1,4 @@
-# Mapa funcional · Mis Finanzas (finanzas-churritos)
+# Mapa funcional · Mis Finanzas (finanzas-pareja)
 
 - **URL:** https://finanzas-churritos.netlify.app/
 - **Fecha del discovery:** 2026-10-05 (mes en curso de la app: «Octubre 2026»)

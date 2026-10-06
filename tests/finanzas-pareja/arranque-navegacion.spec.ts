@@ -1,6 +1,6 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { gasto, MES_BASICO } from '../../test-data/finanzas-churritos/datos';
-import { MES_ACTUAL, MES_ANTERIOR } from '../../test-data/finanzas-churritos/fechas';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { gasto, MES_BASICO } from '../../test-data/finanzas-pareja/datos';
+import { MES_ACTUAL, MES_ANTERIOR } from '../../test-data/finanzas-pareja/fechas';
 
 test.describe('Arranque y navegación', () => {
   test('un usuario nuevo ve la bienvenida con las formas de empezar', { tag: '@smoke' }, async ({ app }) => {

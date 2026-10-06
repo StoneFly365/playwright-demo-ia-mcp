@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /** Carpetas de tests/ que tienen proyecto propio más abajo. */
-const APPS = ['**/finanzas-churritos/**'];
+const APPS = ['**/finanzas-pareja/**'];
 
 export default defineConfig({
   testDir: './tests',
@@ -38,8 +38,8 @@ export default defineConfig({
 
     // Un proyecto por aplicación bajo prueba: tests/<app>/ + su baseURL y contexto.
     {
-      name: 'finanzas-churritos',
-      testDir: './tests/finanzas-churritos',
+      name: 'finanzas-pareja',
+      testDir: './tests/finanzas-pareja',
       use: {
         ...devices['Desktop Chrome'],
         baseURL: 'https://finanzas-churritos.netlify.app',

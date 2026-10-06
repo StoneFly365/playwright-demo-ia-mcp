@@ -1,6 +1,6 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { AYER } from '../../test-data/finanzas-churritos/fechas';
-import { LISTA_VARIOS } from '../../test-data/finanzas-churritos/interpretacion';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { AYER } from '../../test-data/finanzas-pareja/fechas';
+import { LISTA_VARIOS } from '../../test-data/finanzas-pareja/interpretacion';
 
 test.describe('Alta escribiendo en lenguaje natural', () => {
   test.beforeEach(async ({ app }) => {

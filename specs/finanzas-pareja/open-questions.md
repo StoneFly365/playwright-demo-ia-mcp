@@ -1,4 +1,4 @@
-# Preguntas abiertas · Mis Finanzas (finanzas-churritos)
+# Preguntas abiertas · Mis Finanzas (finanzas-pareja)
 
 Son aspectos que **no se han podido determinar** durante el discovery: no son observables sin infraestructura o cuentas, o son reglas de negocio sin documentar. Cada pregunta indica qué escenarios bloquea y qué supuesto se toma mientras no haya respuesta.
 

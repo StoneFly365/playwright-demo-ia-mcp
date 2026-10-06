@@ -1,4 +1,4 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
+import { expect, test } from '../../fixtures/finanzas-pareja';
 
 test('los datos y las preferencias siguen ahí al volver a abrir la app', { tag: '@smoke' }, async ({ app, page }) => {
   // PER-01: todo se crea por la interfaz, como lo haría el usuario.

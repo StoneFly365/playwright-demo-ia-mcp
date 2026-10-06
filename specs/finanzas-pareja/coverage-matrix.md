@@ -1,11 +1,11 @@
-# Matriz de cobertura · Mis Finanzas (finanzas-churritos)
+# Matriz de cobertura · Mis Finanzas (finanzas-pareja)
 
 **Columna «Automatización»:**
 - **AUTOMATED**: todos los pasos y resultados esperados del escenario están cubiertos por tests.
 - **PARTIAL**: parte del escenario está cubierta.
 - **NOT AUTOMATED**: no hay test todavía.
 
-Los tests están en `tests/finanzas-churritos/`.
+Los tests están en `tests/finanzas-pareja/`.
 
 **Columna «Estado final»** (revisión QA del 2026-10-05; última ejecución completa válida: estrés 3, 465/465 con el resultado esperado):
 - **PASS**: el comportamiento de la app es el esperado y los tests lo verifican.

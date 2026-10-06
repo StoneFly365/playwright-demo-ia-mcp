@@ -1,5 +1,5 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { gasto, MES_BASICO } from '../../test-data/finanzas-churritos/datos';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { gasto, MES_BASICO } from '../../test-data/finanzas-pareja/datos';
 
 test.describe('Panel del mes', () => {
   test('los indicadores del mes cuadran con los movimientos', { tag: '@smoke' }, async ({ app }) => {

@@ -1,6 +1,6 @@
 import { HOY } from './fechas';
 
-/** Forma de los registros que guarda la app en IndexedDB (ver specs/finanzas-churritos/application-map.md §6). */
+/** Forma de los registros que guarda la app en IndexedDB (ver specs/finanzas-pareja/application-map.md §6). */
 export interface Movimiento {
   id?: string;
   tipo: 'gasto' | 'ingreso' | 'ahorro';

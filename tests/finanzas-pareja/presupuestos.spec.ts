@@ -1,5 +1,5 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { gasto } from '../../test-data/finanzas-churritos/datos';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { gasto } from '../../test-data/finanzas-pareja/datos';
 
 test.describe('Presupuestos', () => {
   test('el usuario pone un límite mensual y ve cuánto lleva gastado', { tag: '@smoke' }, async ({ app }) => {

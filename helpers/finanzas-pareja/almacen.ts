@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import type { DatosSemilla } from '../../test-data/finanzas-churritos/datos';
+import type { DatosSemilla } from '../../test-data/finanzas-pareja/datos';
 import { llamar } from './modulos-app';
 
 /**

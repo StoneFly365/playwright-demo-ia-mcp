@@ -1,4 +1,4 @@
-# Informe de flakiness · finanzas-churritos
+# Informe de flakiness · finanzas-pareja
 
 - **Fecha:** 2026-10-05
 - **Método:**
@@ -49,7 +49,7 @@ Con 16 workers los temporizadores se retrasan y gana el `expect`.
 
 **Evidence:** la sonda inmediata muestra el botón visible 6/6 veces.
 
-**Fix:** el test pasa a ser de defecto conocido (`test.fail()`, `@bug-D11`), con un límite de 1 s. D11 vuelve a constar como defecto en `specs/finanzas-churritos/application-map.md`.
+**Fix:** el test pasa a ser de defecto conocido (`test.fail()`, `@bug-D11`), con un límite de 1 s. D11 vuelve a constar como defecto en `specs/finanzas-pareja/application-map.md`.
 
 **Confidence:** alta.
 

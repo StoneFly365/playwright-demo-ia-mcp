@@ -1,7 +1,7 @@
-# Revisión de calidad de la suite · finanzas-churritos
+# Revisión de calidad de la suite · finanzas-pareja
 
 - **Fecha:** 2026-10-05
-- **Alcance:** `tests/`, `pages/`, `fixtures/`, `test-data/` y `helpers/` de finanzas-churritos, más `playwright.config.ts`.
+- **Alcance:** `tests/`, `pages/`, `fixtures/`, `test-data/` y `helpers/` de finanzas-pareja, más `playwright.config.ts`.
 - **Commit revisado:** `9e932ff` más los cambios de esta revisión.
 
 **Severidad:**
@@ -50,7 +50,7 @@
 | **TypeScript** | ✅ Bien | `tsc --noEmit` sin errores, sin `any` explícitos y con tipos de dominio en `datos.ts`. No hay lint (AD-05). |
 | **Configuración** | ⚠️ Revisar | Un project por app, `serviceWorkers: 'block'`, locale y zona horaria fijados. **El workflow de CI no ejecuta este project** (AD-01). |
 | **Mantenibilidad** | ⚠️ Revisar | La señal de arranque depende del texto de un mensaje interno de Playwright (AD-03). Si ese texto cambia en una actualización, todos los tests se agotarían en `abrir()` sin un mensaje claro. |
-| **Cobertura** | ✅ Bien | P0 13/13 y P1 28/28, documentadas en `specs/finanzas-churritos/coverage-matrix.md`. |
+| **Cobertura** | ✅ Bien | P0 13/13 y P1 28/28, documentadas en `specs/finanzas-pareja/coverage-matrix.md`. |
 | **Flakiness** | ⚠️ Ver `flakiness-report.md` | El flaky de test (R2) está corregido. Queda un riesgo de **entorno**: con 16 workers contra producción hubo una ventana de *timeouts* masivos. |
 
 ## 3. Búsquedas específicas pedidas

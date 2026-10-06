@@ -1,4 +1,4 @@
-# Estrategia de pruebas · Mis Finanzas (finanzas-churritos)
+# Estrategia de pruebas · Mis Finanzas (finanzas-pareja)
 
 > Fase actual: **DISCOVERY + PLANNING**. Este documento no contiene código. La siguiente fase (GENERATOR) usará esta estrategia y `test-scenarios.md` como entrada.
 

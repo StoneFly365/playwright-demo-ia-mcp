@@ -1,7 +1,7 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { gasto, MES_BASICO } from '../../test-data/finanzas-churritos/datos';
-import { HOY } from '../../test-data/finanzas-churritos/fechas';
-import { LISTA_VARIOS } from '../../test-data/finanzas-churritos/interpretacion';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { gasto, MES_BASICO } from '../../test-data/finanzas-pareja/datos';
+import { HOY } from '../../test-data/finanzas-pareja/fechas';
+import { LISTA_VARIOS } from '../../test-data/finanzas-pareja/interpretacion';
 
 const NETFLIX = gasto(12.99, 'suscripciones', 'Netflix', { metodoPago: 'tarjeta' });
 const MERCADONA = gasto(45.9, 'supermercado', 'Mercadona', { metodoPago: 'tarjeta' });

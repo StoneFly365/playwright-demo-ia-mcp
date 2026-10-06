@@ -1,9 +1,9 @@
 import { test as base } from '@playwright/test';
-import { FinanzasApp } from '../pages/finanzas-churritos/finanzas-app';
-import { AHORA } from '../test-data/finanzas-churritos/fechas';
+import { FinanzasApp } from '../pages/finanzas-pareja/finanzas-app';
+import { AHORA } from '../test-data/finanzas-pareja/fechas';
 
 /**
- * Fixtures de la app finanzas-churritos.
+ * Fixtures de la app finanzas-pareja.
  * - `page`: con el reloj fijado en AHORA antes de cualquier navegación (los temporizadores siguen corriendo).
  * - `app`: page object raíz.
  * Cada test recibe un contexto nuevo, y por tanto un IndexedDB vacío: no hay que limpiar nada.

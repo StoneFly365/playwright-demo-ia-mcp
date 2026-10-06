@@ -1,6 +1,6 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { llamar } from '../../helpers/finanzas-churritos/modulos-app';
-import { FRASES, IMPORTES_ES } from '../../test-data/finanzas-churritos/interpretacion';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { llamar } from '../../helpers/finanzas-pareja/modulos-app';
+import { FRASES, IMPORTES_ES } from '../../test-data/finanzas-pareja/interpretacion';
 
 /**
  * Reglas de interpretación probadas contra la lógica pura de la app (formato.js, parser.js)

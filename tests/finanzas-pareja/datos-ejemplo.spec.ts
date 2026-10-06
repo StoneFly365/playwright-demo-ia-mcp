@@ -1,5 +1,5 @@
-import { expect, test } from '../../fixtures/finanzas-churritos';
-import { MES_BASICO, RECUENTO_MES_BASICO } from '../../test-data/finanzas-churritos/datos';
+import { expect, test } from '../../fixtures/finanzas-pareja';
+import { MES_BASICO, RECUENTO_MES_BASICO } from '../../test-data/finanzas-pareja/datos';
 
 test.describe('Datos de ejemplo y borrado total', () => {
   test('el usuario carga los datos de ejemplo para probar la app', { tag: '@critical' }, async ({ app }) => {
