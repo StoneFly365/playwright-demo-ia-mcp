@@ -194,29 +194,30 @@ async function writeOutput(filePath, content) {
     success(`Generado: ${filePath}`);
 }
 
+// No usamos testResults.stats.expected/unexpected: Playwright cuenta un
+// test.fail() que falla como esperaba ("expected") dentro de "expected",
+// mezclándolo con los passed normales. Para el reporte IA eso es justo lo
+// que no queremos esconder (son bugs confirmados), así que clasificamos
+// cada test por su resultado real (statuses[]), no por esa bolsa.
 function extractStats(testResults) {
-    if (testResults.stats) {
-        const s = testResults.stats;
-        const passed  = s.expected   ?? 0;
-        const failed  = s.unexpected ?? 0;
-        const skipped = s.skipped    ?? 0;
-        const flaky   = s.flaky      ?? 0;
-        return { total: passed + failed + skipped + flaky, passed, failed, skipped, flaky, duration_ms: s.duration ?? 0 };
-    }
-
     let passed = 0, failed = 0, skipped = 0, flaky = 0;
-    function walk(node) {
-        for (const test of node.tests ?? []) {
-            const statuses = (test.results ?? []).map(r => r.status);
-            if (statuses.length > 1 && statuses.includes("passed")) flaky++;
-            else if (statuses.includes("passed"))                    passed++;
-            else if (statuses.some(s => s === "failed" || s === "timedOut")) failed++;
-            else if (statuses.includes("skipped"))                   skipped++;
+
+    function walk(suite) {
+        for (const spec of suite.specs ?? []) {
+            for (const test of spec.tests ?? []) {
+                const statuses = (test.results ?? []).map(r => r.status);
+                if (statuses.length > 1 && statuses.includes("passed")) flaky++;
+                else if (statuses.includes("passed"))                   passed++;
+                else if (statuses.some(s => s === "failed" || s === "timedOut")) failed++;
+                else if (statuses.includes("skipped"))                  skipped++;
+            }
         }
-        for (const suite of node.suites ?? []) walk(suite);
+        for (const child of suite.suites ?? []) walk(child);
     }
     for (const suite of testResults.suites ?? []) walk(suite);
-    return { total: passed + failed + skipped + flaky, passed, failed, skipped, flaky, duration_ms: 0 };
+
+    const duration_ms = testResults.stats?.duration ?? 0;
+    return { total: passed + failed + skipped + flaky, passed, failed, skipped, flaky, duration_ms };
 }
 
 main().catch((e) => {
