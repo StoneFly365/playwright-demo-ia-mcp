@@ -13,6 +13,23 @@ env:
   HOME: /root  # Firefox no arranca si $HOME no pertenece al usuario actual; /github/home es de otro UID
 
 jobs:
+  # Herramientas de triaje, cobertura y guardia: sin navegador, sin red y sin IA.
+  tooling:
+    name: Typecheck y triaje (sin red)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HOME: /home/runner  # el HOME: /root global es para los contenedores; aquí corre el usuario runner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:triage
+
   test:
     name: Tests (${{ matrix.browser }})
     runs-on: ubuntu-latest
@@ -67,5 +84,75 @@ jobs:
         if: failure()
         with:
           name: test-results-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 7
+
+  # Suite real de finanzas-pareja. Apunta a la app publicada (finanzas-churritos.netlify.app):
+  # no hay entorno de pruebas propio (AD-12, OQ-01). Por eso solo corre a mano (workflow_dispatch)
+  # o si el repositorio lo autoriza con la variable FINANZAS_E2E_ENABLED=true.
+  finanzas-pareja:
+    name: Tests (finanzas-pareja)
+    needs: tooling
+    if: github.event_name == 'workflow_dispatch' || vars.FINANZAS_E2E_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-jammy
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Un fallo inesperado (incluido un test.fail() que pasa) hace fallar el job. Los defectos
+      # conocidos marcados con test.fail() que fallan como se espera no lo hacen.
+      - name: Run Playwright tests
+        run: npx playwright test --project=finanzas-pareja
+
+      # Solo explica el resultado; no cambia el estado del job.
+      - name: Triage (reglas, sin IA)
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "## Triaje — finanzas-pareja" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          node scripts/triage.mjs >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Generate AI report
+        if: always()
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npm run report:ai
+
+      - name: Show AI summary
+        if: always()
+        run: |
+          if [ -f playwright-report/ai-summary.txt ]; then
+            echo "## AI Test Report Summary — finanzas-pareja" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload HTML report and triage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-finanzas-pareja
+          path: |
+            playwright-report/
+            test-results.json
+          retention-days: 30
+
+      # También en verde: los error-context.md de los defectos conocidos son la evidencia del triaje.
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-finanzas-pareja
           path: test-results/
           retention-days: 7

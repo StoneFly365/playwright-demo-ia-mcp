@@ -1,56 +1,73 @@
 #!/usr/bin/env node
-import { readFile, mkdir, writeFile, access } from "node:fs/promises";
-import { spawn } from "node:child_process";
+// Informe IA de una ejecución de Playwright.
+//  1. Triaje determinista (scripts/triage.mjs): clasifica cada test sin IA.
+//  2. Solo los fallos que las reglas no resuelven van a la IA, con los hechos mínimos y redactados.
+//     Su respuesta se valida contra el contrato antes de usarla (scripts/triage/core.mjs).
+//  3. Resumen, correcciones y tickets a partir de los grupos, nunca del test-results.json crudo.
+// Playwright decide qué pasa y qué falla; este informe no cambia ningún resultado.
+import { readFile, mkdir, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
+import { loadAndTriage } from "./triage.mjs";
+import { applyAiDiagnoses, groupDiagnoses, summarize } from "./triage/core.mjs";
+import { runAi, currentModel } from "./ai-provider.mjs";
 
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
-const MODEL = "claude-haiku-4-5-20251001";           // Claude CLI (suscripción, local)
-const GEMINI_MODEL = "gemini-flash-latest";          // Google Gemini (free tier, CI)
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+const NOT_ACTIONABLE = ["KNOWN_DEFECT"];  // ya registrados: van al resumen, no a correcciones ni tickets
 
 function log(msg)     { console.log(`👉 ${msg}`); }
 function success(msg) { console.log(`✅ ${msg}`); }
 function errorLog(msg){ console.error(`❌ ${msg}`); }
 
+const promptVersion = (name, text) => `${name}@${createHash("sha256").update(text).digest("hex").slice(0, 12)}`;
+
 async function main() {
     log("Iniciando AI Reporting Pipeline...");
     await mkdir(REPORT_DIR, { recursive: true });
 
-    if (!(await exists(INPUT_JSON))) {
-        throw new Error(`No existe ${INPUT_JSON}. Ejecuta primero npm run test`);
+    // 1️⃣ Triaje determinista
+    const triage = loadAndTriage(INPUT_JSON);
+    const s = triage.summary;
+    log(`Triaje: ${s.total} total · ${s.PASSED} correctos · ${s.KNOWN_DEFECT} defectos conocidos · ${s.INCONCLUSIVE} sin resolver · ${s.ENVIRONMENT_FAILURE} de entorno · ${s.UNEXPECTED_PASS} pasan inesperadamente · ${s.FLAKY_FAILURE} flaky`);
+
+    // 2️⃣ IA solo para lo que las reglas no resuelven
+    const open = triage.diagnoses.filter((d) => d.needs_ai);
+    const warnings = [];
+    if (open.length) {
+        const pTriage = await readFile("prompts/ai-triage.txt", "utf8");
+        const cases = JSON.stringify({ cases: open.map((d) => d.facts) });
+        let resolved;
+        try {
+            const raw = await runAi(pTriage, cases, `Triaje de ${open.length} fallos sin resolver`);
+            resolved = applyAiDiagnoses(open, raw, { model: currentModel(), promptVersion: promptVersion("ai-triage", pTriage) });
+        } catch (e) {
+            // Sin IA, los casos se quedan como INCONCLUSIVE de las reglas: el informe sigue.
+            resolved = applyAiDiagnoses(open, "", { model: null, promptVersion: null });
+            resolved.warnings.push(`IA no disponible: ${e.message.split("\n")[0]}`);
+        }
+        warnings.push(...resolved.warnings);
+        const byId = new Map(resolved.diagnoses.map((d) => [d.test_id, d]));
+        triage.diagnoses = triage.diagnoses.map((d) => byId.get(d.test_id) ?? d);
+        triage.summary = summarize(triage.diagnoses);
     }
+    triage.warnings = warnings;
+    for (const w of warnings) log(`Aviso: ${w}`);
 
-    const testResultsRaw = await readFile(INPUT_JSON, "utf8");
-    const testResults = JSON.parse(testResultsRaw);
-    const stats = extractStats(testResults);
+    const groups = groupDiagnoses(triage.diagnoses);
+    const grouped = {
+        generated_at: new Date().toLocaleString("es-ES", { timeZone: "Europe/Madrid", dateStyle: "long", timeStyle: "short" }),
+        source: "triage",
+        stats: triage.summary,
+        run_errors: triage.run.errors.length,
+        total_groups: groups.length,
+        groups,
+    };
+    await writeOutput(path.join(REPORT_DIR, "triage.json"), JSON.stringify(triage, null, 2));
+    await writeOutput(path.join(REPORT_DIR, "failures-grouped.json"), JSON.stringify(grouped, null, 2));
 
-    log(`Estadísticas: ${stats.total} total · ${stats.passed} pasaron · ${stats.failed} fallaron · ${stats.skipped} omitidas · ${stats.flaky} flaky`);
-
-    // 1️⃣ Agrupar fallos
-    const pGroup = await readFile("prompts/ai-group-failures.txt", "utf8");
-    const groupedRaw = await runClaude(pGroup, testResultsRaw, "Agrupación de fallos");
-    const groupedClean = stripMarkdownFences(groupedRaw);
-
-    let grouped;
-    try {
-        grouped = JSON.parse(groupedClean);
-    } catch {
-        throw new Error(
-            "La respuesta de Claude para agrupación de fallos no es JSON válido.\n" +
-            "Primeros 500 chars:\n" + groupedClean.slice(0, 500)
-        );
-    }
-
-    // El modelo inventa generated_at (a menudo en UTC). Lo sobreescribimos con la
-    // hora real de Madrid para que sea fiable en local y en CI.
-    grouped.generated_at = new Date().toLocaleString("es-ES", {
-        timeZone: "Europe/Madrid",
-        dateStyle: "long",
-        timeStyle: "short",
-    });
-
-    // 2️⃣ Resumen · Correcciones · Tickets — en paralelo
+    // 3️⃣ Resumen · Correcciones · Tickets — en paralelo
+    const actionable = { ...grouped, groups: groups.filter((g) => !NOT_ACTIONABLE.includes(g.classification)) };
     const [pSummary, pCorrections, pTickets] = await Promise.all([
         readFile("prompts/ai-summary.txt", "utf8"),
         readFile("prompts/ai-corrections.txt", "utf8"),
@@ -58,134 +75,32 @@ async function main() {
     ]);
 
     log("Generando resumen, correcciones y tickets en paralelo...");
-
-    const summaryInput = JSON.stringify({ stats, grouped });
-    const groupedText  = JSON.stringify(grouped);
-
+    const none = Promise.resolve(null);
     const [summaryTxt, correctionsMd, ticketsRaw] = await Promise.all([
-        runClaude(pSummary,     summaryInput, "Resumen ejecutivo"),
-        runClaude(pCorrections, groupedText,  "Posibles correcciones"),
-        runClaude(pTickets,     groupedText,  "Tickets Jira"),
+        runAi(pSummary, JSON.stringify(grouped), "Resumen ejecutivo"),
+        actionable.groups.length ? runAi(pCorrections, JSON.stringify(actionable), "Posibles correcciones") : none,
+        actionable.groups.length ? runAi(pTickets, JSON.stringify(actionable), "Tickets Jira") : none,
     ]);
 
-    const ticketsClean = stripMarkdownFences(ticketsRaw);
-    try {
-        JSON.parse(ticketsClean);
-    } catch {
-        throw new Error(
-            "ai-tickets.json no es JSON válido.\nPrimeros 500 chars:\n" + ticketsClean.slice(0, 500)
-        );
+    let ticketsClean = "[]";
+    if (ticketsRaw !== null) {
+        ticketsClean = stripMarkdownFences(ticketsRaw);
+        if (!Array.isArray(safeJson(ticketsClean))) {
+            throw new Error("ai-tickets.json no es un array JSON válido.\nPrimeros 500 chars:\n" + ticketsClean.slice(0, 500));
+        }
     }
 
     await Promise.all([
-        writeOutput(path.join(REPORT_DIR, "ai-summary.txt"),             summaryTxt),
-        writeOutput(path.join(REPORT_DIR, "ai-corrections.md"),          correctionsMd),
-        writeOutput(path.join(REPORT_DIR, "ai-tickets.json"),            ticketsClean),
-        writeOutput(path.join(REPORT_DIR, "ai-failures-grouped.json"),   groupedText),
+        writeOutput(path.join(REPORT_DIR, "ai-summary.txt"), summaryTxt),
+        writeOutput(path.join(REPORT_DIR, "ai-corrections.md"),
+            correctionsMd ?? "# Posibles Correcciones – Playwright E2E\n\nNo hay fallos accionables: todo lo que falla es un defecto conocido."),
+        writeOutput(path.join(REPORT_DIR, "ai-tickets.json"), ticketsClean),
     ]);
 
     success("AI Reporting finalizado correctamente 🎉");
 }
 
-// En CI usa Google Gemini (free tier, GEMINI_API_KEY); en local, el CLI de
-// Claude con la suscripción. La presencia de GEMINI_API_KEY decide el proveedor.
-function runClaude(promptText, stdinText, label) {
-    return process.env.GEMINI_API_KEY
-        ? runGemini(promptText, stdinText, label)
-        : runClaudeCli(promptText, stdinText, label);
-}
-
-// Códigos transitorios de Gemini (sobrecarga/límite): merece reintentar.
-const GEMINI_RETRYABLE = new Set([429, 500, 502, 503, 504]);
-const GEMINI_MAX_RETRIES = 4;
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function runGemini(promptText, stdinText, label) {
-    log(`Ejecutando IA (Gemini): ${label}...`);
-    const start = Date.now();
-
-    let res;
-    for (let attempt = 1; ; attempt++) {
-        res = await fetch(GEMINI_ENDPOINT, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                model: GEMINI_MODEL,
-                temperature: 0,
-                messages: [
-                    { role: "system", content: promptText },
-                    { role: "user", content: stdinText },
-                ],
-            }),
-        });
-
-        if (res.ok) break;
-
-        if (GEMINI_RETRYABLE.has(res.status) && attempt < GEMINI_MAX_RETRIES) {
-            const backoff = 2 ** attempt * 1000 + Math.floor(Math.random() * 500); // 2s,4s,8s + jitter
-            log(`Gemini ${res.status} en ${label}, reintento ${attempt}/${GEMINI_MAX_RETRIES - 1} en ${backoff}ms...`);
-            await sleep(backoff);
-            continue;
-        }
-
-        throw new Error(`Gemini ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
-    }
-
-    const data = await res.json();
-    const content = data.choices?.[0]?.message?.content?.trim();
-    if (!content) throw new Error(`Respuesta vacía de Gemini en ${label}`);
-
-    const duration = ((Date.now() - start) / 1000).toFixed(2);
-    success(`${label} completado en ${duration}s`);
-    return content;
-}
-
-// El CLI claude pinta un spinner (ANSI + braille) en stderr asumiendo un TTY;
-// por pipe no se limpia solo y queda como ruido literal. Lo filtramos.
-const stripAnsiAndSpinner = (s) => s.replace(/\x1b\[[0-9;]*[A-Za-z]/g, "").replace(/[⠀-⣿]/g, "");
-
-function runClaudeCli(promptText, stdinText, label) {
-    log(`Ejecutando IA: ${label}...`);
-    const start = Date.now();
-
-    return new Promise((resolve, reject) => {
-        const child = spawn("claude", [
-            "-p", promptText,
-            "--model", MODEL,
-            "--dangerously-skip-permissions"
-        ], {
-            stdio: ["pipe", "pipe", "pipe"],
-            env: process.env
-        });
-
-        let out = "";
-        let err = "";
-
-        child.stdout.on("data", (d) => { out += d.toString("utf8"); });
-        // Se acumula y se limpia entero al cerrar: el spinner del CLI llega
-        // troceado entre llamadas "data", y filtrar chunk a chunk deja
-        // secuencias ANSI a medias si se cortan justo en el borde.
-        child.stderr.on("data", (d) => { err += d.toString("utf8"); });
-
-        child.on("close", (code) => {
-            const duration = ((Date.now() - start) / 1000).toFixed(2);
-            if (code !== 0) {
-                const detail = out.trim() ? `\nSalida de Claude:\n${out.trim().slice(0, 1000)}` : "";
-                const errDetail = err.trim() ? `\nError de Claude:\n${stripAnsiAndSpinner(err).trim().slice(0, 1000)}` : "";
-                reject(new Error(`Claude salió con código ${code} en: ${label}${detail}${errDetail}`));
-            } else {
-                success(`${label} completado en ${duration}s`);
-                resolve(out.trim());
-            }
-        });
-
-        child.stdin.write(stdinText);
-        child.stdin.end();
-    });
-}
+const safeJson = (s) => { try { return JSON.parse(s); } catch { return undefined; } };
 
 function stripMarkdownFences(s) {
     const t = (s ?? "").trim();
@@ -194,39 +109,9 @@ function stripMarkdownFences(s) {
     return t;
 }
 
-async function exists(p) {
-    try { await access(p); return true; } catch { return false; }
-}
-
 async function writeOutput(filePath, content) {
     await writeFile(filePath, content + "\n", "utf8");
     success(`Generado: ${filePath}`);
-}
-
-// No usamos testResults.stats.expected/unexpected: Playwright cuenta un
-// test.fail() que falla como esperaba ("expected") dentro de "expected",
-// mezclándolo con los passed normales. Para el reporte IA eso es justo lo
-// que no queremos esconder (son bugs confirmados), así que clasificamos
-// cada test por su resultado real (statuses[]), no por esa bolsa.
-function extractStats(testResults) {
-    let passed = 0, failed = 0, skipped = 0, flaky = 0;
-
-    function walk(suite) {
-        for (const spec of suite.specs ?? []) {
-            for (const test of spec.tests ?? []) {
-                const statuses = (test.results ?? []).map(r => r.status);
-                if (statuses.length > 1 && statuses.includes("passed")) flaky++;
-                else if (statuses.includes("passed"))                   passed++;
-                else if (statuses.some(s => s === "failed" || s === "timedOut")) failed++;
-                else if (statuses.includes("skipped"))                  skipped++;
-            }
-        }
-        for (const child of suite.suites ?? []) walk(child);
-    }
-    for (const suite of testResults.suites ?? []) walk(suite);
-
-    const duration_ms = testResults.stats?.duration ?? 0;
-    return { total: passed + failed + skipped + flaky, passed, failed, skipped, flaky, duration_ms };
 }
 
 main().catch((e) => {

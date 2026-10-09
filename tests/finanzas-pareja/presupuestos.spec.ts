@@ -42,7 +42,7 @@ test.describe('Presupuestos', () => {
   ]) {
     test(`con ${caso.gastado} € gastados de 100 € el presupuesto ${caso.superado ? 'está superado' : caso.aviso ? 'avisa' : 'está en orden'}`,
       { tag: '@critical' }, async ({ app }) => {
-        // PRE-03 (valores a una décima del umbral: ver PRE-03b para el redondeo)
+        // PRE-03 (valores a una décima del umbral: el redondeo lo cubren los tests de D16)
         await app.abrir({
           movimientos: [gasto(caso.gastado, 'supermercado', 'Mercadona')],
           presupuestos: [{ categoriaId: 'supermercado', limite: 100 }],
@@ -64,7 +64,7 @@ test.describe('Presupuestos', () => {
       tag: ['@critical', '@bug-D16'],
       annotation: { type: 'issue', description: 'D16: el porcentaje se redondea a una décima antes de compararlo con el umbral' },
     }, async ({ app }) => {
-      // PRE-03b
+      // PRE-03 (79,99 € y 99,99 €: redondeo antes de comparar, D16)
       test.fail();
       await app.abrir({
         movimientos: [gasto(gastado, 'supermercado', 'Mercadona')],

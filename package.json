@@ -12,7 +12,11 @@
     "test:finanzas": "playwright test --project=finanzas-pareja",
     "typecheck": "tsc --noEmit",
     "report:ai": "node scripts/report-ai.mjs",
-    "test:ai": "npm run test && npm run report:ai"
+    "test:ai": "npm run test && npm run report:ai",
+    "triage": "node scripts/triage.mjs",
+    "test:triage": "node --test \"scripts/**/*.test.mjs\" && node scripts/triage/eval.mjs",
+    "coverage:map": "node scripts/coverage-map.mjs finanzas-pareja --out reports/coverage-verified.md",
+    "guard:assertions": "node scripts/guard-assertions.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.49.0",

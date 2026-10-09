@@ -3,6 +3,15 @@ import { defineConfig, devices } from '@playwright/test';
 /** Carpetas de tests/ que tienen proyecto propio más abajo. */
 const APPS = ['**/finanzas-pareja/**'];
 
+const FINANZAS = {
+  ...devices['Desktop Chrome'],
+  baseURL: 'https://finanzas-churritos.netlify.app',
+  locale: 'es-ES',
+  timezoneId: 'Europe/Madrid',
+  // Evita que una caché antigua del service worker sirva otra versión de la app.
+  serviceWorkers: 'block' as const,
+};
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -37,17 +46,9 @@ export default defineConfig({
     },
 
     // Un proyecto por aplicación bajo prueba: tests/<app>/ + su baseURL y contexto.
-    {
-      name: 'finanzas-pareja',
-      testDir: './tests/finanzas-pareja',
-      use: {
-        ...devices['Desktop Chrome'],
-        baseURL: 'https://finanzas-churritos.netlify.app',
-        locale: 'es-ES',
-        timezoneId: 'Europe/Madrid',
-        // Evita que una caché antigua del service worker sirva otra versión de la app.
-        serviceWorkers: 'block',
-      },
-    },
+    { name: 'finanzas-pareja', testDir: './tests/finanzas-pareja', use: FINANZAS },
+    // Tests que propone el agente generator. No forman parte de la suite estable ni del CI:
+    // se revisan aquí y una persona los mueve a tests/finanzas-pareja/ (docs/agentic-qa.md).
+    { name: 'finanzas-pareja-propuestas', testDir: './tests/_propuestas/finanzas-pareja', use: FINANZAS },
   ],
 });

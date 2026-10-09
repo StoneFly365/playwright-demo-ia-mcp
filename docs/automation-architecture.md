@@ -112,7 +112,8 @@ Ningún test usa XPath ni clases CSS directamente. Si la app añade `data-testid
 
 ## 9. Limitaciones y pendientes conocidos
 
-- **CI.** El workflow `.github/workflows/playwright.yml` ejecuta `--project=chromium|firefox|webkit`, y esos projects excluyen las carpetas de apps. Hace falta añadir `finanzas-pareja` a la matriz. No se ha tocado el workflow en esta fase.
+- **CI.** El workflow tiene un job `finanzas-pareja` que ejecuta `--project=finanzas-pareja`. Como apunta a la app publicada (no hay entorno de pruebas, AD-12), solo corre a mano (`workflow_dispatch`) o con la variable de repositorio `FINANZAS_E2E_ENABLED=true`. Ver [`agentic-qa.md`](agentic-qa.md).
+- **Defectos conocidos y caídas.** `test.fail()` acepta cualquier fallo (AD-06). El triaje (`npm run triage`) solo da por bueno un `@bug-Dxx` si falla en una aserción del propio spec; si no, lo deja en INCONCLUSIVE o ENVIRONMENT_FAILURE.
 - **Navegadores.** De momento solo Chromium de escritorio, como fija la estrategia. Firefox, WebKit y móvil quedan para la ola P2.
 - **Dependencia de `serviceWorkers: 'block'`** para la señal de arranque. PER-02 (offline, P3) necesitará un project con el service worker permitido y otra señal de arranque.
 - **Lint.** El proyecto no tiene ESLint configurado. Solo hay `tsc --noEmit` (`npm run typecheck`).
