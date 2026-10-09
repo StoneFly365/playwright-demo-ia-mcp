@@ -143,6 +143,10 @@ async function runGemini(promptText, stdinText, label) {
     return content;
 }
 
+// El CLI claude pinta un spinner (ANSI + braille) en stderr asumiendo un TTY;
+// por pipe no se limpia solo y queda como ruido literal. Lo filtramos.
+const stripAnsiAndSpinner = (s) => s.replace(/\x1b\[[0-9;]*[A-Za-z]/g, "").replace(/[⠀-⣿]/g, "");
+
 function runClaudeCli(promptText, stdinText, label) {
     log(`Ejecutando IA: ${label}...`);
     const start = Date.now();
@@ -158,15 +162,20 @@ function runClaudeCli(promptText, stdinText, label) {
         });
 
         let out = "";
+        let err = "";
 
         child.stdout.on("data", (d) => { out += d.toString("utf8"); });
-        child.stderr.on("data", (d) => { process.stderr.write(d); });
+        // Se acumula y se limpia entero al cerrar: el spinner del CLI llega
+        // troceado entre llamadas "data", y filtrar chunk a chunk deja
+        // secuencias ANSI a medias si se cortan justo en el borde.
+        child.stderr.on("data", (d) => { err += d.toString("utf8"); });
 
         child.on("close", (code) => {
             const duration = ((Date.now() - start) / 1000).toFixed(2);
             if (code !== 0) {
                 const detail = out.trim() ? `\nSalida de Claude:\n${out.trim().slice(0, 1000)}` : "";
-                reject(new Error(`Claude salió con código ${code} en: ${label}${detail}`));
+                const errDetail = err.trim() ? `\nError de Claude:\n${stripAnsiAndSpinner(err).trim().slice(0, 1000)}` : "";
+                reject(new Error(`Claude salió con código ${code} en: ${label}${detail}${errDetail}`));
             } else {
                 success(`${label} completado en ${duration}s`);
                 resolve(out.trim());
