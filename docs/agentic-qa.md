@@ -109,6 +109,7 @@ Están en `.claude/skills/<nombre>/SKILL.md`, el mecanismo de skills de proyecto
 | `evidence-based-diagnosis` | failure-triage, healer | `node scripts/triage.mjs --validate` |
 | `test-quality-review` | test-reviewer | `npm run guard:assertions` |
 | `coverage-mapping` | test-reviewer, planner, generator | `npm run coverage:map` |
+| `mutation-check` | quien añade o cambia aserciones (persona, sesión principal); test-reviewer exige su evidencia | `npx playwright test … --reporter=list --retries=0` |
 
 ## 6. Límites de autonomía
 

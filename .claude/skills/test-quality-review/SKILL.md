@@ -21,10 +21,12 @@ Convenciones de referencia: `docs/automation-architecture.md` (localizadores §2
 - Comprobar que algo desaparece cuando también desaparece solo (avisos de 5 s = timeout de `expect`; FLAKY-02).
 - Solo `toBeVisible()` donde el escenario exige un valor (`toHaveText('650 €')`).
 - `expect` sin `await`, o una aserción dentro de un `if` que puede no ejecutarse.
+- Aserción nueva o endurecida sin evidencia de mutación (skill `mutation-check`): señálala como `media`. Quien revisa no ejecuta; pide la evidencia.
 
 ### 3. Localizadores
 - Orden: `getByRole` con nombre → `getByLabel` acotado a la hoja → `getByPlaceholder`/`getByText` → estructural solo dentro de un page object.
 - Señalar: XPath, clases CSS en el test, `nth()` sin justificar, textos parciales ambiguos, `ElementHandle`.
+- `toContainText('N €…')` puede casar con una subcadena de otro importe («0 €» dentro de «150,50 €»). Con regex, recuerda que la app usa espacio de no separación antes de «€»: un texto literal se normaliza, una regex no (usa `\s`).
 
 ### 4. Sincronización y esperas
 - Prohibidos `waitForTimeout`, `networkidle` y `sleep`.
