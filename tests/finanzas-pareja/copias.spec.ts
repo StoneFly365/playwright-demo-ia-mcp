@@ -28,6 +28,7 @@ test.describe('Copias de seguridad', () => {
     expect(copia.movimientos).toHaveLength(2);
     expect(copia.presupuestos).toHaveLength(1);
     expect(copia.metas).toHaveLength(1);
+    expect(copia.metas).toContainEqual(expect.objectContaining({ id: 'meta-viaje', nombre: 'Viaje', objetivo: 1000 }));
     expect(copia.movimientos).toContainEqual(expect.objectContaining({
       tipo: 'gasto', importe: 12.99, categoriaId: 'suscripciones', comercio: 'Netflix', fecha: '2026-10-03',
     }));
@@ -43,7 +44,7 @@ test.describe('Copias de seguridad', () => {
     const excel = await app.ajustes.exportar('CSV para Excel');
     expect(excel.suggestedFilename()).toBe('finanzas-excel-2026-10-05.csv');
     const lineasExcel = (await readFile(await excel.path(), 'utf8')).split('\r\n');
-    expect(lineasExcel[0].startsWith(BOM)).toBe(true);
+    expect(lineasExcel[0].charAt(0)).toBe(BOM);
     expect(lineasExcel[1]).toBe('2026-10-03;gasto;Suscripciones digitales;"12,99";Netflix;tarjeta;;manual');
   });
 
