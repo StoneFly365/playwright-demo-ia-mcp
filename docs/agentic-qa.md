@@ -116,9 +116,9 @@ Están en `.claude/skills/<nombre>/SKILL.md`, el mecanismo de skills de proyecto
 - Ningún agente cambia aserciones, valores esperados, `test-data/`, `test.fail()`, `@bug-*`, `fixme` o `skip`. `npm run guard:assertions -- <diff>` lista las líneas que lo hacen; cualquier línea señalada necesita aprobación humana explícita.
 - Flujo para incorporar un cambio:
   1. El generator o el healer proponen.
-  2. `test-reviewer` revisa.
+  2. `test-reviewer` revisa; quien lo invoca guarda el informe en `reports/reviews/<app>/AAAA-MM-DD-<fichero>.md`.
   3. Se ejecuta `guard:assertions`.
-  4. Una persona aprueba, aplica el cambio y lo ejecuta.
+  4. Una persona aprueba, aplica el cambio y lo ejecuta, y anota su decisión al final del informe.
 - `test-reviewer` no emite veredicto sobre cambios que haya generado él mismo y nunca «aprueba»: su resultado máximo es `SIN_OBJECIONES — pendiente de aprobación humana`.
 
 ## 7. Seguridad de la integración con IA

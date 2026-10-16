@@ -45,15 +45,15 @@ Convenciones de referencia: `docs/automation-architecture.md` (localizadores §2
 
 | Severidad | Cuándo |
 |---|---|
-| `bloqueante` | cambia un oráculo sin justificar, oculta un defecto, o el test puede pasar sin comprobar el requisito |
-| `alta` | riesgo claro de falso positivo o de flakiness |
-| `media` | localizador frágil, duplicidad, desviación de las convenciones |
-| `baja` | legibilidad, nombres, comentarios |
+| 🔴 `bloqueante` | cambia un oráculo sin justificar, oculta un defecto, o el test puede pasar sin comprobar el requisito |
+| 🟠 `alta` | riesgo claro de falso positivo o de flakiness |
+| 🟡 `media` | localizador frágil, duplicidad, desviación de las convenciones |
+| 🟢 `baja` | legibilidad, nombres, comentarios |
 
 ## Formato de cada hallazgo
 
 ```
-- [severidad] fichero:línea — problema
+- <emoji> [severidad] fichero:línea — problema
   Evidencia: cita literal del código o del escenario
   Riesgo: qué puede pasar
   Recomendación: cambio concreto (sin aplicarlo)
