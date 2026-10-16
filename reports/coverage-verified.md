@@ -33,16 +33,16 @@ Escenarios: 74 · test-body: 41 · file-only: 0 · none: 33 · con incidencias: 
 | LOTE-03 Lote sin selección o descartado | NOT AUTOMATED | none | — | — |
 | VOZ-01 Navegador sin reconocimiento de voz | NOT AUTOMATED | none | — | — |
 | OCR-01 Leer un ticket desde una imagen | NOT AUTOMATED | none | — | — |
-| LIST-01 Filtros por tipo y categoría con totales | AUTOMATED | test-body | movimientos.spec.ts:15 Consultar movimientos › los filtros por tipo y categoría recalculan la lista y los totales | — |
-| LIST-02 Búsqueda de texto y estado sin resultados | AUTOMATED | test-body | movimientos.spec.ts:46 Consultar movimientos › buscar «500» encuentra Alquiler<br>movimientos.spec.ts:46 Consultar movimientos › buscar «MERCADONA» encuentra Mercadona<br>movimientos.spec.ts:46 Consultar movimientos › buscar «ocio y cultura» encuentra Cine<br>movimientos.spec.ts:55 Consultar movimientos › la búsqueda también encuentra el texto con el que se apuntó<br>movimientos.spec.ts:70 Consultar movimientos › una búsqueda sin resultados ofrece quitar los filtros | — |
+| LIST-01 Filtros por tipo y categoría con totales | AUTOMATED | test-body | movimientos.spec.ts:16 Consultar movimientos › los filtros por tipo y categoría recalculan la lista y los totales | — |
+| LIST-02 Búsqueda de texto y estado sin resultados | AUTOMATED | test-body | movimientos.spec.ts:104 Buscar con datos propios › la búsqueda también encuentra el texto con el que se apuntó<br>movimientos.spec.ts:56 Consultar movimientos › buscar «500» encuentra Alquiler<br>movimientos.spec.ts:56 Consultar movimientos › buscar «MERCADONA» encuentra Mercadona<br>movimientos.spec.ts:56 Consultar movimientos › buscar «ocio y cultura» encuentra Cine<br>movimientos.spec.ts:65 Consultar movimientos › una búsqueda sin resultados ofrece quitar los filtros<br>movimientos.spec.ts:84 Buscar con datos propios › buscar el importe «45.9» encuentra el movimiento<br>movimientos.spec.ts:92 Buscar con datos propios › buscar el importe «45,90», como lo muestra la lista, encuentra el movimiento | — |
 | LIST-03 Rangos de fecha y cambio de año | NOT AUTOMATED | none | — | — |
 | LIST-04 Quitar filtros | NOT AUTOMATED | none | — | — |
 | LIST-05 Agrupación diaria y signos | NOT AUTOMATED | none | — | — |
-| DET-01 Ver el detalle de un movimiento | AUTOMATED | test-body | movimientos.spec.ts:82 Gestionar un movimiento › el detalle muestra todos los datos del movimiento | — |
-| DET-02 Editar un movimiento | AUTOMATED | test-body | movimientos.spec.ts:117 Gestionar un movimiento › cancelar una edición deja el movimiento como estaba<br>movimientos.spec.ts:98 Gestionar un movimiento › el usuario corrige el importe de un movimiento sin duplicarlo | — |
-| DET-03 Duplicar un movimiento | AUTOMATED | test-body | movimientos.spec.ts:130 Gestionar un movimiento › duplicar crea una copia idéntica | — |
-| DET-04 Borrar con confirmación | AUTOMATED | test-body | movimientos.spec.ts:142 Gestionar un movimiento › borrar pide confirmación y elimina el movimiento de forma permanente | — |
-| UNDO-01 Deshacer el último guardado | AUTOMATED | test-body | metas.spec.ts:117 Metas de ahorro › deshacer una aportación devuelve la meta a su estado anterior<br>movimientos.spec.ts:174 Deshacer el último guardado › deshacer un alta manual la elimina<br>movimientos.spec.ts:186 Deshacer el último guardado › deshacer un lote elimina todos sus movimientos<br>movimientos.spec.ts:198 Deshacer el último guardado › el botón «Deshacer» desaparece una vez usado | — |
+| DET-01 Ver el detalle de un movimiento | AUTOMATED | test-body | movimientos.spec.ts:121 Gestionar un movimiento › el detalle muestra todos los datos del movimiento | — |
+| DET-02 Editar un movimiento | AUTOMATED | test-body | movimientos.spec.ts:140 Gestionar un movimiento › el usuario corrige el importe de un movimiento sin duplicarlo<br>movimientos.spec.ts:159 Gestionar un movimiento › cancelar una edición deja el movimiento como estaba | — |
+| DET-03 Duplicar un movimiento | AUTOMATED | test-body | movimientos.spec.ts:176 Gestionar un movimiento › duplicar crea una copia idéntica | — |
+| DET-04 Borrar con confirmación | AUTOMATED | test-body | movimientos.spec.ts:188 Gestionar un movimiento › borrar pide confirmación y elimina el movimiento de forma permanente | — |
+| UNDO-01 Deshacer el último guardado | AUTOMATED | test-body | metas.spec.ts:128 Metas de ahorro › deshacer una aportación devuelve la meta a su estado anterior<br>movimientos.spec.ts:226 Deshacer el último guardado › deshacer un alta manual la elimina<br>movimientos.spec.ts:238 Deshacer el último guardado › deshacer un lote elimina todos sus movimientos<br>movimientos.spec.ts:250 Deshacer el último guardado › el botón «Deshacer» desaparece una vez usado | — |
 | INI-01 KPIs del mes cuadran con los movimientos | AUTOMATED | test-body | inicio.spec.ts:5 Panel del mes › los indicadores del mes cuadran con los movimientos | — |
 | INI-02 Mes sin ingresos | AUTOMATED | test-body | inicio.spec.ts:18 Panel del mes › sin ingresos en el mes no se calcula la tasa de ahorro | — |
 | INI-03 Variación, media diaria y previsión de cierre | NOT AUTOMATED | none | — | — |
@@ -56,12 +56,12 @@ Escenarios: 74 · test-body: 41 · file-only: 0 · none: 33 · con incidencias: 
 | PRE-06 Sugerencias de presupuesto | NOT AUTOMATED | none | — | — |
 | PRE-07 El presupuesto solo cuenta gastos del mes y de su categoría | NOT AUTOMATED | none | — | — |
 | PRE-08 El formulario conserva lo escrito tras un aviso | AUTOMATED | test-body | presupuestos.spec.ts:92 Presupuestos › el formulario conserva lo elegido tras un aviso de validación | — |
-| MET-01 Crear una meta válida | AUTOMATED | test-body | metas.spec.ts:7 Metas de ahorro › el usuario crea una meta y ve su progreso | — |
-| MET-02 Validaciones de la meta | AUTOMATED | test-body | metas.spec.ts:32 Metas de ahorro › no se puede crear una meta con objetivo 0<br>metas.spec.ts:32 Metas de ahorro › no se puede crear una meta con objetivo negativo<br>metas.spec.ts:32 Metas de ahorro › no se puede crear una meta sin nombre<br>metas.spec.ts:32 Metas de ahorro › no se puede crear una meta sin objetivo | — |
-| MET-03 El formulario de meta conserva los datos tras un aviso | AUTOMATED | test-body | metas.spec.ts:45 Metas de ahorro › el formulario conserva lo escrito tras un aviso de validación | — |
-| MET-04 «Ya tengo ahorrado» fuera de rango | AUTOMATED | test-body | metas.spec.ts:60 Metas de ahorro › no se acepta un «ya tengo ahorrado» negativo<br>metas.spec.ts:79 Metas de ahorro › una meta que ya parte del objetivo aparece conseguida | — |
-| MET-05 Aportar a una meta | AUTOMATED | test-body | metas.spec.ts:106 Metas de ahorro › una aportación vacía se rechaza<br>metas.spec.ts:89 Metas de ahorro › el usuario aporta dinero a una meta y queda registrado como ahorro | — |
-| MET-06 Renombrar una meta al editarla | AUTOMATED | test-body | metas.spec.ts:130 Metas de ahorro › renombrar una meta la modifica sin crear otra | — |
+| MET-01 Crear una meta válida | AUTOMATED | test-body | metas.spec.ts:8 Metas de ahorro › el usuario crea una meta y ve su progreso | — |
+| MET-02 Validaciones de la meta | AUTOMATED | test-body | metas.spec.ts:35 Metas de ahorro › no se puede crear una meta con objetivo 0<br>metas.spec.ts:35 Metas de ahorro › no se puede crear una meta con objetivo negativo<br>metas.spec.ts:35 Metas de ahorro › no se puede crear una meta sin nombre<br>metas.spec.ts:35 Metas de ahorro › no se puede crear una meta sin objetivo | — |
+| MET-03 El formulario de meta conserva los datos tras un aviso | AUTOMATED | test-body | metas.spec.ts:48 Metas de ahorro › el formulario conserva lo escrito tras un aviso de validación | — |
+| MET-04 «Ya tengo ahorrado» fuera de rango | AUTOMATED | test-body | metas.spec.ts:65 Metas de ahorro › no se acepta un «ya tengo ahorrado» negativo<br>metas.spec.ts:84 Metas de ahorro › una meta que ya parte del objetivo aparece conseguida | — |
+| MET-05 Aportar a una meta | AUTOMATED | test-body | metas.spec.ts:117 Metas de ahorro › una aportación vacía se rechaza<br>metas.spec.ts:95 Metas de ahorro › el usuario aporta dinero a una meta y queda registrado como ahorro | — |
+| MET-06 Renombrar una meta al editarla | AUTOMATED | test-body | metas.spec.ts:146 Metas de ahorro › renombrar una meta la modifica sin crear otra | — |
 | MET-07 Meta completada | NOT AUTOMATED | none | — | — |
 | MET-08 Borrar una meta con aportaciones | NOT AUTOMATED | none | — | — |
 | MET-09 Fecha límite y aviso de riesgo | NOT AUTOMATED | none | — | — |
