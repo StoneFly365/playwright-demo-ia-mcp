@@ -92,13 +92,13 @@ Hacen falta antes o durante el arreglo, porque cambian el comportamiento esperad
 
 **Impacto:** el ahorro solo se puede vincular a una meta con «Aportar».
 **Causa probable:** `panelManual()` (`js/vistas/alta.js`) llama a `formularioMovimiento` con `metas: []`.
-**Verificación:** `alta-manual.spec.ts` › «un ahorro registrado a mano se puede asignar a una meta».
+**Verificación:** `alta-manual.spec.ts` › «un ahorro registrado a mano se puede asignar a una meta». Al cerrar D05, quitar `test.fail()` y ejecutar de nuevo: hoy el test falla antes de llegar a seleccionar la meta y guardar, así que esos pasos aún no se han comprobado.
 
 ## D01 · Media · Un importe de 0,001 se guarda como 0 €
 
 **Pasos:** ＋ Añadir movimiento › «A mano», importe `0,001` › «Guardar movimiento».
 **Esperado:** aviso «El importe tiene que ser un número mayor que cero.» (o redondeo al céntimo, según la decisión de producto).
-**Actual:** aviso «Gasto de 0 € guardado.» y un movimiento de 0 €.
+**Actual:** aviso «Gasto de 0 € guardado.» y un movimiento de 0 €. Lo mismo con `0,004`.
 **Causa probable:** `guardarDesdeFormulario` valida `importe > 0` y después redondea a 2 decimales. Debería validar el valor ya redondeado.
 **Verificación:** `alta-manual.spec.ts` › «un importe por debajo del céntimo se rechaza: 0,001» y «…: 0,004».
 

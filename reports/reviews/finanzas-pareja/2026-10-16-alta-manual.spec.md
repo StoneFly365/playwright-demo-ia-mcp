@@ -12,20 +12,20 @@ Semáforo: 🔴 bloqueante · 🟠 alta · 🟡 media · 🟢 baja
   Evidencia: «await expect(formulario.categoria).toHaveValue('nomina');». El escenario ALTA-05 solo dice «La categoría seleccionada siempre pertenece al tipo activo».
   Riesgo: congela la categoría por defecto que la app muestra hoy. Un cambio legítimo del orden de categorías rompería el test. Además, con Ahorro no se comprueba ninguna categoría.
   Recomendación: comprobar la propiedad del escenario, es decir, que la opción seleccionada sea una de las habilitadas para el tipo activo, y hacerlo también con Ahorro. Si se quiere fijar «nomina» como valor por defecto, abrir una pregunta abierta (OQ nueva, ligada a ALTA-05) en lugar de dejarlo implícito.
-  Estado: ✅ resuelto, con aprobación humana (2026-10-16). Se quita «nomina» y se comprueba la propiedad del escenario con Gasto, Ingreso y Ahorro: `categoriaSeleccionadaDisponible()` (`option:checked:enabled`) tiene que tener 1 elemento. La mutación lo destapó: la primera versión usaba `toBeEnabled()`, que **pasaba** aunque la opción seleccionada estuviera `disabled` (Playwright no lo detecta en `<option>`). Con el selector CSS, la mutación (forzar «supermercado» con Ingreso) falla en la línea 113.
+  Estado: ✅ resuelto, con aprobación humana (2026-10-16). Se quita «nomina» y se comprueba la propiedad del escenario con Gasto, Ingreso y Ahorro: `categoriaSeleccionadaDisponible()` (`option:checked:enabled`) tiene que tener 1 elemento. La mutación lo destapó: la primera versión usaba `toBeEnabled()`, que **pasaba** aunque la opción seleccionada estuviera `disabled` (Playwright no lo detecta en `<option>`). Con el selector CSS, las mutaciones fallan en los tres tipos: Gasto con «nomina» (línea 108), Ingreso con «supermercado» (113) y Ahorro con «supermercado» (118).
 
 - 🟡 [media] alta-manual.spec.ts:64-70 y 72-83 — El límite inferior (ALTA-03) está incompleto y no comprueba lo guardado.
   Evidencia: Datos del escenario: «`0,001`, `0,004`, `0,005`, `0,01`». El test solo usa `0,01` y `0,001`. Resultado esperado: «Nunca se persiste un movimiento de 0 €» y «0,01 se guarda como 0,01 €».
   Riesgo: `0,004` es el mismo defecto D01 (rechazo por debajo de 0,01) y no está cubierto. El test de `0,01` solo mira el aviso y no el importe persistido. El de `0,001` no comprueba que no se haya creado ningún movimiento.
   Recomendación: añadir `0,004` al caso con `@bug-D01`, que tendría que ir en su propio test o bucle, sin mezclarlo con casos sanos. Comprobar el movimiento en el listado (o la ausencia de la bienvenida/«Movimientos 0»). `0,005` no se fija: depende de OQ-07 (redondear o rechazar), que está abierta.
-  Estado: ✅ resuelto (2026-10-16). Con 0,01 se comprueba lo guardado: el KPI de Gastos es 0,01 €. Mutación (guardar 0,02, sin el aviso): falla con «0,02 €». El caso 0,004 se añade al bucle de D01, con aprobación humana. Antes de marcarlo se comprobó que falla igual que 0,001 («Gasto de 0 € guardado.»). Se mantiene AD-06: los dos casos fallan en la línea 87. 0,005 queda fuera por OQ-07, con un comentario. «No se crea ningún movimiento» iría detrás de la aserción del defecto: no se puede verificar hasta que se corrija D01.
+  Estado: 🔶 resuelto en parte (2026-10-16). Con 0,01 se comprueba lo guardado: el KPI de Gastos es 0,01 €. Mutación (guardar 0,02, sin el aviso): falla con «0,02 €». El caso 0,004 se añade al bucle de D01, con aprobación humana. Antes de marcarlo se comprobó que falla igual que 0,001 («Gasto de 0 € guardado.»). Se mantiene AD-06: los dos casos fallan en la línea 87. 0,005 queda fuera por OQ-07, con un comentario. «No se crea ningún movimiento» iría detrás de la aserción del defecto: no se puede verificar hasta que se corrija D01.
 
 - 🟡 [media] alta-manual.spec.ts:9-27 — ALTA-01 no comprueba parte del «Resultado esperado» ni todos los datos introducidos.
   Evidencia: El escenario dice «sale en «Últimos movimientos» y en Movimientos (grupo «Hoy»)». El test rellena `categoria: 'supermercado'` y `formaPago: 'Tarjeta'`, y solo comprueba `toContainText('− 12,50 €')` en la fila.
   Riesgo: la categoría, la forma de pago y el grupo «Hoy» pueden romperse sin que el test falle. La fixture fija el reloj (`page.clock.setFixedTime`), así que «Hoy» es determinista y se podría comprobar.
   Recomendación: comprobar el grupo «Hoy» de la fila (si el page object de Movimientos lo expone) y la categoría o la forma de pago visibles en el detalle. Si no es objetivo del test, quitar `categoria` y `formaPago` del `rellenar` para no aparentar una cobertura que no existe.
   Matiz: el signo «−» de la fila no aparece en el escenario. Se apoya en el formato de la app, no en una fuente. Es menor, pero conviene saberlo.
-  Estado: ✅ resuelto en parte (2026-10-16). Se comprueban en el detalle la categoría «Supermercado» y la forma de pago «Tarjeta». Mutaciones: con la categoría ocio falla en la línea 28; sin forma de pago, en la 29. El grupo «Hoy» no se comprueba porque el page object no lo expone.
+  Estado: 🔶 resuelto en parte (2026-10-16). Se comprueban en el detalle la categoría «Supermercado» y la forma de pago «Tarjeta». Mutaciones: con la categoría ocio falla en la línea 28; sin forma de pago, en la 29. El grupo «Hoy» no se comprueba porque el page object no lo expone.
 
 - 🟡 [media] alta-manual.spec.ts:127-144 — ALTA-06 tiene frágil el paso `selectOption({ label: '🎯 Viaje' })` y no comprueba «Sin meta».
   Evidencia: «await formulario.meta.selectOption({ label: '🎯 Viaje' });». El escenario dice «El desplegable lista «Sin meta» y todas las metas».
@@ -56,6 +56,10 @@ Semáforo: 🔴 bloqueante · 🟠 alta · 🟡 media · 🟢 baja
   Riesgo: duplicación si otros specs de metas repiten el literal. No hay builder de metas exportado hoy en `datos.ts`.
   Recomendación: valorar un builder de meta si se repite en más ficheros.
   Estado: ➖ sin cambios: no hay más usos que justifiquen un builder.
+
+### Seguimiento pendiente
+- ALTA-01: que el page object de Movimientos exponga el grupo por día («Hoy») para comprobarlo.
+- ALTA-03: comprobar que no se crea ningún movimiento de 0 € cuando se cierre D01.
 
 ### Cobertura y huecos (sin hallazgo de calidad)
 - ALTA-07 (fecha vacía y futura; depende de OQ-08) y ALTA-08 (XSS, textos largos) figuran como NOT AUTOMATED en `coverage-verified.md`. No es un defecto de este fichero.

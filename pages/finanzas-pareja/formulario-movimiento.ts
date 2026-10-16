@@ -47,7 +47,8 @@ export class FormularioMovimiento {
   }
 
   /**
-   * Categoría seleccionada si es del tipo activo; vacío si no lo es. Se usa CSS `:enabled` porque
+   * Categoría seleccionada si es del tipo activo; vacío si no lo es. Se apoya en que la app deshabilita
+   * (no quita) las categorías de los otros tipos: `categoriasDisponibles()` da 24, 7 y 6. Se usa CSS `:enabled` porque
    * `toBeEnabled()` de Playwright da por habilitada una <option disabled hidden>.
    */
   categoriaSeleccionadaDisponible(): Locator {
