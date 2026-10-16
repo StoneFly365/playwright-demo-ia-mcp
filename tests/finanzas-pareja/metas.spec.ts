@@ -14,7 +14,7 @@ test.describe('Metas de ahorro', () => {
     await expect(app.aviso('Meta «Viaje» guardada.')).toBeVisible();
     const viaje = app.metas.meta('Viaje');
     await expect(viaje).toContainText('✈️');
-    await expect(viaje).toContainText('200 € de 1000 €');
+    await expect(viaje).toContainText(/(?<![\d.,])200\s€ de 1000\s€/);
     await expect(viaje).toContainText('Faltan 800 €');
     await expect(app.metas.resumen('Ya apartado')).toHaveText('200 €');
 
@@ -123,8 +123,13 @@ test.describe('Metas de ahorro', () => {
     await app.aviso('150,50 € añadidos a la meta.').getByRole('button', { name: 'Deshacer' }).click();
 
     await expect(app.aviso('Se ha deshecho el último guardado.')).toBeVisible();
-    await expect(app.metas.meta('Viaje')).toContainText('0 € de 1000 €');
+    await expect(app.metas.meta('Viaje')).toContainText(/(?<![\d.,])0\s€ de 1000\s€/);
     await expect(app.metas.resumen('Ya apartado')).toHaveText('0 €');
+
+    // El movimiento de ahorro que creó la aportación también desaparece
+    await app.irA('Movimientos');
+    await expect(app.movimientos.sinResultados).toBeVisible();
+    await expect(app.movimientos.fila('Viaje')).toHaveCount(0);
   });
 
   test('renombrar una meta la modifica sin crear otra', {
@@ -145,6 +150,6 @@ test.describe('Metas de ahorro', () => {
 
     await expect(app.aviso('Meta «Viaje QA 2» guardada.')).toBeVisible();
     await expect(app.metas.tarjetas()).toHaveCount(1);
-    await expect(app.metas.meta('Viaje QA 2')).toContainText('100 € de 1000 €');
+    await expect(app.metas.meta('Viaje QA 2')).toContainText(/(?<![\d.,])100\s€ de 1000\s€/);
   });
 });
