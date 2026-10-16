@@ -1,5 +1,6 @@
 import { expect, test } from '../../fixtures/finanzas-pareja';
 import { ahorro, gasto, type Meta } from '../../test-data/finanzas-pareja/datos';
+import { HOY } from '../../test-data/finanzas-pareja/fechas';
 
 const VIAJE: Meta = { id: 'meta-viaje', nombre: 'Viaje', objetivo: 1000, inicial: 0 };
 
@@ -17,10 +18,12 @@ test.describe('Metas de ahorro', () => {
     await expect(viaje).toContainText(/(?<![\d.,])200\s€ de 1000\s€/);
     await expect(viaje).toContainText('Faltan 800 €');
     await expect(app.metas.resumen('Ya apartado')).toHaveText('200 €');
+    await expect(app.metas.progresoTotal).toHaveText('20 % del objetivo');
 
     await app.irA('Inicio');
-    await expect(app.contenido.getByRole('heading', { name: 'Metas de ahorro' })).toBeVisible();
-    await expect(app.contenido.getByText('Viaje', { exact: true })).toBeVisible();
+    const metasEnInicio = app.inicio.tarjeta('Metas de ahorro');
+    await expect(metasEnInicio).toBeVisible();
+    await expect(metasEnInicio.getByText('Viaje', { exact: true })).toBeVisible();
   });
 
   for (const { caso, datos, mensaje } of [
@@ -84,6 +87,7 @@ test.describe('Metas de ahorro', () => {
     await app.metas.crear({ nombre: 'Colchón', objetivo: '1000', inicial: '1500' });
 
     await expect(app.metas.meta('Colchón')).toContainText('¡Conseguido! 🎉');
+    await expect(app.metas.progreso('Colchón')).toHaveAccessibleName('100 por ciento');
   });
 
   test('el usuario aporta dinero a una meta y queda registrado como ahorro', { tag: '@smoke' }, async ({ app }) => {
@@ -101,6 +105,11 @@ test.describe('Metas de ahorro', () => {
     const aportacion = app.movimientos.fila('Viaje');
     await expect(aportacion).toContainText('🎯 meta');
     await expect(aportacion).toContainText('→ 150,50 €');
+
+    const detalle = await app.movimientos.abrirDetalle('Viaje');
+    await expect(detalle.dato('Tipo')).toHaveText('Ahorro');
+    await expect(detalle.dato('Fecha')).toHaveText(HOY);
+    await expect(detalle.dato('Meta')).toHaveText('Viaje');
   });
 
   test('una aportación vacía se rechaza', { tag: '@smoke' }, async ({ app }) => {
@@ -144,9 +153,7 @@ test.describe('Metas de ahorro', () => {
     });
     await app.irAPlan('Metas');
 
-    await app.metas.meta('Viaje QA').getByRole('button', { name: 'Editar' }).click();
-    await app.metas.campos(app.metas.hojaEditar).nombre.fill('Viaje QA 2');
-    await app.metas.hojaEditar.getByRole('button', { name: 'Guardar cambios' }).click();
+    await app.metas.editar('Viaje QA', { nombre: 'Viaje QA 2' });
 
     await expect(app.aviso('Meta «Viaje QA 2» guardada.')).toBeVisible();
     await expect(app.metas.tarjetas()).toHaveCount(1);
