@@ -50,3 +50,5 @@ Mutación: <qué se cambió> → falla en <línea> (<Received>). Restaurado y en
 ```
 
 Si la mutación **no** hace fallar el test, la aserción no cubre lo que dice: no des el hallazgo por resuelto.
+
+Si la aserción nueva falla **sin mutar**, puede ser un defecto de la app. No ajustes el test para que pase ni pongas `test.fail()` / `@bug-Dxx` por tu cuenta: reúne la evidencia (error, línea, causa en el código si la hay) y pide a una persona que confirme el defecto antes de marcarlo.
