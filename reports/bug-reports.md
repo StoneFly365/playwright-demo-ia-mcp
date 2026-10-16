@@ -100,7 +100,7 @@ Hacen falta antes o durante el arreglo, porque cambian el comportamiento esperad
 **Esperado:** aviso «El importe tiene que ser un número mayor que cero.» (o redondeo al céntimo, según la decisión de producto).
 **Actual:** aviso «Gasto de 0 € guardado.» y un movimiento de 0 €.
 **Causa probable:** `guardarDesdeFormulario` valida `importe > 0` y después redondea a 2 decimales. Debería validar el valor ya redondeado.
-**Verificación:** `alta-manual.spec.ts` › «un importe por debajo del céntimo se rechaza».
+**Verificación:** `alta-manual.spec.ts` › «un importe por debajo del céntimo se rechaza: 0,001» y «…: 0,004».
 
 ## D04 · Media · «Ya tengo ahorrado» acepta negativos
 

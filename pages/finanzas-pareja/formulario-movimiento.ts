@@ -46,6 +46,14 @@ export class FormularioMovimiento {
     return this.categoria.locator('option:enabled');
   }
 
+  /**
+   * Categoría seleccionada si es del tipo activo; vacío si no lo es. Se usa CSS `:enabled` porque
+   * `toBeEnabled()` de Playwright da por habilitada una <option disabled hidden>.
+   */
+  categoriaSeleccionadaDisponible(): Locator {
+    return this.categoria.locator('option:checked:enabled');
+  }
+
   async rellenar(datos: DatosMovimiento): Promise<void> {
     if (datos.tipo) await this.tipo(datos.tipo).click();
     if (datos.importe !== undefined) await this.importe.fill(datos.importe);

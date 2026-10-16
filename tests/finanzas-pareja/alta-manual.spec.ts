@@ -24,6 +24,9 @@ test.describe('Alta manual de movimientos', () => {
 
     await app.irA('Movimientos');
     await expect(app.movimientos.fila('Mercadona')).toContainText('− 12,50 €');
+    const detalle = await app.movimientos.abrirDetalle('Mercadona');
+    await expect(detalle.hoja).toContainText('Supermercado');
+    await expect(detalle.dato('Forma de pago')).toHaveText('Tarjeta');
   });
 
   test('cancelar el alta no guarda nada', { tag: '@smoke' }, async ({ app }) => {
@@ -67,20 +70,24 @@ test.describe('Alta manual de movimientos', () => {
     await app.alta.formulario.guardar();
 
     await expect(app.aviso('Gasto de 0,01 € guardado.')).toBeVisible();
+    await expect(app.inicio.kpi('Gastos')).toHaveText('0,01 €');
   });
 
-  test('un importe por debajo del céntimo se rechaza', {
-    tag: ['@critical', '@bug-D01'],
-    annotation: { type: 'issue', description: 'D01: 0,001 pasa la validación y se guarda como 0 €' },
-  }, async ({ app }) => {
-    // ALTA-03 (límite inválido)
-    test.fail();
-    await app.alta.formulario.rellenar({ importe: '0,001' });
-    await app.alta.formulario.guardar();
+  // 0,005 queda fuera: redondear o rechazar está por decidir (OQ-07).
+  for (const importe of ['0,001', '0,004']) {
+    test(`un importe por debajo del céntimo se rechaza: ${importe}`, {
+      tag: ['@critical', '@bug-D01'],
+      annotation: { type: 'issue', description: 'D01: un importe por debajo del céntimo pasa la validación y se guarda como 0 €' },
+    }, async ({ app }) => {
+      // ALTA-03 (límite inválido)
+      test.fail();
+      await app.alta.formulario.rellenar({ importe });
+      await app.alta.formulario.guardar();
 
-    await expect(app.ultimoAviso()).toContainText('El importe tiene que ser un número mayor que cero.');
-    await expect(app.alta.hoja).toBeVisible();
-  });
+      await expect(app.ultimoAviso()).toContainText('El importe tiene que ser un número mayor que cero.');
+      await expect(app.alta.hoja).toBeVisible();
+    });
+  }
 
   test('acepta importes con separador de miles y coma decimal', { tag: '@critical' }, async ({ app }) => {
     // ALTA-04 (la tabla completa de formatos está en logica-pura.spec.ts)
@@ -97,14 +104,17 @@ test.describe('Alta manual de movimientos', () => {
     const formulario = app.alta.formulario;
     await formulario.rellenar({ importe: '12,5', comercio: 'Prueba' });
     await expect(formulario.categoriasDisponibles()).toHaveCount(24);
+    await expect(formulario.categoriaSeleccionadaDisponible()).toHaveCount(1);
 
     await formulario.tipo('Ingreso').click();
     await expect(formulario.tipo('Ingreso')).toHaveAttribute('aria-pressed', 'true');
     await expect(formulario.categoriasDisponibles()).toHaveCount(7);
-    await expect(formulario.categoria).toHaveValue('nomina');
+    // La categoría seleccionada pertenece al tipo activo: las de otros tipos quedan deshabilitadas.
+    await expect(formulario.categoriaSeleccionadaDisponible()).toHaveCount(1);
 
     await formulario.tipo('Ahorro').click();
     await expect(formulario.categoriasDisponibles()).toHaveCount(6);
+    await expect(formulario.categoriaSeleccionadaDisponible()).toHaveCount(1);
     await expect(formulario.meta).toBeVisible();
 
     // Lo ya escrito no se pierde al cambiar de tipo.
@@ -135,8 +145,10 @@ test('un ahorro registrado a mano se puede asignar a una meta', {
   const formulario = app.alta.formulario;
 
   await formulario.rellenar({ tipo: 'Ahorro', importe: '100' });
-  await expect(formulario.meta.getByRole('option', { name: /Viaje/ })).toHaveCount(1);
-  await formulario.meta.selectOption({ label: '🎯 Viaje' });
+  await expect(formulario.meta.getByRole('option', { name: 'Sin meta' })).toHaveCount(1);
+  const viaje = formulario.meta.getByRole('option', { name: /Viaje/ });
+  await expect(viaje).toHaveCount(1);
+  await formulario.meta.selectOption((await viaje.getAttribute('value'))!);
   await formulario.guardar();
 
   await app.irAPlan('Metas');

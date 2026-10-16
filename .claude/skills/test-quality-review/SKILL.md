@@ -27,6 +27,7 @@ Convenciones de referencia: `docs/automation-architecture.md` (localizadores §2
 ### 3. Localizadores
 - Orden: `getByRole` con nombre → `getByLabel` acotado a la hoja → `getByPlaceholder`/`getByText` → estructural solo dentro de un page object.
 - Señalar: XPath, clases CSS en el test, `nth()` sin justificar, textos parciales ambiguos, `ElementHandle`.
+- `toBeEnabled()` sobre un `<option>`: Playwright da por habilitada una `<option disabled hidden>`. Usa el selector CSS `option:checked:enabled` con `toHaveCount`.
 - `toContainText('N €…')` puede casar con una subcadena de otro importe («0 €» dentro de «150,50 €»). Con regex, recuerda que la app usa espacio de no separación antes de «€»: un texto literal se normaliza, una regex no (usa `\s`).
 
 ### 4. Sincronización y esperas
