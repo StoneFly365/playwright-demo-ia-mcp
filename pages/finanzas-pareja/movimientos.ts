@@ -65,6 +65,11 @@ export class DetalleMovimiento {
     return this.hoja.getByRole('button', { name: accion, exact: true });
   }
 
+  /** Desplegable «Texto original» (un <details>, con rol group). */
+  textoOriginal(): Locator {
+    return this.hoja.getByRole('group').filter({ hasText: 'Texto original' });
+  }
+
   async editar(): Promise<FormularioMovimiento> {
     await this.boton('Editar').click();
     return this.formularioEdicion;
