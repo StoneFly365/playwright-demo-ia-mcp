@@ -29,6 +29,8 @@ test.describe('Alta escribiendo en lenguaje natural', () => {
     const detalle = await app.movimientos.abrirDetalle('Supermercado');
     await expect(detalle.dato('Origen')).toHaveText('texto');
     await detalle.textoOriginal().getByText('Texto original').click();
+    // toContainText lee el DOM aunque el <details> esté cerrado: se exige que esté abierto (que se vea).
+    await expect(detalle.textoOriginal()).toHaveJSProperty('open', true);
     await expect(detalle.textoOriginal()).toContainText('Gasté 45,90 en el supermercado ayer con tarjeta');
   });
 

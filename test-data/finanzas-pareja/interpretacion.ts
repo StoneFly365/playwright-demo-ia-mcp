@@ -14,6 +14,8 @@ export const IMPORTES_ES: ReadonlyArray<{ texto: string; valor: number }> = [
   { texto: '45 con 90', valor: 45.9 },
 ];
 
+// Las categorías que no figuran en el escenario TXT-03 (todas salvo «Nómina» y «Vivienda») salen de
+// lo que hace la app hoy: pendientes de OQ-28.
 /** Frases en lenguaje natural → movimiento interpretado (con el reloj fijo en HOY). */
 export const FRASES: ReadonlyArray<{
   frase: string; tipo: string; importe: number; fecha: string; categoriaId: string;

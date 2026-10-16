@@ -12,7 +12,7 @@ Semáforo: 🔴 bloqueante · 🟠 alta · 🟡 media · 🟢 baja
   Evidencia: «test.fail(); await app.alta.interpretar(LISTA_VARIOS); await app.alta.linea(/Nómina/).uncheck(); await expect(app.alta.resumenLote('Importe total')).toHaveText('118,89 €');»
   Riesgo: si `uncheck()` no encuentra la casilla o el resumen no se localiza, el test sigue en verde y D06 queda «verificado» sin que nadie haya mirado el total.
   Recomendación: antes del total, una aserción que hoy pase y demuestre que el desmarcado se aplicó (`toHaveAccessibleName('Guardar 3 movimientos')` sobre `guardarLote`), para que el primer fallo sea solo el total (AD-06).
-  Estado: ✅ resuelto (2026-10-16). Ancla añadida. Con el reporter JSON, D06 falla en la línea 113 (el total), con el ancla pasando justo antes.
+  Estado: ✅ resuelto (2026-10-16). Ancla añadida. Con el reporter JSON, D06 falla en la línea del total (116 en el commit 5bb511e; la cifra 113 que se citó antes era de una versión anterior), con el ancla pasando justo antes.
 
 - 🟡 [media] alta-texto.spec.ts:107 — El valor `'118,89 €'` depende de OQ-09, que sigue abierta. Solo lo respalda D06.
   Riesgo: si OQ-09 se resuelve con signo o con desglose, el test fallaría aunque D06 estuviera corregido.
