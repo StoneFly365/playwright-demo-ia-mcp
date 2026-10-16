@@ -19,7 +19,8 @@
 | 8 | D07 | Media | Al cambiar de moneda quedan importes en «€» |
 | 9 | D09 | Media | Deshacer los datos de ejemplo deja presupuestos y metas |
 | 10 | D13 | Media | «el día 2» no se interpreta como fecha |
-| 11–16 | D10, D11, D12, D14, D15, D16 | Baja | Ver más abajo |
+| 11 | D17 | Media | Buscar un importe tal como se muestra («45,90») no encuentra nada |
+| 12–17 | D10, D11, D12, D14, D15, D16 | Baja | Ver más abajo |
 
 ## Decisiones de producto necesarias
 
@@ -143,6 +144,15 @@ Hacen falta antes o durante el arreglo, porque cambian el comportamiento esperad
 **Actual:** fecha de hoy. Además el comercio sale como «Alquiler Dia».
 **Causa probable:** `parsearFecha` (`js/formato.js`) reconoce «hoy», «ayer», «hace N días», nombres de día, «12 de mayo» y fechas numéricas, pero no «el día N».
 **Verificación:** `logica-pura.spec.ts` › ««el día 2» fija la fecha en el día 2 del mes».
+
+## D17 · Media · Buscar «45,90» no encuentra el movimiento de 45,90 €
+
+**Pasos:** un gasto de 45,90 € (Mercadona). En Movimientos, escribir «45,90» en el buscador.
+**Esperado:** aparece el movimiento: el buscador dice buscar por importe y la lista lo muestra como «45,90 €».
+**Actual:** «Nada por aquí». Con «45.9» sí lo encuentra; con «45,9» o «45.90», no.
+**Causa probable:** `movimientosFiltradosVista` (`js/vistas/movimientos.js`) compara con `${m.importe}`, el número sin formato (`45.9`), en lugar del importe con el formato con el que se muestra.
+**Impacto:** con decimales, la búsqueda por importe solo funciona si se escribe como en JavaScript, no como lo escribe un usuario en España.
+**Verificación:** `movimientos.spec.ts` › «buscar el importe «45,90» encuentra el movimiento». Encontrado al revisar el spec el 2026-10-16.
 
 ## D16 · Baja · El presupuesto avisa antes de tiempo
 

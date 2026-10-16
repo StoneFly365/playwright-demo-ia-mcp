@@ -432,11 +432,11 @@ P0 · Functional / State transition · ✅ / ❌ · Riesgo: Crítico · Evidenci
 #### UNDO-01 · Deshacer el último guardado
 P1 · Functional / State transition · ✅ Happy · Riesgo: Alto · Evidencia: UI (aportación) + Código
 - **Precondiciones:** ninguna adicional.
-- **Datos:** un alta manual, un lote de 3 y una aportación a una meta.
+- **Datos:** un alta manual, un lote (4 movimientos en los tests: `LISTA_VARIOS`) y una aportación a una meta.
 - **Pasos:** tras cada guardado, pulsar «Deshacer» en el aviso.
 - **Resultado esperado:**
   - Aparece el aviso «Se ha deshecho el último guardado.».
-  - Se elimina exactamente lo guardado (1, 3 y 1 movimientos) y los totales vuelven al estado anterior.
+  - Se elimina exactamente lo guardado (1, 4 y 1 movimientos) y los totales vuelven al estado anterior.
   - El botón «Deshacer» ya usado deja de mostrarse. Hoy no lo cumple (D11, confirmado en la revisión QA).
 
 ---
@@ -905,4 +905,4 @@ P3 · Navigation / UI behaviour · ✅ Happy · Riesgo: Bajo · Evidencia: UI
 - ⚠️ Edge: 24.
 - Mixtos ✅/❌: 4 (LIST-02, DET-04, MET-05, DEMO-03).
 
-**Escenarios que hoy fallan, total o parcialmente, por defectos confirmados:** ALTA-02 (D14), ALTA-03 (D01), ALTA-05 (D15), ALTA-06 (D05), TXT-03 (D13), LOTE-02 (D06), LIST-05 (D12), PRE-03 (D16), PRE-08 (D02), MET-03 (D02), MET-04 (D04), MET-06 (D03), AJU-01 (D07), BAK-03 (D10), BAK-04 (D08), UNDO-01 (D11) y DEMO-02 (D09). Actualizado tras la revisión QA del 2026-10-05.
+**Escenarios que hoy fallan, total o parcialmente, por defectos confirmados:** ALTA-02 (D14), ALTA-03 (D01), ALTA-05 (D15), ALTA-06 (D05), TXT-03 (D13), LOTE-02 (D06), LIST-02 (D17), LIST-05 (D12), PRE-03 (D16), PRE-08 (D02), MET-03 (D02), MET-04 (D04), MET-06 (D03), AJU-01 (D07), BAK-03 (D10), BAK-04 (D08), UNDO-01 (D11) y DEMO-02 (D09). Actualizado tras la revisión QA del 2026-10-05.

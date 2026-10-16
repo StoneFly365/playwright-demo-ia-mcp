@@ -43,7 +43,7 @@ Los tests están en `tests/finanzas-pareja/`.
 | Voz | VOZ-01 Sin Web Speech API | Bajo | P3 | — | NOT AUTOMATED | NOT AUTOMATED |
 | Foto / OCR | OCR-01 Leer ticket | Medio | P2 | — | NOT AUTOMATED | NOT AUTOMATED |
 | Listado | LIST-01 Tipo + categoría + totales | Alto | P1 | `movimientos.spec.ts` | AUTOMATED | PASS |
-| Listado | LIST-02 Búsqueda y sin resultados | Medio | P1 | `movimientos.spec.ts` (5 casos) | AUTOMATED | PASS |
+| Listado | LIST-02 Búsqueda y sin resultados | Medio | P1 | `movimientos.spec.ts` (7 casos) | AUTOMATED | FAIL (D17 · 6 casos PASS) |
 | Listado | LIST-03 Rangos y cambio de año | Medio | P2 | — | NOT AUTOMATED | NOT AUTOMATED |
 | Listado | LIST-04 Quitar filtros | Bajo | P2 | — (se usa en LIST-02) | NOT AUTOMATED | NOT AUTOMATED |
 | Listado | LIST-05 Agrupación diaria y signos | Bajo | P2 | — | NOT AUTOMATED | NOT AUTOMATED |
@@ -103,7 +103,7 @@ Los tests están en `tests/finanzas-pareja/`.
 | P3 | 7 | 0 | — | — | — | — | 7 |
 | **Total** | **74** | **41** | **27** | **14** | **0** | **0** | **33** |
 
-Los 14 FAIL de P1 son defectos de la aplicación con evidencia (D01–D06, D08, D10, D11, D13–D16). No hay ningún fallo de la suite sin explicar. Los P0 pasan todos.
+Los 15 FAIL de P1 son defectos de la aplicación con evidencia (D01–D06, D08, D10, D11, D13–D17). No hay ningún fallo de la suite sin explicar. Los P0 pasan todos.
 
 P2 y P3 siguen pendientes a propósito. Como P0 y P1 ya son estables (465/465 en estrés y 93/93 en serie), se pueden abordar en la siguiente ola.
 

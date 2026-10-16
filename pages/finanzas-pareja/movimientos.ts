@@ -61,16 +61,20 @@ export class DetalleMovimiento {
       .locator('..').getByRole('definition');
   }
 
+  boton(accion: 'Borrar' | 'Duplicar' | 'Editar'): Locator {
+    return this.hoja.getByRole('button', { name: accion, exact: true });
+  }
+
   async editar(): Promise<FormularioMovimiento> {
-    await this.hoja.getByRole('button', { name: 'Editar' }).click();
+    await this.boton('Editar').click();
     return this.formularioEdicion;
   }
 
   async duplicar(): Promise<void> {
-    await this.hoja.getByRole('button', { name: 'Duplicar' }).click();
+    await this.boton('Duplicar').click();
   }
 
   async borrar(): Promise<void> {
-    await this.hoja.getByRole('button', { name: 'Borrar' }).click();
+    await this.boton('Borrar').click();
   }
 }

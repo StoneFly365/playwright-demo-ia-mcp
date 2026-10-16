@@ -22,20 +22,29 @@ test.describe('Consultar movimientos', () => {
     await expect(movimientos.filas).toHaveCount(3);
     await expect(movimientos.total('Gastos')).toHaveText('650 €');
     await expect(movimientos.total('Ingresos')).toHaveText('0 €');
+    // El Balance lleva guion ASCII («-650 €»); las filas y el detalle, el signo menos U+2212 («− 100 €»). Es así en la app.
     await expect(movimientos.total('Balance')).toHaveText('-650 €');
 
     await movimientos.filtroTipo('Ingresos').click();
     await expect(movimientos.filas).toHaveCount(1);
     await expect(movimientos.fila('Nómina')).toBeVisible();
+    await expect(movimientos.total('Movimientos')).toHaveText('1');
+    await expect(movimientos.total('Ingresos')).toHaveText('2000 €');
+    await expect(movimientos.total('Gastos')).toHaveText('0 €');
 
     await movimientos.filtroTipo('Ahorro').click();
     await expect(movimientos.filas).toHaveCount(1);
     await expect(movimientos.fila('Fondo de emergencia')).toBeVisible();
+    await expect(movimientos.total('Movimientos')).toHaveText('1');
+    await expect(movimientos.total('Ingresos')).toHaveText('0 €');
+    await expect(movimientos.total('Gastos')).toHaveText('0 €');
 
     await movimientos.filtroTipo('Todos').click();
     await movimientos.categoria.selectOption('supermercado');
     await expect(movimientos.filas).toHaveCount(1);
     await expect(movimientos.fila('Mercadona')).toContainText('− 100 €');
+    await expect(movimientos.total('Movimientos')).toHaveText('1');
+    await expect(movimientos.total('Gastos')).toHaveText('100 €');
   });
 
   for (const { busqueda, encuentra } of [
@@ -52,6 +61,41 @@ test.describe('Consultar movimientos', () => {
     });
   }
 
+  test('una búsqueda sin resultados ofrece quitar los filtros', { tag: '@critical' }, async ({ app }) => {
+    // LIST-02 (sin resultados)
+    await app.movimientos.buscador.fill('zzz');
+
+    await expect(app.movimientos.sinResultados).toBeVisible();
+    await app.contenido.getByRole('button', { name: 'Quitar filtros' }).click();
+    await expect(app.movimientos.filas).toHaveCount(5);
+    await expect(app.movimientos.buscador).toHaveValue('');
+  });
+});
+
+// Sin el beforeEach de MES_BASICO: cada test siembra sus propios movimientos.
+test.describe('Buscar con datos propios', () => {
+  for (const { busqueda, defecto } of [
+    { busqueda: '45.9', defecto: null },
+    { busqueda: '45,90', defecto: 'D17' },                    // como lo muestra la lista
+  ]) {
+    test(`buscar el importe «${busqueda}» encuentra el movimiento`, {
+      tag: defecto ? ['@critical', `@bug-${defecto}`] : '@critical',
+      annotation: defecto
+        ? { type: 'issue', description: 'D17: la búsqueda compara con el importe sin formato (45.9), no con el que se muestra (45,90 €)' }
+        : [],
+    }, async ({ app }) => {
+      // LIST-02 (importe con decimales, con punto y con coma)
+      test.fail(defecto !== null);
+      await app.abrir({ movimientos: [MERCADONA, NETFLIX] });
+      await app.irA('Movimientos');
+
+      await app.movimientos.buscador.fill(busqueda);
+
+      await expect(app.movimientos.filas).toHaveCount(1);
+      await expect(app.movimientos.fila('Mercadona')).toBeVisible();
+    });
+  }
+
   test('la búsqueda también encuentra el texto con el que se apuntó', { tag: '@critical' }, async ({ app }) => {
     // LIST-02 (texto original)
     await app.abrir({
@@ -65,16 +109,6 @@ test.describe('Consultar movimientos', () => {
 
     await expect(app.movimientos.filas).toHaveCount(1);
     await expect(app.movimientos.fila('Mercadona')).toBeVisible();
-  });
-
-  test('una búsqueda sin resultados ofrece quitar los filtros', { tag: '@critical' }, async ({ app }) => {
-    // LIST-02 (sin resultados)
-    await app.movimientos.buscador.fill('zzz');
-
-    await expect(app.movimientos.sinResultados).toBeVisible();
-    await app.contenido.getByRole('button', { name: 'Quitar filtros' }).click();
-    await expect(app.movimientos.filas).toHaveCount(5);
-    await expect(app.movimientos.buscador).toHaveValue('');
   });
 });
 
@@ -93,6 +127,9 @@ test.describe('Gestionar un movimiento', () => {
     await expect(detalle.dato('Forma de pago')).toHaveText('Tarjeta');
     await expect(detalle.dato('Nota')).toHaveText('Ibuprofeno');
     await expect(detalle.dato('Origen')).toHaveText('manual');
+    for (const accion of ['Borrar', 'Duplicar', 'Editar'] as const) {
+      await expect(detalle.boton(accion)).toBeVisible();
+    }
   });
 
   test('el usuario corrige el importe de un movimiento sin duplicarlo', { tag: '@smoke' }, async ({ app }) => {
@@ -119,10 +156,14 @@ test.describe('Gestionar un movimiento', () => {
     await app.abrir({ movimientos: [NETFLIX] });
     await app.irA('Movimientos');
 
-    const formulario = await (await app.movimientos.abrirDetalle('Netflix')).editar();
+    const detalle = await app.movimientos.abrirDetalle('Netflix');
+    const formulario = await detalle.editar();
     await formulario.importe.fill('99');
     await formulario.cancelar();
 
+    // Primero la respuesta de la app: sin ella, el 12,99 € de antes de cancelar ya cumple la aserción.
+    await expect(detalle.edicion).toBeHidden();
+    await expect(app.ultimoAviso()).toHaveCount(0);
     await expect(app.movimientos.fila('Netflix')).toContainText('12,99 €');
     await expect(app.movimientos.total('Gastos')).toHaveText('12,99 €');
   });
@@ -151,6 +192,11 @@ test.describe('Gestionar un movimiento', () => {
     await app.confirmar('Cancelar');
     await expect(app.confirmacion).toBeHidden();
     await expect(detalle.hoja).toBeVisible();
+    // La hoja sigue un instante en pantalla aunque se borre: lo que distingue cancelar es que no hay aviso.
+    // Límite: «no ha pasado nada» no tiene señal positiva; con la mutación (confirmar «Borrar») estas
+    // aserciones lo detectan 9 de cada 10 veces, y la décima el test falla después, en `detalle.borrar()`.
+    await expect(app.ultimoAviso()).toHaveCount(0);
+    await expect(app.movimientos.total('Movimientos')).toHaveText('2');
 
     await detalle.borrar();
     await app.confirmar('Borrar');
@@ -158,6 +204,7 @@ test.describe('Gestionar un movimiento', () => {
     await expect(app.aviso('Movimiento borrado.')).toBeVisible();
     await expect(app.movimientos.fila('Netflix')).toHaveCount(0);
     await expect(app.movimientos.total('Movimientos')).toHaveText('1');
+    await expect(app.movimientos.total('Gastos')).toHaveText('45,90 €');
 
     await app.recargar();
     await app.irA('Movimientos');
