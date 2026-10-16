@@ -15,6 +15,7 @@ Convenciones de referencia: `docs/automation-architecture.md` (localizadores §2
 - ¿El valor esperado sale del «Resultado esperado» del escenario (`specs/<app>/test-scenarios.md`) o de `test-data/`? Un valor copiado de lo que la app muestra hoy no es un oráculo: congela el comportamiento, sea correcto o no.
 - ¿El diff cambia una aserción, un valor esperado, `test-data/` o una marca `test.fail` / `@bug-` / `fixme` / `skip`? Ejecuta o pide `npm run guard:assertions -- <diff>`. Cualquier línea señalada necesita justificación con evidencia de que **el requisito** cambió, no de que la app cambió.
 - Un test `@bug-Dxx` debe probar el comportamiento **correcto** y fallar en la aserción del defecto, que conviene que sea el primer punto de fallo (AD-06).
+- `test.fail()` nunca condicional (`test.fail(!!bug)`). Cada defecto, en su test o en su bucle, con la etiqueta `'@bug-Dxx'` literal (que se encuentre buscando en el repo) y `test.fail()` sin argumentos. Si en un bucle se mezclan casos con defecto y casos sin él, sepáralos.
 
 ### 2. Falsos positivos
 - Aserciones negativas («no aparece», «no cambia») sin sincronizar antes con la respuesta de la app (`app.ultimoAviso()`): pasan durante los milisegundos en que la app aún no ha reaccionado.

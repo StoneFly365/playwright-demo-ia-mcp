@@ -43,6 +43,9 @@ Son aspectos que **no se han podido determinar** durante el discovery: no son ob
 | OQ-21 | ¿El «Falta» del resumen de metas debe descontar lo que una meta supera su objetivo? | Con «Viaje» 0 € de 1000 € y «Colchón» 1500 € de 1000 €, el resumen muestra «Falta 500 €» (2000 − 1500), aunque a Viaje le faltan 1000 €. Observado al revisar `metas.spec.ts` (2026-10-16) | MET-01, MET-04 |
 | OQ-22 | ¿Qué formatos de importe debe aceptar el buscador: «45,90», «45,9», «45.9», «45.90»? | Hoy solo encuentra el número sin formato («45.9»), no el que muestra la lista (D17). Si el arreglo compara con el importe formateado, «45.9» podría dejar de encontrar | LIST-02 |
 | OQ-23 | ¿Cómo se calcula el pie de Movimientos «N días con actividad · media de X € de gasto al día»: días con movimientos del filtro, días del mes transcurridos…? | No documentado. Por eso LIST-01 no comprueba el pie | LIST-01 |
+| OQ-24 | ¿Qué debe decir exactamente el aviso al importar un archivo que no es JSON válido? | Hoy muestra el mensaje técnico del parser, en inglés (D10). D10 propone «El archivo no es una copia válida». El test solo prohíbe el texto en inglés, porque no hay redacción fijada | BAK-03 |
+| OQ-25 | Ante datos inválidos en una copia, ¿se rechaza el archivo entero o solo las líneas inválidas (con aviso)? | El escenario admite las dos. Los tests de D08 exigen rechazar el archivo entero: si D08 se corrige línea a línea, fallarían sin ser una regresión | BAK-04 |
+| OQ-26 | ¿La cabecera del CSV (`Fecha,Tipo,Categoría,Importe,Comercio,Forma de pago,Nota,Origen`), los nombres de categoría y el BOM del CSV estándar son requisito? | El test los comprueba tal como los exporta hoy la app, sin fuente documentada. El BOM sí está documentado para el CSV de Excel | BAK-01 |
 
 ## D. Supuestos tomados en el discovery
 
