@@ -40,6 +40,7 @@ Son aspectos que **no se han podido determinar** durante el discovery: no son ob
 | OQ-18 | ¿Es correcto que el contador «Sin subir» de la hoja Sincronización muestre registros pendientes (58) sin tener nube configurada? | Muestra 58, y cuenta también los borrados | NUBE-01 |
 | OQ-19 | ¿Hay requisitos de accesibilidad (WCAG 2.1 AA)? | Hay roles correctos en diálogos, pestañas y navegación. Los botones de icono tienen `aria-label`. No se auditó | Fuera de alcance. ¿Añadir `@axe-core/playwright`? |
 | OQ-20 | ¿Comportamiento esperado ante rutas inexistentes? | Devuelven 200 y cargan Inicio (fallback de SPA en Netlify) | — (informativo) |
+| OQ-21 | ¿El «Falta» del resumen de metas debe descontar lo que una meta supera su objetivo? | Con «Viaje» 0 € de 1000 € y «Colchón» 1500 € de 1000 €, el resumen muestra «Falta 500 €» (2000 − 1500), aunque a Viaje le faltan 1000 €. Observado al revisar `metas.spec.ts` (2026-10-16) | MET-01, MET-04 |
 
 ## D. Supuestos tomados en el discovery
 
