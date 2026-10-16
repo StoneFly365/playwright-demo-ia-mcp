@@ -1,10 +1,11 @@
 import { expect, test } from '../../fixtures/finanzas-pareja';
+import type { FinanzasApp } from '../../pages/finanzas-pareja/finanzas-app';
 import { gasto, MES_BASICO } from '../../test-data/finanzas-pareja/datos';
 import { HOY } from '../../test-data/finanzas-pareja/fechas';
 import { LISTA_VARIOS } from '../../test-data/finanzas-pareja/interpretacion';
 
 const NETFLIX = gasto(12.99, 'suscripciones', 'Netflix', { metodoPago: 'tarjeta' });
-const MERCADONA = gasto(45.9, 'supermercado', 'Mercadona', { metodoPago: 'tarjeta' });
+const MERCADONA_45_90 = gasto(45.9, 'supermercado', 'Mercadona', { metodoPago: 'tarjeta' });
 
 test.describe('Consultar movimientos', () => {
   test.beforeEach(async ({ app }) => {
@@ -74,27 +75,31 @@ test.describe('Consultar movimientos', () => {
 
 // Sin el beforeEach de MES_BASICO: cada test siembra sus propios movimientos.
 test.describe('Buscar con datos propios', () => {
-  for (const { busqueda, defecto } of [
-    { busqueda: '45.9', defecto: null },
-    { busqueda: '45,90', defecto: 'D17' },                    // como lo muestra la lista
-  ]) {
-    test(`buscar el importe «${busqueda}» encuentra el movimiento`, {
-      tag: defecto ? ['@critical', `@bug-${defecto}`] : '@critical',
-      annotation: defecto
-        ? { type: 'issue', description: 'D17: la búsqueda compara con el importe sin formato (45.9), no con el que se muestra (45,90 €)' }
-        : [],
-    }, async ({ app }) => {
-      // LIST-02 (importe con decimales, con punto y con coma)
-      test.fail(defecto !== null);
-      await app.abrir({ movimientos: [MERCADONA, NETFLIX] });
-      await app.irA('Movimientos');
-
-      await app.movimientos.buscador.fill(busqueda);
-
-      await expect(app.movimientos.filas).toHaveCount(1);
-      await expect(app.movimientos.fila('Mercadona')).toBeVisible();
-    });
+  async function buscarImporte(app: FinanzasApp, busqueda: string): Promise<void> {
+    await app.abrir({ movimientos: [MERCADONA_45_90, NETFLIX] });
+    await app.irA('Movimientos');
+    await app.movimientos.buscador.fill(busqueda);
   }
+
+  test('buscar el importe «45.9» encuentra el movimiento', { tag: '@critical' }, async ({ app }) => {
+    // LIST-02 (importe con decimales, con punto)
+    await buscarImporte(app, '45.9');
+
+    await expect(app.movimientos.filas).toHaveCount(1);
+    await expect(app.movimientos.fila('Mercadona')).toBeVisible();
+  });
+
+  test('buscar el importe «45,90», como lo muestra la lista, encuentra el movimiento', {
+    tag: ['@critical', '@bug-D17'],
+    annotation: { type: 'issue', description: 'D17: la búsqueda compara con el importe sin formato (45.9), no con el que se muestra (45,90 €)' },
+  }, async ({ app }) => {
+    // LIST-02 (importe con decimales, con coma)
+    test.fail();
+    await buscarImporte(app, '45,90');
+
+    await expect(app.movimientos.filas).toHaveCount(1);
+    await expect(app.movimientos.fila('Mercadona')).toBeVisible();
+  });
 
   test('la búsqueda también encuentra el texto con el que se apuntó', { tag: '@critical' }, async ({ app }) => {
     // LIST-02 (texto original)
@@ -182,7 +187,7 @@ test.describe('Gestionar un movimiento', () => {
 
   test('borrar pide confirmación y elimina el movimiento de forma permanente', { tag: '@smoke' }, async ({ app }) => {
     // DET-04
-    await app.abrir({ movimientos: [NETFLIX, MERCADONA] });
+    await app.abrir({ movimientos: [NETFLIX, MERCADONA_45_90] });
     await app.irA('Movimientos');
     const detalle = await app.movimientos.abrirDetalle('Netflix');
 
@@ -193,8 +198,8 @@ test.describe('Gestionar un movimiento', () => {
     await expect(app.confirmacion).toBeHidden();
     await expect(detalle.hoja).toBeVisible();
     // La hoja sigue un instante en pantalla aunque se borre: lo que distingue cancelar es que no hay aviso.
-    // Límite: «no ha pasado nada» no tiene señal positiva; con la mutación (confirmar «Borrar») estas
-    // aserciones lo detectan 9 de cada 10 veces, y la décima el test falla después, en `detalle.borrar()`.
+    // Límite: «no ha pasado nada» no tiene señal positiva, así que estas aserciones pueden adelantarse a la app.
+    // Si «Cancelar» borrara, el test fallaría igualmente después, en `detalle.borrar()`.
     await expect(app.ultimoAviso()).toHaveCount(0);
     await expect(app.movimientos.total('Movimientos')).toHaveText('2');
 

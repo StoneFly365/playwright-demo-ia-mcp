@@ -9,7 +9,7 @@ Los tests están en `tests/finanzas-pareja/`.
 
 **Columna «Estado final»** (revisión QA del 2026-10-05; última ejecución completa válida: estrés 3, 465/465 con el resultado esperado):
 - **PASS**: el comportamiento de la app es el esperado y los tests lo verifican.
-- **FAIL (Dxx)**: la app tiene un defecto confirmado (causa A). El test falla en la aserción del defecto, con la evidencia recogida en `reports/qa-code-review.md` §4. Está marcado con `test.fail()` y `@bug-Dxx`. Entre paréntesis, la parte del escenario que sí pasa.
+- **FAIL (Dxx)**: la app tiene un defecto confirmado (causa A). El test falla en la aserción del defecto, con la evidencia recogida en `reports/qa-code-review.md` §4 (D17, en `reports/bug-reports.md`). Está marcado con `test.fail()` y `@bug-Dxx`. Entre paréntesis, la parte del escenario que sí pasa.
 - **FLAKY**: resultado intermitente. Hoy no hay ninguno: FLAKY-01 está corregido (ver `reports/flakiness-report.md`).
 - **BLOCKED**: no se puede ejecutar. Ningún escenario lo está por causa propia, pero hubo ejecuciones bloqueadas por el entorno (ENV-01, host caído unos 4 min). La confirmación final (E9) se ejecutó con el host disponible. Ver `reports/test-execution.md`.
 - **NOT AUTOMATED**: sin test (P2/P3, pendientes a propósito).
@@ -98,10 +98,10 @@ Los tests están en `tests/finanzas-pareja/`.
 | Prioridad | Escenarios | AUTOMATED | PASS | FAIL (defecto de app) | FLAKY | BLOCKED | NOT AUTOMATED |
 |---|---|---|---|---|---|---|---|
 | P0 | 13 | 13 | 13 | 0 | 0 | 0 | 0 |
-| P1 | 28 | 28 | 14 | 14 | 0 | 0 | 0 |
+| P1 | 28 | 28 | 13 | 15 | 0 | 0 | 0 |
 | P2 | 26 | 0 | — | — | — | — | 26 |
 | P3 | 7 | 0 | — | — | — | — | 7 |
-| **Total** | **74** | **41** | **27** | **14** | **0** | **0** | **33** |
+| **Total** | **74** | **41** | **26** | **15** | **0** | **0** | **33** |
 
 Los 15 FAIL de P1 son defectos de la aplicación con evidencia (D01–D06, D08, D10, D11, D13–D17). No hay ningún fallo de la suite sin explicar. Los P0 pasan todos.
 

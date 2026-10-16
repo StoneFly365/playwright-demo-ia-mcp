@@ -149,8 +149,8 @@ Hacen falta antes o durante el arreglo, porque cambian el comportamiento esperad
 
 **Pasos:** un gasto de 45,90 € (Mercadona). En Movimientos, escribir «45,90» en el buscador.
 **Esperado:** aparece el movimiento: el buscador dice buscar por importe y la lista lo muestra como «45,90 €».
-**Actual:** «Nada por aquí». Con «45.9» sí lo encuentra; con «45,9» o «45.90», no.
-**Causa probable:** `movimientosFiltradosVista` (`js/vistas/movimientos.js`) compara con `${m.importe}`, el número sin formato (`45.9`), en lugar del importe con el formato con el que se muestra.
+**Actual:** «Nada por aquí». Con «45.9» sí lo encuentra.
+**Causa probable:** `movimientosFiltradosVista` (`js/vistas/movimientos.js`) compara con `${m.importe}`, el número sin formato (`45.9`), en lugar del importe con el formato con el que se muestra. Por la misma causa tampoco encontraría «45,9» ni «45.90» (deducido del código, no reproducido). Qué formatos debe aceptar: OQ-22.
 **Impacto:** con decimales, la búsqueda por importe solo funciona si se escribe como en JavaScript, no como lo escribe un usuario en España.
 **Verificación:** `movimientos.spec.ts` › «buscar el importe «45,90» encuentra el movimiento». Encontrado al revisar el spec el 2026-10-16.
 
