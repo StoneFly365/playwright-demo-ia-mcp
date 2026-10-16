@@ -80,4 +80,4 @@ CAMBIOS_REQUERIDOS — pendiente de aprobación humana (1 hallazgo alto: aserci�
 
 ---
 
-Decisión humana: pendiente
+Decisión humana: aprobado — Raúl Molina, 2026-10-16 (cambios resueltos y re-revisados en 2026-10-16-movimientos.spec-v2.md).

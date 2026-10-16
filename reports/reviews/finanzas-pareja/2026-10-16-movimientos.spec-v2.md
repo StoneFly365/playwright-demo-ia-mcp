@@ -14,7 +14,7 @@ Semáforo: 🔴 bloqueante · 🟠 alta · 🟡 media · 🟢 baja
   Evidencia: «test.fail(defecto !== null);». La sección D17 dice «Encontrado al revisar el spec» y da como causa `movimientosFiltradosVista`.
   Riesgo: el generator tiene prohibido marcar defectos («las marcas test.fail() + @bug-Dxx las pone una persona cuando el defecto está confirmado»). `agentic-qa.md:117` exige aprobación explícita. El código de la app no está en el repo, así que la causa es una lectura no verificable aquí. La sección dice además que «45,9» y «45.90» tampoco encuentran, y ningún test ni informe lo respalda.
   Recomendación: que la persona confirme D17 antes de dejar la marca. Adjuntar una prueba reproducible: el «Nada por aquí» con «45,90», y el JSON de Playwright que muestra el error en `toHaveCount(1)` como primer fallo, según `mutation-check`. Quitar de «Actual» lo que no se haya probado, o cubrirlo.
-  Estado: 🔶 pendiente de decisión humana. Lo que no estaba probado se ha quitado de «Actual» y queda en «Causa probable» como deducido del código, sin reproducir. Evidencia reproducible: con el reporter JSON, el test de «45,90» falla primero en `toHaveCount(1)` (línea 100). Al confirmar o rechazar D17, anotarlo en «Decisión humana».
+  Estado: ✅ confirmado por una persona (2026-10-16). Lo que no estaba probado se ha quitado de «Actual» y queda en «Causa probable» como deducido del código, sin reproducir. Evidencia reproducible: con el reporter JSON, el test de «45,90» falla primero en `toHaveCount(1)` (línea 100). Al confirmar o rechazar D17, anotarlo en «Decisión humana».
 
 - 🟡 [media] `movimientos.spec.ts:77-97` — la parametrización mezcla en un bucle el caso de control («45.9») y el caso con defecto («45,90»), y condiciona la marca.
   Evidencia: «tag: defecto ? ['@critical', `@bug-${defecto}`] : '@critical'» y «test.fail(defecto !== null);».
@@ -41,7 +41,7 @@ Semáforo: 🔴 bloqueante · 🟠 alta · 🟡 media · 🟢 baja
 
 - 🟡 [media] `test-scenarios.md` (UNDO-01) — el agente cambió un «Resultado esperado» del escenario (lote de 3 a lote de 4) para que cuadre con el test. Es un cambio de oráculo en la fuente de verdad. `guard:assertions` no lo ve porque no revisa los `.md`.
   Recomendación: que la persona lo apruebe de forma explícita.
-  Estado: 🔶 pendiente de decisión humana.
+  Estado: ✅ aprobado por una persona (2026-10-16).
 
 - 🟢 [baja] Referencias de D17 desalineadas: LIST-02 sin «Estado actual: FALLA (D17)», la línea 908 con fecha antigua, la evidencia de D17 en el mapa es una ubicación y está antes de D16, y la matriz remite a `qa-code-review.md` §4.
   Estado: ✅ resuelto. Se alinean las cuatro.
@@ -66,4 +66,4 @@ CAMBIOS_REQUERIDOS — pendiente de aprobación humana
 
 ---
 
-Decisión humana: pendiente (D17 y UNDO-01)
+Decisión humana: aprobado — Raúl Molina, 2026-10-16. Confirma D17 como defecto (se mantienen `test.fail()` y `@bug-D17`) y aprueba el cambio de UNDO-01 a «lote de 4».
