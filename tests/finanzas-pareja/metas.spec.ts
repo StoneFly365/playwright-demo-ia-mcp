@@ -58,6 +58,8 @@ test.describe('Metas de ahorro', () => {
     await expect(app.aviso('El objetivo debe ser mayor que cero.')).toBeVisible();
 
     await expect(app.metas.campos(app.metas.hojaNueva).nombre).toHaveValue('Viaje QA');
+    // TODO(D02): al corregir D02, añadir el paso 3 del escenario (el valor sigue escrito tras caducar el aviso).
+    // Hoy no se puede verificar: el test falla antes, en la aserción del defecto (AD-06).
   });
 
   test('no se acepta un «ya tengo ahorrado» negativo', {

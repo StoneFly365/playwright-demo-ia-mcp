@@ -68,7 +68,7 @@ export class Metas {
     await this.hojaNueva.getByRole('button', { name: 'Crear meta' }).click();
   }
 
-  async editar(nombre: string, datos: DatosMeta): Promise<void> {
+  async editar(nombre: string, datos: Omit<DatosMeta, 'icono'>): Promise<void> {
     await this.meta(nombre).getByRole('button', { name: 'Editar' }).click();
     await this.rellenarCampos(this.hojaEditar, datos);
     await this.hojaEditar.getByRole('button', { name: 'Guardar cambios' }).click();

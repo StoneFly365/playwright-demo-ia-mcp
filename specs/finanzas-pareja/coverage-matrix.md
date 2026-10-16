@@ -67,7 +67,7 @@ Los tests están en `tests/finanzas-pareja/`.
 | Presupuestos | PRE-08 Formulario conserva datos | Alto | P1 | `presupuestos.spec.ts` | AUTOMATED | FAIL (D02) |
 | Metas | MET-01 Crear meta | Alto | P0 | `metas.spec.ts` | AUTOMATED | PASS |
 | Metas | MET-02 Validaciones | Medio | P1 | `metas.spec.ts` (4 casos) | AUTOMATED | PASS |
-| Metas | MET-03 Formulario conserva datos | Alto | P1 | `metas.spec.ts` | AUTOMATED | FAIL (D02) |
+| Metas | MET-03 Formulario conserva datos | Alto | P1 | `metas.spec.ts` (pasos 1-2; el paso 3, tras caducar el aviso, queda pendiente de D02) | AUTOMATED | FAIL (D02) |
 | Metas | MET-04 Inicial fuera de rango | Medio | P1 | `metas.spec.ts` | AUTOMATED | FAIL (D04 · inicial ≥ objetivo PASS) |
 | Metas | MET-05 Aportar (y validación) | Crítico | P0 | `metas.spec.ts` | AUTOMATED | PASS |
 | Metas | MET-06 Renombrar al editar | Crítico | P1 | `metas.spec.ts` | AUTOMATED | FAIL (D03) |
