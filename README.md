@@ -6,9 +6,9 @@ Esqueleto mínimo para arrancar un proyecto de pruebas con [Playwright](https://
 
 ```
 ├── .claude/agents/        # Agentes: planner, generator, healer, failure-triage, test-reviewer
-├── .claude/skills/        # Skills: failure-classification, evidence-based-diagnosis, test-quality-review, coverage-mapping
+├── .claude/skills/        # Skills: failure-classification, evidence-based-diagnosis, test-quality-review, coverage-mapping, mutation-check
 ├── .github/workflows/     # CI: tooling, navegadores genéricos y finanzas-pareja (bajo autorización)
-├── docs/                  # Arquitectura de la automatización
+├── docs/                  # Arquitectura y QA agéntico (agentes, skills, diagramas)
 ├── fixtures/<app>.ts      # Test extendido de cada app (reloj, page object raíz)
 ├── helpers/<app>/         # Utilidades técnicas (siembra de datos…)
 ├── pages/<app>/           # Page Objects

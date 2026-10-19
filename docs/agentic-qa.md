@@ -20,6 +20,8 @@ npm run triage                            capa 1: reglas (sin IA, sin red)
 
 `npm run report:ai` hace las dos capas y, además, el resumen, las correcciones y los tickets a partir de los grupos de fallos (nunca del `test-results.json` crudo). Los defectos conocidos aparecen en el resumen, pero no generan correcciones ni tickets.
 
+El ciclo completo, de la planificación al triaje, está en los diagramas de la [sección 5b](#5b-orquestación).
+
 ## 2. Clasificación
 
 | Categoría | Decide | Significado | Revisión humana |
@@ -108,8 +110,123 @@ Están en `.claude/skills/<nombre>/SKILL.md`, el mecanismo de skills de proyecto
 | `failure-classification` | failure-triage, healer | `npm run triage`, `npm run test:triage` |
 | `evidence-based-diagnosis` | failure-triage, healer | `node scripts/triage.mjs --validate` |
 | `test-quality-review` | test-reviewer | `npm run guard:assertions` |
-| `coverage-mapping` | test-reviewer, planner, generator | `npm run coverage:map` |
+| `coverage-mapping` | test-reviewer (precargada); planner (la cita en sus reglas) | `npm run coverage:map` |
 | `mutation-check` | quien añade o cambia aserciones (persona, sesión principal); test-reviewer exige su evidencia | `npx playwright test … --reporter=list --retries=0` |
+
+El generator no usa ninguna skill: sigue las convenciones de `docs/automation-architecture.md` y las reglas de su propio fichero.
+
+## 5b. Orquestación
+
+Los agentes no se llaman entre sí. Los encadena una persona (o la sesión principal de Claude Code), y cada uno deja su resultado en un fichero que lee el siguiente. Ninguna propuesta llega a `tests/<app>/` sin pasar por `test-reviewer`, `guard:assertions` y una persona.
+
+### Ciclo completo
+
+Quién produce qué y dónde lo deja. Los cilindros son ficheros del repositorio.
+
+```mermaid
+flowchart TD
+    H(["Persona QA"])
+
+    subgraph D["1 · Diseño"]
+        PL["playwright-test-planner"] -->|"escenarios con id ÁREA-NN"| S[("specs/{app}/")]
+        S --> GE["playwright-test-generator"]
+        GE -->|"test propuesto"| TP[("tests/_propuestas/{app}/")]
+    end
+
+    subgraph R["2 · Revisión"]
+        RV["test-reviewer"] -->|"informe"| RR[("reports/reviews/{app}/")]
+        GA["npm run guard:assertions"]
+    end
+
+    subgraph E["3 · Ejecución y triaje"]
+        T[("tests/{app}/")] --> RUN["npx playwright test"]
+        RUN --> TR["npm run triage (reglas, sin IA)"]
+        TR -->|"solo INCONCLUSIVE"| FT["failure-triage"]
+        TR -->|"solo INCONCLUSIVE"| AI["npm run report:ai"]
+    end
+
+    TP --> RV
+    RR --> H
+    GA --> H
+    H -->|"aprueba, aplica y mueve"| T
+    FT -->|"diagnóstico JSON validado"| H
+    AI -->|"resumen y tickets"| H
+    H -->|"test que falla"| HE["playwright-test-healer"]
+    HE -->|"diff sin aplicar"| RV
+```
+
+### Agentes, skills y scripts
+
+Cada skill tiene un script que la respalda: la skill explica el criterio y el script lo aplica de forma reproducible.
+
+```mermaid
+flowchart LR
+    subgraph AG["Agentes"]
+        FT["failure-triage"]
+        HE["playwright-test-healer"]
+        RV["test-reviewer"]
+        PL["playwright-test-planner"]
+        PER(["Persona / sesión principal"])
+    end
+
+    subgraph SK["Skills"]
+        FC["failure-classification"]
+        EB["evidence-based-diagnosis"]
+        TQ["test-quality-review"]
+        CM["coverage-mapping"]
+        MC["mutation-check"]
+    end
+
+    subgraph SC["Scripts"]
+        S1["npm run triage"]
+        S2["triage.mjs --validate"]
+        S3["npm run guard:assertions"]
+        S4["npm run coverage:map"]
+        S5["playwright test --retries=0"]
+    end
+
+    FT ==> FC & EB
+    HE ==> FC & EB
+    RV ==> TQ & CM
+    PL -.-> CM
+    PER -.-> MC
+    RV -.->|"exige su evidencia"| MC
+
+    FC --> S1
+    EB --> S2
+    TQ --> S3
+    CM --> S4
+    MC --> S5
+```
+
+Flecha gruesa: el agente la precarga con `skills:` en su cabecera. Flecha discontinua: la cita en sus instrucciones o se invoca a mano.
+
+### De la propuesta a la suite estable
+
+Secuencia de la sección 6 paso a paso.
+
+```mermaid
+sequenceDiagram
+    actor P as Persona QA
+    participant G as generator / healer
+    participant R as test-reviewer
+    participant GA as guard:assertions
+    participant CI as tests/{app}/ + CI
+
+    P->>G: escenario de specs/ o test que falla
+    G-->>P: test en tests/_propuestas/ o diff sin aplicar
+    P->>R: revisa la propuesta
+    R-->>P: hallazgos y CAMBIOS_REQUERIDOS o SIN_OBJECIONES
+    P->>P: guarda el informe en reports/reviews/{app}/
+    P->>GA: npm run guard:assertions sobre el diff
+    GA-->>P: líneas que tocan oráculos (o ninguna)
+    alt hallazgos bloqueantes u oráculos sin justificar
+        P->>G: rehacer la propuesta
+    else sin objeciones
+        P->>CI: aplica el cambio, lo mueve y lo ejecuta
+        P->>P: anota la decisión humana en el informe
+    end
+```
 
 ## 6. Límites de autonomía
 
