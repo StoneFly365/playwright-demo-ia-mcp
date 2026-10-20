@@ -9,7 +9,7 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
 Suite E2E lista para producción que enseña, sobre una web real, cómo damos valor en QA automation:
 
 - **Page Object Model** — 6 páginas encapsuladas, tests legibles y mantenibles.
-- **Cobertura multi-navegador** — 79 tests en Chromium, Firefox y WebKit.
+- **Cobertura multi-navegador** — 80 tests por navegador (240 en total) en Chromium, Firefox y WebKit.
 - **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
 - **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
 
@@ -51,13 +51,19 @@ playwright-demo-ia-mcp/
 │   ├── cart.page.ts                # POM: carrito de compras
 │   ├── checkout.page.ts            # POM: proceso de checkout
 │   └── menu.page.ts                # POM: menú lateral
-├── tests/                          # 14 ficheros, 79 tests
+├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, vacío, para los agentes)
 ├── specs/                          # Planes de test y documentación QA
 ├── prompts/                        # Prompts usados por el reporte IA
 ├── scripts/
-│   └── report-ai.mjs               # Script de análisis IA de resultados
+│   ├── report-ai.mjs               # Script de análisis IA de resultados
+│   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
+├── learning/                       # Material del Learning Lab
+├── docs-site/                      # Portal Docsify (GitHub Pages)
+├── .claude/agents/                 # Agentes Playwright: planner, generator, healer
+├── .mcp.json                       # Servidor MCP de Playwright (playwright run-test-mcp-server)
 ├── .github/workflows/
-│   └── playwright.yml              # Pipeline CI/CD (GitHub Actions)
+│   ├── playwright.yml              # Pipeline CI/CD de tests (GitHub Actions)
+│   └── docs.yml                    # Publicación del portal en GitHub Pages
 ├── playwright.config.ts
 ├── package.json
 └── tsconfig.json
@@ -119,6 +125,9 @@ npm run test:demo:fail    # solo los fallos intencionados (@demo-fail)
 
 # Ver el informe HTML tras la ejecución
 npm run test:report
+
+# Comprobar el entorno antes de la Ruta QA del Learning Lab
+npm run ruta-qa:check
 ```
 
 Los tests se ejecutan en **Chromium, Firefox y WebKit** (definidos como `projects` en `playwright.config.ts`).
@@ -166,11 +175,12 @@ npm run test:report
 
 El workflow [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) ejecuta el job dentro de la imagen mediante `container:`. No necesita pasos de `setup-node` ni `playwright install`: la imagen ya lo trae todo.
 
-Se dispara con `push` o `pull_request` a `main`, o manualmente:
+Se dispara con `push` o `pull_request` a `main`, o manualmente. En `push` y `pull_request` ejecuta la suite verde (excluye `@demo-fail`). En el lanzamiento manual se elige la suite con el input `suite`: `green` (por defecto), `fail` o `all`.
 
 ```bash
 # Lanzar el workflow manualmente (requiere gh CLI)
-gh workflow run "Playwright Tests"
+gh workflow run "Playwright Tests"                 # suite verde
+gh workflow run "Playwright Tests" -f suite=fail   # solo fallos intencionados
 
 # Seguir el último run en vivo
 gh run watch
@@ -180,7 +190,7 @@ gh run watch
 
 ```mermaid
 flowchart TD
-    T["push / pull_request a main · manual"] --> M{"Matrix por navegador<br/>(3 jobs en paralelo)"}
+    T["push / pull_request a main · manual"] --> M{"Matrix por navegador<br/>(3 jobs en serie, max-parallel: 1)"}
 
     M --> C["Job: chromium"]
     M --> F["Job: firefox"]
@@ -198,7 +208,7 @@ flowchart TD
     W -.-> JOB
 ```
 
-> Los tests fallan a propósito (es una demo): el valor está en ver el **AI report** analizar fallos reales. Cada navegador genera su propio reporte y artefacto.
+> Los jobs van en serie porque la cuota del free tier de Gemini es por minuto; en paralelo provocarían errores 429. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`. Cada navegador genera su propio reporte y artefacto.
 
 ---
 
@@ -300,8 +310,6 @@ Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
 
 Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
 
-> **Mejora futura (opcional):** publicar el reporte HTML de Playwright en GitHub Pages para verlo sin descargar el artefacto (`actions/upload-pages-artifact` + `actions/deploy-pages`).
-
 ---
 
 ## Modo headless
@@ -328,10 +336,11 @@ npx playwright test --retries=2 --trace=on
 | `baseURL` | `https://www.saucedemo.com` |
 | `testDir` | `./tests` |
 | `reporter` | HTML + JSON (local) · GitHub + HTML + JSON (CI) |
-| `trace` | `on-first-retry` |
+| `trace` | `retain-on-failure` |
 | `video` | `retain-on-failure` |
 | Browsers | Chromium · Firefox · WebKit |
 | Reintentos en CI | 2 |
+| Workers en CI | 4 |
 
 ---
 
@@ -376,7 +385,7 @@ test('debería mostrar error cuando las credenciales no corresponden a ningún u
 El test no conoce selectores ni pasos de UI, solo llama métodos del page object.
 
 ### Selectores `data-test`
-Se usan exclusivamente los atributos `data-test` que provee SauceDemo. Son los más resilientes ante cambios de estilos o estructura HTML.
+Se usan los atributos `data-test` que provee SauceDemo, los más resilientes ante cambios de estilos o estructura HTML. La excepción es el menú lateral ([`pages/menu.page.ts`](pages/menu.page.ts)), que usa selectores por `id` (`#react-burger-menu-btn`, `#logout_sidebar_link`…).
 
 ### `baseURL` en config
 La URL base se define una sola vez en `playwright.config.ts`. Los page objects usan rutas relativas, lo que simplifica un eventual cambio de entorno.
@@ -388,4 +397,6 @@ La URL base se define una sola vez en `playwright.config.ts`. Los page objects u
 - [Playwright](https://playwright.dev/) `1.58`
 - TypeScript `^5.0`
 - Node.js `^20`
-- Claude Code CLI (reporte IA)
+- Claude Code CLI (reporte IA en local)
+- Google Gemini `gemini-flash-latest` (reporte IA en CI)
+- Playwright MCP + agentes planner / generator / healer
