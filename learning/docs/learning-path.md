@@ -51,7 +51,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | **5 h dirigidas (2 sesiones) + 3 h personales + 45 min de assessment ≈ 8,75 h.** Desglose en el [README del módulo](../modules/00-foundations/#duración) |
 | **Nivel** | 1 FOLLOW → 5 TROUBLESHOOT |
 | **Dependencias** | Ninguna |
-| **Repository mapping** | `pages/login.page.ts` (clase completa), `pages/inventory.page.ts` (métodos que devuelven datos), `pages/menu.page.ts` (`this` y reutilización), `tests/login.spec.ts` (desestructuración, `let`, `new`), `tests/inventory.spec.ts:32,42,49` (`map`, spread, comparadores), `tsconfig.json:5,9`, `scripts/report-ai.mjs:54-69` (`async`/`Promise.all` sin navegador) |
+| **Repository mapping** | `pages/login.page.ts` (clase completa), `pages/inventory.page.ts` (métodos que devuelven datos), `pages/menu.page.ts` (`this` y reutilización), `tests/login.spec.ts` (desestructuración, `let`, `new`), `tests/inventory.spec.ts:32,42,49` (`map`, spread, comparadores), `tsconfig.json:5,9`, `scripts/report-ai.mjs:62-79` (`async`/`Promise.all` sin navegador) |
 | **Entregables** | Labs 1-4 en verde (23 tests), Challenge 1 (6+ tests propios), hoja de observación, informe de diagnóstico, assessment ≥ 70 y **apto** en la defensa técnica (O8) |
 
 → **[Ir al módulo](../modules/00-foundations/)**
@@ -196,7 +196,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 3 h + 2 h |
 | **Nivel** | 6 OPTIMIZE |
 | **Dependencias** | 04, 06 |
-| **Repository mapping** | `scripts/report-ai.mjs` completo (225 líneas); los 4 `prompts/*.txt`; `.mcp.json`; los 3 subagentes de `.claude/agents/`; los pasos de IA del workflow (52-69); `specs/add-to-cart-test-plan.md` como evidencia del flujo planner→generator. Hallazgos **D4** (el modelo inventaba `generated_at` y el código lo corrige), **D3** (validación solo con `JSON.parse`), **D1**/**D2** (permisos y superficie de inyección), **B1** (la ruta absoluta que rompe `report:ai` fuera de una máquina) |
+| **Repository mapping** | `scripts/report-ai.mjs` completo (243 líneas); los 4 `prompts/*.txt`; `.mcp.json`; los 3 subagentes de `.claude/agents/`; los pasos de IA del workflow (52-69); `specs/add-to-cart-test-plan.md` como evidencia del flujo planner→generator. Hallazgos **D4** (el modelo inventaba `generated_at` y el código lo corrige), **D3** (validación solo con `JSON.parse`), **D1**/**D2** (permisos y superficie de inyección), **B1** (la ruta absoluta que rompe `report:ai` fuera de una máquina) |
 | **Entregables** | Un prompt modificado con su efecto documentado; pipeline IA ejecutado sobre una ejecución con fallos; un test generado por agente **y revisado críticamente**; tres riesgos identificados de aplicar esto a una app del cliente con datos reales |
 
 > ### 🎯 Parte de este módulo ya existe: la Ruta QA — 6 h

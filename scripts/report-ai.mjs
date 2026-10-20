@@ -27,6 +27,14 @@ async function main() {
 
     log(`Estadísticas: ${stats.total} total · ${stats.passed} pasaron · ${stats.failed} fallaron · ${stats.skipped} omitidas · ${stats.flaky} flaky`);
 
+    // Sin fallos no hay nada que analizar: no se gasta cuota de IA.
+    if (stats.failed === 0) {
+        await writeOutput(path.join(REPORT_DIR, "ai-summary.txt"),
+            `Sin fallos: ${stats.passed} de ${stats.total} pruebas pasaron. No hay nada que analizar con IA.`);
+        success("AI Reporting omitido: no hay fallos 🎉");
+        return;
+    }
+
     // 1️⃣ Agrupar fallos
     const pGroup = await readFile("prompts/ai-group-failures.txt", "utf8");
     const groupedRaw = await runClaude(pGroup, testResultsRaw, "Agrupación de fallos");
@@ -62,27 +70,37 @@ async function main() {
     const summaryInput = JSON.stringify({ stats, grouped });
     const groupedText  = JSON.stringify(grouped);
 
-    const [summaryTxt, correctionsMd, ticketsRaw] = await Promise.all([
+    // allSettled y no all: si una llamada falla (p. ej. 429 de cuota en CI),
+    // se guarda lo que sí se generó en lugar de perderlo todo.
+    const results = await Promise.allSettled([
         runClaude(pSummary,     summaryInput, "Resumen ejecutivo"),
         runClaude(pCorrections, groupedText,  "Posibles correcciones"),
         runClaude(pTickets,     groupedText,  "Tickets Jira"),
     ]);
+    const [summaryTxt, correctionsMd, ticketsRaw] = results.map((r) => r.status === "fulfilled" ? r.value : null);
+    const errors = results.filter((r) => r.status === "rejected").map((r) => r.reason.message);
 
-    const ticketsClean = stripMarkdownFences(ticketsRaw);
-    try {
-        JSON.parse(ticketsClean);
-    } catch {
-        throw new Error(
-            "ai-tickets.json no es JSON válido.\nPrimeros 500 chars:\n" + ticketsClean.slice(0, 500)
-        );
+    let ticketsClean = ticketsRaw && stripMarkdownFences(ticketsRaw);
+    if (ticketsClean) {
+        try {
+            JSON.parse(ticketsClean);
+        } catch {
+            errors.push("ai-tickets.json no es JSON válido.\nPrimeros 500 chars:\n" + ticketsClean.slice(0, 500));
+            ticketsClean = null;
+        }
     }
 
-    await Promise.all([
-        writeOutput(path.join(REPORT_DIR, "ai-summary.txt"),             summaryTxt),
-        writeOutput(path.join(REPORT_DIR, "ai-corrections.md"),          correctionsMd),
-        writeOutput(path.join(REPORT_DIR, "ai-tickets.json"),            ticketsClean),
-        writeOutput(path.join(REPORT_DIR, "ai-failures-grouped.json"),   groupedText),
-    ]);
+    const outputs = [
+        ["ai-summary.txt",           summaryTxt],
+        ["ai-corrections.md",        correctionsMd],
+        ["ai-tickets.json",          ticketsClean],
+        ["ai-failures-grouped.json", groupedText],
+    ];
+    await Promise.all(outputs
+        .filter(([, content]) => content)
+        .map(([name, content]) => writeOutput(path.join(REPORT_DIR, name), content)));
+
+    if (errors.length) throw new Error(errors.join("\n"));
 
     success("AI Reporting finalizado correctamente 🎉");
 }
