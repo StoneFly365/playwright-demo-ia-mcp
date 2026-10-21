@@ -13,6 +13,9 @@ on:
         default: green
         options: [green, fail, all, eval]  # eval: mide el acierto de la IA con los escenarios de fallo
 
+permissions:
+  contents: read
+
 env:
   TZ: 'Europe/Madrid'
   HOME: /root  # Firefox no arranca si $HOME no pertenece al usuario actual; /github/home es de otro UID
@@ -27,19 +30,17 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
-      max-parallel: 1  # cuota Gemini free tier es por minuto (250k tokens); serializar evita 429 entre navegadores
       matrix:
         browser: [chromium, firefox, webkit]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Unit tests (triage del reporte IA)
-        run: npm run test:unit
 
       - name: Determine grep filter
         id: suite
@@ -53,24 +54,13 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test --project=${{ matrix.browser }} ${{ steps.suite.outputs.grep }}
 
-      - name: Generate AI report
+      - name: Upload test results JSON
+        uses: actions/upload-artifact@v4
         if: always()
-        continue-on-error: true  # cuota Gemini free tier es inestable; no debe tumbar el run si los tests pasan
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npm run report:ai
-
-      - name: Show AI summary
-        if: always()
-        run: |
-          echo "## AI Test Report Summary — ${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
-          if [ -f playwright-report/ai-summary.txt ]; then
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          else
-            echo "_AI summary not generated — check the 'Generate AI report' step for details._" >> $GITHUB_STEP_SUMMARY
-          fi
+        with:
+          name: results-json-${{ matrix.browser }}
+          path: test-results.json
+          retention-days: 1
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
@@ -88,6 +78,66 @@ jobs:
           path: test-results/
           retention-days: 7
 
+  # Un solo reporte IA por ejecución con los resultados de los tres navegadores:
+  # 4 llamadas como mucho en lugar de 4 por navegador, y los navegadores ya pueden ir en paralelo.
+  report:
+    name: Reporte IA
+    needs: test
+    if: always() && github.event.inputs.suite != 'eval'
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-jammy  # mismo Node que los tests; además HOME=/root solo vale dentro del contenedor
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests (triage del reporte IA)
+        run: npm run test:unit
+
+      - name: Download test results JSON
+        uses: actions/download-artifact@v4
+        with:
+          pattern: results-json-*
+          path: results-json
+
+      - name: Unir los resultados de los tres navegadores
+        run: node scripts/merge-results.mjs test-results.json results-json/*/test-results.json
+
+      - name: Generate AI report
+        continue-on-error: true  # cuota Gemini free tier es inestable; no debe tumbar el run si los tests pasan
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # En push y PR no se gasta cuota de IA solo por tests flaky; a mano (workflow_dispatch), sí.
+          AI_SKIP_FLAKY_ONLY: ${{ github.event_name != 'workflow_dispatch' && '1' || '' }}
+        run: npm run report:ai
+
+      - name: Show AI summary
+        if: always()
+        run: |
+          echo "## AI Test Report Summary" >> $GITHUB_STEP_SUMMARY
+          if [ -f playwright-report/ai-summary.txt ]; then
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat playwright-report/ai-summary.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "_AI summary not generated — check the 'Generate AI report' step for details._" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload AI report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-report
+          path: playwright-report/
+          retention-days: 30
+
   eval:
     name: Acierto de la IA
     if: github.event_name == 'workflow_dispatch' && inputs.suite == 'eval'
@@ -99,6 +149,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install dependencies
         run: npm ci

@@ -58,6 +58,11 @@ export function fingerprint(error) {
     return { pattern: "otro", key: `otro|${firstLine}` };
 }
 
+// Toda la tanda de fallos es flaky: ninguno merece gastar cuota de IA en cada ejecución.
+export function isOnlyFlaky(failures) {
+    return failures.length > 0 && failures.every((f) => f.flaky);
+}
+
 export function groupFailures(failures) {
     const groups = new Map();
     for (const f of failures) {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fingerprint, groupFailures, redact } from "./triage.mjs";
+import { fingerprint, groupFailures, redact, isOnlyFlaky } from "./triage.mjs";
 
 // Mensajes reales de los escenarios de fixtures/scenarios.ts (sin ANSI, recortados).
 const CLICK_TIMEOUT = `TimeoutError: locator.click: Timeout 10000ms exceeded.
@@ -84,6 +84,14 @@ test("groupFailures redacta también huella, títulos, ficheros y errores largos
     for (const secret of ["ana@empresa.com", "\\\\Users\\\\ana", "eyJhbGciOi", "eyJzdWIiOi"]) {
         assert.ok(!sent.includes(secret), secret);
     }
+});
+
+test("isOnlyFlaky", () => {
+    const f = (flaky) => ({ flaky });
+    assert.equal(isOnlyFlaky([]), false);
+    assert.equal(isOnlyFlaky([f(true), f(true)]), true);
+    assert.equal(isOnlyFlaky([f(true), f(false)]), false);
+    assert.equal(isOnlyFlaky([f(false)]), false);
 });
 
 test("redact enmascara datos sensibles", () => {

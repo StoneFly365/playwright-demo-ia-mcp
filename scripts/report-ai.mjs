@@ -2,7 +2,7 @@
 import { readFile, mkdir, writeFile, access } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
-import { extractFailures, groupFailures } from "./triage.mjs";
+import { extractFailures, groupFailures, isOnlyFlaky } from "./triage.mjs";
 
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
@@ -30,12 +30,17 @@ async function main() {
 
     // 1️⃣ Agrupar en código: determinista, sin IA. Los flaky cuentan como fallo a analizar.
     const failures = extractFailures(testResults);
+    const onlyFlaky = isOnlyFlaky(failures);
 
-    // Sin fallos no hay nada que analizar: no se gasta cuota de IA.
-    if (failures.length === 0) {
-        await writeOutput(path.join(REPORT_DIR, "ai-summary.txt"),
-            `Sin fallos: ${stats.passed} de ${stats.total} pruebas pasaron. No hay nada que analizar con IA.`);
-        success("AI Reporting omitido: no hay fallos 🎉");
+    // Sin fallos no hay nada que analizar. Con solo flaky, en push/PR tampoco se llama a la
+    // IA: un test que falla y pasa al reintentar no merece gastar cuota en cada ejecución
+    // (AI_SKIP_FLAKY_ONLY lo pone la CI; en local o con suite=fail/eval sí se analiza).
+    if (failures.length === 0 || (onlyFlaky && process.env.AI_SKIP_FLAKY_ONLY)) {
+        const message = failures.length === 0
+            ? `Sin fallos: ${stats.passed} de ${stats.total} pruebas pasaron. No hay nada que analizar con IA.`
+            : `Todas las pruebas acabaron pasando, pero ${stats.flaky} de ${stats.total} fueron inestables (fallaron y pasaron al reintentar). En push y PR no se llama a la IA solo por tests flaky; lanza el workflow a mano o ejecuta report:ai en local para analizarlos.`;
+        await writeOutput(path.join(REPORT_DIR, "ai-summary.txt"), message);
+        success(failures.length === 0 ? "AI Reporting omitido: no hay fallos 🎉" : "AI Reporting omitido: solo hay tests flaky 🎉");
         return;
     }
 
