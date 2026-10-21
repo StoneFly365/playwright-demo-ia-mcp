@@ -27,7 +27,8 @@
 | [cart-edge-cases.spec.ts](#cart-edge-casesspects) | Casos límite del carrito | 7 | 0 |
 | [problem-user-cart.spec.ts](#problem-user-cartspects) | Comportamiento problem_user | 5 | 0 |
 | [performance-glitch-user-cart.spec.ts](#performance-glitch-user-cartspects) | Comportamiento performance_glitch_user | 2 | 0 |
-| **TOTAL** | | **79** | **10** |
+| [seed.spec.ts](../tests/seed.spec.ts) | Seed (arranque de los agentes) | 1 | 0 |
+| **TOTAL** | | **80** | **10** |
 
 ---
 
