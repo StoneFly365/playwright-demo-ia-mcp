@@ -1,0 +1,10 @@
+{
+  "description": "Clasificación esperada de cada grupo de fallos, por escenario. Todos los grupos de un escenario comparten causa, así que comparten tipo. La usa scripts/eval-ai.mjs.",
+  "scenarios": {
+    "demo-fail": { "expected": "test_roto", "why": "Los @demo-fail son asserts cambiados a mano: la aplicación funciona y el test no." },
+    "cascade": { "expected": "test_roto", "why": "El botón de login cambia de data-test: el selector del test queda desactualizado." },
+    "bug": { "expected": "bug_producto", "why": "El badge del carrito cuenta un producto de más: el test está bien y la aplicación no." },
+    "env": { "expected": "entorno", "why": "El servidor rechaza todas las conexiones." },
+    "flaky": { "expected": "flaky", "why": "Falla en el primer intento y pasa al reintentar. Lo decide el código, no la IA." }
+  }
+}

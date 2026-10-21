@@ -11,7 +11,7 @@ on:
         description: 'Test suite a ejecutar'
         type: choice
         default: green
-        options: [green, fail, all]
+        options: [green, fail, all, eval]  # eval: mide el acierto de la IA con los escenarios de fallo
 
 env:
   TZ: 'Europe/Madrid'
@@ -20,6 +20,7 @@ env:
 jobs:
   test:
     name: Tests (${{ matrix.browser }})
+    if: github.event.inputs.suite != 'eval'
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-jammy
@@ -86,3 +87,40 @@ jobs:
           name: test-results-${{ matrix.browser }}
           path: test-results/
           retention-days: 7
+
+  eval:
+    name: Acierto de la IA
+    if: github.event_name == 'workflow_dispatch' && inputs.suite == 'eval'
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-jammy
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Evaluar la clasificación de la IA
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npm run eval:ai
+
+      - name: Show AI eval
+        if: always()
+        run: |
+          if [ -f playwright-report/ai-eval.md ]; then
+            cat playwright-report/ai-eval.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "_ai-eval.md no generado — revisa el paso 'Evaluar la clasificación de la IA'._" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload AI eval
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-eval
+          path: playwright-report/
+          retention-days: 30

@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0, 1 y 2 hechas · Fase 3 pendiente
+**Estado:** Fases 0, 1, 2 y 3 hechas · Fase 4 pendiente
 
 ## Objetivo
 
@@ -25,7 +25,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 0 | Limpieza | 0,5 días | ✅ |
 | 1 | Escenarios de fallo realistas | 1-2 días | ✅ |
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
-| 3 | Medir el acierto de la IA | 1 día | ⬜ |
+| 3 | Medir el acierto de la IA | 1 día | ✅ |
 | 4 | Cerrar el circuito | 3-5 días | ⬜ |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
 | — | Opcionales según cliente | — | ⬜ |
@@ -93,12 +93,14 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 
 ## Fase 3 · Medir el acierto de la IA
 
-- [ ] `specs/ai-golden.json`: clasificación esperada de cada escenario.
-- [ ] `scripts/eval-ai.mjs`: ejecuta cada escenario, lanza el reporte, compara con lo esperado y saca el porcentaje de aciertos.
-- [ ] Publicar la cifra en el README y en el resumen de cada ejecución de CI.
-- [ ] Medir el tiempo de triage con IA frente a hacerlo a mano en un escenario (dato para el cliente).
+- [x] `specs/ai-golden.json`: clasificación esperada de cada escenario.
+- [x] `scripts/eval-ai.mjs` (`npm run eval:ai`): ejecuta cada escenario, lanza el reporte, compara con lo esperado y saca el porcentaje de aciertos, por grupos y por tests.
+- [x] Publicar la cifra en el README y en el resumen de CI. No en cada ejecución, porque gastaría cuota de IA en cada push: es un job aparte que se lanza a mano con `suite=eval`.
+- [ ] Medir el tiempo de triage con IA frente a hacerlo a mano en un escenario (dato para el cliente). Medido el lado IA: entre 19 y 57 s por escenario. Falta cronometrar a una persona haciendo el mismo triage.
 
 **Terminada cuando:** exista una cifra del tipo "la IA clasifica bien X de Y fallos" que se pueda enseñar.
+
+**Resultado (Claude Haiku 5.5, en local):** 11 de 11 grupos, que cubren 185 de 185 tests fallados. Ojo al presentarlo: son 5 escenarios diseñados por nosotros y una sola ejecución. Conviene contarlo como "11 de 11 en escenarios controlados" y no como "100 % de acierto".
 
 ## Fase 4 · Cerrar el circuito
 
@@ -159,3 +161,5 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 | 2026-10-21 | Los tickets solo se generan para los grupos `bug_producto` | Un test roto o un problema de entorno no es una incidencia para el equipo de producto |
 | 2026-10-21 | Si falla la clasificación, el reporte sigue y los grupos quedan como `sin_clasificar` | El resumen y las correcciones siguen siendo útiles sin clasificación; antes un error de cuota tiraba todo el reporte |
 | 2026-10-21 | Los flaky también disparan el reporte IA, aunque no haya ningún fallo definitivo | Antes solo se analizaba cuando había fallos; una suite flaky en verde es un riesgo que hay que explicar |
+| 2026-10-21 | La evaluación de la IA es un job de CI manual (`suite=eval`), no parte de cada push | Ejecutar los 5 escenarios y 5 reportes IA en cada push gasta cuota y tiempo sin aportar nada nuevo |
+| 2026-10-21 | El acierto se mide por grupos y también por tests | Un grupo grande mal clasificado pesa más que uno pequeño |

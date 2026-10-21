@@ -296,6 +296,22 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 | `playwright-report/ai-tickets.json` | Tickets en formato Jira (JSON importable), solo para los `bug_producto` |
 | `playwright-report/ai-failures-grouped.json` | Grupos de fallos con su clasificación: tipo, confianza, evidencia y acción |
 
+### Acierto de la IA
+
+`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md`. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución.
+
+Última medición (Claude Haiku 5.5, en local, 21 de octubre de 2026): **11 de 11 grupos bien clasificados, que cubren 185 de 185 tests fallados**.
+
+| Escenario | Esperado | Grupos | Acierto | Tiempo del reporte |
+|---|---|---|---|---|
+| `demo-fail` | test_roto | 7 | 7/7 | 57 s |
+| `cascade` | test_roto | 1 | 1/1 | 23 s |
+| `bug` | bug_producto | 2 | 2/2 | 34 s |
+| `env` | entorno | 1 | 1/1 | 21 s |
+| `flaky` | flaky (lo decide el código) | 1 | 1/1 | 19 s |
+
+> Son 5 escenarios controlados y una sola ejecución: demuestra que la clasificación funciona, no que acierte siempre en un proyecto real. Para medirlo en un proyecto real, añade sus fallos conocidos a `specs/ai-golden.json`.
+
 ### Ejemplo de salida
 
 > Salida real de `npm run test:scenario:bug -- --project=chromium` seguido de `npm run report:ai`. El escenario hace que el badge del carrito cuente un producto de más.
@@ -348,6 +364,9 @@ npm run report:ai
 
 # Alternativa: tests + reporte en un único comando
 npm run test:ai
+
+# Medir el acierto de la IA con los escenarios de fallo
+npm run eval:ai
 ```
 
 ### Uso en CI (GitHub Actions)
