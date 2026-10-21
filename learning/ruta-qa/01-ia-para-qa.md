@@ -39,7 +39,7 @@ Este proyecto ya usa IA en producción. No es un ejemplo: se ejecuta en cada pip
 | **Alta de incidencias** | [`prompts/ai-tickets.txt`](../../prompts/ai-tickets.txt) | Genera tickets Jira con severidad y pasos de reproducción |
 | **Hipótesis de corrección** | [`prompts/ai-corrections.txt`](../../prompts/ai-corrections.txt) | Propone causa y pasos por cada grupo de fallos |
 
-El orquestador es [`scripts/report-ai.mjs`](../../scripts/report-ai.mjs): lee `test-results.json`, agrupa los fallos en código ([`scripts/triage.mjs`](../../scripts/triage.mjs), sin IA), pide a la IA que clasifique cada grupo y luego lanza resumen, correcciones y tickets **en paralelo**.
+El orquestador es [`scripts/report-ai.mjs`](../../scripts/report-ai.mjs): lee `test-results.json`, agrupa los fallos en código ([`scripts/triage.mjs`](../../scripts/triage.mjs), sin IA), pide a la IA que clasifique los grupos que no son flaky (esos los marca el propio código) y luego lanza resumen, correcciones y tickets **en paralelo**.
 
 Fíjate en lo que **no** hace: no arregla ningún test. Ninguno de los cuatro prompts tiene permiso para tocar código. Eso es una decisión de diseño, no una limitación.
 

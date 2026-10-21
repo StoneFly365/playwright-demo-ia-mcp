@@ -71,6 +71,21 @@ test("groupFailures separa flaky, cuenta navegadores y ordena por tamaño", () =
     assert.deepEqual(groups[0].browsers.sort(), ["chromium", "firefox"]);
 });
 
+test("groupFailures redacta también huella, títulos, ficheros y errores largos", () => {
+    const token = "eyJhbGciOi.eyJzdWIiOi.c2lnbmF0dXJl";
+    const [g] = groupFailures([{
+        title: "login de ana@empresa.com",
+        file: "C:\\Users\\ana\\repo\\a.spec.ts",
+        line: 1, project: "chromium", flaky: false, attempts: 1, errorContextPath: null,
+        // El token cruza el corte de 1500 caracteres: hay que redactar antes de recortar.
+        error: `TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('[data-user="ana@empresa.com"]')\n${"x".repeat(1372)} ${token}`,
+    }]);
+    const sent = JSON.stringify(g);
+    for (const secret of ["ana@empresa.com", "\\\\Users\\\\ana", "eyJhbGciOi", "eyJzdWIiOi"]) {
+        assert.ok(!sent.includes(secret), secret);
+    }
+});
+
 test("redact enmascara datos sensibles", () => {
     const cases = [
         ["contacto: ana.garcia@empresa.com", "contacto: [EMAIL]"],

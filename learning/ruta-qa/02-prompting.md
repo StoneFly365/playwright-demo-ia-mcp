@@ -64,7 +64,7 @@ El segundo tarda dos minutos más en escribirse y ahorra veinte de correcciones.
 
 ### Los cuatro prompts de producción de este repositorio
 
-No hay que imaginárselo: el directorio `prompts/` tiene [cuatro prompts](../../prompts/ai-classify.txt) que se ejecutan en cada pipeline. Ábrelos, son cortos, y cada uno enseña una técnica. Sus salidas reales están en [`ejemplos/`](ejemplos/README.md), por si quieres ver el resultado antes que la receta.
+No hay que imaginárselo: el directorio `prompts/` tiene [cuatro prompts](../../prompts/ai-classify.txt) que usa `report:ai` cuando hay fallos o tests flaky: `ai-classify.txt` clasifica los grupos que no son flaky, `ai-summary.txt` y `ai-corrections.txt` se ejecutan siempre y `ai-tickets.txt` solo si hay algún `bug_producto`. Con la suite en verde no se ejecuta ninguno. Ábrelos, son cortos, y cada uno enseña una técnica. Sus salidas reales están en [`ejemplos/`](ejemplos/README.md), por si quieres ver el resultado antes que la receta.
 
 **a) Contrato de salida como esquema** — [`prompts/ai-classify.txt`](../../prompts/ai-classify.txt)
 
