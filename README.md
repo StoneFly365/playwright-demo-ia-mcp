@@ -43,7 +43,7 @@ flowchart LR
         direction TB
         CHK{"¿Hay fallos<br/>o flaky?"} -->|"no"| OK["ai-summary.txt<br/>sin llamar a la IA"]
         CHK -->|"sí"| GR["1. Agrupar en código<br/>scripts/triage.mjs<br/>flaky · redacción"]
-        GR --> CL["2. La IA clasifica cada grupo<br/>test_roto · bug_producto · entorno<br/>prompts/ai-classify.txt"]
+        GR --> CL["2. La IA clasifica los grupos no flaky<br/>test_roto · bug_producto · entorno<br/>prompts/ai-classify.txt"]
         CL --> PAR["3. En paralelo:<br/>resumen · correcciones · tickets de bugs"]
     end
 
@@ -274,7 +274,7 @@ Lo que se puede decidir con reglas lo hace el código, en [`scripts/triage.mjs`]
 - **Marca como flaky** los tests que fallaron y pasaron al reintentar.
 - **Enmascara datos sensibles** antes de enviar nada a la IA: emails, tokens, cookies, query strings, valores escritos en formularios y rutas con nombre de usuario.
 
-La IA solo **clasifica** cada grupo como `test_roto`, `bug_producto` o `entorno`, con confianza, evidencia y acción recomendada. Para decidir, compara lo que espera el test con la instantánea de la página en el momento del fallo (`error-context.md`). Con esa clasificación redacta el resumen y las correcciones, y abre tickets solo para los `bug_producto`.
+La IA solo **clasifica** los grupos que no son flaky, como `test_roto`, `bug_producto` o `entorno`, con confianza, evidencia y acción recomendada. Para decidir, compara lo que espera el test con la instantánea de la página en el momento del fallo (`error-context.md`). Con esa clasificación redacta el resumen y las correcciones, y abre tickets solo para los `bug_producto`.
 
 ### Proveedor de IA
 

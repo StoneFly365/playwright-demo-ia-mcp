@@ -62,7 +62,8 @@ export function groupFailures(failures) {
     const groups = new Map();
     for (const f of failures) {
         const { pattern, key } = fingerprint(f.error);
-        const fullKey = (f.flaky ? "flaky|" : "") + key;
+        // La huella sale del locator o del error, que también pueden llevar datos sensibles.
+        const fullKey = redact((f.flaky ? "flaky|" : "") + key);
         if (!groups.has(fullKey)) {
             groups.set(fullKey, {
                 fingerprint: fullKey,
@@ -72,14 +73,15 @@ export function groupFailures(failures) {
                 count: 0,
                 browsers: new Set(),
                 affected_tests: [],
-                sample_error: redact(f.error.slice(0, MAX_ERROR_CHARS)),
-                page_context: redact(readContext(f.errorContextPath)),
+                // Primero se redacta y luego se recorta: un token partido por el corte ya no lo reconocería.
+                sample_error: redact(f.error).slice(0, MAX_ERROR_CHARS),
+                page_context: readContext(f.errorContextPath),
             });
         }
         const g = groups.get(fullKey);
         g.count++;
         g.browsers.add(f.project);
-        g.affected_tests.push({ title: f.title, file: f.file, line: f.line, browser: f.project });
+        g.affected_tests.push({ title: redact(f.title), file: redact(f.file), line: f.line, browser: f.project });
     }
     return [...groups.values()]
         .sort((a, b) => b.count - a.count)
@@ -94,7 +96,7 @@ export function groupFailures(failures) {
 
 function readContext(path) {
     if (!path || !existsSync(path)) return null;
-    return readFileSync(path, "utf8").slice(0, MAX_CONTEXT_CHARS);
+    return redact(readFileSync(path, "utf8")).slice(0, MAX_CONTEXT_CHARS);
 }
 
 // Solo salen hacia la IA los campos de groupFailures; aun así se enmascara lo que pueda ser sensible.
