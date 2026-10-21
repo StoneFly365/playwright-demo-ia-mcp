@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fase 0 hecha · Fase 1 pendiente
+**Estado:** Fases 0 y 1 hechas · Fase 2 pendiente
 
 ## Objetivo
 
@@ -23,7 +23,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | Fase | Contenido | Esfuerzo | Estado |
 |---|---|---|---|
 | 0 | Limpieza | 0,5 días | ✅ |
-| 1 | Escenarios de fallo realistas | 1-2 días | ⬜ |
+| 1 | Escenarios de fallo realistas | 1-2 días | ✅ |
 | 2 | La IA clasifica, no solo resume | 2-3 días | ⬜ |
 | 3 | Medir el acierto de la IA | 1 día | ⬜ |
 | 4 | Cerrar el circuito | 3-5 días | ⬜ |
@@ -50,25 +50,27 @@ Un único fixture, `fixtures/scenarios.ts`, con un `test.extend` que lee `DEMO_S
 
 | Escenario | Cómo se provoca | Qué debe concluir la IA |
 |---|---|---|
-| `cascade` | Un `addInitScript` renombra `data-test="login-button"` | Unos 70 fallos por **una sola** causa: `test_roto`, con evidencia de un cambio del frontend |
-| `bug` | Un script altera el total del checkout | Bug de producto: el test está bien y la app no |
-| `flaky` | `page.route` retrasa un recurso por encima del timeout solo cuando `testInfo.retry === 0` | Falla en el primer intento y pasa en el reintento: flaky |
-| `env` | `route.abort()` sobre los assets estáticos | Problema de entorno, no de código |
+| `cascade` | Un `addInitScript` renombra `data-test="login-button"` a `login-submit` | 70 fallos por **una sola** causa: `test_roto`, con evidencia de un cambio del frontend |
+| `bug` | Un `addInitScript` hace que el badge del carrito cuente un producto de más | 35 fallos de bug de producto: el test está bien y la app no |
+| `flaky` | `page.route` retrasa los scripts 15 s solo cuando `testInfo.retry === 0` | 70 tests que fallan en el primer intento y pasan en el reintento: flaky |
+| `env` | `route.abort('connectionrefused')` sobre todas las peticiones | 70 fallos de `net::ERR_CONNECTION_REFUSED`: problema de entorno, no de código |
 
-- [ ] Crear `fixtures/scenarios.ts` con los cuatro escenarios.
-- [ ] Cambiar los 15 specs para que importen `test` y `expect` del fixture en lugar de `@playwright/test` (cambio mecánico).
-- [ ] Añadir scripts npm: `test:scenario:cascade`, `test:scenario:bug`, `test:scenario:flaky`, `test:scenario:env`. El de `flaky` lleva `--retries=1`, porque en local los reintentos están a 0.
-- [ ] Mantener intactos los `@demo-fail` actuales.
-- [ ] Revisar las referencias a fichero y línea en `learning/` y ejecutar `npm run ruta-qa:check` (el cambio de imports desplaza líneas).
+- [x] Crear `fixtures/scenarios.ts` con los cuatro escenarios.
+- [x] Cambiar los 15 specs para que importen `test` y `expect` del fixture en lugar de `@playwright/test` (cambio mecánico).
+- [x] Añadir scripts npm: `test:scenario:cascade`, `test:scenario:bug`, `test:scenario:flaky`, `test:scenario:env`. El de `flaky` lleva `--retries=1`, porque en local los reintentos están a 0.
+- [x] Mantener intactos los `@demo-fail` actuales.
+- [x] Revisar las referencias de `learning/` y ejecutar `npm run ruta-qa:check`. El cambio de imports no desplaza líneas, pero dos referencias usaban el import de `@playwright/test` de los specs como ejemplo de import de paquete; ahora apuntan a `pages/login.page.ts:1`.
 
 **Terminada cuando:** `DEMO_SCENARIO=cascade npx playwright test` tumbe unos 70 tests con un único origen.
+
+**Resultado (chromium, sin `@demo-fail`):** sin escenario, 70 pasan; `cascade` 70 fallan; `bug` 35 fallan y 35 pasan; `flaky` 70 flaky; `env` 70 fallan. Con un escenario activo el timeout de las acciones baja a 10 s para que los fallos no tarden 30 s cada uno.
 
 ## Fase 2 · La IA clasifica, no solo resume
 
 Cambios en `scripts/report-ai.mjs`:
 
 - [ ] **Preprocesado en código:** extraer del JSON solo los fallos (título, fichero:línea, primeras líneas del error, navegador, reintentos). Se envía mucho menos a la IA, pero esto por sí solo no resuelve la privacidad (ver redacción).
-- [ ] **Agrupación en código:** agrupar por la primera línea del error normalizada (sin números ni ids) más la ubicación. Eliminar `prompts/ai-group-failures.txt`.
+- [ ] **Agrupación en código:** agrupar por el tipo de error normalizado (sin números ni ids) más el locator implicado. Eliminar `prompts/ai-group-failures.txt`. Ojo: la primera línea no sirve, porque los mensajes personalizados de los `expect` la hacen distinta en cada test (en `bug`, 35 fallos dan 34 primeras líneas distintas). Hay que usar el matcher y el locator (`toHaveText` sobre `shopping-cart-badge`). Los errores de red también cambian según el navegador: `net::ERR_CONNECTION_REFUSED` en Chromium y `NS_ERROR_CONNECTION_REFUSED` en Firefox.
 - [ ] **Flaky en código:** si un test falla y después pasa al reintentar, es flaky. No se pregunta a la IA.
 - [ ] **Más contexto para la IA:** por cada grupo, adjuntar el `error-context.md` (la instantánea de la página que Playwright guarda en `test-results/` cuando un test falla) y unas 10 líneas del test alrededor de la línea que falla.
 - [ ] **Redacción antes de enviar:** solo salen los campos de una lista permitida. En el `error-context.md` y en el fragmento del test se enmascaran las query strings de las URLs, los emails, los tokens, las cabeceras `Authorization`, las cookies y los valores que se escriben con `fill()`. El redactor lleva un test con casos conocidos.
@@ -129,6 +131,7 @@ Cambios en `scripts/report-ai.mjs`:
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
 - La capa gratuita de Gemini tiene límite de peticiones por minuto: los escenarios en CI deben ir en serie.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.
+- Los tests nuevos que escriba el agente generator importan de `@playwright/test`. Para que les afecten los escenarios, hay que cambiar ese import por `../fixtures/scenarios`.
 
 ## Registro de decisiones
 
@@ -139,3 +142,5 @@ Cambios en `scripts/report-ai.mjs`:
 | 2026-10-21 | `MODEL` pasa a `claude-haiku-5-5` (sin sufijo de fecha) | Haiku actual; el ID sin fecha no caduca con cada snapshot |
 | 2026-10-21 | Las PR automáticas que relajan asserts se bloquean con un check del diff, sea cual sea la clasificación | La clasificación de la IA puede fallar; la protección contra ocultar bugs no debe depender de ella (revisión de CodeRabbit en la PR #1) |
 | 2026-10-21 | Lo que se envía a la IA pasa por una lista de campos permitidos y un redactor | Filtrar el JSON reduce el volumen, pero no elimina datos sensibles del contexto (revisión de CodeRabbit en la PR #1) |
+| 2026-10-21 | El escenario `bug` rompe el badge del carrito en vez del total del checkout | Ningún test comprueba el valor del total, solo que se vea; el badge lo comprueban 35 tests |
+| 2026-10-21 | El escenario `env` rechaza todas las conexiones en vez de cortar solo los assets | Cortar los assets deja la página en blanco y el fallo se parece a `cascade`; un `ERR_CONNECTION_REFUSED` es una señal de entorno inequívoca |

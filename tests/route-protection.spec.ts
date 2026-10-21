@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/scenarios';
 
 test.describe('Protección de rutas', () => {
   test('debería redirigir al login si se accede a /inventory.html sin sesión', async ({ page }) => {
