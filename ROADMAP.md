@@ -143,7 +143,7 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 
 - Los `@demo-fail` fallan a propósito: no se corrigen.
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
-- La capa gratuita de Gemini tiene límite de peticiones por minuto: los escenarios en CI deben ir en serie.
+- La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.
 - Los tests nuevos que escriba el agente generator importan de `@playwright/test`. Para que les afecten los escenarios, hay que cambiar ese import por `../fixtures/scenarios`.
 
@@ -163,3 +163,4 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 | 2026-10-21 | Los flaky también disparan el reporte IA, aunque no haya ningún fallo definitivo | Antes solo se analizaba cuando había fallos; una suite flaky en verde es un riesgo que hay que explicar |
 | 2026-10-21 | La evaluación de la IA es un job de CI manual (`suite=eval`), no parte de cada push | Ejecutar los 5 escenarios y 5 reportes IA en cada push gasta cuota y tiempo sin aportar nada nuevo |
 | 2026-10-21 | El acierto se mide por grupos y también por tests | Un grupo grande mal clasificado pesa más que uno pequeño |
+| 2026-10-21 | La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta los grupos `sin_clasificar` | Con la cuota gratuita de Gemini (20 peticiones al día) la evaluación completa no cabía, y un 0 % por cuota agotada se leía como "la IA no acierta" |
