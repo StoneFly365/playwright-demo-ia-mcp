@@ -50,14 +50,14 @@ Un único fixture, `fixtures/scenarios.ts`, con un `test.extend` que lee `DEMO_S
 
 | Escenario | Cómo se provoca | Qué debe concluir la IA |
 |---|---|---|
-| `cascade` | Un `addInitScript` renombra `data-test="login-button"` | Unos 70 fallos por **una sola** causa: test roto o cambio del frontend |
+| `cascade` | Un `addInitScript` renombra `data-test="login-button"` | Unos 70 fallos por **una sola** causa: `test_roto`, con evidencia de un cambio del frontend |
 | `bug` | Un script altera el total del checkout | Bug de producto: el test está bien y la app no |
-| `flaky` | `page.route` con retardo aleatorio en un recurso | Pasa al reintentar: flaky |
+| `flaky` | `page.route` retrasa un recurso por encima del timeout solo cuando `testInfo.retry === 0` | Falla en el primer intento y pasa en el reintento: flaky |
 | `env` | `route.abort()` sobre los assets estáticos | Problema de entorno, no de código |
 
 - [ ] Crear `fixtures/scenarios.ts` con los cuatro escenarios.
 - [ ] Cambiar los 15 specs para que importen `test` y `expect` del fixture en lugar de `@playwright/test` (cambio mecánico).
-- [ ] Añadir scripts npm: `test:scenario:cascade`, `test:scenario:bug`, `test:scenario:flaky`, `test:scenario:env`.
+- [ ] Añadir scripts npm: `test:scenario:cascade`, `test:scenario:bug`, `test:scenario:flaky`, `test:scenario:env`. El de `flaky` lleva `--retries=1`, porque en local los reintentos están a 0.
 - [ ] Mantener intactos los `@demo-fail` actuales.
 - [ ] Revisar las referencias a fichero y línea en `learning/` y ejecutar `npm run ruta-qa:check` (el cambio de imports desplaza líneas).
 
@@ -67,14 +67,15 @@ Un único fixture, `fixtures/scenarios.ts`, con un `test.extend` que lee `DEMO_S
 
 Cambios en `scripts/report-ai.mjs`:
 
-- [ ] **Preprocesado en código:** extraer del JSON solo los fallos (título, fichero:línea, primeras líneas del error, navegador, reintentos). Se envía mucho menos a la IA y se resuelve buena parte de la objeción de privacidad.
+- [ ] **Preprocesado en código:** extraer del JSON solo los fallos (título, fichero:línea, primeras líneas del error, navegador, reintentos). Se envía mucho menos a la IA, pero esto por sí solo no resuelve la privacidad (ver redacción).
 - [ ] **Agrupación en código:** agrupar por la primera línea del error normalizada (sin números ni ids) más la ubicación. Eliminar `prompts/ai-group-failures.txt`.
 - [ ] **Flaky en código:** si un test falla y después pasa al reintentar, es flaky. No se pregunta a la IA.
 - [ ] **Más contexto para la IA:** por cada grupo, adjuntar el `error-context.md` (la instantánea de la página que Playwright guarda en `test-results/` cuando un test falla) y unas 10 líneas del test alrededor de la línea que falla.
+- [ ] **Redacción antes de enviar:** solo salen los campos de una lista permitida. En el `error-context.md` y en el fragmento del test se enmascaran las query strings de las URLs, los emails, los tokens, las cabeceras `Authorization`, las cookies y los valores que se escriben con `fill()`. El redactor lleva un test con casos conocidos.
 - [ ] **Nueva salida por grupo:** `{ tipo: bug_producto | test_roto | flaky | entorno, confianza, evidencia, accion }`.
 - [ ] Adaptar `prompts/ai-summary.txt`, `ai-corrections.txt` y `ai-tickets.txt` a la nueva estructura.
 
-**Terminada cuando:** con `cascade` salga 1 grupo clasificado como `test_roto` o cambio de frontend, y con `bug` salga `bug_producto`.
+**Terminada cuando:** con `cascade` salga 1 grupo clasificado como `test_roto` cuya evidencia señale el cambio de selector, y con `bug` salga `bug_producto`.
 
 ## Fase 3 · Medir el acierto de la IA
 
@@ -97,13 +98,13 @@ Cambios en `scripts/report-ai.mjs`:
 - [ ] Abrir la PR con `gh pr create`, con el diagnóstico en la descripción.
 - [ ] Crear tickets en Jira por API REST para los grupos `bug_producto`.
 - [ ] Decidir el destino de los tickets: un proyecto Jira de demo propio o el conector Atlassian autorizado.
-- [ ] Protección: verificar que el healer nunca baje una expectativa en un grupo `bug_producto`. Si lo hiciera, "arreglaría" el test y ocultaría el bug. Esta protección es un argumento de venta.
+- [ ] **Protección independiente de la clasificación:** un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
 **Terminada cuando:** al ejecutar `cascade` aparezca una PR con la corrección, y al ejecutar `bug` aparezca un ticket.
 
 ## Fase 5 · Argumentos para cliente enterprise
 
-- [ ] Sección en el README: **qué datos salen y hacia dónde**, con el preprocesado de la fase 2 como prueba.
+- [ ] Sección en el README: **qué datos salen y hacia dónde**, con el preprocesado y la redacción de la fase 2 como prueba.
 - [ ] Proveedor de IA elegible por variable de entorno. El cambio a Anthropic API, Bedrock o Vertex se construye solo cuando un cliente lo pida; mientras, basta con demostrar que se puede cambiar.
 
 ## Opcionales según cliente
@@ -136,3 +137,5 @@ Cambios en `scripts/report-ai.mjs`:
 | 2026-10-21 | La agrupación y la detección de flaky pasan de la IA al código | Es determinista: más barato, reproducible y sin alucinaciones |
 | 2026-10-21 | El healer solo actúa sobre `test_roto` | Evitar que oculte bugs reales bajando expectativas |
 | 2026-10-21 | `MODEL` pasa a `claude-haiku-5-5` (sin sufijo de fecha) | Haiku actual; el ID sin fecha no caduca con cada snapshot |
+| 2026-10-21 | Las PR automáticas que relajan asserts se bloquean con un check del diff, sea cual sea la clasificación | La clasificación de la IA puede fallar; la protección contra ocultar bugs no debe depender de ella (revisión de CodeRabbit en la PR #1) |
+| 2026-10-21 | Lo que se envía a la IA pasa por una lista de campos permitidos y un redactor | Filtrar el JSON reduce el volumen, pero no elimina datos sensibles del contexto (revisión de CodeRabbit en la PR #1) |
