@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0, 1, 2 y 3 hechas · Fase 4 pendiente
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 pendiente · Última actualización: 2026-10-21
 
 ## Objetivo
 
@@ -25,7 +25,8 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 0 | Limpieza | 0,5 días | ✅ |
 | 1 | Escenarios de fallo realistas | 1-2 días | ✅ |
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
-| 3 | Medir el acierto de la IA | 1 día | ✅ |
+| 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
+| 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 falta OpenRouter |
 | 4 | Cerrar el circuito | 3-5 días | ⬜ |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
 | — | Opcionales según cliente | — | ⬜ |
@@ -102,6 +103,20 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 
 **Resultado (Claude Haiku 5.5, en local):** 11 de 11 grupos, que cubren 185 de 185 tests fallados. Ojo al presentarlo: son 5 escenarios diseñados por nosotros y una sola ejecución. Conviene contarlo como "11 de 11 en escenarios controlados" y no como "100 % de acierto".
 
+## Fase 3b · Cuota de IA en CI
+
+No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin_clasificar`: la capa gratuita permite 20 peticiones al día y ese día ya se habían gastado. Al revisar el consumo se vio además que las CI en verde también gastaban cuota cuando aparecía un test flaky.
+
+- [x] Un solo reporte IA por ejecución de CI: los tres navegadores suben su `test-results.json` y `scripts/merge-results.mjs` los une. Un `suite=fail` pasa de 12 llamadas a 4 como mucho. PR #6.
+- [x] Los navegadores en paralelo (fuera `max-parallel: 1`): la CI pasa de unos 4 min 40 s a 2 min 30 s.
+- [x] En push y PR no se llama a la IA si solo hay tests flaky (`AI_SKIP_FLAKY_ONLY`).
+- [x] La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta como fallo lo que la IA no llegó a clasificar.
+- [x] Permisos del workflow: `contents: read` y checkout sin credenciales persistidas.
+- [ ] Proveedor configurable (URL, modelo y clave) y **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). Pendiente de que exista el secreto `OPENROUTER_API_KEY`. Elegir el modelo con `npm run eval:ai`.
+- [ ] Probar en CI el camino con fallos reales (`suite=fail`) con el job único de reporte. Solo se ha probado en verde.
+
+**Descartado:** Claude por API en CI. Funcionaría con el mismo modelo que en local y costaría menos de 1 $ al mes, pero la clave del repositorio es del plan personal y no se quiere ningún coste adicional.
+
 ## Fase 4 · Cerrar el circuito
 
 | Tipo | Acción automática |
@@ -167,3 +182,6 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 | 2026-10-21 | Un solo reporte IA por ejecución de CI, con los resultados de los tres navegadores unidos (`scripts/merge-results.mjs`), y los navegadores en paralelo | Con un reporte por navegador, un `suite=fail` gastaba 12 de las 20 peticiones diarias de Gemini y los jobs tenían que ir en serie |
 | 2026-10-21 | En push y PR no se llama a la IA si lo único que hay son tests flaky (`AI_SKIP_FLAKY_ONLY`) | El 21 de octubre, tres CI en verde gastaron 6 peticiones por un test flaky de webkit o firefox |
 | 2026-10-21 | El workflow corre con `permissions: contents: read` y checkout sin credenciales persistidas | Ningún job escribe en el repositorio (revisión de CodeRabbit en la PR #4) |
+| 2026-10-21 | `learning/ruta-qa/ejemplos/` se regenera con el reporte nuevo y los módulos 1, 2 y 6 de la Ruta QA se adaptan | Tras la fase 2 el alumno que ejecuta la IA obtenía otra salida; con los `@demo-fail` `ai-tickets.json` sale vacío, así que el ejemplo de tickets sale del escenario `bug` |
+| 2026-10-21 | El curso deja de estar orientado a seguros: es para cualquier QA que empiece con Playwright | Cambio de público del Learning Lab (PR #5) |
+| 2026-10-21 | OpenRouter gratuito en CI en lugar de Claude por API | Sin coste adicional; a cambio, en CI se usa un modelo distinto del de local y hay que medir su acierto aparte |
