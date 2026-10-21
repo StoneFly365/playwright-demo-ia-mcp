@@ -293,7 +293,7 @@ Ese `Promise {}` es una promesa sin resolver: el runner no puede imprimir un val
 const [a, b, c] = await Promise.all([tareaA(), tareaB(), tareaC()]);
 ```
 
-**Ábrelo:** [`scripts/report-ai.mjs:62-66`](../../../scripts/report-ai.mjs) — el proyecto lanza tres lecturas de fichero en paralelo con `Promise.all` en lugar de esperar una detrás de otra. Y [`:75-79`](../../../scripts/report-ai.mjs) hace lo mismo con tres llamadas a la IA, pero con `Promise.allSettled`: la variante que espera a todas aunque alguna falle, para no perder el resto de resultados. Es JavaScript puro: `async`/`await` no es una invención de Playwright.
+**Ábrelo:** [`scripts/report-ai.mjs:93-97`](../../../scripts/report-ai.mjs) — el proyecto lanza tres lecturas de fichero en paralelo con `Promise.all` en lugar de esperar una detrás de otra. Y [`:103-107`](../../../scripts/report-ai.mjs) hace lo mismo con tres llamadas a la IA, pero con `Promise.allSettled`: la variante que espera a todas aunque alguna falle, para no perder el resto de resultados. Es JavaScript puro: `async`/`await` no es una invención de Playwright.
 
 ---
 

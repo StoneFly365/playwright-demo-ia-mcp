@@ -1,6 +1,8 @@
 Entrada por stdin: JSON con dos campos:
 - "stats": estadísticas globales { total, passed, failed, skipped, flaky, duration_ms }
-- "grouped": agrupación de fallos con campos generated_at, total_failed_tests, total_groups, groups[]
+- "grouped": agrupación de fallos con campos generated_at, total_failed_tests, total_flaky_tests, total_groups, groups[]
+Cada grupo es una causa: group_id, tipo, confianza, evidencia, accion, count, browsers, affected_tests (título, fichero, línea, navegador), omitted_tests (tests del grupo que no se listan) y error_summary.
+Valores de tipo: test_roto (el test está mal, la aplicación funciona), bug_producto (la aplicación falla, el test está bien), entorno (red o infraestructura), flaky (falló y pasó al reintentar), sin_clasificar.
 
 Devuelve SOLO texto plano, sin markdown, sin asteriscos, sin guiones de viñeta decorativos.
 El texto debe poder enviarse directamente por correo electrónico a dirección no técnica.
@@ -19,13 +21,13 @@ Total de pruebas ejecutadas: [stats.total]
 ⏭️ Pruebas omitidas:            [stats.skipped]
 ⚠️ Pruebas inestables (flaky):  [stats.flaky]
 
-[Si stats.failed == 0, escribe: "Todos los tests pasaron correctamente. No se requiere acción inmediata." y omite las secciones ATENCIÓN y ACCIONES.]
+[Si stats.failed == 0 y stats.flaky == 0, escribe: "Todos los tests pasaron correctamente. No se requiere acción inmediata." y omite las secciones ATENCIÓN y ACCIONES.]
 
 ATENCIÓN REQUERIDA
-[Lista hasta 3 grupos de fallos ordenados de mayor a menor impacto. Cada entrada en una línea, en lenguaje no técnico: qué funcionalidad falla y cuántas pruebas afecta. Ejemplo: "El flujo de inicio de sesión falla en 8 pruebas (error de selector de botón)."]
+[Lista hasta 3 grupos ordenados de mayor a menor impacto, con los bug_producto primero. Cada entrada en una línea, en lenguaje no técnico: qué funcionalidad falla, cuántas pruebas afecta y de quién es el problema según el tipo: "fallo de la aplicación" (bug_producto), "prueba desactualizada" (test_roto), "problema de entorno" (entorno) o "prueba inestable" (flaky). Ejemplo: "El contador del carrito muestra un producto de más en 35 pruebas (fallo de la aplicación)."]
 
 CONCLUSIÓN
-[2-3 frases en lenguaje de negocio. Indica qué funciona, qué está en riesgo y si hay bloqueos críticos para producción. Sin tecnicismos.]
+[2-3 frases en lenguaje de negocio. Indica qué funciona, qué está en riesgo y si hay bloqueos críticos para producción. Solo los bug_producto son riesgo para producción; los test_roto, entorno y flaky afectan a la fiabilidad de las pruebas, no a la aplicación. Sin tecnicismos.]
 
 ACCIONES RECOMENDADAS
 [Máximo 4 acciones concretas y priorizadas, una por línea, numeradas del 1 al 4. Orientadas a resolver los fallos con mayor impacto primero.]

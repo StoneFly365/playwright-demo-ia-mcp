@@ -41,14 +41,15 @@ flowchart LR
 
     subgraph AI ["npm run report:ai · scripts/report-ai.mjs"]
         direction TB
-        CHK{"¿Hay fallos?"} -->|"no"| OK["ai-summary.txt<br/>sin llamar a la IA"]
-        CHK -->|"sí"| GR["1. Agrupar fallos<br/>prompts/ai-group-failures.txt"]
-        GR --> PAR["2. En paralelo:<br/>resumen · correcciones · tickets"]
+        CHK{"¿Hay fallos<br/>o flaky?"} -->|"no"| OK["ai-summary.txt<br/>sin llamar a la IA"]
+        CHK -->|"sí"| GR["1. Agrupar en código<br/>scripts/triage.mjs<br/>flaky · redacción"]
+        GR --> CL["2. La IA clasifica cada grupo<br/>test_roto · bug_producto · entorno<br/>prompts/ai-classify.txt"]
+        CL --> PAR["3. En paralelo:<br/>resumen · correcciones · tickets de bugs"]
     end
 
     JSON --> CHK
     LLM(["Claude CLI en local<br/>Gemini en CI"])
-    GR & PAR <--> LLM
+    CL & PAR <--> LLM
     PAR --> OUT[("playwright-report/<br/>ai-summary.txt · ai-corrections.md<br/>ai-tickets.json · ai-failures-grouped.json")]
     OUT -.->|"diagnóstico (paso manual)"| H
 ```
@@ -98,6 +99,8 @@ playwright-demo-ia-mcp/
 ├── prompts/                        # Prompts usados por el reporte IA
 ├── scripts/
 │   ├── report-ai.mjs               # Script de análisis IA de resultados
+│   ├── triage.mjs                  # Agrupación, flaky y redacción, sin IA
+│   ├── triage.test.mjs             # Tests de triage.mjs (npm run test:unit)
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages)
@@ -264,7 +267,14 @@ flowchart TD
 
 ## Reporte IA (`report:ai`)
 
-El script `report:ai` analiza los resultados de la última ejecución con un modelo de IA y genera cuatro ficheros de salida en `playwright-report/`.
+El script `report:ai` analiza los resultados de la última ejecución y genera cuatro ficheros de salida en `playwright-report/`.
+
+Lo que se puede decidir con reglas lo hace el código, en [`scripts/triage.mjs`](scripts/triage.mjs):
+- **Agrupa** los fallos por causa: patrón del fallo más el elemento implicado. No usa la primera línea del error, porque los mensajes personalizados de los `expect` la cambian en cada test.
+- **Marca como flaky** los tests que fallaron y pasaron al reintentar.
+- **Enmascara datos sensibles** antes de enviar nada a la IA: emails, tokens, cookies, query strings, valores escritos en formularios y rutas con nombre de usuario.
+
+La IA solo **clasifica** cada grupo como `test_roto`, `bug_producto` o `entorno`, con confianza, evidencia y acción recomendada. Para decidir, compara lo que espera el test con la instantánea de la página en el momento del fallo (`error-context.md`). Con esa clasificación redacta el resumen y las correcciones, y abre tickets solo para los `bug_producto`.
 
 ### Proveedor de IA
 
@@ -283,51 +293,51 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 |---------|-------------|
 | `playwright-report/ai-summary.txt` | Resumen ejecutivo: totales, estado global y conclusión |
 | `playwright-report/ai-corrections.md` | Posibles causas y correcciones para cada fallo |
-| `playwright-report/ai-tickets.json` | Tickets en formato Jira (JSON importable) |
-| `playwright-report/ai-failures-grouped.json` | Fallos agrupados por categoría de error |
+| `playwright-report/ai-tickets.json` | Tickets en formato Jira (JSON importable), solo para los `bug_producto` |
+| `playwright-report/ai-failures-grouped.json` | Grupos de fallos con su clasificación: tipo, confianza, evidencia y acción |
 
 ### Ejemplo de salida
 
-> Formato real (según `prompts/ai-summary.txt` y `prompts/ai-corrections.txt`), contenido ilustrativo basado en el fallo intencionado `@demo-fail` de `login.spec.ts`.
+> Salida real de `npm run test:scenario:bug -- --project=chromium` seguido de `npm run report:ai`. El escenario hace que el badge del carrito cuente un producto de más.
 
 `ai-summary.txt`:
 
 ```
 RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
-Fecha: 17 de agosto de 2026
+Fecha: 21 de octubre de 2026, a las 13:55
 
 RESULTADO GLOBAL
-Total de pruebas ejecutadas: 79
-✅ Pruebas correctas:           76
-❌ Pruebas fallidas:            3
+Total de pruebas ejecutadas: 70
+✅ Pruebas correctas:           35
+❌ Pruebas fallidas:            35
 ⏭️ Pruebas omitidas:            0
 ⚠️ Pruebas inestables (flaky):  0
 
 ATENCIÓN REQUERIDA
-El flujo de inicio de sesión no redirige a la página de inventario en 3 pruebas (URL de destino incorrecta tras login).
+El contador del carrito muestra un producto de más en 34 pruebas (fallo de la aplicación). Al añadir un solo artículo, el número del carrito marca 2 mientras el texto del propio carrito indica 1.
+El contador del carrito cuenta 4 productos cuando la lista muestra 3, en la prueba con el usuario problem_user (fallo de la aplicación).
 
 CONCLUSIÓN
-El login y el catálogo de productos funcionan correctamente en la mayoría de los casos. El fallo detectado es aislado y no bloquea el resto de flujos (carrito, checkout). No hay riesgos críticos para producción.
+Los 35 fallos son defectos reales de la aplicación en el contador del carrito, no errores de las pruebas. Es un riesgo para producción, porque un cliente vería cifras incorrectas en su carrito, así que hay un bloqueo que conviene resolver antes de publicar. El resto de las pruebas, 35 en total, sí han pasado correctamente.
 
 ACCIONES RECOMENDADAS
-1. Revisar la URL de redirección esperada tras un login exitoso en login.spec.ts.
-2. Confirmar con el equipo de producto cuál es la ruta correcta: /inventory.html o /home.html.
-3. Ajustar el selector o la aserción de URL una vez confirmada la ruta.
+1. Abrir una incidencia de fallo de la aplicación sobre el contador del carrito, usando el caso de las 34 pruebas como referencia.
+2. Incluir en esa incidencia el caso del usuario problem_user, que muestra 4 cuando la lista tiene 3 productos.
+3. No modificar las pruebas: fallan porque la aplicación se comporta mal, no porque estén mal escritas.
+4. Repetir la ejecución tras la corrección y no publicar hasta que las pruebas del contador del carrito pasen.
 ```
 
 Fragmento de `ai-corrections.md`:
 
 ```markdown
-### login-redirect – Expected URL to match /.*\/inventory\.html$/
+### G001 – bug_producto – Error: El badge del carrito debería mostrar 1 tras añadir la Sauce Labs Bolt T-S…
 
-🔍 **Hipótesis de causa:** aserción de URL desactualizada respecto al flujo real de la aplicación
+🔍 **Diagnóstico:** El badge muestra "2" con un solo producto añadido, y el botón del carrito dice "Cart, 1 items". La página contradice su propio estado. La instantánea solo muestra la Sauce Labs Bolt T-Shirt en el inventario, y el test espera 1 (confianza: alta).
 
 🔧 **Pasos para corregir:**
-1. Verificar manualmente a qué URL redirige SauceDemo tras un login exitoso.
-2. Actualizar la expresión regular en el `expect(page).toHaveURL(...)`.
-3. Re-ejecutar `login.spec.ts` para confirmar el fix.
-
-🧪 **Tests afectados:** debería redirigir a la página de inventario con login exitoso
+1. Abrir bug a producto: el badge del carrito muestra 2 con un solo producto añadido y no coincide con el texto accesible "Cart, 1 items".
+2. Adjuntar el error de `expect(locator).toHaveText(expected)` (Expected: "1", Received: "2") y la instantánea del fallo.
+3. No modificar los tests: dejarlos fallando como evidencia del bug.
 ```
 
 ### Uso en local

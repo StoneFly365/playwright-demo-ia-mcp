@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 y 1 hechas · Fase 2 pendiente
+**Estado:** Fases 0, 1 y 2 hechas · Fase 3 pendiente
 
 ## Objetivo
 
@@ -24,7 +24,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 |---|---|---|---|
 | 0 | Limpieza | 0,5 días | ✅ |
 | 1 | Escenarios de fallo realistas | 1-2 días | ✅ |
-| 2 | La IA clasifica, no solo resume | 2-3 días | ⬜ |
+| 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ⬜ |
 | 4 | Cerrar el circuito | 3-5 días | ⬜ |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
@@ -67,17 +67,29 @@ Un único fixture, `fixtures/scenarios.ts`, con un `test.extend` que lee `DEMO_S
 
 ## Fase 2 · La IA clasifica, no solo resume
 
-Cambios en `scripts/report-ai.mjs`:
+Cambios en `scripts/report-ai.mjs`. La parte sin IA vive en `scripts/triage.mjs`, con sus tests en `scripts/triage.test.mjs` (`npm run test:unit`, que también se ejecuta en CI):
 
-- [ ] **Preprocesado en código:** extraer del JSON solo los fallos (título, fichero:línea, primeras líneas del error, navegador, reintentos). Se envía mucho menos a la IA, pero esto por sí solo no resuelve la privacidad (ver redacción).
-- [ ] **Agrupación en código:** agrupar por el tipo de error normalizado (sin números ni ids) más el locator implicado. Eliminar `prompts/ai-group-failures.txt`. Ojo: la primera línea no sirve, porque los mensajes personalizados de los `expect` la hacen distinta en cada test (en `bug`, 35 fallos dan 34 primeras líneas distintas). Hay que usar el matcher y el locator (`toHaveText` sobre `shopping-cart-badge`). Los errores de red también cambian según el navegador: `net::ERR_CONNECTION_REFUSED` en Chromium y `NS_ERROR_CONNECTION_REFUSED` en Firefox.
-- [ ] **Flaky en código:** si un test falla y después pasa al reintentar, es flaky. No se pregunta a la IA.
-- [ ] **Más contexto para la IA:** por cada grupo, adjuntar el `error-context.md` (la instantánea de la página que Playwright guarda en `test-results/` cuando un test falla) y unas 10 líneas del test alrededor de la línea que falla.
-- [ ] **Redacción antes de enviar:** solo salen los campos de una lista permitida. En el `error-context.md` y en el fragmento del test se enmascaran las query strings de las URLs, los emails, los tokens, las cabeceras `Authorization`, las cookies y los valores que se escriben con `fill()`. El redactor lleva un test con casos conocidos.
-- [ ] **Nueva salida por grupo:** `{ tipo: bug_producto | test_roto | flaky | entorno, confianza, evidencia, accion }`.
-- [ ] Adaptar `prompts/ai-summary.txt`, `ai-corrections.txt` y `ai-tickets.txt` a la nueva estructura.
+- [x] **Preprocesado en código:** extraer del JSON solo los fallos (título, fichero:línea, primeras líneas del error, navegador, reintentos). Se envía mucho menos a la IA, pero esto por sí solo no resuelve la privacidad (ver redacción).
+- [x] **Agrupación en código:** agrupar por el patrón del fallo (`elemento_no_encontrado`, `valor_inesperado`, `red`, `timeout`) más el locator implicado o el código de red. Eliminar `prompts/ai-group-failures.txt`. Ojo: la primera línea no sirve, porque los mensajes personalizados de los `expect` la hacen distinta en cada test (en `bug`, 35 fallos dan 34 primeras líneas distintas). Hay que usar el matcher y el locator (`toHaveText` sobre `shopping-cart-badge`). Los errores de red también cambian según el navegador: `net::ERR_CONNECTION_REFUSED` en Chromium y `NS_ERROR_CONNECTION_REFUSED` en Firefox.
+- [x] **Flaky en código:** si un test falla y después pasa al reintentar, es flaky. No se pregunta a la IA.
+- [x] **Más contexto para la IA:** por cada grupo, adjuntar el `error-context.md` (la instantánea de la página que Playwright guarda en `test-results/` cuando un test falla) y el fragmento del test. No hace falta leer el fichero del test: el mensaje de error de Playwright ya trae las líneas alrededor del fallo.
+- [x] **Redacción antes de enviar:** solo salen los campos de una lista permitida. En el `error-context.md` y en el fragmento del test se enmascaran las query strings de las URLs, los emails, los tokens, las cabeceras `Authorization`, las cookies y los valores que se escriben con `fill()`. El redactor lleva un test con casos conocidos. Además enmascara las rutas con nombre de usuario (`C:\Users\<usuario>`, `/home/<usuario>`) y los valores de los `textbox` de la instantánea, que incluyen lo que se ha escrito en los formularios.
+- [x] **Nueva salida por grupo:** `{ tipo: bug_producto | test_roto | flaky | entorno, confianza, evidencia, accion }`.
+- [x] Adaptar `prompts/ai-summary.txt`, `ai-corrections.txt` y `ai-tickets.txt` a la nueva estructura.
 
 **Terminada cuando:** con `cascade` salga 1 grupo clasificado como `test_roto` cuya evidencia señale el cambio de selector, y con `bug` salga `bug_producto`.
+
+**Resultado (chromium, Claude Haiku 5.5 en local):**
+
+| Ejecución | Grupos | Clasificación |
+|---|---|---|
+| `cascade` | 1 (70 tests) | `test_roto`, confianza alta: "page_context muestra el botón Login con el mismo texto y rol; el selector no coincide" |
+| `bug` | 2 (34 + 1) | los dos `bug_producto`, confianza alta: "el badge muestra 2 y el botón del carrito dice Cart, 1 items". 2 tickets |
+| `env` | 1 (70) | `entorno`, confianza alta: `ERR_CONNECTION_REFUSED` y la página no llega a cargar |
+| `flaky` | 1 (70) | `flaky`, decidido por el código sin llamar a la IA |
+| Suite normal (`@demo-fail`) | 7 (10 tests) | los 7 `test_roto`, confianza alta |
+
+La pista clave para distinguir un bug de un test roto es el texto accesible de la propia página: el botón del carrito dice cuántos productos hay ("Cart, 1 items") y el badge muestra otra cifra.
 
 ## Fase 3 · Medir el acierto de la IA
 
@@ -144,3 +156,6 @@ Cambios en `scripts/report-ai.mjs`:
 | 2026-10-21 | Lo que se envía a la IA pasa por una lista de campos permitidos y un redactor | Filtrar el JSON reduce el volumen, pero no elimina datos sensibles del contexto (revisión de CodeRabbit en la PR #1) |
 | 2026-10-21 | El escenario `bug` rompe el badge del carrito en vez del total del checkout | Ningún test comprueba el valor del total, solo que se vea; el badge lo comprueban 35 tests |
 | 2026-10-21 | El escenario `env` rechaza todas las conexiones en vez de cortar solo los assets | Cortar los assets deja la página en blanco y el fallo se parece a `cascade`; un `ERR_CONNECTION_REFUSED` es una señal de entorno inequívoca |
+| 2026-10-21 | Los tickets solo se generan para los grupos `bug_producto` | Un test roto o un problema de entorno no es una incidencia para el equipo de producto |
+| 2026-10-21 | Si falla la clasificación, el reporte sigue y los grupos quedan como `sin_clasificar` | El resumen y las correcciones siguen siendo útiles sin clasificación; antes un error de cuota tiraba todo el reporte |
+| 2026-10-21 | Los flaky también disparan el reporte IA, aunque no haya ningún fallo definitivo | Antes solo se analizaba cuando había fallos; una suite flaky en verde es un riesgo que hay que explicar |

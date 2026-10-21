@@ -2,11 +2,13 @@
 import { readFile, mkdir, writeFile, access } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
+import { extractFailures, groupFailures } from "./triage.mjs";
 
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
 const MODEL = "claude-haiku-5-5";                    // Claude CLI (suscripción, local)
 const GEMINI_MODEL = "gemini-flash-latest";          // Google Gemini (free tier, CI)
+const TIPOS = new Set(["test_roto", "bug_producto", "entorno"]);  // los que puede asignar la IA
 const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
 function log(msg)     { console.log(`👉 ${msg}`); }
@@ -21,44 +23,73 @@ async function main() {
         throw new Error(`No existe ${INPUT_JSON}. Ejecuta primero npm run test`);
     }
 
-    const testResultsRaw = await readFile(INPUT_JSON, "utf8");
-    const testResults = JSON.parse(testResultsRaw);
+    const testResults = JSON.parse(await readFile(INPUT_JSON, "utf8"));
     const stats = extractStats(testResults);
 
     log(`Estadísticas: ${stats.total} total · ${stats.passed} pasaron · ${stats.failed} fallaron · ${stats.skipped} omitidas · ${stats.flaky} flaky`);
 
+    // 1️⃣ Agrupar en código: determinista, sin IA. Los flaky cuentan como fallo a analizar.
+    const failures = extractFailures(testResults);
+
     // Sin fallos no hay nada que analizar: no se gasta cuota de IA.
-    if (stats.failed === 0) {
+    if (failures.length === 0) {
         await writeOutput(path.join(REPORT_DIR, "ai-summary.txt"),
             `Sin fallos: ${stats.passed} de ${stats.total} pruebas pasaron. No hay nada que analizar con IA.`);
         success("AI Reporting omitido: no hay fallos 🎉");
         return;
     }
 
-    // 1️⃣ Agrupar fallos
-    const pGroup = await readFile("prompts/ai-group-failures.txt", "utf8");
-    const groupedRaw = await runClaude(pGroup, testResultsRaw, "Agrupación de fallos");
-    const groupedClean = stripMarkdownFences(groupedRaw);
+    const groups = groupFailures(failures);
+    log(`${failures.length} fallos en ${groups.length} grupos`);
+    const errors = [];
 
-    let grouped;
-    try {
-        grouped = JSON.parse(groupedClean);
-    } catch {
-        throw new Error(
-            "La respuesta de Claude para agrupación de fallos no es JSON válido.\n" +
-            "Primeros 500 chars:\n" + groupedClean.slice(0, 500)
-        );
+    // 2️⃣ La IA clasifica los grupos que el código no ha resuelto (todos menos los flaky).
+    const toClassify = groups.filter((g) => !g.tipo);
+    if (toClassify.length) {
+        try {
+            const pClassify = await readFile("prompts/ai-classify.txt", "utf8");
+            const raw = stripMarkdownFences(await runClaude(pClassify, JSON.stringify(toClassify), "Clasificación de fallos"));
+            let classification;
+            try {
+                classification = JSON.parse(raw);
+            } catch {
+                throw new Error("La clasificación no es JSON válido.\nPrimeros 500 chars:\n" + raw.slice(0, 500));
+            }
+            for (const c of classification) {
+                const g = toClassify.find((x) => x.group_id === c.group_id);
+                if (g && TIPOS.has(c.tipo)) Object.assign(g, { tipo: c.tipo, confianza: c.confianza, evidencia: c.evidencia, accion: c.accion });
+            }
+        } catch (e) {
+            // Sin clasificación el resto del reporte sigue teniendo valor: no se aborta.
+            errors.push(e.message);
+        }
+        for (const g of toClassify) g.tipo ??= "sin_clasificar";
     }
 
-    // El modelo inventa generated_at (a menudo en UTC). Lo sobreescribimos con la
-    // hora real de Madrid para que sea fiable en local y en CI.
-    grouped.generated_at = new Date().toLocaleString("es-ES", {
-        timeZone: "Europe/Madrid",
-        dateStyle: "long",
-        timeStyle: "short",
-    });
+    const grouped = {
+        generated_at: new Date().toLocaleString("es-ES", {
+            timeZone: "Europe/Madrid",
+            dateStyle: "long",
+            timeStyle: "short",
+        }),
+        source: "playwright-json",
+        total_failed_tests: failures.filter((f) => !f.flaky).length,
+        total_flaky_tests: failures.filter((f) => f.flaky).length,
+        total_groups: groups.length,
+        groups,
+    };
 
-    // 2️⃣ Resumen · Correcciones · Tickets — en paralelo
+    // page_context y el error completo ya han servido para clasificar; al resto de prompts les basta un extracto.
+    const brief = {
+        ...grouped,
+        groups: groups.map(({ page_context, sample_error, ...g }) => ({
+            ...g,
+            error_summary: sample_error.split("\nCall log:")[0].slice(0, 600),
+        })),
+    };
+    const bugs = brief.groups.filter((g) => g.tipo === "bug_producto");
+
+    // 3️⃣ Resumen · Correcciones · Tickets — en paralelo. Tickets solo para bugs de producto.
     const [pSummary, pCorrections, pTickets] = await Promise.all([
         readFile("prompts/ai-summary.txt", "utf8"),
         readFile("prompts/ai-corrections.txt", "utf8"),
@@ -67,18 +98,15 @@ async function main() {
 
     log("Generando resumen, correcciones y tickets en paralelo...");
 
-    const summaryInput = JSON.stringify({ stats, grouped });
-    const groupedText  = JSON.stringify(grouped);
-
     // allSettled y no all: si una llamada falla (p. ej. 429 de cuota en CI),
     // se guarda lo que sí se generó en lugar de perderlo todo.
     const results = await Promise.allSettled([
-        runClaude(pSummary,     summaryInput, "Resumen ejecutivo"),
-        runClaude(pCorrections, groupedText,  "Posibles correcciones"),
-        runClaude(pTickets,     groupedText,  "Tickets Jira"),
+        runClaude(pSummary,     JSON.stringify({ stats, grouped: brief }), "Resumen ejecutivo"),
+        runClaude(pCorrections, JSON.stringify(brief),                     "Posibles correcciones"),
+        bugs.length ? runClaude(pTickets, JSON.stringify(bugs), "Tickets Jira") : Promise.resolve("[]"),
     ]);
     const [summaryTxt, correctionsMd, ticketsRaw] = results.map((r) => r.status === "fulfilled" ? r.value : null);
-    const errors = results.filter((r) => r.status === "rejected").map((r) => r.reason.message);
+    errors.push(...results.filter((r) => r.status === "rejected").map((r) => r.reason.message));
 
     let ticketsClean = ticketsRaw && stripMarkdownFences(ticketsRaw);
     if (ticketsClean) {
@@ -94,7 +122,7 @@ async function main() {
         ["ai-summary.txt",           summaryTxt],
         ["ai-corrections.md",        correctionsMd],
         ["ai-tickets.json",          ticketsClean],
-        ["ai-failures-grouped.json", groupedText],
+        ["ai-failures-grouped.json", JSON.stringify(grouped, null, 2)],
     ];
     await Promise.all(outputs
         .filter(([, content]) => content)

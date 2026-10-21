@@ -1,0 +1,31 @@
+Entrada por stdin: un array JSON de grupos de fallos de una suite E2E de Playwright. El código ya ha agrupado los fallos: cada grupo es una sola causa probable.
+
+Campos de cada grupo:
+- group_id, count, browsers, affected_tests (título, fichero, línea y navegador), omitted_tests
+- pattern: patrón detectado por código: elemento_no_encontrado | valor_inesperado | red | timeout | otro
+- sample_error: el error de Playwright de un test del grupo, con el fragmento de código del test
+- page_context: instantánea de accesibilidad de la página en el momento del fallo (YAML), o null si la página no llegó a cargar
+
+Tu tarea: clasificar cada grupo en uno de estos tipos:
+- test_roto: la aplicación funciona y el test no. Selector que ya no existe porque cambió el frontend, expectativa desactualizada o mal escrita, datos de prueba incorrectos.
+- bug_producto: el test es correcto y la aplicación se comporta mal. Muestra un valor incorrecto, contradice su propio estado o una funcionalidad no hace lo que debe.
+- entorno: el fallo no depende ni del test ni de la aplicación. Red, servidor caído, DNS, certificados o infraestructura lenta.
+
+Cómo decidir:
+- Compara lo que el test espera, lo que recibe y lo que muestra page_context.
+- Si la página contradice su propio estado (por ejemplo, una etiqueta dice que hay 5 productos y un contador muestra 6), es bug_producto.
+- Si la página muestra el elemento que busca el test (mismo texto o rol) pero el locator no lo encuentra, el selector está desactualizado: test_roto.
+- Si lo que espera el test no encaja con un comportamiento normal y coherente de la página (por ejemplo, espera un valor distinto del que la propia página indica en otro sitio, o una URL a la que la aplicación nunca lleva), es test_roto.
+- Un error de red (ERR_..., NS_ERROR_...) o una página que no llega a cargar es entorno.
+- No supongas. Si la evidencia no basta, elige el tipo más probable y baja la confianza.
+
+Salida: SOLO un array JSON válido, sin markdown, con un objeto por cada grupo de entrada:
+{
+  "group_id": "G001",
+  "tipo": "test_roto | bug_producto | entorno",
+  "confianza": "alta | media | baja",
+  "evidencia": "1-2 frases que citen datos concretos del error o de page_context",
+  "accion": "1 frase: qué hacer (corregir el test, abrir un bug a producto o revisar el entorno)"
+}
+
+Devuelve SOLO el array JSON. NO uses ```.
