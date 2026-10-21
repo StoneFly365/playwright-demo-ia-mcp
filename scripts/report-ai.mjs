@@ -83,10 +83,18 @@ async function main() {
         total_groups: groups.length,
         groups,
     };
+    // Solo para el dashboard (scripts/dashboard.mjs): de qué ejecución sale el análisis, con qué
+    // proveedor y cuántas peticiones a la IA costó. Se añade al escribir, no viaja en los prompts.
+    const withRunInfo = () => JSON.stringify({
+        ...grouped,
+        run_start_time: testResults.stats?.startTime ?? null,
+        provider: process.env.GEMINI_API_KEY ? `gemini:${GEMINI_MODEL}` : `claude-cli:${MODEL}`,
+        ai_requests: aiRequests,
+    }, null, 2);
 
     // eval-ai.mjs solo mide la clasificación: el resto de llamadas gastaría cuota sin aportar nada.
     if (process.env.AI_CLASSIFY_ONLY) {
-        await writeOutput(path.join(REPORT_DIR, "ai-failures-grouped.json"), JSON.stringify(grouped, null, 2));
+        await writeOutput(path.join(REPORT_DIR, "ai-failures-grouped.json"), withRunInfo());
         if (errors.length) throw new Error(errors.join("\n"));
         success("Clasificación terminada (AI_CLASSIFY_ONLY)");
         return;
@@ -135,7 +143,7 @@ async function main() {
         ["ai-summary.txt",           summaryTxt],
         ["ai-corrections.md",        correctionsMd],
         ["ai-tickets.json",          ticketsClean],
-        ["ai-failures-grouped.json", JSON.stringify(grouped, null, 2)],
+        ["ai-failures-grouped.json", withRunInfo()],
     ];
     await Promise.all(outputs
         .filter(([, content]) => content)
@@ -145,6 +153,9 @@ async function main() {
 
     success("AI Reporting finalizado correctamente 🎉");
 }
+
+// Peticiones enviadas al proveedor, reintentos incluidos (cada reintento de Gemini gasta cuota).
+let aiRequests = 0;
 
 // En CI usa Google Gemini (free tier, GEMINI_API_KEY); en local, el CLI de
 // Claude con la suscripción. La presencia de GEMINI_API_KEY decide el proveedor.
@@ -165,6 +176,7 @@ async function runGemini(promptText, stdinText, label) {
 
     let res;
     for (let attempt = 1; ; attempt++) {
+        aiRequests++;
         res = await fetch(GEMINI_ENDPOINT, {
             method: "POST",
             headers: {
@@ -205,6 +217,7 @@ async function runGemini(promptText, stdinText, label) {
 function runClaudeCli(promptText, stdinText, label) {
     log(`Ejecutando IA: ${label}...`);
     const start = Date.now();
+    aiRequests++;
 
     return new Promise((resolve, reject) => {
         const child = spawn("claude", [

@@ -130,6 +130,12 @@ jobs:
             echo "_AI summary not generated — check the 'Generate AI report' step for details._" >> $GITHUB_STEP_SUMMARY
           fi
 
+      # Solo lee los ficheros que ya hay (sin IA ni tests): queda dentro del artefacto ai-report.
+      - name: Dashboard QA Intelligence
+        if: always()
+        continue-on-error: true
+        run: npm run dashboard
+
       - name: Upload AI report
         uses: actions/upload-artifact@v4
         if: always()
@@ -168,6 +174,11 @@ jobs:
           else
             echo "_ai-eval.md no generado — revisa el paso 'Evaluar la clasificación de la IA'._" >> $GITHUB_STEP_SUMMARY
           fi
+
+      - name: Dashboard QA Intelligence
+        if: always()
+        continue-on-error: true
+        run: npm run dashboard
 
       - name: Upload AI eval
         uses: actions/upload-artifact@v4

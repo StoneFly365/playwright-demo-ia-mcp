@@ -117,6 +117,17 @@ No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin
 
 **Descartado:** Claude por API en CI. Funcionaría con el mismo modelo que en local y costaría menos de 1 $ al mes, pero la clave del repositorio es del plan personal y no se quiere ningún coste adicional.
 
+## Dashboard QA Intelligence (fuera del plan inicial)
+
+Página local de solo lectura para enseñar en la demo el paso de los tests a los grupos, la clasificación, la evidencia, la acción y el acierto de la IA, sin gastar cuota. Detalle en la sección del README.
+
+- [x] `npm run dashboard` (`scripts/dashboard.mjs`) genera `playwright-report/qa-dashboard.html` a partir de los artefactos que ya existen. No llama a la IA, no ejecuta tests y la página bloquea cualquier conexión de red (CSP).
+- [x] `report:ai` guarda en `ai-failures-grouped.json` `run_start_time`, `provider` y `ai_requests`, sin enviarlos en los prompts. `eval:ai` escribe también `ai-eval.json`. Son campos y ficheros nuevos; los que ya había no cambian.
+- [x] Historial local en `qa-history/` con `--save` (una copia por ejecución, nunca se sobrescribe) y modo demo con `learning/ruta-qa/ejemplos/`, que no se mezcla con el historial.
+- [x] En CI, los jobs de reporte y de evaluación generan el dashboard dentro de sus artefactos. Sin permisos nuevos ni GitHub Pages.
+- [ ] Caché de clasificaciones: descartada por ahora (ver README). Si se retoma, en una rama propia.
+- [ ] Acciones ejecutadas: el dashboard solo puede mostrarlas cuando la fase 4 deje constancia de ellas en un artefacto.
+
 ## Fase 4 · Cerrar el circuito
 
 | Tipo | Acción automática |
@@ -184,4 +195,7 @@ No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin
 | 2026-10-21 | El workflow corre con `permissions: contents: read` y checkout sin credenciales persistidas | Ningún job escribe en el repositorio (revisión de CodeRabbit en la PR #4) |
 | 2026-10-21 | `learning/ruta-qa/ejemplos/` se regenera con el reporte nuevo y los módulos 1, 2 y 6 de la Ruta QA se adaptan | Tras la fase 2 el alumno que ejecuta la IA obtenía otra salida; con los `@demo-fail` `ai-tickets.json` sale vacío, así que el ejemplo de tickets sale del escenario `bug` |
 | 2026-10-21 | El curso deja de estar orientado a seguros: es para cualquier QA que empiece con Playwright | Cambio de público del Learning Lab (PR #5) |
+| 2026-10-21 | El dashboard es una página estática generada por un script Node, sin servidor ni dependencias | Basta con leer ficheros locales; los datos van dentro de la página y se abre sin conexión |
+| 2026-10-21 | El dashboard asocia el análisis a la ejecución por `run_start_time` y oculta lo que es de otra | `report:ai` no borra los ficheros de la ejecución anterior cuando no hay nada que analizar, y se mezclaban resultados |
+| 2026-10-21 | Sin caché de clasificaciones por ahora | La huella del grupo no basta como clave: la evidencia que decide cambia aunque la huella sea la misma |
 | 2026-10-21 | OpenRouter gratuito en CI en lugar de Claude por API | Sin coste adicional; a cambio, en CI se usa un modelo distinto del de local y hay que medir su acierto aparte |

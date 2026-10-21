@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Sin conexiones: default-src 'none' bloquea fetch, XHR, imágenes y recursos remotos. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>QA Intelligence</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --panel-2: #f1f3f6; --text: #1b1f24; --muted: #5b6470; --line: #dde1e6; --accent: #2f5bd3;
+  --test_roto: #b45309; --test_roto-bg: #fef3c7;
+  --bug_producto: #b91c1c; --bug_producto-bg: #fee2e2;
+  --entorno: #1d4ed8; --entorno-bg: #dbeafe;
+  --flaky: #6d28d9; --flaky-bg: #ede9fe;
+  --sin_clasificar: #4b5563; --sin_clasificar-bg: #e5e7eb;
+  --ok: #15803d; --warn: #a16207; --warn-bg: #fef9c3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1216; --panel: #171b21; --panel-2: #1e232b; --text: #e6e9ed; --muted: #9aa3ae; --line: #2b313a; --accent: #7aa2ff;
+    --test_roto: #f5b041; --test_roto-bg: #3a2a0c;
+    --bug_producto: #f87171; --bug_producto-bg: #3b1515;
+    --entorno: #7aa7ff; --entorno-bg: #142544;
+    --flaky: #b79cff; --flaky-bg: #2a1d4a;
+    --sin_clasificar: #aab2bd; --sin_clasificar-bg: #2a2f37;
+    --ok: #4ade80; --warn: #facc15; --warn-bg: #3a3210;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+header { background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
+.bar { max-width: 1200px; margin: 0 auto; padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.bar h1 { font-size: 18px; margin: 0; letter-spacing: .2px; }
+.bar nav { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px; }
+.bar nav a { color: var(--muted); text-decoration: none; }
+.bar nav a:hover { color: var(--accent); }
+.spacer { flex: 1; }
+main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+h2 { font-size: 16px; margin: 0 0 12px; }
+h3 { font-size: 14px; margin: 16px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+p { margin: 6px 0; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+select, input { font: inherit; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; min-width: 0; }
+button { font: inherit; color: var(--accent); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+.pill { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.safe { color: var(--ok); border-color: currentColor; }
+.pill.demo { color: var(--warn); border-color: currentColor; }
+.banner { border-radius: 8px; padding: 10px 12px; background: var(--warn-bg); color: var(--text); border: 1px solid var(--warn); }
+.banner ul { margin: 4px 0 0; padding-left: 20px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.tile { background: var(--panel-2); border-radius: 8px; padding: 10px 12px; }
+.tile .v { font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.tile .l { font-size: 13px; color: var(--muted); }
+.tile .na { font-size: 16px; color: var(--muted); font-weight: 500; }
+.chip { display: inline-block; font: 600 12px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; padding: 0 8px; border-radius: 4px; white-space: nowrap; }
+.t-test_roto { color: var(--test_roto); background: var(--test_roto-bg); }
+.t-bug_producto { color: var(--bug_producto); background: var(--bug_producto-bg); }
+.t-entorno { color: var(--entorno); background: var(--entorno-bg); }
+.t-flaky { color: var(--flaky); background: var(--flaky-bg); }
+.t-sin_clasificar { color: var(--sin_clasificar); background: var(--sin_clasificar-bg); }
+.o { font-size: 12px; padding: 0 6px; border-radius: 4px; border: 1px solid; white-space: nowrap; }
+.o-codigo { color: var(--ok); }
+.o-ia { color: var(--accent); }
+.o-ninguno { color: var(--muted); border-style: dashed; }
+.review { color: var(--warn); font-size: 12px; white-space: nowrap; }
+.dist { display: grid; gap: 8px; }
+.dist-row { display: grid; grid-template-columns: 130px 1fr 170px; gap: 12px; align-items: center; }
+.track { height: 12px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; border-radius: 3px; }
+.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.filters label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+details.group { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; background: var(--panel); }
+details.group > summary { cursor: pointer; padding: 10px 12px; display: grid; grid-template-columns: 56px auto 1fr auto; gap: 4px 12px; align-items: center; list-style: none; }
+details.group > summary::-webkit-details-marker { display: none; }
+details.group[open] > summary { border-bottom: 1px solid var(--line); }
+.gid { font: 600 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
+.fp { font: 12px ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-end; font-size: 13px; }
+.body { padding: 12px; display: grid; gap: 10px; }
+.kv { display: grid; grid-template-columns: 170px 1fr; gap: 4px 12px; }
+.kv dt { color: var(--muted); font-size: 13px; }
+.kv dd { margin: 0; overflow-wrap: anywhere; }
+.rec { border-left: 3px solid var(--accent); padding: 6px 10px; background: var(--panel-2); border-radius: 0 6px 6px 0; }
+.tag { font-size: 11px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 12.5px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--panel-2); padding: 10px; border-radius: 6px; max-height: 420px; overflow: auto; }
+ul.tests { margin: 0; padding-left: 18px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+tr.sel td { background: var(--panel-2); }
+.mini { display: flex; height: 10px; width: 120px; border-radius: 2px; overflow: hidden; background: var(--panel-2); }
+.empty { color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; padding: 14px; }
+.ticket { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+footer { max-width: 1200px; margin: 0 auto; padding: 0 16px 24px; color: var(--muted); font-size: 13px; }
+@media (max-width: 720px) {
+  header { position: static; }
+  details.group > summary { grid-template-columns: auto 1fr; }
+  .fp { grid-column: 1 / -1; }
+  .meta { grid-column: 1 / -1; justify-content: flex-start; }
+  .dist-row { grid-template-columns: 110px 1fr; }
+  .dist-row .small { grid-column: 1 / -1; }
+  .kv { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>QA Intelligence</h1>
+    <span class="pill safe" title="La página no llama a ningún modelo y la CSP bloquea cualquier conexión de red">Sin IA · solo lectura</span>
+    <span id="mode"></span>
+    <nav>
+      <a href="#resumen">Resumen</a><a href="#grupos">Grupos</a><a href="#recomendaciones">Recomendaciones</a><a href="#evaluacion">Evaluación IA</a><a href="#historial">Historial</a><a href="#artefactos">Artefactos</a>
+    </nav>
+    <span class="spacer"></span>
+    <label class="small muted">Ejecución <select id="run"></select></label>
+  </div>
+</header>
+<main>
+  <div id="warnings"></div>
+  <section id="resumen"></section>
+  <section id="distribucion"></section>
+  <section id="grupos"></section>
+  <section id="recomendaciones"></section>
+  <section id="evaluacion"></section>
+  <section id="historial"></section>
+  <section id="artefactos"></section>
+  <section id="definiciones"></section>
+</main>
+<footer id="footer"></footer>
+<script type="application/json" id="qa-data">__QA_DATA__</script>
+<script>
+/*__QA_VIEW__*/
+
+// Todo el contenido dinámico entra como texto (append/textContent), nunca como HTML.
+const DATA = JSON.parse(document.getElementById("qa-data").textContent);
+
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props ?? {})) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : String(v));
+  }
+  for (const kid of kids.flat(Infinity)) if (kid != null && kid !== false) el.append(kid instanceof Node ? kid : String(kid));
+  return el;
+}
+const fill = (id, ...kids) => document.getElementById(id).replaceChildren(...kids.flat(Infinity).filter(Boolean));
+
+const TIPO_LABEL = { test_roto: "Test roto", bug_producto: "Bug de producto", entorno: "Entorno", flaky: "Flaky", sin_clasificar: "Sin clasificar" };
+const ORIGEN_LABEL = { codigo: "Determinista", ia: "IA", ninguno: "Sin clasificar" };
+const ORIGEN_HINT = { codigo: "Lo decide el código (triage.mjs): falló y pasó al reintentar", ia: "Clasificado por la IA en report:ai", ninguno: "La llamada de clasificación falló o el informe no trae tipo" };
+const STATUS = { ok: "Leído", ausente: "No existe", vacio: "Vacío", json_invalido: "JSON no válido", ilegible: "No se pudo leer", formato_desconocido: "Formato no reconocido" };
+const LINK = {
+  ok: "Misma ejecución (run_start_time)",
+  por_fecha: "Posterior a test-results.json (sin identificador)",
+  sin_verificar: "No verificable",
+  otra_ejecucion: "De otra ejecución: no se muestra",
+};
+
+const chip = (tipo) => h("span", { class: `chip t-${tipo}`, title: TIPO_LABEL[tipo] }, tipo);
+const origen = (o) => h("span", { class: `o o-${o}`, title: ORIGEN_HINT[o] }, ORIGEN_LABEL[o]);
+const na = (why) => h("span", { class: "na", title: why }, "n/d");
+const tile = (label, value, why) => h("div", { class: "tile" }, h("div", { class: "v" }, value ?? na(why)), h("div", { class: "l" }, label));
+const empty = (...text) => h("div", { class: "empty" }, ...text);
+const code = (t) => h("code", {}, t);
+
+function fmtDate(v) {
+  if (!v) return null;
+  const d = new Date(v);
+  return /^\d{4}-\d\d-\d\dT/.test(v) && !isNaN(d) ? d.toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" }) : v;
+}
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const fmtPct = (p) => (p == null ? null : `${p} %`);
+const fmtDur = (ms) => (ms ? `${Math.round(ms / 1000)} s` : null);
+
+const noFilters = () => ({ tipo: "", origen: "", browser: "", test: "", error: "" });
+const state = { run: 0, eval: 0, filters: noFilters() };
+const run = () => DATA.runs[state.run];
+// Los filtros son de una ejecución: un navegador que no existe en otra la dejaría vacía sin explicación.
+function selectRun(i) { state.run = i; state.filters = noFilters(); renderHeader(); renderRun(); }
+const groups = () => run().analysis?.groups ?? [];
+
+function renderHeader() {
+  fill("mode", DATA.mode === "demo" ? h("span", { class: "pill demo" }, `Datos de ejemplo · ${DATA.sourceDir}`) : null);
+  const sel = document.getElementById("run");
+  sel.replaceChildren(...DATA.runs.map((r, i) => h("option", { value: i, selected: i === state.run },
+    `${fmtDate(r.id) ?? fmtDate(r.analysis?.generatedAt) ?? "sin fecha"} · ${r.source === "historial" ? "historial" : r.source === "demo" ? "demo" : "actual"}`)));
+  sel.onchange = () => selectRun(Number(sel.value));
+}
+
+function renderWarnings() {
+  const list = [...run().warnings, ...DATA.warnings];
+  const demo = DATA.mode === "demo"
+    ? h("p", {}, h("strong", {}, "Modo demostración. "), "Estos datos salen de ", code(DATA.sourceDir), ", no de tu última ejecución, y no se guardan en el historial. Al no haber ", code("test-results.json"), ", los ficheros no se pueden vincular entre sí y pueden venir de ejecuciones distintas.")
+    : null;
+  fill("warnings", demo || list.length ? h("div", { class: "banner" }, demo, list.length ? [h("strong", {}, "Avisos sobre los datos"), h("ul", {}, list.map((w) => h("li", {}, w)))] : null) : null);
+}
+
+function renderSummary() {
+  const r = run(), t = r.tests, a = r.analysis, m = groupMetrics(groups());
+  const noTests = "Falta test-results.json o no trae stats";
+  const noAnalysis = "Falta ai-failures-grouped.json de esta ejecución";
+  const legacy = "El informe es anterior a este dato (se registra desde la versión del dashboard)";
+  const clean = t && t.failed + t.flaky === 0;
+  const noGroups = clean ? empty("Sin fallos ni flaky: no hay grupos que analizar.")
+    : empty(`${noAnalysis}. Se genera con `, code("npm run report:ai"), " (usa IA; el dashboard no lo lanza).");
+  fill("resumen",
+    h("h2", {}, "Resumen ejecutivo"),
+    h("p", { class: "small muted" }, "Ejecución ", code(r.id ?? "sin identificador"), t?.browsers.length ? ` · ${t.browsers.join(", ")}` : "", t ? ` · duración ${fmtDur(t.durationMs) ?? "n/d"}` : ""),
+    h("h3", {}, "Tests (cada test cuenta una vez por navegador)"),
+    h("div", { class: "tiles" },
+      tile("Total", t?.total, noTests), tile("Pasados", t?.passed, noTests), tile("Fallidos", t?.failed, noTests),
+      tile("Omitidos", t?.skipped, noTests), tile("Flaky", t?.flaky, noTests),
+      tile("Éxito (pasados / ejecutados)", t ? fmtPct(pct(t.passed, t.executed)) : null, noTests)),
+    h("h3", {}, "Grupos de fallos (cada grupo es una causa; no se suman con los tests)"),
+    a ? h("div", { class: "tiles" },
+      tile("Grupos", m.groups), tile("Tests en los grupos", m.testsInGroups),
+      tile("Deterministas (código)", m.codigo), tile("Clasificados por IA", m.ia), tile("sin_clasificar", m.sinClasificar),
+      tile("Pendientes de revisión", m.pendientes),
+      tile("Peticiones a la IA", a.aiRequests, legacy), tile("Proveedor · modelo", a.provider, legacy))
+      : noGroups,
+    a ? h("p", { class: "small muted" }, `Análisis generado: ${fmtDate(a.generatedAt) ?? "sin fecha"}`) : null,
+    r.summary ? [h("h3", {}, "Resumen redactado por la IA en report:ai"), h("pre", {}, r.summary)] : null);
+}
+
+function renderDistribution() {
+  const m = groupMetrics(groups());
+  const max = Math.max(1, ...TIPOS.map((t) => m.byTipo[t]));
+  fill("distribucion",
+    h("h2", {}, "Distribución por categoría"),
+    !run().analysis ? empty("Sin análisis de esta ejecución.") : h("div", { class: "dist" }, TIPOS.map((t) => {
+      const bar = h("div", { class: "fill" });
+      bar.style.width = `${(m.byTipo[t] / max) * 100}%`;
+      bar.style.background = `var(--${t})`;
+      return h("div", { class: "dist-row" }, h("div", {}, chip(t)), h("div", { class: "track" }, bar),
+        h("div", { class: "small muted" }, `${plural(m.byTipo[t], "grupo")} · ${plural(m.testsByTipo[t], "test")}`));
+    })));
+}
+
+function groupCard(g) {
+  const omitted = g.omittedTests ? h("li", { class: "muted" }, `y ${g.omittedTests} tests más que el artefacto no lista`) : null;
+  return h("details", { class: "group" },
+    h("summary", {},
+      h("span", { class: "gid" }, g.id),
+      h("span", {}, chip(g.tipo), " ", origen(g.origen)),
+      h("span", { class: "fp", title: g.fingerprint ?? "" }, g.fingerprint ?? g.pattern ?? "sin huella"),
+      h("span", { class: "meta" },
+        g.pendienteRevision ? h("span", { class: "review", title: "sin_clasificar o confianza distinta de alta" }, "● revisar") : null,
+        g.confianza ? h("span", { class: "muted" }, `confianza ${g.confianza}`) : null,
+        h("strong", {}, plural(g.count, "test")), h("span", { class: "muted" }, g.browsers.join(", ")))),
+    h("div", { class: "body" },
+      h("dl", { class: "kv" },
+        h("dt", {}, "Categoría"), h("dd", {}, chip(g.tipo), " ", TIPO_LABEL[g.tipo]),
+        h("dt", {}, "Origen de la clasificación"), h("dd", {}, ORIGEN_HINT[g.origen]),
+        h("dt", {}, "Confianza"), h("dd", {}, g.confianza ?? "no disponible"),
+        h("dt", {}, "Patrón"), h("dd", {}, g.pattern ?? "no disponible"),
+        h("dt", {}, "Huella"), h("dd", {}, code(g.fingerprint ?? "no disponible")),
+        h("dt", {}, "Navegadores"), h("dd", {}, g.browsers.join(", ") || "no disponible"),
+        h("dt", {}, "Estado de revisión"), h("dd", {}, g.pendienteRevision ? "Pendiente: conviene que una persona lo revise antes de actuar" : "Sin marca (los artefactos no registran revisiones)"),
+        h("dt", {}, "Evidencia"), h("dd", {}, g.evidencia ?? (g.origen === "codigo" ? "El test falló y pasó al reintentar (decidido por el código)." : "no disponible"))),
+      h("div", { class: "rec" }, h("div", { class: "tag" }, "Acción recomendada · no ejecutada"), g.accion ?? "La clasificación no trae acción."),
+      h("div", {}, h("div", { class: "tag" }, "Tests afectados"), h("ul", { class: "tests" },
+        g.tests.map((t) => h("li", {}, t.title, " ", h("span", { class: "muted small" }, [t.file, t.line].filter((x) => x != null).join(":"), t.browser ? ` · ${t.browser}` : ""))), omitted)),
+      g.error ? h("div", {}, h("div", { class: "tag" }, "Error (redactado)"), h("pre", {}, g.error)) : null,
+      g.pageContext ? h("details", {}, h("summary", { class: "small" }, "Instantánea de la página en el fallo (redactada)"), h("pre", {}, g.pageContext)) : null));
+}
+
+function renderGroups() {
+  const all = groups(), f = state.filters;
+  if (!run().analysis) return fill("grupos", h("h2", {}, "Grupos de fallos"), empty("Sin grupos para esta ejecución."));
+  const opt = (v, label, cur) => h("option", { value: v, selected: v === cur }, label);
+  const select = (key, label, options) => h("label", {}, label, h("select", { onchange: (e) => { f[key] = e.target.value; renderGroups(); } }, opt("", "Todos", f[key]), options.map(([v, l]) => opt(v, l, f[key]))));
+  const text = (key, label, ph) => {
+    const input = h("input", { type: "search", value: f[key], placeholder: ph });
+    input.addEventListener("input", () => { f[key] = input.value; renderList(); });
+    return h("label", {}, label, input);
+  };
+  const listBox = h("div", {});
+  const count = h("p", { class: "small muted" });
+  const renderList = () => {
+    const res = filterGroups(all, f);
+    count.textContent = `${res.length} de ${all.length} grupos. La búsqueda por test solo ve los tests que lista el artefacto (10 por grupo como mucho).`;
+    listBox.replaceChildren(...(res.length ? res.map(groupCard) : [empty("Ningún grupo cumple los filtros.")]));
+  };
+  fill("grupos",
+    h("h2", {}, "Grupos de fallos"),
+    h("div", { class: "filters" },
+      select("tipo", "Categoría", TIPOS.map((t) => [t, t])),
+      select("origen", "Origen", Object.entries(ORIGEN_LABEL)),
+      select("browser", "Navegador", browsersOf(all).map((b) => [b, b])),
+      text("test", "Nombre del test", "p. ej. badge"),
+      text("error", "Mensaje de error", "p. ej. toHaveText")),
+    count, listBox,
+    h("button", { onclick: () => { state.filters = noFilters(); renderGroups(); } }, "Quitar filtros"));
+  renderList();
+}
+
+function renderRecommendations() {
+  const r = run();
+  fill("recomendaciones",
+    h("h2", {}, "Recomendaciones y propuestas"),
+    h("p", { class: "small" }, h("strong", {}, "Acciones ejecutadas: ninguna registrada. "), "Los artefactos no registran acciones automáticas y el dashboard no lanza el healer, no abre PR y no crea tickets. Todo lo de esta sección son propuestas generadas en ", code("report:ai"), "."),
+    h("h3", {}, "Correcciones sugeridas (ai-corrections.md) · no aplicadas"),
+    r.corrections ? h("pre", {}, r.corrections) : empty("No hay ai-corrections.md de esta ejecución."),
+    h("h3", {}, "Tickets propuestos (ai-tickets.json) · no creados en Jira"),
+    r.tickets == null ? empty("No hay ai-tickets.json de esta ejecución.")
+      : !r.tickets.length ? empty("Sin tickets: solo se proponen para los grupos bug_producto.")
+      : r.tickets.map((t) => h("div", { class: "ticket" },
+          h("strong", {}, t.titulo), h("p", { class: "small muted" }, [t.severidad && `severidad ${t.severidad}`, t.componente && `componente ${t.componente}`, t.etiquetas.join(", ")].filter(Boolean).join(" · ")),
+          t.descripcion ? h("p", {}, t.descripcion) : null,
+          t.solucion.length ? [h("div", { class: "tag" }, "Solución sugerida"), h("ul", {}, t.solucion.map((s) => h("li", {}, s)))] : null,
+          t.pasos.length ? h("details", {}, h("summary", { class: "small" }, `Tests afectados (${t.pasos.length})`), h("ul", {}, t.pasos.map((s) => h("li", {}, s)))) : null)));
+}
+
+function renderEval() {
+  const ev = DATA.evals[state.eval];
+  const caveat = h("p", { class: "small muted" }, "Son escenarios controlados, diseñados en este proyecto, y una sola ejecución por evaluación: demuestran que la clasificación funciona, no que acierte en cualquier proyecto. El escenario flaky lo decide el código y no cuenta en la cifra; los grupos sin_clasificar tampoco (la IA no respondió).");
+  if (!ev) return fill("evaluacion", h("h2", {}, "Evaluación de la IA"),
+    empty("No hay evaluación disponible: falta ", code("playwright-report/ai-eval.json"), " (o ", code("ai-eval.md"), "). Se genera con ", code("npm run eval:ai"), ", que ejecuta los escenarios y consume cuota de IA; el dashboard nunca lo lanza."), caveat);
+  const picker = DATA.evals.length > 1 ? h("label", { class: "small muted" }, "Evaluación ", h("select", { onchange: (e) => { state.eval = Number(e.target.value); renderEval(); } },
+    DATA.evals.map((e, i) => h("option", { value: i, selected: i === state.eval }, `${fmtDate(e.id) ?? "sin fecha"} · ${e.source === "historial" ? "historial" : "actual"}`)))) : null;
+  if (ev.markdown) return fill("evaluacion", h("h2", {}, "Evaluación de la IA"), picker,
+    h("p", { class: "small muted" }, "Solo existe ai-eval.md (evaluación anterior a ai-eval.json): se muestra tal cual, sin métricas desglosadas."), h("pre", {}, ev.markdown), caveat);
+  const m = evalMetrics(ev);
+  fill("evaluacion",
+    h("h2", {}, "Evaluación de la IA"), picker,
+    h("p", { class: "small muted" }, `Evaluación ${fmtDate(ev.generatedAt) ?? "sin fecha"} · `, code(ev.id ?? "sin id"), ` · ${ev.provider ?? "proveedor no registrado"} · ${ev.browser ?? ""}`),
+    h("div", { class: "tiles" },
+      tile("Grupos evaluados", m.allGroups), tile("Grupos correctos", m.okGroups), tile("Acierto por grupos", fmtPct(m.pctGroups), "Ningún grupo evaluado"),
+      tile("Tests en grupos correctos", `${m.okTests} / ${m.allTests}`), tile("Tests en grupos incorrectos", m.allTests - m.okTests), tile("Acierto por tests", fmtPct(m.pctTests), "Ningún grupo evaluado"),
+      tile("No evaluados", m.notEvaluated)),
+    h("div", { class: "table-wrap" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Escenario"), h("th", {}, "Esperado"), h("th", {}, "Decide"), h("th", {}, "Clasificación obtenida"), h("th", { class: "n" }, "Acierto"), h("th", { class: "n" }, "Tiempo"))),
+      h("tbody", {}, ev.scenarios.map((s) => h("tr", {},
+        h("td", {}, code(s.name)), h("td", {}, s.expected ? chip(s.expected) : "?"), h("td", {}, origen(s.decidedBy)),
+        h("td", {}, s.groups.length ? s.groups.map((g) => h("span", {}, chip(g.tipo), ` ${g.id ?? ""} (${g.count}) `)) : h("span", { class: "muted" }, "sin grupos")),
+        h("td", { class: "n" }, `${s.hits}/${s.groups.length}`), h("td", { class: "n" }, s.seconds != null ? `${s.seconds} s` : "n/d", s.reportOk ? "" : " ⚠")))))),
+    caveat);
+}
+
+function renderHistory() {
+  const runs = DATA.runs.filter((r) => r.source !== "demo");
+  if (runs.length < 2) return fill("historial", h("h2", {}, "Historial de ejecuciones"),
+    empty(DATA.mode === "demo" ? "La demo no usa historial." : ["Solo está la ejecución actual. Para conservarla, genera el dashboard con ", code("npm run dashboard -- --save"), " cuando hayas terminado report:ai: se copia a ", code("qa-history/runs/"), " (local, fuera de git) y nunca se sobrescribe."]));
+  const max = Math.max(1, ...runs.map((r) => Math.max(r.tests?.failed ?? 0, r.tests?.flaky ?? 0)));
+  const barCell = (v, color) => {
+    const b = h("div", { class: "fill" }); b.style.width = `${((v ?? 0) / max) * 100}%`; b.style.background = color;
+    return h("td", {}, h("div", { class: "small" }, v ?? "n/d"), h("div", { class: "mini" }, b));
+  };
+  const mix = (r) => {
+    const m = groupMetrics(r.analysis?.groups ?? []);
+    return h("div", { class: "mini", title: TIPOS.map((t) => `${t}: ${m.byTipo[t]}`).join(" · ") }, TIPOS.filter((t) => m.byTipo[t]).map((t) => {
+      const s = h("div"); s.style.flex = String(m.byTipo[t]); s.style.background = `var(--${t})`; return s;
+    }));
+  };
+  fill("historial",
+    h("h2", {}, "Historial de ejecuciones"),
+    h("p", { class: "small muted" }, "Una fila por ejecución guardada con --save (identificada por la hora de inicio de Playwright). Las evaluaciones de la IA tienen su propio historial, abajo."),
+    h("div", { class: "table-wrap" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Fecha"), h("th", {}, "Identificador"), h("th", { class: "n" }, "Total"), h("th", { class: "n" }, "Éxito"), h("th", {}, "Fallidos"), h("th", {}, "Flaky"), h("th", { class: "n" }, "Grupos"), h("th", {}, "Categorías"), h("th", {}, ""))),
+      h("tbody", {}, runs.map((r) => {
+        const i = DATA.runs.indexOf(r);
+        return h("tr", { class: i === state.run ? "sel" : null },
+          h("td", {}, fmtDate(r.id) ?? "sin fecha"), h("td", { class: "small" }, code(r.id ?? "—"), r.source === "historial" ? "" : " (actual)"),
+          h("td", { class: "n" }, r.tests?.total ?? "n/d"), h("td", { class: "n" }, r.tests ? fmtPct(pct(r.tests.passed, r.tests.executed)) ?? "n/d" : "n/d"),
+          barCell(r.tests?.failed, "var(--bug_producto)"), barCell(r.tests?.flaky, "var(--flaky)"),
+          h("td", { class: "n" }, r.analysis ? r.analysis.groups.length : "n/d"), h("td", {}, r.analysis ? mix(r) : h("span", { class: "muted small" }, "sin análisis")),
+          h("td", {}, h("button", { onclick: () => { selectRun(i); scrollTo(0, 0); } }, "Ver")));
+      })))),
+    DATA.evals.length ? [h("h3", {}, "Historial de evaluaciones de la IA"), h("div", { class: "table-wrap" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Fecha"), h("th", {}, "Proveedor"), h("th", { class: "n" }, "Grupos"), h("th", { class: "n" }, "Tests"))),
+      h("tbody", {}, DATA.evals.map((e) => { const m = evalMetrics(e); return h("tr", {}, h("td", {}, fmtDate(e.id) ?? "sin fecha (solo .md)"), h("td", {}, e.provider ?? "n/d"),
+        h("td", { class: "n" }, m ? `${m.okGroups}/${m.allGroups}` : "n/d"), h("td", { class: "n" }, m ? `${m.okTests}/${m.allTests}` : "n/d")); }))))] : null);
+}
+
+function renderArtifacts() {
+  const r = run();
+  fill("artefactos",
+    h("h2", {}, "Artefactos leídos"),
+    r.source === "historial" ? h("p", { class: "small muted" }, "Copia guardada en qa-history/: refleja el estado de los artefactos cuando se guardó.") : null,
+    h("div", { class: "table-wrap" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Fichero"), h("th", {}, "Estado"), h("th", {}, "Vínculo con la ejecución"))),
+      h("tbody", {}, r.artifacts.map((a) => h("tr", {}, h("td", {}, code(a.name)), h("td", {}, STATUS[a.status] ?? a.status), h("td", { class: "small" }, a.link ? LINK[a.link] : "—")))))));
+}
+
+function renderDefinitions() {
+  const def = (k, v) => [h("dt", {}, k), h("dd", {}, v)];
+  fill("definiciones", h("details", {}, h("summary", {}, h("strong", {}, "Cómo se calcula cada indicador")),
+    h("dl", { class: "kv", style: "margin-top:12px" },
+      def("Tests", "Contadores de stats de test-results.json: cada test cuenta una vez por navegador. Total = pasados + fallidos + omitidos + flaky."),
+      def("Éxito", "Pasados / (total − omitidos). Los flaky no cuentan como éxito: fallaron al menos una vez."),
+      def("Grupos", "Grupos de ai-failures-grouped.json. Un grupo es una causa; su número no se suma con el de tests."),
+      def("Tests en los grupos", "Suma de count de cada grupo: fallidos más flaky de la ejecución."),
+      def("Determinista", "Grupos flaky: los marca triage.mjs sin IA (fallaron y pasaron al reintentar)."),
+      def("Clasificados por IA", "Grupos test_roto, bug_producto o entorno: los asigna la IA en report:ai."),
+      def("sin_clasificar", "La llamada de clasificación falló o el informe no trae tipo."),
+      def("Pendientes de revisión", "Los artefactos no guardan revisiones. Se marcan los sin_clasificar y los de IA con confianza media, baja o sin confianza."),
+      def("Peticiones a la IA", "ai_requests de ai-failures-grouped.json: peticiones de report:ai al proveedor, reintentos incluidos. No hay datos de tokens ni de coste."),
+      def("Vínculo", "El análisis se asocia a la ejecución por run_start_time. Los ficheros sin identificador (resumen, correcciones, tickets) solo se aceptan si son posteriores a test-results.json."),
+      def("Acierto de la IA", "De ai-eval.json (npm run eval:ai): grupos bien clasificados / grupos evaluados, y lo mismo ponderado por tests."))));
+}
+
+function renderRun() {
+  renderWarnings(); renderSummary(); renderDistribution(); renderGroups(); renderRecommendations(); renderHistory(); renderArtifacts();
+}
+
+renderHeader(); renderRun(); renderEval(); renderDefinitions();
+fill("footer", `Generado ${fmtDate(DATA.generatedAt)} por scripts/dashboard.mjs a partir de los artefactos existentes. La página no llama a ningún modelo ni se conecta a la red.`);
+</script>
+</body>
+</html>
