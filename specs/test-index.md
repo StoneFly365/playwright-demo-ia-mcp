@@ -1,7 +1,7 @@
 # Índice de Tests — SauceDemo E2E
 
-**Última actualización:** 2026-06-02  
-**Total de tests:** 79  
+**Última actualización:** 2026-10-21  
+**Total de tests:** 80 (79 + `seed.spec.ts`, arranque de los agentes con sesión iniciada)  
 **Framework:** Playwright + TypeScript · Page Object Model  
 **App bajo test:** https://www.saucedemo.com
 
@@ -27,7 +27,7 @@
 | [cart-edge-cases.spec.ts](#cart-edge-casesspects) | Casos límite del carrito | 7 | 0 |
 | [problem-user-cart.spec.ts](#problem-user-cartspects) | Comportamiento problem_user | 5 | 0 |
 | [performance-glitch-user-cart.spec.ts](#performance-glitch-user-cartspects) | Comportamiento performance_glitch_user | 2 | 0 |
-| **TOTAL** | | **79** | **9** |
+| **TOTAL** | | **79** | **10** |
 
 ---
 
