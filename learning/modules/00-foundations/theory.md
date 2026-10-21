@@ -242,17 +242,18 @@ catalogo.productos.push('Backpack');      // permitido: readonly no lo impide
 
 ```typescript
 // pages/login.page.ts
+import { Locator, Page } from '@playwright/test';      // desde un paquete instalado
 export class LoginPage { … }
 
 // tests/login.spec.ts
-import { test, expect } from '@playwright/test';   // desde un paquete instalado
-import { LoginPage } from '../pages/login.page';   // desde una ruta relativa
+import { test, expect } from '../fixtures/scenarios';  // desde una ruta relativa
+import { LoginPage } from '../pages/login.page';       // desde una ruta relativa
 ```
 
 - Sin `/` o `.` inicial → paquete de `node_modules`.
 - Con `./` o `../` → ruta relativa a este fichero. `../pages/login.page` significa "sube un nivel, entra en `pages`". La extensión `.ts` no se escribe.
 
-**Ábrelo:** [`tests/checkout.spec.ts:1-5`](../../../tests/checkout.spec.ts) — cinco imports: uno de paquete y cuatro de Page Objects.
+**Ábrelo:** [`tests/checkout.spec.ts:1-5`](../../../tests/checkout.spec.ts) — cinco imports, todos de rutas relativas: `test` y `expect` del fixture del proyecto (que los reexporta desde `@playwright/test`) y cuatro Page Objects.
 
 ---
 

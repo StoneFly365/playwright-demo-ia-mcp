@@ -91,6 +91,8 @@ playwright-demo-ia-mcp/
 │   ├── cart.page.ts                # POM: carrito de compras
 │   ├── checkout.page.ts            # POM: proceso de checkout
 │   └── menu.page.ts                # POM: menú lateral
+├── fixtures/
+│   └── scenarios.ts                # Escenarios de fallo de la demo (DEMO_SCENARIO)
 ├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, arranque de los agentes)
 ├── specs/                          # Planes de test y documentación QA
 ├── prompts/                        # Prompts usados por el reporte IA
@@ -163,6 +165,12 @@ npm run test:headed
 npm run test:demo:green   # solo tests que pasan (excluye @demo-fail)
 npm run test:demo:fail    # solo los fallos intencionados (@demo-fail)
 
+# Demo: escenarios de fallo realistas (excluyen @demo-fail)
+npm run test:scenario:cascade   # cambio del frontend: unos 70 tests caen por una sola causa
+npm run test:scenario:bug       # bug de producto: el badge del carrito cuenta uno de más
+npm run test:scenario:flaky     # fallan en el primer intento y pasan al reintentar
+npm run test:scenario:env       # entorno caído: el servidor rechaza las conexiones
+
 # Ver el informe HTML tras la ejecución
 npm run test:report
 
@@ -173,6 +181,8 @@ npm run ruta-qa:check
 Los tests se ejecutan en **Chromium, Firefox y WebKit** (definidos como `projects` en `playwright.config.ts`).
 
 Los fallos intencionados llevan el tag `@demo-fail`. `test:demo:green` demuestra la suite en verde; `test:demo:fail` aísla los fallos que alimentan el AI report.
+
+Los escenarios `test:scenario:*` simulan fallos de los que se ven en un proyecto real, sin tocar los tests: el fixture [`fixtures/scenarios.ts`](fixtures/scenarios.ts) lee `DEMO_SCENARIO` y modifica la página antes de cada test. Sin la variable, la suite se comporta igual.
 
 ---
 
