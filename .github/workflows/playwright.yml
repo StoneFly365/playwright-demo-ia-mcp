@@ -37,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Unit tests (triage del reporte IA)
+        run: npm run test:unit
+
       - name: Determine grep filter
         id: suite
         run: |

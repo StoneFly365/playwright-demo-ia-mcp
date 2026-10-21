@@ -1,4 +1,6 @@
-Entrada por stdin: ai-failures-grouped.json
+Entrada por stdin: JSON con generated_at, total_failed_tests, total_flaky_tests, total_groups y groups[].
+Cada grupo es una causa: group_id, tipo, confianza, evidencia, accion, count, browsers, affected_tests (título, fichero, línea, navegador), omitted_tests (tests del grupo que no se listan) y error_summary.
+Valores de tipo: test_roto (el test está mal, la aplicación funciona), bug_producto (la aplicación falla, el test está bien), entorno (red o infraestructura), flaky (falló y pasó al reintentar), sin_clasificar.
 Devuelve SOLO Markdown (sin fences exteriores) con posibles correcciones técnicas para los fallos detectados.
 
 Estructura obligatoria:
@@ -7,24 +9,26 @@ Estructura obligatoria:
 
 ## Resumen de fallos agrupados
 
-| Grupo | Pruebas afectadas | Error principal |
-|-------|------------------|-----------------|
-[Una fila por grupo con group_id, count y error_message recortado a 80 chars. Prefija el error con UN emoji según el tipo de fallo: 🔢 contador/badge, 🛒 carrito (count de ítems), 🔀 URL/redirección, 📝 validación de formulario, ⏱️ timeout/visibilidad. Si no encaja, sin emoji.]
+| Grupo | Tipo | Pruebas afectadas | Error principal |
+|-------|------|------------------|-----------------|
+[Una fila por grupo con group_id, tipo, count y la primera línea de error_summary recortada a 80 chars. Prefija el tipo con UN emoji: 🐞 bug_producto, 🧪 test_roto, 🌐 entorno, 🎲 flaky, ❔ sin_clasificar.]
 
 ## Correcciones por grupo
 
 [Por cada grupo, en este formato:]
 
-### [group_id] – [error_message recortado]
+### [group_id] – [tipo] – [primera línea de error_summary recortada]
 
-🔍 **Hipótesis de causa:** [selector roto / timeout / datos de prueba / entorno / otro]
+🔍 **Diagnóstico:** [evidencia, con la confianza entre paréntesis. En los flaky: falló en el primer intento y pasó al reintentar]
 
 🔧 **Pasos para corregir:**
 1. [acción concreta]
 2. [acción concreta]
 3. [acción concreta si aplica]
 
-🧪 **Tests afectados:** [lista de títulos]
+[Según el tipo: test_roto → corregir el test (selector, expectativa o datos). bug_producto → NO modificar el test: reportar el bug a producto y dejar el test fallando como evidencia. entorno → revisar el entorno o la red; no tocar el código. flaky → estabilizar la espera o el recurso lento; no relajar la aserción.]
+
+🧪 **Tests afectados:** [lista de títulos; si omitted_tests > 0, añade "y N más"]
 
 ---
 

@@ -1,4 +1,5 @@
-Entrada por stdin: ai-failures-grouped.json
+Entrada por stdin: array JSON con los grupos de fallos clasificados como bug_producto (la aplicación falla y el test está bien).
+Cada grupo tiene group_id, tipo, confianza, evidencia, accion, count, browsers, affected_tests (título, fichero, línea, navegador), omitted_tests y error_summary.
 Devuelve SOLO un array JSON válido (sin markdown, sin comentarios).
 
 Crea 1 ticket por cada grupo de fallos.
@@ -7,7 +8,7 @@ Cada ticket debe tener exactamente estos campos, todos los textos en español:
 - "titulo": string – incluye group_id y resumen del error (máx 80 chars)
 - "severidad": "bloqueante" | "alta" | "media" | "baja" – según count y si afecta a login/checkout/funciones críticas
 - "componente": string – inferido del archivo de test o títulos; si no se puede inferir, usa "e2e"
-- "descripcion": string – qué falla, cuántas pruebas afecta y el error exacto
+- "descripcion": string – qué falla, cuántas pruebas y navegadores afecta, la evidencia y el error exacto
 - "pasos_para_reproducir": array de strings – títulos de los tests afectados
 - "solucion_sugerida": array de strings – 2 a 4 acciones concretas para resolver el fallo
 - "etiquetas": ["playwright", "e2e", "ai-triage"]

@@ -34,12 +34,12 @@ Este proyecto ya usa IA en producción. No es un ejemplo: se ejecuta en cada pip
 
 | Caso de uso | Dónde vive | Qué hace |
 |---|---|---|
-| **Triage de fallos** | [`prompts/ai-group-failures.txt`](../../prompts/ai-group-failures.txt) | Agrupa N fallos por causa raíz probable |
+| **Triage de fallos** | [`prompts/ai-classify.txt`](../../prompts/ai-classify.txt) | Clasifica cada grupo de fallos como test roto, bug de producto o problema de entorno |
 | **Comunicación a negocio** | [`prompts/ai-summary.txt`](../../prompts/ai-summary.txt) | Convierte el resultado técnico en un correo que entiende un jefe de producto |
 | **Alta de incidencias** | [`prompts/ai-tickets.txt`](../../prompts/ai-tickets.txt) | Genera tickets Jira con severidad y pasos de reproducción |
 | **Hipótesis de corrección** | [`prompts/ai-corrections.txt`](../../prompts/ai-corrections.txt) | Propone causa y pasos por cada grupo de fallos |
 
-El orquestador es [`scripts/report-ai.mjs`](../../scripts/report-ai.mjs): lee `test-results.json`, agrupa, y luego lanza resumen, correcciones y tickets **en paralelo**.
+El orquestador es [`scripts/report-ai.mjs`](../../scripts/report-ai.mjs): lee `test-results.json`, agrupa los fallos en código ([`scripts/triage.mjs`](../../scripts/triage.mjs), sin IA), pide a la IA que clasifique cada grupo y luego lanza resumen, correcciones y tickets **en paralelo**.
 
 Fíjate en lo que **no** hace: no arregla ningún test. Ninguno de los cuatro prompts tiene permiso para tocar código. Eso es una decisión de diseño, no una limitación.
 
@@ -104,7 +104,7 @@ Genera cuatro ficheros en `playwright-report/`:
 
 | Fichero | Qué es |
 |---|---|
-| `ai-failures-grouped.json` | Los fallos agrupados por causa probable |
+| `ai-failures-grouped.json` | Los fallos agrupados por causa probable, con su clasificación |
 | `ai-summary.txt` | El correo para negocio |
 | `ai-corrections.md` | Hipótesis de causa y pasos |
 | `ai-tickets.json` | Tickets Jira listos para importar |

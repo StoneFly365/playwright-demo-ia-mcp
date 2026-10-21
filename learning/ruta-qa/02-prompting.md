@@ -64,34 +64,35 @@ El segundo tarda dos minutos más en escribirse y ahorra veinte de correcciones.
 
 ### Los cuatro prompts de producción de este repositorio
 
-No hay que imaginárselo: el directorio `prompts/` tiene [cuatro prompts](../../prompts/ai-group-failures.txt) que se ejecutan en cada pipeline. Ábrelos, son cortos, y cada uno enseña una técnica. Sus salidas reales están en [`ejemplos/`](ejemplos/README.md), por si quieres ver el resultado antes que la receta.
+No hay que imaginárselo: el directorio `prompts/` tiene [cuatro prompts](../../prompts/ai-classify.txt) que se ejecutan en cada pipeline. Ábrelos, son cortos, y cada uno enseña una técnica. Sus salidas reales están en [`ejemplos/`](ejemplos/README.md), por si quieres ver el resultado antes que la receta.
 
-**a) Contrato de salida como esquema** — [`prompts/ai-group-failures.txt`](../../prompts/ai-group-failures.txt)
+**a) Contrato de salida como esquema** — [`prompts/ai-classify.txt`](../../prompts/ai-classify.txt)
 
-Declara la estructura JSON campo a campo, con tipos:
+Declara la estructura JSON campo a campo, con los valores permitidos:
 
 ```text
-Salida JSON (estructura exacta):
+Salida: SOLO un array JSON válido, sin markdown, con un objeto por cada grupo de entrada:
 {
-  "risk_level": "high | medium | low",
-  "total_failed_tests": number,
-  "groups": [ { "group_id": "G001", "count": number, ... } ]
+  "group_id": "G001",
+  "tipo": "test_roto | bug_producto | entorno",
+  "confianza": "alta | media | baja",
+  ...
 }
 
-Devuelve SOLO ese JSON (sin markdown). NO uses ```.
+Devuelve SOLO el array JSON. NO uses ```.
 ```
 
 Por qué importa: la salida la consume un programa, no una persona. Sin esquema, no hay automatización posible.
 
-**b) Prohibiciones explícitas** — el mismo fichero
+**b) Reglas de decisión y plan B** — el mismo fichero
 
 ```text
-- NO inventes tests ni campos que no estén en el input.
-- Solo usa información existente: títulos, estado, errores, ubicación si existe.
-- Si falta stack o ubicación, agrupa por primera línea del error.
+- Compara lo que el test espera, lo que recibe y lo que muestra page_context.
+- Un error de red (ERR_..., NS_ERROR_...) o una página que no llega a cargar es entorno.
+- No supongas. Si la evidencia no basta, elige el tipo más probable y baja la confianza.
 ```
 
-La tercera línea es la clave: **le dice qué hacer cuando falta un dato.** Un prompt sin plan B para los huecos es un prompt que alucina en cuanto la entrada es imperfecta.
+La tercera línea es la clave: **le dice qué hacer cuando faltan datos.** Un prompt sin plan B para los huecos es un prompt que alucina en cuanto la entrada es imperfecta.
 
 **c) Definir la audiencia, no el tema** — [`prompts/ai-summary.txt`](../../prompts/ai-summary.txt)
 

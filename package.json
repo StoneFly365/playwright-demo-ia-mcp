@@ -15,6 +15,7 @@
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:report": "playwright show-report",
+    "test:unit": "node --test scripts/triage.test.mjs",
     "report:ai": "node scripts/report-ai.mjs",
     "test:ai": "npm run test && npm run report:ai",
     "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
