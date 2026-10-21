@@ -15,6 +15,46 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 
 ---
 
+## Cómo encaja todo
+
+Los agentes de [`.claude/agents/`](.claude/agents/) crean y reparan los tests. Usan el navegador y el runner a través del servidor MCP de Playwright definido en [`.mcp.json`](.mcp.json). Después, `report:ai` lee los resultados de la ejecución y la IA explica los fallos.
+
+```mermaid
+flowchart LR
+    APP(["SauceDemo"])
+
+    subgraph AGENTS ["Agentes Claude Code · .claude/agents/"]
+        direction TB
+        P["planner"] -->|"plan de test"| SP[("specs/")]
+        SP --> G["generator"]
+        G -->|"escribe spec"| T[("tests/ + pages/")]
+        H["healer"] -->|"corrige"| T
+    end
+
+    MCP{{"MCP playwright-test<br/>playwright run-test-mcp-server"}}
+    P & G & H <-->|"browser_* · test_run · test_debug"| MCP
+    MCP <--> APP
+
+    T --> RUN["npx playwright test<br/>Chromium · Firefox · WebKit"]
+    RUN <--> APP
+    RUN --> JSON[("test-results.json")]
+
+    subgraph AI ["npm run report:ai · scripts/report-ai.mjs"]
+        direction TB
+        CHK{"¿Hay fallos?"} -->|"no"| OK["ai-summary.txt<br/>sin llamar a la IA"]
+        CHK -->|"sí"| GR["1. Agrupar fallos<br/>prompts/ai-group-failures.txt"]
+        GR --> PAR["2. En paralelo:<br/>resumen · correcciones · tickets"]
+    end
+
+    JSON --> CHK
+    LLM(["Claude CLI en local<br/>Gemini en CI"])
+    GR & PAR <--> LLM
+    PAR --> OUT[("playwright-report/<br/>ai-summary.txt · ai-corrections.md<br/>ai-tickets.json · ai-failures-grouped.json")]
+    OUT -.->|"diagnóstico (paso manual)"| H
+```
+
+---
+
 ## Learning Lab
 
 Este repositorio es además el laboratorio de **QA Automation & AI Engineering Learning Lab**, un programa de formación que usa el propio proyecto como material: cada concepto se enseña sobre un fichero y una línea reales, y los defectos deliberados de la suite son los ejercicios de diagnóstico.
@@ -225,18 +265,7 @@ El script elige el proveedor según el entorno:
 
 La presencia de `GEMINI_API_KEY` es lo que decide el proveedor (ver `runClaude` en [`scripts/report-ai.mjs`](scripts/report-ai.mjs)).
 
-### Cómo funciona
-
-```
-test-results.json  ──▶  IA (Claude local / Gemini CI)  ──▶  playwright-report/
-                         │
-                         ├── Agrupa fallos por categoría
-                         ├── Genera resumen ejecutivo
-                         ├── Propone correcciones por fallo
-                         └── Crea tickets Jira listos para importar
-```
-
-El resumen, las correcciones y los tickets se ejecutan en **paralelo** tras la agrupación de fallos.
+El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-encaja-todo).
 
 ### Ficheros generados
 
