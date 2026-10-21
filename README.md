@@ -101,6 +101,8 @@ playwright-demo-ia-mcp/
 │   ├── report-ai.mjs               # Script de análisis IA de resultados
 │   ├── triage.mjs                  # Agrupación, flaky y redacción, sin IA
 │   ├── triage.test.mjs             # Tests de triage.mjs (npm run test:unit)
+│   ├── merge-results.mjs           # Une los resultados de los 3 navegadores en CI
+│   ├── merge-results.test.mjs      # Tests de merge-results.mjs (npm run test:unit)
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages)
@@ -243,7 +245,7 @@ gh run watch
 
 ```mermaid
 flowchart TD
-    T["push / pull_request a main · manual"] --> M{"Matrix por navegador<br/>(3 jobs en serie, max-parallel: 1)"}
+    T["push / pull_request a main · manual"] --> M{"Matrix por navegador<br/>(3 jobs en paralelo)"}
 
     M --> C["Job: chromium"]
     M --> F["Job: firefox"]
@@ -252,16 +254,17 @@ flowchart TD
     subgraph JOB ["Cada job · contenedor mcr.microsoft.com/playwright"]
         direction TB
         S1["npm ci"] --> S2["npx playwright test --project=NAVEGADOR"]
-        S2 --> S3["AI report · Gemini free tier"]
-        S3 --> S4["Summary + artefacto playwright-report-NAVEGADOR"]
+        S2 --> S3["Artefactos: test-results.json<br/>y playwright-report-NAVEGADOR"]
     end
 
     C -.-> JOB
     F -.-> JOB
     W -.-> JOB
+
+    JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json<br/>· report:ai · Summary + artefacto ai-report"]
 ```
 
-> Los jobs van en serie porque la cuota del free tier de Gemini es por minuto; en paralelo provocarían errores 429. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`. Cada navegador genera su propio reporte y artefacto.
+> Los tres navegadores van en paralelo y el reporte IA se genera **una sola vez** con los resultados de los tres ([`scripts/merge-results.mjs`](scripts/merge-results.mjs)): como mucho 4 llamadas a la IA por ejecución, y un fallo que se repite en los tres navegadores sale como un único grupo. En push y PR, si lo único que hay son tests flaky, no se llama a la IA. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`.
 
 ---
 
@@ -300,7 +303,7 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 
 `npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md`. Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
 
-> La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Una evaluación gasta 4 y un `report:ai` completo hasta 4 por navegador, así que un `suite=fail` en los tres navegadores consume 12 de las 20 del día.
+> La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Una evaluación gasta 4, y una ejecución de CI con fallos, otras 4 como mucho (el reporte es uno para los tres navegadores). Una CI en verde no gasta ninguna, aunque haya algún test flaky.
 
 Última medición (Claude Haiku 5.5, en local, 21 de octubre de 2026): **11 de 11 grupos bien clasificados, que cubren 185 de 185 tests fallados**.
 
@@ -373,7 +376,7 @@ npm run eval:ai
 
 ### Uso en CI (GitHub Actions)
 
-El reporte se ejecuta automáticamente en cada job (uno por navegador). El resumen aparece en la pestaña **Summary** del workflow sin necesidad de descargar ningún artefacto.
+El reporte se ejecuta automáticamente en el job **Reporte IA**, una vez por ejecución y con los resultados de los tres navegadores juntos. El resumen aparece en la pestaña **Summary** del workflow sin necesidad de descargar ningún artefacto, y los ficheros completos están en el artefacto `ai-report`.
 
 Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
 **Settings > Secrets and variables > Actions > New repository secret**

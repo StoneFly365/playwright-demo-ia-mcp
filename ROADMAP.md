@@ -143,7 +143,7 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 
 - Los `@demo-fail` fallan a propósito: no se corrigen.
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
-- La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
+- La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Desde la PR de la cuota, una ejecución de CI con fallos gasta 4 como mucho y una en verde ninguna, aunque tenga flaky. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.
 - Los tests nuevos que escriba el agente generator importan de `@playwright/test`. Para que les afecten los escenarios, hay que cambiar ese import por `../fixtures/scenarios`.
 
@@ -164,3 +164,6 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 | 2026-10-21 | La evaluación de la IA es un job de CI manual (`suite=eval`), no parte de cada push | Ejecutar los 5 escenarios y 5 reportes IA en cada push gasta cuota y tiempo sin aportar nada nuevo |
 | 2026-10-21 | El acierto se mide por grupos y también por tests | Un grupo grande mal clasificado pesa más que uno pequeño |
 | 2026-10-21 | La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta los grupos `sin_clasificar` | Con la cuota gratuita de Gemini (20 peticiones al día) la evaluación completa no cabía, y un 0 % por cuota agotada se leía como "la IA no acierta" |
+| 2026-10-21 | Un solo reporte IA por ejecución de CI, con los resultados de los tres navegadores unidos (`scripts/merge-results.mjs`), y los navegadores en paralelo | Con un reporte por navegador, un `suite=fail` gastaba 12 de las 20 peticiones diarias de Gemini y los jobs tenían que ir en serie |
+| 2026-10-21 | En push y PR no se llama a la IA si lo único que hay son tests flaky (`AI_SKIP_FLAKY_ONLY`) | El 21 de octubre, tres CI en verde gastaron 6 peticiones por un test flaky de webkit o firefox |
+| 2026-10-21 | El workflow corre con `permissions: contents: read` y checkout sin credenciales persistidas | Ningún job escribe en el repositorio (revisión de CodeRabbit en la PR #4) |
