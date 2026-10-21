@@ -420,7 +420,7 @@ Decidido contra el [Learning Path aprobado](learning-path.md), no por intuición
 | **Estrategia de tags, quality gates, métricas** | **M07** | M01 **usa** `@demo-fail`; no diseña el esquema de tags |
 | Análisis de riesgo, qué automatizar | M07 | — |
 | **IA, MCP, agentes, prompts** | **M08** | — |
-| Contexto asegurador y journeys de seguros | **M09** | M01 usa escenarios genéricos (sección 14) |
+| Contexto de dominio y journeys reales | **M09** | M01 usa escenarios genéricos (sección 14) |
 | Interacciones sin anclaje: `check`, subida de ficheros, diálogos, arrastrar | **Ninguno por ahora** | No existen ni en el repositorio ni en SauceDemo. Enseñarlos exigiría inventar ejemplos. Se mencionan en una tabla de "existe pero aquí no lo verás" y se retoman en M09 si el journey del capstone lo pide |
 | XPath | Solo mención | Se nombra para desaconsejarlo, con una frase |
 | `BrowserContext` y multi-pestaña | Mención en M01, uso en M03 | Se nombra porque explica el aislamiento entre tests |
@@ -585,7 +585,7 @@ Diseñar y escribir la cobertura de ese escenario. El alumno decide cuántos tes
 
 - Es el flujo E2E más largo de la aplicación y toca las cinco pantallas. 🔬 **Recorrido entero durante la validación, sin incidencias.**
 - **AC2 cubre un hueco real de la suite**: `checkout.spec.ts` verifica que los importes se ven, no que sean correctos. El alumno mejora la cobertura del proyecto, no la repite. 🔬 **El cálculo del 8 % está confirmado contra la aplicación**, así que el criterio es verificable y no depende de un supuesto.
-- Es genérico (compra online) pero se traduce directamente a un flujo de contratación de seguro, lo que prepara el terreno para M09 sin convertir M01 en un módulo de seguros.
+- Es genérico (compra online) pero se traduce directamente a cualquier flujo de alta o contratación (banca, seguros, telecomunicaciones...), lo que prepara el terreno para M09 sin convertir M01 en un módulo de un dominio concreto.
 - AC6 mantiene viva la competencia de justificación de M00 (O8) al nivel P8.
 
 **Menos instrucciones que los Labs, deliberadamente:** ni pasos, ni ficheros indicados, ni número de tests prescrito.
@@ -767,12 +767,12 @@ El [Learning Path](learning-path.md) asigna a M01 **6 h + 3 h = 9 h**. Esta esti
 
 # 14. Contexto del cliente
 
-El módulo 01 **no** se convierte en un módulo de seguros. La instrucción del programa es clara y el análisis la respalda: el alumno tiene que dominar la herramienta antes de aplicarla a un dominio.
+El módulo 01 **no** se convierte en un módulo de un dominio concreto. La instrucción del programa es clara y el análisis la respalda: el alumno tiene que dominar la herramienta antes de aplicarla a un dominio.
 
 **Qué se hace en su lugar:**
 
 1. **Los escenarios se redactan en lenguaje de negocio, no técnico.** El Challenge dice "un cliente añade dos productos y quiere ver el desglose de importes", no "escribe un test que verifique `subtotalLabel`". Es el hábito que M09 exigirá con journeys de seguros.
-2. **Los tipos de escenario elegidos son los que se repiten en cualquier aplicación de seguros:** autenticación, navegación entre pantallas, formulario multi-paso con validaciones, mensajes de error, verificación de importes calculados y flujo E2E completo. Un checkout de e-commerce y una contratación de póliza tienen la misma forma.
+2. **Los tipos de escenario elegidos son los que se repiten en cualquier aplicación de negocio:** autenticación, navegación entre pantallas, formulario multi-paso con validaciones, mensajes de error, verificación de importes calculados y flujo E2E completo. Un checkout de e-commerce y una contratación de póliza tienen la misma forma.
 3. **Se nombra el paralelismo una vez, sin forzarlo.** Una nota en la teoría del tipo: *"este formulario de checkout de dos pasos con validación por campo es estructuralmente idéntico a un formulario de alta de póliza; lo que aprendas aquí se traslada directamente"*. Una frase, no una sección.
 4. **Verificación de importes = cálculo de prima.** El AC2 del Challenge (comprobar que subtotal + impuestos = total) es el ejercicio genérico más cercano a validar el cálculo de una prima, que será el corazón del capstone.
 5. **Nada de procesos internos del cliente.** No se inventan ramos, productos, coberturas ni flujos. Cuando el cliente aporte los suyos, se sustituyen los escenarios sin tocar la estructura del módulo.

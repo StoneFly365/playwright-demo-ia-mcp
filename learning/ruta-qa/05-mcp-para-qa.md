@@ -75,7 +75,7 @@ Que el planificador no pueda escribir código no es una carencia: **es un guarda
 ### Tres riesgos antes de conectarlo a algo de tu empresa
 
 1. **Un servidor MCP es código de terceros ejecutándose en tu máquina**, con tus permisos.
-2. **Lo que el agente ve, sale de tu máquina.** Si navega a un entorno con datos reales de asegurados, esos datos van al prompt.
+2. **Lo que el agente ve, sale de tu máquina.** Si navega a un entorno con datos reales de clientes, esos datos van al prompt.
 3. **Inyección de prompt:** si lee contenido de una web, esa web puede contener instrucciones dirigidas a él. Por eso se acotan las herramientas.
 
 ---

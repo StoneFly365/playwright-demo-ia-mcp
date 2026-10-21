@@ -23,18 +23,18 @@ Compara:
 ```
 
 ```text
-✅ Actúa como QA senior de una aseguradora.
+✅ Actúa como QA senior de una tienda online.
 
 CONTEXTO
-Aplicación web de contratación de pólizas. Login con RUT y contraseña.
+Área de clientes de la tienda. Login con email y contraseña.
 Bloqueo tras 3 intentos fallidos durante 15 minutos.
 
 HISTORIA DE USUARIO
-Como cliente quiero acceder con mi RUT para consultar mis pólizas.
+Como cliente quiero acceder con mi email para consultar mis pedidos.
 
 CRITERIOS DE ACEPTACIÓN
-1. RUT válido + contraseña correcta → portada de pólizas.
-2. Credenciales incorrectas → mensaje genérico, sin revelar si el RUT existe.
+1. Email válido + contraseña correcta → portada de pedidos.
+2. Credenciales incorrectas → mensaje genérico, sin revelar si el email existe.
 3. Tres intentos fallidos → cuenta bloqueada 15 min.
 
 TAREA
@@ -123,7 +123,7 @@ Cuando la respuesta no sirve, la reacción natural es volver a preguntar. Es la 
 | ❌ Iteración pobre | ✅ Iteración útil |
 |---|---|
 | "no, hazlo mejor" | "Los escenarios 3 y 5 son el mismo caso con distinto dato. Fusiónalos y añade uno de sesión expirada." |
-| "más casos" | "Faltan casos negativos. Añade 4: RUT con formato inválido, contraseña vacía, usuario bloqueado, sesión caducada." |
+| "más casos" | "Faltan casos negativos. Añade 4: email con formato inválido, contraseña vacía, usuario bloqueado, sesión caducada." |
 | "no me gusta el formato" | *(corrige el contrato de salida en el prompt original y relanza)* |
 
 Regla: **si un fallo se va a repetir, se arregla en el prompt; si es puntual, se corrige en la conversación.** Un prompt que funciona se guarda; no es un mensaje de chat, es un activo del equipo.

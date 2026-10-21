@@ -182,7 +182,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Nivel** | 4 DESIGN |
 | **Dependencias** | 06 |
 | **Repository mapping** | `specs/test-index.md` y su tabla de cobertura; el tag `@demo-fail` como base de un esquema `@smoke`/`@regression`/`@critical`; `max-parallel: 1` como decisión coste/velocidad documentada; los 237 runs como problema de escalado; hallazgos **E1-E4** (deriva documental) como auditoría doc↔código; `prompts/ai-summary.txt` como comunicación no técnica |
-| **Entregables** | Estrategia de test de 2 páginas para un producto asegurador genérico; esquema de tags con criterio de ejecución |
+| **Entregables** | Estrategia de test de 2 páginas para un producto real (el del alumno o uno de ejemplo); esquema de tags con criterio de ejecución |
 
 ---
 
@@ -211,9 +211,9 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 
 | | |
 |---|---|
-| **Objetivo** | Integrar todo en un entregable propio con contexto asegurador |
+| **Objetivo** | Integrar todo en un entregable propio sobre el dominio del alumno |
 | **Competencias** | Todas (A-O) |
-| **Contenidos** | Los del programa, aplicados de forma autónoma sobre journeys genéricos de seguros: cotización, contratación de póliza, consulta, declaración de siniestro, gestión de datos del asegurado |
+| **Contenidos** | Los del programa, aplicados de forma autónoma sobre los journeys principales del dominio que elija el alumno (por ejemplo: alta de cliente, compra o contratación, consulta, incidencia, gestión de datos personales) |
 | **Duración** | 6 h de sesión + 10-12 h personales |
 | **Nivel** | 7 ARCHITECT |
 | **Dependencias** | Todos |
