@@ -161,10 +161,11 @@ npm run report:ai
 Abre `ai-corrections.md` y contrasta con tu diagnóstico manual:
 
 1. En los dos fallos que analizaste tú, ¿coincide con tu causa raíz o se quedó en el síntoma?
-2. La agrupación de `ai-failures-grouped.json`, ¿tiene sentido? Los diez fallos son de **cinco tipos distintos**. ¿Cuántos grupos hizo?
-3. Si mañana llegan 200 fallos, ¿esta salida te ahorra tiempo? ¿Con qué te quedarías y qué revisarías siempre a mano?
+2. La agrupación de `ai-failures-grouped.json` no la hace la IA: la hace el código ([`scripts/triage.mjs`](../../scripts/triage.mjs)), por patrón del fallo y por el elemento implicado. Los diez fallos son de **cinco tipos distintos** y salen siete grupos. Mira `G001` y `G002`: ¿cada uno es una sola causa, o junta errores distintos que solo comparten síntoma? ¿Cuándo te conviene esa agrupación (setenta fallos por un selector roto) y cuándo te engaña?
+3. La IA clasifica los siete grupos como `test_roto` con confianza alta. Coge uno y compruébalo con el código abierto: la `evidencia` que cita, ¿está de verdad en el error o en la página, o se la ha inventado?
+4. Si mañana llegan 200 fallos, ¿esta salida te ahorra tiempo? ¿Con qué te quedarías y qué revisarías siempre a mano?
 
-> La conclusión honesta suele ser: **la IA es excelente triando y mediocre diagnosticando.** Úsala para decidir por dónde empezar, no para decidir qué está roto.
+> La conclusión honesta suele ser: **agrupar es trabajo del código, que es determinista y barato; la IA aporta al clasificar, cuando tiene la evidencia delante** (el error y el estado de la página). Úsala para decidir por dónde empezar y de quién es el problema, no para decidir el arreglo.
 
 ---
 

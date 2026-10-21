@@ -63,7 +63,7 @@ El mismo script valida las salidas JSON con `JSON.parse()` y nada más. Si el mo
 
 **3 · Lo que le pegas, se lo has dado.**
 
-Todo lo que pones en el prompt sale de tu máquina hacia un proveedor. En un proyecto de seguros eso incluye nombres, RUT, pólizas, importes. **Datos reales de asegurado no van a un prompt.** Anonimiza o usa datos sintéticos. Y ojo con el camino inverso: si le das a la IA un fichero de log de un tercero, ese fichero puede contener instrucciones dirigidas al modelo (inyección de prompt).
+Todo lo que pones en el prompt sale de tu máquina hacia un proveedor. En un proyecto real eso incluye nombres, documentos de identidad, datos de clientes, importes. **Datos reales de clientes no van a un prompt.** Anonimiza o usa datos sintéticos. Y ojo con el camino inverso: si le das a la IA un fichero de log de un tercero, ese fichero puede contener instrucciones dirigidas al modelo (inyección de prompt).
 
 ### La checklist de validación
 
@@ -98,7 +98,7 @@ Diez tests en rojo, de cinco tipos distintos (URL, conteo, badge, texto de valid
 npm run report:ai
 ```
 
-⏳ Tarda 2-3 minutos: son cuatro llamadas al modelo, una de agrupación y tres en paralelo. No necesitas intervenir.
+⏳ Tarda alrededor de un minuto. El código agrupa los fallos sin IA y después hay hasta cuatro llamadas al modelo: una para clasificar los grupos y tres en paralelo. No necesitas intervenir.
 
 Genera cuatro ficheros en `playwright-report/`:
 
@@ -109,7 +109,7 @@ Genera cuatro ficheros en `playwright-report/`:
 | `ai-corrections.md` | Hipótesis de causa y pasos |
 | `ai-tickets.json` | Tickets Jira listos para importar |
 
-Los mismos cuatro ficheros, generados el 19 de agosto de 2026 sobre estos mismos diez fallos, están en [`learning/ruta-qa/ejemplos/`](ejemplos/README.md). Si tu ejecución falla —sin CLI, sin autenticación, red bloqueada— usa esos y continúa sin perder nada del ejercicio.
+Los mismos cuatro ficheros, generados el 21 de octubre de 2026 sobre estos mismos diez fallos, están en [`learning/ruta-qa/ejemplos/`](ejemplos/README.md). Si tu ejecución falla —sin CLI, sin autenticación, red bloqueada— usa esos y continúa sin perder nada del ejercicio.
 
 ### Paso 3 — Auditoría (lo que importa)
 
@@ -117,15 +117,15 @@ Abre `ai-summary.txt` y `ai-corrections.md` —los tuyos, o los de [`ejemplos/`]
 
 1. El número total de tests del resumen, ¿coincide con lo que ejecutaste? *(Truco: has lanzado solo `@demo-fail` en un navegador. ¿El resumen lo refleja o habla de la suite entera?)*
 2. Los títulos de test que cita, ¿existen todos en `tests/`? Compruébalo con `grep`.
-3. En `ai-corrections.md`, ¿alguna "hipótesis de causa" es en realidad una descripción del síntoma? Marca cuáles.
+3. En `ai-corrections.md`, ¿algún "Diagnóstico" es en realidad una descripción del síntoma? Marca cuáles.
 4. Los diez fallos son **intencionados** y cada uno lleva su comentario `⚠️ FALLO INTENCIONADO` en el código. ¿La IA lo ha detectado? ¿Podría?
-5. La severidad de los tickets, ¿la firmarías tú tal cual ante tu responsable?
+5. Tu `ai-tickets.json` sale vacío (`[]`). ¿Es un error del reporte o es lo correcto? Después abre el de [`ejemplos/`](ejemplos/ai-tickets.json), generado con el escenario `bug`: la severidad de esos tickets, ¿la firmarías tú tal cual ante tu responsable?
 
 Anota los hallazgos en `learning/student/sandbox/ruta-qa/01-auditoria.md`.
 
-> **Pista para la 1 y la 3, si usas los ejemplos:** ese `ai-summary.txt` concluye que *"la aplicación no funciona en operaciones críticas"* y pide *"corrección inmediata"*. Es **falso**: la aplicación funciona; los que están mal son los diez tests. La IA vio "10 de 10 en rojo" y dedujo "aplicación rota". Formato impecable, conclusión que habría parado un despliegue.
+> **Pista para la 3 y la 4:** el resumen acierta en lo importante: ninguno de los diez fallos es de la aplicación. La versión anterior de este reporte concluía justo lo contrario, *"la aplicación no funciona en operaciones críticas"*, porque solo veía "10 de 10 en rojo" (lo tienes contado en [`ejemplos/`](ejemplos/README.md)). Pero fíjate en cómo lo explica: las pruebas *"esperan valores que ya no coinciden"* y hay que *"corregirlas"*. Se ha inventado una historia, que se quedaron desactualizadas, para encajar los datos.
 
-> **La pregunta 4 es la buena.** La IA solo vio `test-results.json`, que no contiene el código fuente. No podía saberlo. Ese es el patrón general: **la IA no sabe lo que no le has dado**, y el trabajo de dárselo es el módulo siguiente.
+> **La pregunta 4 es la buena.** La IA ve el error, un fragmento de cinco líneas del test y la instantánea de la página. El comentario `⚠️ FALLO INTENCIONADO` queda fuera de ese fragmento. No podía saberlo. Ese es el patrón general: **la IA no sabe lo que no le has dado**, y el trabajo de dárselo es el módulo siguiente.
 
 ---
 
