@@ -146,7 +146,7 @@ Edita **tu copia** y borra el bloque de estructura obligatoria completo (desde `
 # La entrada: el análisis del módulo 1
 cat playwright-report/ai-failures-grouped.json
 
-# ¿No lo generaste? Usa el de ejemplo, sirve igual (3,5 KB)
+# ¿No lo generaste? Usa el de ejemplo, sirve igual (29 KB)
 cat learning/ruta-qa/ejemplos/ai-failures-grouped.json
 ```
 

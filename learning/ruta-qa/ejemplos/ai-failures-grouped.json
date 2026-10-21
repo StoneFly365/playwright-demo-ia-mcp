@@ -1,1 +1,195 @@
-{"risk_level":"high","generated_at":"19 de agosto de 2026 a las 8:46","source":"playwright-json","total_failed_tests":10,"total_groups":4,"groups":[{"group_id":"G001","fingerprint":"expect(locator).toHaveText failed on shopping-cart-badge + cart-badge.spec.ts:38","error_message":"expect(locator).toHaveText(expected) failed\n\nLocator: locator('[data-test=\"shopping-cart-badge\"]')\nExpected/Received mismatch","count":4,"affected_tests":[{"title":"debería mostrar badge con valor 4 al añadir cuatro productos distintos","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts","line":38,"duration_ms":9981},{"title":"debería añadir los 6 productos al carrito y mostrar badge con valor 6","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory-add-to-cart.spec.ts","line":72,"duration_ms":9896},{"title":"debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail-add-to-cart.spec.ts","line":62,"duration_ms":9889},{"title":"debería eliminar el producto del carrito desde el detalle","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts","line":52,"duration_ms":10100}]},{"group_id":"G002","fingerprint":"expect(locator).toHaveCount failed + cart-sync.spec.ts:30","error_message":"expect(locator).toHaveCount(expected) failed\n\nExpected/Received count mismatch","count":2,"affected_tests":[{"title":"debería mostrar los productos añadidos desde el inventario en la página del carrito","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts","line":30,"duration_ms":9772},{"title":"debería mostrar 6 productos en el inventario","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts","line":20,"duration_ms":9431}]},{"group_id":"G003","fingerprint":"expect(page).toHaveURL failed + login.spec.ts:19","error_message":"expect(page).toHaveURL(expected) failed\n\nURL mismatch on navigation assertions","count":3,"affected_tests":[{"title":"debería redirigir a la página de inventario con login exitoso","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts","line":19,"duration_ms":9489},{"title":"debería cerrar sesión al pulsar Logout","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts","line":25,"duration_ms":10505},{"title":"debería redirigir al login si se accede a /checkout-step-one.html sin sesión","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\route-protection.spec.ts","line":37,"duration_ms":9340}]},{"group_id":"G004","fingerprint":"expect(locator).toContainText failed on error message + checkout.spec.ts:51","error_message":"expect(locator).toContainText(expected) failed\n\nLocator: locator('[data-test=\"error\"]')\nExpected substring not found","count":1,"affected_tests":[{"title":"debería mostrar error si el nombre es obligatorio","file":"C:\\Users\\raul.molina\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts","line":51,"duration_ms":10229}]}]}
+{
+  "generated_at": "21 de octubre de 2026 a las 15:17",
+  "source": "playwright-json",
+  "total_failed_tests": 10,
+  "total_flaky_tests": 0,
+  "total_groups": 7,
+  "groups": [
+    {
+      "group_id": "G001",
+      "fingerprint": "valor_inesperado|locator('[data-test=\"shopping-cart-badge\"]')",
+      "pattern": "valor_inesperado",
+      "tipo": "test_roto",
+      "count": 3,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería mostrar badge con valor 4 al añadir cuatro productos distintos",
+          "file": "cart-badge.spec.ts",
+          "line": 28,
+          "browser": "chromium"
+        },
+        {
+          "title": "debería añadir los 6 productos al carrito y mostrar badge con valor 6",
+          "file": "inventory-add-to-cart.spec.ts",
+          "line": 60,
+          "browser": "chromium"
+        },
+        {
+          "title": "debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)",
+          "file": "product-detail-add-to-cart.spec.ts",
+          "line": 54,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito\n\nexpect(locator).toHaveText(expected) failed\n\nLocator:  locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \"3\"\nReceived: \"4\"\nTimeout:  5000ms\n\nCall log:\n  - El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito with timeout 5000ms\n  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\n    9 × locator resolved to <span class=\"shopping_cart_badge\" data-test=\"shopping-cart-badge\">4</span>\n      - unexpected value \"4\"\n\n\n  36 |       inventoryPage.cartBadge,\n  37 |       'El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito',\n> 38 |     ).toHaveText('3');\n     |       ^\n  39 |   });\n  40 |\n  41 |   test('debería mostrar badge con valor 5 al añadir cinco productos distintos', async () => {\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-badge.spec.ts:38:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, 4 items\" [ref=e13]:\n          - generic [ref=e14]: \"4\"\n      - generic [ref=e15]:\n        - generic [ref=e16]: Products\n        - generic [ref=e18] [cursor=pointer]:\n          - generic [ref=e19]: Name (A to Z)\n          - combobox \"Sort products\" [ref=e20]:\n            - option \"Name (A to Z)\" [selected]\n            - option \"Name (Z to A)\"\n            - option \"Price (low to high)\"\n            - option \"Price (high to low)\"\n    - main [ref=e21]:\n      - generic [ref=e24]:\n        - generic [ref=e25]:\n          - button \"View details for Sauce Labs Backpack\" [ref=e27] [cursor=pointer]:\n            - img \"Sauce Labs Backpack\" [ref=e28]\n          - generic [ref=e29]:\n            - generic [ref=e30]:\n              - button \"View details for Sauce Labs Backpack\" [ref=e31] [cursor=pointer]:\n                - generic [ref=e32]: Sauce Labs Backpack\n              - generic [ref=e33]: carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.\n            - generic [ref=e34]:\n              - generic [ref=e35]: $29.99\n              - button \"Remove\" [ref=e36] [cursor=pointer]\n        - generic [ref=e37]:\n          - button \"View details for Sauce Labs Bike Light\" [ref=e39] [cursor=pointer]:\n            - img \"Sauce Labs Bike Light\" [ref=e40]\n          - generic [ref=e41]:\n            - generic [ref=e42]:\n              - button \"View details for Sauce Labs Bike Light\" [ref=e43] [cursor=pointer]:\n                - generic [ref=e44]: Sauce Labs Bike Light\n              - generic [ref=e45]: A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.\n            - generic [ref=e46]:\n              - generic [ref=e47]: $9.99\n              - button \"Remove\" [ref=e48] [cursor=pointer]\n        - generic [ref=e49]:\n          - button \"View details for Sauce Labs Bolt T-Shirt\" [ref=e51] [cursor=pointer]:\n            - img \"Sauce Labs Bolt T-Shirt\" [ref=e52]\n          - generic [ref=e53]:\n            - generic [ref=e54]:\n              - button \"View details for Sauce Labs Bolt T-Shirt\" [ref=e55] [cursor=pointer]:\n                - generic [ref=e56]: Sauce Labs Bolt T-Shirt\n              - generic [ref=e57]: Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% ringspun combed cotton, heather gray with red bolt.\n            - generic [ref=e58]:\n              - generic [ref=e59]: $15.99\n              - button \"Add to cart\" [ref=e60] [cursor=pointer]\n        - generic [ref=e61]:\n          - button \"View details for Sauce Labs Fleece Jacket\" [ref=e63] [cursor=pointer]",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El título y el mensaje dicen que el badge debe mostrar 4, pero el test afirma toHaveText('3'). La página muestra 'Cart, 4 items' y el badge con '4', coherente con 4 productos añadidos.",
+      "accion": "Corregir la expectativa del test de '3' a '4' en cart-badge.spec.ts:38 y revisar los otros dos tests del grupo que usan el mismo locator."
+    },
+    {
+      "group_id": "G002",
+      "fingerprint": "valor_inesperado|page.toHaveURL \"https://www.saucedemo.com/inventory.html\"",
+      "pattern": "valor_inesperado",
+      "tipo": "test_roto",
+      "count": 2,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería cerrar sesión al pulsar Logout",
+          "file": "menu.spec.ts",
+          "line": 18,
+          "browser": "chromium"
+        },
+        {
+          "title": "debería redirigir al login si se accede a /checkout-step-one.html sin sesión",
+          "file": "route-protection.spec.ts",
+          "line": 30,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El usuario debería ser redirigido a la página de login tras cerrar sesión\n\nexpect(page).toHaveURL(expected) failed\n\nExpected: \"https://www.saucedemo.com/inventory.html\"\nReceived: \"https://www.saucedemo.com/\"\nTimeout:  5000ms\n\nCall log:\n  - El usuario debería ser redirigido a la página de login tras cerrar sesión with timeout 5000ms\n    9 × unexpected value \"https://www.saucedemo.com/\"\n\n\n  23 |       page,\n  24 |       'El usuario debería ser redirigido a la página de login tras cerrar sesión',\n> 25 |     ).toHaveURL('/inventory.html');\n     |       ^\n  26 |     await expect(\n  27 |       page.locator('[data-test=\"login-button\"]'),\n  28 |       'El botón de login debería ser visible tras cerrar sesión, confirmando que la sesión se ha cerrado correctamente',\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\menu.spec.ts:25:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]: Swag Labs\n  - main [ref=e5]:\n    - form \"Login\" [ref=e9]:\n      - textbox \"Username\" [ref=e11]\n      - textbox \"Password\" [ref=e13]\n      - button \"Login\" [ref=e15] [cursor=pointer]\n    - generic [ref=e17]:\n      - generic [ref=e18]:\n        - heading \"Accepted usernames are:\" [level=4] [ref=e19]\n        - text: standard_user\n        - text: locked_out_user\n        - text: problem_user\n        - text: performance_glitch_user\n        - text: error_user\n        - text: visual_user\n      - generic [ref=e20]:\n        - heading \"Password for all users:\" [level=4] [ref=e21]\n        - text: secret_sauce\n```",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El test espera la URL 'https://www.saucedemo.com/inventory.html' tras cerrar sesión, pero la aplicación redirige a 'https://www.saucedemo.com/'. page_context muestra el formulario de login en esa URL, que es el comportamiento normal de logout.",
+      "accion": "Corregir la URL esperada en menu.spec.ts:25 a la raíz de login y revisar route-protection.spec.ts:30 con la misma expectativa."
+    },
+    {
+      "group_id": "G003",
+      "fingerprint": "valor_inesperado|locator('.cart_item')",
+      "pattern": "valor_inesperado",
+      "tipo": "test_roto",
+      "count": 1,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería mostrar los productos añadidos desde el inventario en la página del carrito",
+          "file": "cart-sync.spec.ts",
+          "line": 21,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  locator('.cart_item')\nExpected: 3\nReceived: 2\nTimeout:  5000ms\n\nCall log:\n  - El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket with timeout 5000ms\n  - waiting for locator('.cart_item')\n    9 × locator resolved to 2 elements\n      - unexpected value \"2\"\n\n\n  28 |       page.locator('.cart_item'),\n  29 |       'El carrito debería contener exactamente 2 ítems tras añadir la Backpack y la Fleece Jacket',\n> 30 |     ).toHaveCount(3);\n     |       ^\n  31 |     await expect(\n  32 |       page.locator('[data-test=\"inventory-item-name\"]').first(),\n  33 |       'El nombre del primer ítem del carrito debería corresponder a uno de los productos añadidos',\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\cart-sync.spec.ts:30:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, 2 items\" [ref=e13]:\n          - generic [ref=e14]: \"2\"\n      - generic [ref=e16]: Your Cart\n    - main [ref=e17]:\n      - generic [ref=e18]:\n        - generic [ref=e19]:\n          - generic [ref=e20]: QTY\n          - generic [ref=e21]: Description\n          - generic [ref=e22]:\n            - generic [ref=e23]: \"1\"\n            - generic [ref=e24]:\n              - button \"View details for Sauce Labs Backpack\" [ref=e25] [cursor=pointer]:\n                - generic [ref=e26]: Sauce Labs Backpack\n              - generic [ref=e27]: carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.\n              - generic [ref=e28]:\n                - generic [ref=e29]: $29.99\n                - button \"Remove\" [ref=e30] [cursor=pointer]\n          - generic [ref=e31]:\n            - generic [ref=e32]: \"1\"\n            - generic [ref=e33]:\n              - button \"View details for Sauce Labs Fleece Jacket\" [ref=e34] [cursor=pointer]:\n                - generic [ref=e35]: Sauce Labs Fleece Jacket\n              - generic [ref=e36]: It's not every day that you come across a midweight quarter-zip fleece jacket capable of handling everything from a relaxing day outdoors to a busy day at the office.\n              - generic [ref=e37]:\n                - generic [ref=e38]: $49.99\n                - button \"Remove\" [ref=e39] [cursor=pointer]\n        - generic [ref=e40]:\n          - button \"Continue Shopping\" [ref=e41] [cursor=pointer]\n          - button \"Checkout\" [ref=e42] [cursor=pointer]\n  - contentinfo [ref=e43]:\n    - list [ref=e44]:\n      - listitem [ref=e45]:\n        - link \"X\" [ref=e46] [cursor=pointer]:\n          - /url: https://x.com/saucelabs\n      - listitem [ref=e47]:\n        - link \"Facebook\" [ref=e48] [cursor=pointer]:\n          - /url: https://www.facebook.com/saucelabs\n      - listitem [ref=e49]:\n        - link \"LinkedIn\" [ref=e50] [cursor=pointer]:\n          - /url: https://www.linkedin.com/company/sauce-labs/\n    - generic [ref=e51]: © 2026 Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy\n```",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El mensaje dice que el carrito debe tener exactamente 2 ítems, pero el código afirma toHaveCount(3). page_context muestra dos ítems (Sauce Labs Backpack y Sauce Labs Fleece Jacket) y el badge 'Cart, 2 items'.",
+      "accion": "Corregir toHaveCount(3) a toHaveCount(2) en cart-sync.spec.ts:30."
+    },
+    {
+      "group_id": "G004",
+      "fingerprint": "valor_inesperado|locator('[data-test=\"error\"]')",
+      "pattern": "valor_inesperado",
+      "tipo": "test_roto",
+      "count": 1,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería mostrar error si el nombre es obligatorio",
+          "file": "checkout.spec.ts",
+          "line": 39,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout\n\nexpect(locator).toContainText(expected) failed\n\nLocator: locator('[data-test=\"error\"]')\nExpected substring: \"Last Name is required\"\nReceived string:    \"Error: First Name is required\"\nTimeout: 5000ms\n\nCall log:\n  - El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout with timeout 5000ms\n  - waiting for locator('[data-test=\"error\"]')\n    9 × locator resolved to <h3 role=\"alert\" data-test=\"error\">…</h3>\n      - unexpected value \"Error: First Name is required\"\n\n\n  49 |       checkoutPage.errorMessage,\n  50 |       'El mensaje de error debería indicar que el nombre es obligatorio para continuar con el checkout',\n> 51 |     ).toContainText('Last Name is required');\n     |       ^\n  52 |   });\n  53 |\n  54 |   test('debería mostrar error si el apellido es obligatorio', async () => {\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\checkout.spec.ts:51:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, 1 items\" [ref=e13]:\n          - generic [ref=e14]: \"1\"\n      - generic [ref=e16]: \"Checkout: Your Information\"\n    - main [ref=e17]:\n      - form \"Checkout information\" [ref=e19]:\n        - generic [ref=e20]:\n          - generic [ref=e21]:\n            - textbox \"First Name\" [ref=e22]\n            - img [ref=e23]\n          - generic [ref=e25]:\n            - textbox \"Last Name\" [ref=e26]: [REDACTED]\n            - img [ref=e27]\n          - generic [ref=e29]:\n            - textbox \"Zip/Postal Code\" [ref=e30]: [REDACTED]\n            - img [ref=e31]\n          - alert [ref=e34]:\n            - button \"Dismiss error\" [ref=e35] [cursor=pointer]:\n              - img [ref=e36]\n            - text: \"Error: First Name is required\"\n        - generic [ref=e38]:\n          - button \"Cancel\" [ref=e39] [cursor=pointer]\n          - button \"Continue\" [active] [ref=e40] [cursor=pointer]\n  - contentinfo [ref=e41]:\n    - list [ref=e42]:\n      - listitem [ref=e43]:\n        - link \"X\" [ref=e44] [cursor=pointer]:\n          - /url: https://x.com/saucelabs\n      - listitem [ref=e45]:\n        - link \"Facebook\" [ref=e46] [cursor=pointer]:\n          - /url: https://www.facebook.com/saucelabs\n      - listitem [ref=e47]:\n        - link \"LinkedIn\" [ref=e48] [cursor=pointer]:\n          - /url: https://www.linkedin.com/company/sauce-labs/\n    - generic [ref=e49]: © 2026 Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy\n```",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El test espera 'Last Name is required' en el título 'si el nombre es obligatorio', pero la página muestra 'Error: First Name is required' y el campo First Name está vacío mientras Last Name y Zip sí están rellenos. La aplicación valida correctamente.",
+      "accion": "Corregir el texto esperado en checkout.spec.ts:51 a 'First Name is required'."
+    },
+    {
+      "group_id": "G005",
+      "fingerprint": "valor_inesperado|locator('[data-test=\"inventory-item\"]')",
+      "pattern": "valor_inesperado",
+      "tipo": "test_roto",
+      "count": 1,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería mostrar 6 productos en el inventario",
+          "file": "inventory.spec.ts",
+          "line": 15,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El inventario debería mostrar exactamente 6 productos disponibles\n\nexpect(locator).toHaveCount(expected) failed\n\nLocator:  locator('[data-test=\"inventory-item\"]')\nExpected: 5\nReceived: 6\nTimeout:  5000ms\n\nCall log:\n  - El inventario debería mostrar exactamente 6 productos disponibles with timeout 5000ms\n  - waiting for locator('[data-test=\"inventory-item\"]')\n    9 × locator resolved to 6 elements\n      - unexpected value \"6\"\n\n\n  18 |       inventoryPage.inventoryItems,\n  19 |       'El inventario debería mostrar exactamente 6 productos disponibles',\n> 20 |     ).toHaveCount(5);\n     |       ^\n  21 |   });\n  22 |\n  23 |   test('debería ordenar los productos por nombre de Z a A', async () => {\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\inventory.spec.ts:20:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, empty\" [ref=e13]\n      - generic [ref=e14]:\n        - generic [ref=e15]: Products\n        - generic [ref=e17] [cursor=pointer]:\n          - generic [ref=e18]: Name (A to Z)\n          - combobox \"Sort products\" [ref=e19]:\n            - option \"Name (A to Z)\" [selected]\n            - option \"Name (Z to A)\"\n            - option \"Price (low to high)\"\n            - option \"Price (high to low)\"\n    - main [ref=e20]:\n      - generic [ref=e23]:\n        - generic [ref=e24]:\n          - button \"View details for Sauce Labs Backpack\" [ref=e26] [cursor=pointer]:\n            - img \"Sauce Labs Backpack\" [ref=e27]\n          - generic [ref=e28]:\n            - generic [ref=e29]:\n              - button \"View details for Sauce Labs Backpack\" [ref=e30] [cursor=pointer]:\n                - generic [ref=e31]: Sauce Labs Backpack\n              - generic [ref=e32]: carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.\n            - generic [ref=e33]:\n              - generic [ref=e34]: $29.99\n              - button \"Add to cart\" [ref=e35] [cursor=pointer]\n        - generic [ref=e36]:\n          - button \"View details for Sauce Labs Bike Light\" [ref=e38] [cursor=pointer]:\n            - img \"Sauce Labs Bike Light\" [ref=e39]\n          - generic [ref=e40]:\n            - generic [ref=e41]:\n              - button \"View details for Sauce Labs Bike Light\" [ref=e42] [cursor=pointer]:\n                - generic [ref=e43]: Sauce Labs Bike Light\n              - generic [ref=e44]: A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.\n            - generic [ref=e45]:\n              - generic [ref=e46]: $9.99\n              - button \"Add to cart\" [ref=e47] [cursor=pointer]\n        - generic [ref=e48]:\n          - button \"View details for Sauce Labs Bolt T-Shirt\" [ref=e50] [cursor=pointer]:\n            - img \"Sauce Labs Bolt T-Shirt\" [ref=e51]\n          - generic [ref=e52]:\n            - generic [ref=e53]:\n              - button \"View details for Sauce Labs Bolt T-Shirt\" [ref=e54] [cursor=pointer]:\n                - generic [ref=e55]: Sauce Labs Bolt T-Shirt\n              - generic [ref=e56]: Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% ringspun combed cotton, heather gray with red bolt.\n            - generic [ref=e57]:\n              - generic [ref=e58]: $15.99\n              - button \"Add to cart\" [ref=e59] [cursor=pointer]\n        - generic [ref=e60]:\n          - button \"View details for Sauce Labs Fleece Jacket\" [ref=e62] [cursor=pointer]:\n            - img \"Sauce L",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El título dice 'debería mostrar 6 productos' y el mensaje dice 'exactamente 6', pero el código afirma toHaveCount(5). La página muestra 6 elementos de inventario, lo que coincide con el título.",
+      "accion": "Corregir toHaveCount(5) a toHaveCount(6) en inventory.spec.ts:20."
+    },
+    {
+      "group_id": "G006",
+      "fingerprint": "valor_inesperado|page.toHaveURL /.*\\/home\\.html$/",
+      "pattern": "valor_inesperado",
+      "tipo": "test_roto",
+      "count": 1,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería redirigir a la página de inventario con login exitoso",
+          "file": "login.spec.ts",
+          "line": 12,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El usuario debería ser redirigido a la página de inventario tras un login exitoso\n\nexpect(page).toHaveURL(expected) failed\n\nExpected pattern: /.*\\/home\\.html$/\nReceived string:  \"https://www.saucedemo.com/inventory.html\"\nTimeout: 5000ms\n\nCall log:\n  - El usuario debería ser redirigido a la página de inventario tras un login exitoso with timeout 5000ms\n    9 × unexpected value \"https://www.saucedemo.com/inventory.html\"\n\n\n  17 |       page,\n  18 |       'El usuario debería ser redirigido a la página de inventario tras un login exitoso',\n> 19 |     ).toHaveURL(/.*\\/home\\.html$/);\n     |       ^\n  20 |   });\n  21 |\n  22 |   test('debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\login.spec.ts:19:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, empty\" [ref=e13]\n      - generic [ref=e14]:\n        - generic [ref=e15]: Products\n        - generic [ref=e17] [cursor=pointer]:\n          - generic [ref=e18]: Name (A to Z)\n          - combobox \"Sort products\" [ref=e19]:\n            - option \"Name (A to Z)\" [selected]\n            - option \"Name (Z to A)\"\n            - option \"Price (low to high)\"\n            - option \"Price (high to low)\"\n    - main [ref=e20]:\n      - generic [ref=e23]:\n        - generic [ref=e24]:\n          - button \"View details for Sauce Labs Backpack\" [ref=e26] [cursor=pointer]:\n            - img \"Sauce Labs Backpack\" [ref=e27]\n          - generic [ref=e28]:\n            - generic [ref=e29]:\n              - button \"View details for Sauce Labs Backpack\" [ref=e30] [cursor=pointer]:\n                - generic [ref=e31]: Sauce Labs Backpack\n              - generic [ref=e32]: carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.\n            - generic [ref=e33]:\n              - generic [ref=e34]: $29.99\n              - button \"Add to cart\" [ref=e35] [cursor=pointer]\n        - generic [ref=e36]:\n          - button \"View details for Sauce Labs Bike Light\" [ref=e38] [cursor=pointer]:\n            - img \"Sauce Labs Bike Light\" [ref=e39]\n          - generic [ref=e40]:\n            - generic [ref=e41]:\n              - button \"View details for Sauce Labs Bike Light\" [ref=e42] [cursor=pointer]:\n                - generic [ref=e43]: Sauce Labs Bike Light\n              - generic [ref=e44]: A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.\n            - generic [ref=e45]:\n              - generic [ref=e46]: $9.99\n              - button \"Add to cart\" [ref=e47] [cursor=pointer]\n        - generic [ref=e48]:\n          - button \"View details for Sauce Labs Bolt T-Shirt\" [ref=e50] [cursor=pointer]:\n            - img \"Sauce Labs Bolt T-Shirt\" [ref=e51]\n          - generic [ref=e52]:\n            - generic [ref=e53]:\n              - button \"View details for Sauce Labs Bolt T-Shirt\" [ref=e54] [cursor=pointer]:\n                - generic [ref=e55]: Sauce Labs Bolt T-Shirt\n              - generic [ref=e56]: Get your testing superhero on with the Sauce Labs bolt T-shirt. From American Apparel, 100% ringspun combed cotton, heather gray with red bolt.\n            - generic [ref=e57]:\n              - generic [ref=e58]: $15.99\n              - button \"Add to cart\" [ref=e59] [cursor=pointer]\n        - generic [ref=e60]:\n          - button \"View details for Sauce Labs Fleece Jacket\" [ref=e62] [cursor=pointer]:\n            - img \"Sauce L",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El test espera la URL que termina en /home.html, pero el login correcto lleva a 'https://www.saucedemo.com/inventory.html' y page_context muestra la lista de Products. La aplicación nunca usa /home.html.",
+      "accion": "Corregir el patrón de URL en login.spec.ts:19 a /inventory\\.html$/."
+    },
+    {
+      "group_id": "G007",
+      "fingerprint": "elemento_no_encontrado|locator('[data-test=\"shopping-cart-badge\"]')",
+      "pattern": "elemento_no_encontrado",
+      "tipo": "test_roto",
+      "count": 1,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "debería eliminar el producto del carrito desde el detalle",
+          "file": "product-detail.spec.ts",
+          "line": 44,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle\n\nexpect(locator).toHaveText(expected) failed\n\nLocator: locator('[data-test=\"shopping-cart-badge\"]')\nExpected: \"1\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle with timeout 5000ms\n  - waiting for locator('[data-test=\"shopping-cart-badge\"]')\n\n\n  50 |       productDetailPage.cartBadge,\n  51 |       'El badge del carrito no debería ser visible tras eliminar el producto desde la página de detalle',\n> 52 |     ).toHaveText('1');\n     |       ^\n  53 |   });\n  54 |\n  55 |   test('debería volver al inventario al pulsar \"Volver a productos\"', async ({ page }) => {\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\product-detail.spec.ts:52:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, empty\" [ref=e13]\n      - button \"Back to products\" [ref=e16] [cursor=pointer]\n    - main [ref=e17]:\n      - generic [ref=e19]:\n        - img \"Sauce Labs Bike Light\" [ref=e21]\n        - generic [ref=e22]:\n          - generic [ref=e23]: Sauce Labs Bike Light\n          - generic [ref=e24]: A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.\n          - generic [ref=e25]: $9.99\n          - button \"Add to cart\" [ref=e26] [cursor=pointer]\n  - contentinfo [ref=e27]:\n    - list [ref=e28]:\n      - listitem [ref=e29]:\n        - link \"X\" [ref=e30] [cursor=pointer]:\n          - /url: https://x.com/saucelabs\n      - listitem [ref=e31]:\n        - link \"Facebook\" [ref=e32] [cursor=pointer]:\n          - /url: https://www.facebook.com/saucelabs\n      - listitem [ref=e33]:\n        - link \"LinkedIn\" [ref=e34] [cursor=pointer]:\n          - /url: https://www.linkedin.com/company/sauce-labs/\n    - generic [ref=e35]: © 2026 Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy\n```",
+      "omitted_tests": 0,
+      "confianza": "alta",
+      "evidencia": "El título dice que el badge no debe ser visible tras eliminar el producto, pero el código afirma toHaveText('1'). page_context muestra 'Cart, empty' sin badge, que es el comportamiento correcto de la aplicación.",
+      "accion": "Cambiar la aserción en product-detail.spec.ts:52 a que el badge no exista o no sea visible, según el título."
+    }
+  ]
+}

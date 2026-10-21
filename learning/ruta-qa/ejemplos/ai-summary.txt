@@ -1,23 +1,23 @@
 RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
-Fecha: 19 de agosto de 2026 a las 8:46
+Fecha: 21 de octubre de 2026 a las 15:17
 
 RESULTADO GLOBAL
 Total de pruebas ejecutadas: 10
-✅ Pruebas correctas: 0
-❌ Pruebas fallidas: 10
-⏭️ Pruebas omitidas: 0
-⚠️ Pruebas inestables (flaky): 0
+✅ Pruebas correctas:           0
+❌ Pruebas fallidas:            10
+⏭️ Pruebas omitidas:            0
+⚠️ Pruebas inestables (flaky):  0
 
 ATENCIÓN REQUERIDA
-El carrito de compras no actualiza el número de productos. Afecta a 4 pruebas de añadir y eliminar artículos.
-La autenticación no redirige correctamente tras login. Afecta a 3 pruebas de inicio de sesión y protección de acceso.
-El carrito no sincroniza los productos con el inventario. Afecta a 2 pruebas de visualización de artículos.
+El contador del carrito se comprueba con un valor incorrecto en 3 pruebas (prueba desactualizada).
+El cierre de sesión y el acceso protegido esperan una dirección que la aplicación no usa, en 2 pruebas (prueba desactualizada).
+El carrito se comprueba con 3 productos cuando contiene 2, en 1 prueba (prueba desactualizada).
 
 CONCLUSIÓN
-La aplicación no funciona en operaciones críticas. El carrito de compras no actualiza, los usuarios no pueden iniciar sesión ni acceder a secciones protegidas, y los datos no se sincronizan correctamente. Estos son bloqueos que impiden cualquier funcionalidad básica. Se requiere corrección inmediata antes de continuar con las pruebas.
+Ninguna de las pruebas fallidas ha detectado un error real de la aplicación: todas esperan valores o comportamientos que ya no coinciden con lo que muestra la aplicación. No hay bloqueos críticos para producción, pero el conjunto de pruebas no es fiable en este momento y hay que actualizarlo antes de confiar en sus resultados.
 
 ACCIONES RECOMENDADAS
-1. Reparar la actualización del contador del carrito de compras (soluciona 4 pruebas).
-2. Verificar la sincronización de productos entre inventario y carrito.
-3. Comprobar las rutas de autenticación y redirección tras login.
-4. Validar que los formularios muestren mensajes de error cuando faltan datos obligatorios.
+1. Corregir el contador del carrito y el número de productos esperado en las pruebas del carrito.
+2. Corregir las direcciones esperadas tras cerrar sesión y tras iniciar sesión, y la comprobación de acceso protegido al checkout.
+3. Actualizar el texto del mensaje de error del checkout y el número de productos del inventario.
+4. Revisar la prueba de eliminación de producto desde el detalle, que espera un contador que no aparece cuando el carrito queda vacío.
