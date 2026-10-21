@@ -103,6 +103,10 @@ playwright-demo-ia-mcp/
 │   ├── triage.test.mjs             # Tests de triage.mjs (npm run test:unit)
 │   ├── merge-results.mjs           # Une los resultados de los 3 navegadores en CI
 │   ├── merge-results.test.mjs      # Tests de merge-results.mjs (npm run test:unit)
+│   ├── dashboard.mjs               # Dashboard QA Intelligence: lee los artefactos, sin IA
+│   ├── dashboard-view.mjs          # Métricas y filtros del dashboard (también van dentro de la página)
+│   ├── dashboard.html              # Plantilla de la página del dashboard
+│   ├── dashboard.test.mjs          # Tests del dashboard (npm run test:unit)
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages)
@@ -301,7 +305,7 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 
 ### Acierto de la IA
 
-`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md`. Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
+`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md` y, con los mismos datos, en `ai-eval.json` (lo lee el [dashboard](#dashboard-qa-intelligence)). Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
 
 > La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Una evaluación gasta 4, y una ejecución de CI con fallos, otras 4 como mucho (el reporte es uno para los tres navegadores). Una CI en verde no gasta ninguna, aunque haya algún test flaky.
 
@@ -382,6 +386,74 @@ Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
 **Settings > Secrets and variables > Actions > New repository secret**
 
 Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+
+---
+
+## Dashboard QA Intelligence
+
+Una página web local que enseña el flujo completo de una ejecución: tests → grupos de fallos → clasificación → evidencia → acción recomendada → acierto de la IA. **No usa IA**: lee los ficheros que ya han generado Playwright, `report:ai` y `eval:ai`, y no vuelve a generar nada.
+
+```bash
+npm run dashboard               # lee test-results.json y playwright-report/ → playwright-report/qa-dashboard.html
+npm run dashboard -- --save     # además guarda esta ejecución (y la evaluación, si hay) en el historial
+npm run dashboard:demo          # datos de ejemplo de learning/ruta-qa/ejemplos → qa-dashboard-demo.html
+npm run dashboard -- --dir <carpeta>   # otra carpeta, p. ej. el artefacto ai-report descargado de CI
+```
+
+Abre el `.html` generado directamente en el navegador: no necesita servidor, conexión, dependencias nuevas ni claves de IA. Para trabajar en la interfaz sin gastar cuota, usa `dashboard:demo` o cualquier carpeta con artefactos ya generados.
+
+### Qué lee y qué enseña
+
+| Artefacto | Lo genera | En el dashboard | Si falta |
+|---|---|---|---|
+| `test-results.json` | Playwright (o `merge-results.mjs` en CI) | Total, pasados, fallidos, omitidos, flaky, % de éxito, navegadores, identificador de la ejecución | Las métricas de tests salen como `n/d` y el resto de ficheros no se puede vincular a una ejecución |
+| `ai-failures-grouped.json` | `report:ai` | Grupos con categoría, origen, confianza, evidencia, acción, tests, navegadores, error e instantánea; filtros y búsqueda | No hay grupos ni distribución por categoría |
+| `ai-summary.txt`, `ai-corrections.md`, `ai-tickets.json` | `report:ai` | Resumen, correcciones sugeridas y tickets propuestos | Se indica que no existen |
+| `ai-eval.json` (o `ai-eval.md` antiguo) | `eval:ai` | Acierto por grupos y por tests, tests en grupos correctos e incorrectos, resultado por escenario, proveedor y fecha | Estado vacío que explica cómo generarla |
+
+Un fichero inexistente, vacío, con JSON malformado o con un formato antiguo no rompe la página: la sección **Artefactos leídos** dice qué se ha podido usar y por qué no.
+
+- **Tests y grupos van por separado.** Los tests cuentan una vez por navegador; un grupo es una causa (70 tests de `cascade` son 1 grupo). Nunca se suman.
+- **Origen de la clasificación.** `flaky` lo decide el código (*Determinista*); `test_roto`, `bug_producto` y `entorno`, la IA; `sin_clasificar` es que la clasificación falló. Las categorías son las mismas cinco del triage.
+- **Pendientes de revisión.** Los artefactos no guardan un estado de revisión. Se marcan los `sin_clasificar` y los de la IA con confianza distinta de `alta`.
+- **Recomendado no es ejecutado.** Las acciones, correcciones y tickets se muestran como propuestas. El dashboard es de solo lectura: no lanza el healer, no abre PR y no crea tickets. Las acciones ejecutadas salen como "ninguna registrada", porque el circuito automático (fase 4) aún no existe.
+- **Peticiones a la IA y proveedor.** Desde esta versión `report:ai` guarda en `ai-failures-grouped.json` el proveedor y el número de peticiones que hizo (`ai_requests`, reintentos incluidos). En informes anteriores salen como `n/d`. No hay datos de tokens ni de coste, así que no se muestran.
+- Cada indicador explica cómo se calcula en el desplegable **Cómo se calcula cada indicador**, al final de la página.
+
+### No mezclar ejecuciones
+
+`report:ai` guarda ahora `run_start_time` (la hora de inicio que pone Playwright en `test-results.json`), y el dashboard solo asocia el análisis a la ejecución si coincide. En informes anteriores compara los contadores de fallos y flaky y la fecha de los ficheros. `ai-summary.txt`, `ai-corrections.md` y `ai-tickets.json` no llevan identificador: solo se muestran si son posteriores a `test-results.json`. Lo que es de otra ejecución no se muestra y aparece un aviso. Esto importa porque `report:ai` no borra los ficheros de la ejecución anterior cuando no tiene nada que analizar.
+
+### Historial
+
+`--save` copia los datos normalizados de la ejecución actual a `qa-history/runs/<hora-de-inicio>.json` y los de la evaluación a `qa-history/evals/<fecha>.json`. La carpeta es local y no está en git. El selector **Ejecución** de la cabecera y la tabla **Historial** permiten ver cada una por separado. Limitaciones:
+
+- Solo se guarda lo que se guarda a mano: lanza `--save` cuando `report:ai` haya terminado. Si ya existe una copia de esa ejecución, no se sobrescribe; borra el fichero si necesitas rehacerla.
+- Una ejecución sin `test-results.json` no tiene identificador y no se puede guardar. Una evaluación que solo tiene `ai-eval.md` tampoco.
+- Las evaluaciones tienen su propio historial y no se asocian a una ejecución: `eval:ai` lanza cinco ejecuciones seguidas y deja en disco la última.
+- La demo nunca lee ni escribe el historial.
+
+### Qué llama a modelos y qué no
+
+| Componente | ¿Llama a la IA? |
+|---|---|
+| `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini en CI) |
+| `npm run eval:ai` | Sí: una clasificación por escenario. El dashboard nunca lo lanza |
+| `npm run dashboard`, `dashboard:demo` y la página generada | No. Solo leen ficheros, no ejecutan tests y no necesitan claves |
+
+La página lleva una Content-Security-Policy `default-src 'none'`, que bloquea cualquier conexión de red, y los tests unitarios comprueban que ni el script ni la página contienen llamadas de red, procesos ni claves.
+
+### Privacidad
+
+El dashboard no envía nada a ningún sitio. Muestra lo mismo que ya contienen los artefactos, que salen redactados de `triage.mjs`, y además vuelve a pasar el redactor por todos los textos, por si el informe es antiguo. Los datos se escriben dentro de la página como texto, nunca como HTML, así que un mensaje de error no puede inyectar código. No incluye capturas, vídeos ni trazas. Aun así, el `.html` contiene errores e instantáneas de la página: trátalo como el resto del artefacto `ai-report`. **No se publica en GitHub Pages.**
+
+### En CI
+
+Los jobs **Reporte IA** y **Acierto de la IA** generan `qa-dashboard.html` con los ficheros que ya tienen y lo suben dentro de sus artefactos (`ai-report`, `ai-eval`). Es un paso que solo lee ficheros: no gasta cuota de IA, no repite los tests, no pide permisos nuevos y, si fallara, no tumba el job. Para verlo, descarga el artefacto y abre el `.html`.
+
+### Caché de clasificaciones: descartada por ahora
+
+Se valoró guardar las clasificaciones para no volver a pedirlas. No compensa en esta fase: la huella del grupo no basta como clave, porque la evidencia que decide (el error completo y la instantánea de la página) cambia aunque la huella sea la misma. Una caché segura tendría que usar como clave todo lo que se envía a la IA más el prompt, el modelo y la taxonomía, y guardar los contextos redactados. Eso cambia el comportamiento del triage y merece su propia rama. El ahorro que sí hay ya está hecho: un solo reporte por ejecución en CI, nada de IA si solo hay flaky (`AI_SKIP_FLAKY_ONLY`) y una evaluación que solo clasifica.
 
 ---
 

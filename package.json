@@ -15,10 +15,12 @@
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:report": "playwright show-report",
-    "test:unit": "node --test scripts/triage.test.mjs scripts/merge-results.test.mjs",
+    "test:unit": "node --test scripts/triage.test.mjs scripts/merge-results.test.mjs scripts/dashboard.test.mjs",
     "report:ai": "node scripts/report-ai.mjs",
     "test:ai": "npm run test && npm run report:ai",
     "eval:ai": "node scripts/eval-ai.mjs",
+    "dashboard": "node scripts/dashboard.mjs",
+    "dashboard:demo": "node scripts/dashboard.mjs --demo",
     "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
   },
   "devDependencies": {

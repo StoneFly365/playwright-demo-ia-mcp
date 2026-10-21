@@ -80,4 +80,19 @@ const lines = [
 ];
 mkdirSync(REPORT_DIR, { recursive: true });
 writeFileSync(`${REPORT_DIR}/ai-eval.md`, lines.join("\n") + "\n", "utf8");
+// Los mismos datos en JSON para el dashboard (scripts/dashboard.mjs); el .md sigue siendo el que va al resumen de CI.
+writeFileSync(`${REPORT_DIR}/ai-eval.json`, JSON.stringify({
+    generated_at: new Date().toISOString(),
+    provider: process.env.GEMINI_API_KEY ? "gemini:gemini-flash-latest" : "claude-cli:claude-haiku-5-5",
+    browser: "chromium",
+    totals: { ok_groups: okGroups, all_groups: allGroups, ok_tests: okTests, all_tests: allTests, not_evaluated: notEvaluated },
+    scenarios: rows.map((r) => ({
+        name: r.name,
+        expected: r.expected,
+        decided_by: r.expected === "flaky" ? "codigo" : "ia",
+        groups: r.groups.map((g) => ({ group_id: g.group_id, tipo: g.tipo, count: g.count })),
+        seconds: Math.round(r.seconds),
+        report_ok: r.reportOk,
+    })),
+}, null, 2) + "\n", "utf8");
 console.log("\n" + lines.join("\n"));

@@ -34,3 +34,6 @@ test-results.json
 
 # Docsify site build output
 _site/
+
+# Historial local del dashboard (npm run dashboard -- --save)
+qa-history/
