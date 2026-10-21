@@ -135,4 +135,4 @@ La defensa se hace **sobre este `decisiones.md`**: el Challenge es el entregable
 
 - Es el flujo más largo de la aplicación y toca las cinco pantallas.
 - **AC2 cubre un hueco real de la suite del proyecto**: `checkout.spec.ts` verifica que los importes se ven, no que sean correctos. Mejoras la cobertura en lugar de repetirla.
-- Es genérico —una compra online— pero se traduce directamente a una contratación de seguro: datos del tomador, validación por campo, cálculo de prima e impuestos, confirmación. La forma del problema es la del módulo 09.
+- Es genérico —una compra online— pero se traduce directamente a cualquier alta o contratación (un seguro, una cuenta bancaria, una línea de móvil): datos del cliente, validación por campo, cálculo de importes e impuestos, confirmación. La forma del problema es la del módulo 09.
