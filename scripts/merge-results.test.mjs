@@ -7,6 +7,14 @@ import { mergeReports } from "./merge-results.mjs";
 const fileReport = (project, status) => ({
     config: { version: "1.58.2" },
     errors: [],
+    stats: {
+        startTime: `2026-10-21T10:00:0${project.length % 10}.000Z`,
+        duration: project.length * 1000,
+        expected: status === "passed" ? 1 : 0,
+        skipped: 0,
+        unexpected: status === "failed" ? 1 : 0,
+        flaky: 0,
+    },
     suites: [{
         title: "a.spec.ts", file: "a.spec.ts", line: 0, column: 0, specs: [],
         suites: [{
@@ -30,6 +38,18 @@ test("mergeReports concatena los tests de cada navegador en el mismo spec", () =
     assert.equal(tests.length, 3);
     assert.deepEqual(tests.map((t) => t.projectName).sort(), ["chromium", "firefox", "webkit"]);
     assert.equal(tests.find((t) => t.projectName === "firefox").results[0].status, "failed");
+});
+
+test("mergeReports suma los contadores y toma la duración del navegador más lento", () => {
+    const merged = mergeReports([
+        fileReport("chromium", "passed"),
+        fileReport("firefox", "failed"),
+        fileReport("webkit", "passed"),
+    ]);
+    assert.equal(merged.stats.expected, 2);
+    assert.equal(merged.stats.unexpected, 1);
+    assert.equal(merged.stats.duration, 8000); // "chromium" tiene 8 letras: el más lento del fixture
+    assert.equal(merged.stats.startTime, "2026-10-21T10:00:06.000Z");
 });
 
 test("mergeReports conserva specs que solo existen en algunos ficheros", () => {

@@ -29,12 +29,25 @@ const mergeSuite = (suites) => ({
     specs: mergeByKey(suites.map((s) => s.specs), specKey, mergeSpec),
 });
 
+// Los navegadores corren en paralelo: los contadores se suman y la duración es la del más lento.
+function mergeStats(stats) {
+    const sum = (k) => stats.reduce((n, s) => n + (s?.[k] ?? 0), 0);
+    return {
+        startTime: stats.map((s) => s?.startTime).filter(Boolean).sort()[0],
+        duration: Math.max(0, ...stats.map((s) => s?.duration ?? 0)),
+        expected: sum("expected"),
+        skipped: sum("skipped"),
+        unexpected: sum("unexpected"),
+        flaky: sum("flaky"),
+    };
+}
+
 export function mergeReports(reports) {
     return {
         config: reports[0].config,
         suites: mergeByKey(reports.map((r) => r.suites), specKey, mergeSuite),
         errors: reports.flatMap((r) => r.errors ?? []),
-        // Sin "stats": extractStats() en report-ai.mjs la recalcula recorriendo el árbol ya unido.
+        stats: mergeStats(reports.map((r) => r.stats)),
     };
 }
 
