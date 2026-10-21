@@ -91,7 +91,7 @@ playwright-demo-ia-mcp/
 │   ├── cart.page.ts                # POM: carrito de compras
 │   ├── checkout.page.ts            # POM: proceso de checkout
 │   └── menu.page.ts                # POM: menú lateral
-├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, vacío, para los agentes)
+├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, arranque de los agentes)
 ├── specs/                          # Planes de test y documentación QA
 ├── prompts/                        # Prompts usados por el reporte IA
 ├── scripts/

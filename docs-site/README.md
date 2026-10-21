@@ -38,7 +38,7 @@ npm run ruta-qa:check
 
 ## Sobre qué se practica
 
-Sobre un proyecto real, no sobre ejemplos de juguete: una suite E2E de 79 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, tres navegadores, pipeline de GitHub Actions en contenedor Docker y análisis de fallos generado por IA que se ejecuta en cada pipeline.
+Sobre un proyecto real, no sobre ejemplos de juguete: una suite E2E de 80 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, tres navegadores, pipeline de GitHub Actions en contenedor Docker y análisis de fallos generado por IA que se ejecuta en cada pipeline con fallos.
 
 El repositorio se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real —incluidos **diez tests que fallan a propósito**. **Esos defectos son el material del curso.**
 
