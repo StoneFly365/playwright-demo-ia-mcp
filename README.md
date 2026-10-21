@@ -298,7 +298,9 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 
 ### Acierto de la IA
 
-`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md`. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución.
+`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md`. Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
+
+> La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Una evaluación gasta 4 y un `report:ai` completo hasta 4 por navegador, así que un `suite=fail` en los tres navegadores consume 12 de las 20 del día.
 
 Última medición (Claude Haiku 5.5, en local, 21 de octubre de 2026): **11 de 11 grupos bien clasificados, que cubren 185 de 185 tests fallados**.
 

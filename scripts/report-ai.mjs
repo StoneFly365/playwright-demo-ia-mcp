@@ -79,6 +79,14 @@ async function main() {
         groups,
     };
 
+    // eval-ai.mjs solo mide la clasificación: el resto de llamadas gastaría cuota sin aportar nada.
+    if (process.env.AI_CLASSIFY_ONLY) {
+        await writeOutput(path.join(REPORT_DIR, "ai-failures-grouped.json"), JSON.stringify(grouped, null, 2));
+        if (errors.length) throw new Error(errors.join("\n"));
+        success("Clasificación terminada (AI_CLASSIFY_ONLY)");
+        return;
+    }
+
     // page_context y el error completo ya han servido para clasificar; al resto de prompts les basta un extracto.
     const brief = {
         ...grouped,
