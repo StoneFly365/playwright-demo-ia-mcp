@@ -11,7 +11,7 @@
 :root {
   color-scheme: dark;
   --bg: #0b1020; --bg-2: #111827; --panel: #151d30; --panel-2: #1a2338; --panel-3: #0f1628;
-  --line: #273449; --line-2: #354660; --text: #f1f5f9; --muted: #94a3b8; --faint: #6b7a90;
+  --line: #273449; --line-2: #354660; --text: #f1f5f9; --muted: #94a3b8; --faint: #8294ab;
   /* Funciones: azul = principal, cian = dato técnico y determinista, violeta = IA, verde = éxito, ámbar = aviso, coral = fallo. */
   --blue: #3b82f6; --blue-t: #60a5fa; --cyan: #22d3ee; --violet: #a78bfa; --green: #34d399; --amber: #fbbf24; --coral: #fb7185; --slate: #94a3b8;
   /* Categorías: el mismo color en todas las vistas. */
@@ -247,13 +247,13 @@ tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--cyan); }
 .mcard .row { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .mcard .big { font-size: 30px; font-weight: 750; letter-spacing: -.03em; color: var(--c); }
 .mcard .meter { height: 10px; }
-.hchart { display: flex; justify-content: space-around; align-items: flex-end; gap: 10px; height: 170px; padding: 12px 6px 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
-.hcol { flex: 1 0 44px; max-width: 140px; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; cursor: pointer; border-radius: 8px 8px 0 0; padding: 0 4px; transition: background .15s; }
+/* Cada fecha va dentro de su columna: si hay muchas ejecuciones y el gráfico se desplaza, se mueven juntas. */
+.hchart { display: flex; justify-content: space-around; gap: 10px; height: 196px; padding: 12px 6px 0; overflow-x: auto; }
+.hcol { flex: 1 0 44px; max-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; border-radius: 8px 8px 0 0; padding: 0 4px; transition: background .15s; }
 .hcol:hover, .hcol.sel { background: rgba(148, 163, 184, .07); }
-.hcol .bars { display: flex; align-items: flex-end; gap: 3px; height: 100%; width: 100%; justify-content: center; }
+.hcol .bars { flex: 1; min-height: 0; display: flex; align-items: flex-end; gap: 3px; width: 100%; justify-content: center; border-bottom: 1px solid var(--line); }
 .hcol .b { width: 14px; min-height: 2px; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, var(--c), color-mix(in srgb, var(--c) 45%, transparent)); }
-.hlabels { display: flex; justify-content: space-around; gap: 10px; padding: 6px 6px 0; overflow-x: hidden; }
-.hlabels span { flex: 1 0 44px; max-width: 140px; text-align: center; font-size: 11px; color: var(--faint); }
+.hdate { font-size: 11px; color: var(--faint); white-space: nowrap; padding-bottom: 4px; }
 
 footer { max-width: 1280px; margin: 0 auto; padding: 4px 20px 32px; color: var(--faint); font-size: 12.5px; display: flex; gap: 8px; align-items: flex-start; }
 footer .ic { color: var(--green); margin-top: 1px; }
@@ -718,8 +718,7 @@ function renderHistory() {
     h("h4", {}, "Fallidos y flaky por ejecución", h("span", { class: "spacer" }), legend([{ label: "Fallidos", v: "", color: "var(--coral)" }, { label: "Flaky", v: "", color: "var(--flaky)" }])),
     h("div", { class: "hchart", role: "img", "aria-label": chrono.map((r) => `${fmtDate(r.id) ?? "sin fecha"}: ${r.tests?.failed ?? "n/d"} fallidos, ${r.tests?.flaky ?? "n/d"} flaky`).join("; ") },
       chrono.map((r) => { const i = DATA.runs.indexOf(r); return h("div", { class: `hcol${i === state.run ? " sel" : ""}`, title: fmtDate(r.id) ?? "sin fecha", onclick: () => { selectRun(i); scrollTo(0, 0); } },
-        h("div", { class: "bars" }, bar(r.tests?.failed, "coral", "Fallidos"), bar(r.tests?.flaky, "violet", "Flaky"))); })),
-    h("div", { class: "hlabels", "aria-hidden": "true" }, chrono.map((r) => h("span", {}, shortDate(r)))));
+        h("div", { class: "bars" }, bar(r.tests?.failed, "coral", "Fallidos"), bar(r.tests?.flaky, "violet", "Flaky")), h("span", { class: "hdate" }, shortDate(r))); })));
   chart.querySelector(".legend").style.cssText = "display:flex;gap:14px;width:auto;margin-left:auto";
   fill("historial",
     title,
