@@ -426,7 +426,25 @@ Un fichero inexistente, vacío, con JSON malformado o con un formato antiguo no 
 
 ### Historial
 
-`--save` copia los datos normalizados de la ejecución actual a `qa-history/runs/<hora-de-inicio>.json` y los de la evaluación a `qa-history/evals/<fecha>.json`. La carpeta es local y no está en git. El selector **Ejecución** de la cabecera y la tabla **Historial** permiten ver cada una por separado. Limitaciones:
+`--save` copia los datos normalizados de la ejecución actual a `qa-history/runs/<hora-de-inicio>.json` y los de la evaluación a `qa-history/evals/<fecha>.json`. La carpeta es local y no está en git. El selector **Ejecución** de la cabecera y la tabla **Historial** permiten ver cada una por separado.
+
+Para añadir una ejecución al historial, encadena los tres pasos y abre la página:
+
+```bash
+# bash (Git Bash, terminal de VS Code)
+PLAYWRIGHT_HTML_OPEN=never npm test; npm run report:ai; npm run dashboard -- --save; start playwright-report/qa-dashboard.html
+```
+
+```powershell
+# PowerShell
+$env:PLAYWRIGHT_HTML_OPEN = "never"; npm test; npm run report:ai; npm run dashboard -- --save; start playwright-report\qa-dashboard.html
+```
+
+- Van con `;` y no con `&&`: si hay tests fallidos, `npm test` termina con error y `&&` cortaría la cadena antes de `report:ai`. Por eso aquí no sirve `npm run test:ai`.
+- `PLAYWRIGHT_HTML_OPEN=never` evita que Playwright se quede sirviendo su informe HTML (`Serving HTML report at …`) cuando hay fallos, que bloquea la cadena hasta pulsar Ctrl+C.
+- `report:ai` consume cuota de IA y no da una estimación de tiempo: termina con `✅ AI Reporting finalizado correctamente`.
+
+Limitaciones:
 
 - Solo se guarda lo que se guarda a mano: lanza `--save` cuando `report:ai` haya terminado. Si ya existe una copia de esa ejecución, no se sobrescribe; borra el fichero si necesitas rehacerla.
 - Una ejecución sin `test-results.json` no tiene identificador y no se puede guardar. Una evaluación que solo tiene `ai-eval.md` tampoco.
