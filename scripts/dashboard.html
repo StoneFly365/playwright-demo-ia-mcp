@@ -438,7 +438,11 @@ function fmtDate(v) {
 }
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const fmtPct = (p) => (p == null ? null : `${p} %`);
-const fmtDur = (ms) => (ms ? `${Math.round(ms / 1000)} s` : null);
+const fmtDur = (ms) => {
+  if (!ms) return null;
+  const s = Math.round(ms / 1000);
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)} min${s % 60 ? ` ${s % 60} s` : ""}`;
+};
 
 const noFilters = () => ({ tipo: "", origen: "", browser: "", test: "", error: "" });
 const state = { run: 0, eval: 0, filters: noFilters() };
