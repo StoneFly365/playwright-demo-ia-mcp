@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 pendiente · Última actualización: 2026-10-21
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 pendiente · Última actualización: 2026-10-22
 
 ## Objetivo
 
@@ -125,6 +125,8 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] `report:ai` guarda en `ai-failures-grouped.json` `run_start_time`, `provider` y `ai_requests`, sin enviarlos en los prompts. `eval:ai` escribe también `ai-eval.json`. Son campos y ficheros nuevos; los que ya había no cambian.
 - [x] Historial local en `qa-history/` con `--save` (una copia por ejecución, nunca se sobrescribe) y modo demo con `learning/ruta-qa/ejemplos/`, que no se mezcla con el historial.
 - [x] En CI, los jobs de reporte y de evaluación generan el dashboard dentro de sus artefactos. Sin permisos nuevos ni GitHub Pages.
+- [x] Rediseño visual para la demo: tema oscuro con colores fijos por función y por categoría, cabecera con el estado de la ejecución, tarjetas con icono, gráficos (resultados, categorías, origen de la clasificación, historial y acierto) y detalle de grupo en dos columnas. Solo cambia `scripts/dashboard.html`; la lógica y los datos son los mismos.
+- [x] README: ciclo completo para alimentar el historial en bash y PowerShell (`npm test; npm run report:ai; npm run dashboard -- --save`).
 - [ ] Caché de clasificaciones: descartada por ahora (ver README). Si se retoma, en una rama propia.
 - [ ] Acciones ejecutadas: el dashboard solo puede mostrarlas cuando la fase 4 deje constancia de ellas en un artefacto.
 
@@ -199,3 +201,6 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | 2026-10-21 | El dashboard asocia el análisis a la ejecución por `run_start_time` y oculta lo que es de otra | `report:ai` no borra los ficheros de la ejecución anterior cuando no hay nada que analizar, y se mezclaban resultados |
 | 2026-10-21 | Sin caché de clasificaciones por ahora | La huella del grupo no basta como clave: la evidencia que decide cambia aunque la huella sea la misma |
 | 2026-10-21 | OpenRouter gratuito en CI en lugar de Claude por API | Sin coste adicional; a cambio, en CI se usa un modelo distinto del de local y hay que medir su acierto aparte |
+| 2026-10-22 | El dashboard pasa a un tema oscuro único, sin modo claro | Es una página para enseñar en demos; un solo tema mantiene los colores de cada categoría iguales en todas las vistas |
+| 2026-10-22 | Iconos (trazos de Lucide) y gráficos hechos con SVG y CSS dentro de la página, sin librerías | La CSP bloquea cualquier recurso externo y los tests prohíben `innerHTML`; los gráficos necesarios caben en pocas líneas |
+| 2026-10-22 | El ciclo local se documenta con `;` y `PLAYWRIGHT_HTML_OPEN=never`, no con `test:ai` | `test:ai` encadena con `&&` y no llega a `report:ai` si hay fallos; el visor HTML de Playwright bloqueaba la cadena |
