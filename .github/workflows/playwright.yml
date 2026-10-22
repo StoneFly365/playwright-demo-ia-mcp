@@ -130,6 +130,18 @@ jobs:
             echo "_AI summary not generated — check the 'Generate AI report' step for details._" >> $GITHUB_STEP_SUMMARY
           fi
 
+      # Tickets de los bug_producto. Sin los secretos JIRA_* es modo simulado: deja las peticiones
+      # en ai-jira.json, dentro del artefacto ai-report, y no envía nada.
+      - name: Tickets de Jira
+        if: always()
+        continue-on-error: true
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+        run: npm run jira:tickets
+
       # Solo lee los ficheros que ya hay (sin IA ni tests): queda dentro del artefacto ai-report.
       - name: Dashboard QA Intelligence
         if: always()
@@ -143,6 +155,24 @@ jobs:
           name: ai-report
           path: playwright-report/
           retention-days: 30
+
+  # Las PR que abre el healer (ramas heal/*) no pueden relajar las pruebas sin que lo vea una persona:
+  # falla si se borra o cambia una aserción, se añade skip/fixme o sube un timeout. No usa IA.
+  guard:
+    name: Guard de asserts (PR automáticas)
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'heal/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Comprobar que no se relajan asserts
+        run: node scripts/guard-asserts.mjs "origin/${{ github.base_ref }}"
 
   eval:
     name: Acierto de la IA

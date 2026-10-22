@@ -1,0 +1,143 @@
+#!/usr/bin/env node
+// Cierra el circuito de los bug_producto: convierte ai-tickets.json en incidencias de Jira con la
+// traza y el vídeo de los tests afectados. Sin credenciales funciona en modo simulado: construye
+// las mismas peticiones REST y las guarda en playwright-report/ai-jira.json sin enviar nada.
+//
+// Uso: npm run jira:tickets [-- --dir <carpeta con los ai-*.json>]
+// Modo real: JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN y JIRA_PROJECT_KEY (y JIRA_ISSUE_TYPE, por defecto Bug).
+import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync, openAsBlob } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { redact } from "./triage.mjs";
+
+const OUT = "playwright-report/ai-jira.json";
+const ENV = ["JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN", "JIRA_PROJECT_KEY"];
+// ponytail: tope fijo de adjuntos por ticket (3 tests x traza y vídeo); súbelo si un bug necesita más evidencia.
+const MAX_TESTS_WITH_FILES = 3;
+
+const text = (t) => ({ type: "text", text: redact(String(t)) });
+const para = (t) => ({ type: "paragraph", content: [text(t)] });
+const heading = (t) => ({ type: "heading", attrs: { level: 3 }, content: [text(t)] });
+const bullets = (items) => ({ type: "bulletList", content: items.map((i) => ({ type: "listItem", content: [para(i)] })) });
+// Las etiquetas de Jira no admiten espacios.
+const label = (s) => String(s).trim().toLowerCase().replace(/\s+/g, "-");
+
+// Traza y vídeo del último intento de cada test que falló, por "fichero:línea:navegador".
+export function attachmentsByTest(report) {
+    const map = new Map();
+    const walk = (suite) => {
+        for (const spec of suite.specs ?? []) {
+            for (const t of spec.tests ?? []) {
+                const files = (t.results?.at(-1)?.attachments ?? []).filter((a) => a.path && (a.name === "trace" || a.name === "video"));
+                if (files.length) map.set(`${spec.file}:${spec.line}:${t.projectName}`, files.map((a) => a.path));
+            }
+        }
+        for (const child of suite.suites ?? []) walk(child);
+    };
+    for (const s of report?.suites ?? []) walk(s);
+    return map;
+}
+
+export function buildIssue(ticket, { projectKey, issueType = "Bug", runStartTime }) {
+    const groupId = /^(G\d+)/.exec(ticket.titulo ?? "")?.[1] ?? null;
+    const description = {
+        type: "doc", version: 1,
+        content: [
+            para(ticket.descripcion ?? ""),
+            ticket.pasos_para_reproducir?.length ? [heading("Tests afectados"), bullets(ticket.pasos_para_reproducir)] : [],
+            ticket.solucion_sugerida?.length ? [heading("Solución sugerida"), bullets(ticket.solucion_sugerida)] : [],
+            para(`Creado por el triage de IA (grupo ${groupId ?? "?"}${runStartTime ? `, ejecución ${runStartTime}` : ""}). Adjuntos: traza y vídeo de los tests afectados.`),
+        ].flat(),
+    };
+    return {
+        groupId,
+        body: {
+            fields: {
+                project: { key: projectKey },
+                issuetype: { name: issueType },
+                summary: redact(ticket.titulo ?? "Fallo de producto detectado por el triage de IA").slice(0, 250),
+                description,
+                // Severidad y componente como etiquetas: los campos de prioridad y componente cambian en cada proyecto Jira.
+                labels: [...(ticket.etiquetas ?? []), ticket.severidad && `severidad-${ticket.severidad}`, ticket.componente && `componente-${ticket.componente}`,
+                    runStartTime && `qa-run-${runStartTime.replace(/\D/g, "").slice(0, 14)}`].filter(Boolean).map(label),
+            },
+        },
+    };
+}
+
+export function planTickets({ tickets, grouped, report, projectKey, issueType }) {
+    // Solo se adjunta la evidencia de la misma ejecución que el análisis; si no, sería la traza de otro fallo.
+    const sameRun = !grouped?.run_start_time || grouped.run_start_time === report?.stats?.startTime;
+    const files = sameRun ? attachmentsByTest(report) : new Map();
+    return tickets.map((ticket) => {
+        const issue = buildIssue(ticket, { projectKey, issueType, runStartTime: grouped?.run_start_time });
+        const group = grouped?.groups?.find((g) => g.group_id === issue.groupId);
+        const attachments = (group?.affected_tests ?? []).slice(0, MAX_TESTS_WITH_FILES)
+            .flatMap((t) => files.get(`${t.file}:${t.line}:${t.browser}`) ?? []);
+        return { ...issue, attachments };
+    });
+}
+
+async function createIssue(env, plan) {
+    const auth = `Basic ${Buffer.from(`${env.JIRA_EMAIL}:${env.JIRA_API_TOKEN}`).toString("base64")}`;
+    const base = env.JIRA_BASE_URL.replace(/\/+$/, "");
+    const res = await fetch(`${base}/rest/api/3/issue`, {
+        method: "POST", headers: { Authorization: auth, "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(plan.body),
+    });
+    if (!res.ok) throw new Error(`Jira respondió ${res.status} al crear el ticket de ${plan.groupId}: ${(await res.text()).slice(0, 300)}`);
+    const { key } = await res.json();
+    const present = plan.attachments.filter((p) => existsSync(p));
+    if (present.length) {
+        const form = new FormData();
+        for (const p of present) form.append("file", await openAsBlob(p), `${path.basename(path.dirname(p))}-${path.basename(p)}`);
+        const up = await fetch(`${base}/rest/api/3/issue/${key}/attachments`, { method: "POST", headers: { Authorization: auth, "X-Atlassian-Token": "no-check" }, body: form });
+        if (!up.ok) console.warn(`⚠️  ${key} creado, pero los adjuntos fallaron (${up.status}).`);
+    }
+    return { key, url: `${base}/browse/${key}` };
+}
+
+async function main() {
+    const args = process.argv.slice(2);
+    const i = args.indexOf("--dir");
+    // Con --dir todo está en la misma carpeta (como el artefacto ai-report); sin él, test-results.json está en la raíz.
+    const dir = i >= 0 ? args[i + 1] : "playwright-report";
+    const testsFile = i >= 0 ? path.join(dir, "test-results.json") : "test-results.json";
+    const read = (file) => (existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : null);
+    const tickets = read(path.join(dir, "ai-tickets.json"));
+    if (!Array.isArray(tickets) || !tickets.length) {
+        console.log(`✅ Sin tickets en ${dir}/ai-tickets.json: solo se generan para los grupos bug_producto.`);
+        return;
+    }
+    const missing = ENV.filter((k) => !process.env[k]);
+    const real = missing.length === 0;
+    const plans = planTickets({
+        tickets, grouped: read(path.join(dir, "ai-failures-grouped.json")), report: read(testsFile),
+        projectKey: process.env.JIRA_PROJECT_KEY ?? "DEMO", issueType: process.env.JIRA_ISSUE_TYPE ?? "Bug",
+    });
+
+    const results = [];
+    for (const plan of plans) {
+        const attachments = plan.attachments.map((p) => ({ file: path.relative(".", p).replaceAll("\\", "/"), exists: existsSync(p), bytes: existsSync(p) ? statSync(p).size : null }));
+        if (!real) {
+            results.push({ group: plan.groupId, request: { method: "POST", path: "/rest/api/3/issue", body: plan.body }, attachments });
+            continue;
+        }
+        try {
+            results.push({ group: plan.groupId, ...(await createIssue(process.env, plan)), attachments });
+            console.log(`✅ ${plan.groupId}: ${results.at(-1).url}`);
+        } catch (e) {
+            results.push({ group: plan.groupId, error: e.message, attachments });
+            console.error(`❌ ${e.message}`);
+        }
+    }
+    mkdirSync(path.dirname(OUT), { recursive: true });
+    writeFileSync(OUT, JSON.stringify({ generated_at: new Date().toISOString(), mode: real ? "real" : "simulado", missing_env: missing, tickets: results }, null, 2) + "\n");
+    console.log(real
+        ? `✅ ${results.filter((r) => r.key).length} de ${results.length} tickets creados en Jira. Detalle en ${OUT}.`
+        : `✅ Modo simulado (faltan ${missing.join(", ")}): ${results.length} tickets preparados en ${OUT}, sin enviar nada.`);
+    if (real && results.some((r) => r.error)) process.exit(1);
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    main().catch((e) => { console.error(`❌ ${e.message}`); process.exit(1); });
+}

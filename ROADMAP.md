@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 pendiente · Última actualización: 2026-10-22
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 en curso · Última actualización: 2026-10-22
 
 ## Objetivo
 
@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 falta OpenRouter |
-| 4 | Cerrar el circuito | 3-5 días | ⬜ |
+| 4 | Cerrar el circuito | 3-5 días | 🟨 en local; falta la prueba de punta a punta |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
 | — | Opcionales según cliente | — | ⬜ |
 
@@ -138,11 +138,14 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | `bug_producto` | Crear un ticket en Jira con traza y vídeo adjuntos. **El healer no toca estos tests.** |
 | `flaky` / `entorno` | Aviso en el resumen de la ejecución, sin acción automática. |
 
-- [ ] Ejecutar el healer sin intervención en CI (`claude -p` con el agente `playwright-test-healer`) filtrando por los grupos `test_roto`.
-- [ ] Abrir la PR con `gh pr create`, con el diagnóstico en la descripción.
-- [ ] Crear tickets en Jira por API REST para los grupos `bug_producto`.
-- [ ] Decidir el destino de los tickets: un proyecto Jira de demo propio o el conector Atlassian autorizado.
-- [ ] **Protección independiente de la clasificación:** un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
+- [x] Ejecutar el healer sin intervención (`npm run heal:ai`: `claude -p` con el agente `playwright-test-healer`) solo sobre los grupos `test_roto`. En local, con la suscripción.
+- [ ] El mismo healer en CI. Necesita un token de Claude en los secretos (`CLAUDE_CODE_OAUTH_TOKEN` o una API key) y permisos de escritura en el workflow.
+- [x] Abrir la PR en borrador con `gh pr create`, con el diagnóstico y el resumen del healer en la descripción.
+- [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
+- [ ] Probar el modo real de Jira contra un proyecto de demo (falta el proyecto y las credenciales).
+- [x] Destino de los tickets: modo simulado hasta tener un proyecto Jira de demo propio. El conector Atlassian no sirve en CI.
+- [ ] Prueba de punta a punta: `cascade` con su PR y `bug` con su ticket.
+- [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`; falta marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
 **Terminada cuando:** al ejecutar `cascade` aparezca una PR con la corrección, y al ejecutar `bug` aparezca un ticket.
 
@@ -204,3 +207,6 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | 2026-10-22 | El dashboard pasa a un tema oscuro único, sin modo claro | Es una página para enseñar en demos; un solo tema mantiene los colores de cada categoría iguales en todas las vistas |
 | 2026-10-22 | Iconos (trazos de Lucide) y gráficos hechos con SVG y CSS dentro de la página, sin librerías | La CSP bloquea cualquier recurso externo y los tests prohíben `innerHTML`; los gráficos necesarios caben en pocas líneas |
 | 2026-10-22 | El ciclo local se documenta con `;` y `PLAYWRIGHT_HTML_OPEN=never`, no con `test:ai` | `test:ai` encadena con `&&` y no llega a `report:ai` si hay fallos; el visor HTML de Playwright bloqueaba la cadena |
+| 2026-10-22 | El healer automático empieza en local (`npm run heal:ai`) y abre PR en borrador | No necesita secretos nuevos ni coste: usa la suscripción y `gh` del equipo. En CI haría falta un token de Claude en el repositorio |
+| 2026-10-22 | Jira en modo simulado hasta tener un proyecto de demo | Se construyen y se guardan las mismas peticiones REST; el modo real se activa solo con las variables `JIRA_*` |
+| 2026-10-22 | El check de asserts compara matcher y argumentos, no el sujeto, y solo se aplica a las ramas `heal/*` | Cambiar un selector es lo que debe hacer el healer; cambiar un valor esperado, no sin una persona. Las PR humanas pueden cambiar expectativas legítimamente |
