@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { selectGroups, buildPrompt, buildPrBody, changedFiles } from "./heal-ai.mjs";
-import { buildIssue, planTickets } from "./jira-tickets.mjs";
+import { buildIssue, planTickets, priorityFor } from "./jira-tickets.mjs";
 
 const group = (id, tipo, extra = {}) => ({
     group_id: id, tipo, count: 3, confianza: "alta", evidencia: `evidencia ${id}`, accion: `acción ${id}`,
@@ -68,4 +68,14 @@ test("adjunta traza y vídeo solo de la misma ejecución que el análisis", () =
     const plan = (r) => planTickets({ tickets: [ticket], grouped, report: r, projectKey: "QA" })[0].attachments;
     assert.deepEqual(plan(report(grouped.run_start_time)), ["test-results/x/trace.zip", "test-results/x/video.webm"]);
     assert.deepEqual(plan(report("2026-10-01T00:00:00.000Z")), [], "de otra ejecución no se adjunta nada");
+});
+
+test("la prioridad de Jira sale de la severidad, por posición o con un mapa explícito", () => {
+    // Las prioridades del sandbox THP, en el orden en que las devuelve Jira.
+    const thp = ["Supone un impedimento", "Crítica", "Importante", "Poco importante"].map((name, i) => ({ id: String(i + 1), name }));
+    assert.deepEqual(["bloqueante", "alta", "media", "baja"].map((s) => priorityFor(s, thp)?.name), ["Supone un impedimento", "Crítica", "Importante", "Poco importante"]);
+    assert.equal(priorityFor("baja", thp.slice(0, 2)).name, "Crítica", "con menos prioridades, las menores comparten la última");
+    assert.equal(priorityFor("alta", thp, "alta=Importante, media=Poco importante").name, "Importante");
+    assert.equal(priorityFor("rara", thp), null);
+    assert.equal(priorityFor("alta", []), null, "si el proyecto no tiene el campo, no se envía");
 });

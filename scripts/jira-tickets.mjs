@@ -5,6 +5,7 @@
 //
 // Uso: npm run jira:tickets [-- --dir <carpeta con los ai-*.json>]
 // Modo real: JIRA_BASE_URL, JIRA_EMAIL, JIRA_API_TOKEN y JIRA_PROJECT_KEY (y JIRA_ISSUE_TYPE, por defecto Bug).
+// La prioridad sale de la severidad; JIRA_PRIORITY_MAP la fija a mano: "bloqueante=Highest,alta=High,media=Medium,baja=Low".
 import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync, openAsBlob } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,6 +15,21 @@ const OUT = "playwright-report/ai-jira.json";
 const ENV = ["JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN", "JIRA_PROJECT_KEY"];
 // ponytail: tope fijo de adjuntos por ticket (3 tests x traza y vídeo); súbelo si un bug necesita más evidencia.
 const MAX_TESTS_WITH_FILES = 3;
+// Severidades de prompts/ai-tickets.txt, de más a menos grave.
+export const SEVERITIES = ["bloqueante", "alta", "media", "baja"];
+
+// Prioridad de Jira para una severidad. Con JIRA_PRIORITY_MAP, por nombre; si no, por posición:
+// Jira devuelve las prioridades de más a menos urgente, y la más grave toma la primera.
+export function priorityFor(severity, allowed, map) {
+    if (!allowed?.length) return null;
+    if (map) {
+        const name = Object.fromEntries(map.split(",").map((pair) => pair.split("=").map((x) => x.trim())))[severity];
+        return allowed.find((p) => p.name === name) ?? null;
+    }
+    const i = SEVERITIES.indexOf(severity);
+    // ponytail: con menos de cuatro prioridades, las severidades menores comparten la última.
+    return i < 0 ? null : allowed[Math.min(i, allowed.length - 1)];
+}
 
 const text = (t) => ({ type: "text", text: redact(String(t)) });
 const para = (t) => ({ type: "paragraph", content: [text(t)] });
@@ -74,7 +90,7 @@ export function planTickets({ tickets, grouped, report, projectKey, issueType })
         const group = grouped?.groups?.find((g) => g.group_id === issue.groupId);
         const attachments = (group?.affected_tests ?? []).slice(0, MAX_TESTS_WITH_FILES)
             .flatMap((t) => files.get(`${t.file}:${t.line}:${t.browser}`) ?? []);
-        return { ...issue, attachments };
+        return { ...issue, severity: ticket.severidad ?? null, attachments };
     });
 }
 
@@ -89,16 +105,20 @@ function jiraApi(env) {
     return { base, call };
 }
 
-// Campos que exige el proyecto y que no salen del ticket. Hoy solo el informador: hay proyectos que
-// lo piden al crear por API, y entonces se pone la cuenta del token.
-async function requiredFields({ call }, projectKey, issueType) {
+// Lo que depende del proyecto: el informador, si es obligatorio al crear por API (se pone la cuenta
+// del token), y las prioridades que admite, si el campo está en la pantalla de creación.
+async function projectFields({ call }, projectKey, issueType) {
     const key = encodeURIComponent(projectKey);
     const types = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes`);
     const type = (types.issueTypes ?? types.values ?? []).find((t) => t.name === issueType);
     if (!type) throw new Error(`El proyecto ${projectKey} no tiene el tipo de incidencia "${issueType}". Cambia JIRA_ISSUE_TYPE.`);
     const meta = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes/${type.id}`);
-    const reporter = (meta.fields ?? meta.values ?? []).some((f) => f.fieldId === "reporter" && f.required);
-    return reporter ? { reporter: { id: (await call("/rest/api/3/myself")).accountId } } : {};
+    const fields = meta.fields ?? meta.values ?? [];
+    const reporter = fields.some((f) => f.fieldId === "reporter" && f.required);
+    return {
+        fixed: reporter ? { reporter: { id: (await call("/rest/api/3/myself")).accountId } } : {},
+        priorities: fields.find((f) => f.fieldId === "priority")?.allowedValues ?? [],
+    };
 }
 
 async function createIssue(jira, plan, extraFields) {
@@ -140,17 +160,19 @@ async function main() {
     });
 
     const jira = real ? jiraApi(process.env) : null;
-    const extraFields = real ? await requiredFields(jira, process.env.JIRA_PROJECT_KEY, process.env.JIRA_ISSUE_TYPE ?? "Bug") : {};
+    const project = real ? await projectFields(jira, process.env.JIRA_PROJECT_KEY, process.env.JIRA_ISSUE_TYPE ?? "Bug") : null;
     const results = [];
     for (const plan of plans) {
         const attachments = plan.attachments.map((p) => ({ file: path.relative(".", p).replaceAll("\\", "/"), exists: existsSync(p), bytes: existsSync(p) ? statSync(p).size : null }));
         if (!real) {
-            results.push({ group: plan.groupId, request: { method: "POST", path: "/rest/api/3/issue", body: plan.body }, attachments });
+            results.push({ group: plan.groupId, request: { method: "POST", path: "/rest/api/3/issue", body: plan.body }, priority_from: plan.severity, attachments });
             continue;
         }
         try {
-            results.push({ group: plan.groupId, ...(await createIssue(jira, plan, extraFields)), attachments });
-            console.log(`✅ ${plan.groupId}: ${results.at(-1).url} (${results.at(-1).attached} adjuntos)`);
+            const priority = priorityFor(plan.severity, project.priorities, process.env.JIRA_PRIORITY_MAP);
+            const fields = { ...project.fixed, ...(priority ? { priority: { id: priority.id } } : {}) };
+            results.push({ group: plan.groupId, ...(await createIssue(jira, plan, fields)), priority: priority?.name ?? null, attachments });
+            console.log(`✅ ${plan.groupId}: ${results.at(-1).url} · prioridad ${priority?.name ?? "por defecto"} · ${results.at(-1).attached} adjuntos`);
         } catch (e) {
             results.push({ group: plan.groupId, error: e.message, attachments });
             console.error(`❌ ${e.message}`);
