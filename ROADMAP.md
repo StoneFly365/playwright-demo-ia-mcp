@@ -144,10 +144,19 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
 - [ ] Probar el modo real de Jira contra un proyecto de demo (falta el proyecto y las credenciales).
 - [x] Destino de los tickets: modo simulado hasta tener un proyecto Jira de demo propio. El conector Atlassian no sirve en CI.
-- [ ] Prueba de punta a punta: `cascade` con su PR y `bug` con su ticket.
+- [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket simulado. Resultado abajo.
 - [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`; falta marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
 **Terminada cuando:** al ejecutar `cascade` aparezca una PR con la corrección, y al ejecutar `bug` aparezca un ticket.
+
+**Resultado (chromium, Claude Haiku 5.5 para el triage y el healer con Sonnet, en local):**
+
+| Escenario | Triage | Acción |
+|---|---|---|
+| `cascade` | 1 grupo `test_roto` (70 tests), confianza alta | PR #11 en borrador, sin `needs-human`: cambia el login del page object a `getByRole('button', { name: 'Login' })`. Con el escenario activo pasan 68 de 70; los 2 de `route-protection.spec.ts` usan el selector directamente en el test y el healer solo ejecutó dos ficheros |
+| `bug` | 2 grupos `bug_producto` (34 + 1), confianza alta | 2 tickets simulados en `ai-jira.json`, con 6 y 2 adjuntos (traza y vídeo) de la misma ejecución. El healer no los toca: "No hay grupos test_roto" |
+
+Tras la prueba, el prompt del healer lleva la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Falta repetir `cascade` con ese prompt y ver el job *Guard de asserts* en una PR `heal/*` contra `main`: la PR #11 va contra la rama de la fase y la CI solo corre en las PR a `main`.
 
 ## Fase 5 · Argumentos para cliente enterprise
 
