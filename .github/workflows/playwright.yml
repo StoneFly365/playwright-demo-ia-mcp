@@ -84,6 +84,8 @@ jobs:
     name: Lint de Playwright
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      HOME: /home/runner  # fuera del contenedor de Playwright: el HOME=/root global no es accesible y rompe el checkout
 
     steps:
       - name: Checkout repository
@@ -182,6 +184,8 @@ jobs:
     if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'heal/')
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      HOME: /home/runner  # fuera del contenedor de Playwright: el HOME=/root global no es accesible y rompe el checkout
 
     steps:
       - name: Checkout repository
