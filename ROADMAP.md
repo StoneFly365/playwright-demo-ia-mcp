@@ -149,7 +149,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
 - [x] Revisión adversarial de Playwright (`npm run review:pw`, agente `playwright-adversarial-reviewer`): un segundo agente intenta tumbar el arreglo antes de abrir la PR, y su veredicto va en la descripción. Si no lo aprueba, la PR lleva `needs-human`.
 - [x] Lint de Playwright sin IA en CI (`eslint-plugin-playwright`), con trinquete: falla si aparece un aviso más de los 17 actuales.
-- [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`; falta marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
+- [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`. **Detecta**, pero todavía no bloquea: para bloquear el merge hay que marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
 **Terminada cuando:** al ejecutar `cascade` aparezca una PR con la corrección, y al ejecutar `bug` aparezca un ticket.
 
@@ -186,6 +186,7 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 ## Riesgos y restricciones
 
 - Los `@demo-fail` fallan a propósito: no se corrigen.
+- Jira real: volver a lanzar `jira:tickets` sobre el mismo informe crea tickets duplicados, y la traza y el vídeo adjuntos no pasan por el redactor (pueden llevar datos de la sesión). En un proyecto de cliente, revisar qué contienen antes de activar las variables `JIRA_*`.
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
 - La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Desde la PR de la cuota, una ejecución de CI con fallos gasta 4 como mucho y una en verde ninguna, aunque tenga flaky. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.

@@ -96,3 +96,12 @@ test("la PR lleva la revisión adversarial y avisa si no la aprueba", () => {
     assert.doesNotMatch(buildPrBody({ groups, summary: "", reasons: [], review: { verdict: "APROBADO", text: "VEREDICTO: APROBADO\nSin hallazgos." } }), /no lo aprueba/);
     assert.match(buildPrBody({ groups, summary: "", reasons: [], review: { error: "claude salió con código 1" } }), /No disponible: claude salió/);
 });
+
+test("revisión de CodeRabbit: renombrados, veredictos contradictorios y ficheros nuevos", async () => {
+    assert.deepEqual(changedFiles("R  tests/nuevo.spec.ts\0tests/viejo.spec.ts\0 M pages/a.ts\0"), ["tests/nuevo.spec.ts", "tests/viejo.spec.ts", "pages/a.ts"]);
+    const { parseVerdict } = await import("./review-pw.mjs");
+    assert.equal(parseVerdict("Antes pensé VEREDICTO: APROBADO, pero no.\nVEREDICTO: RECHAZADO"), "RECHAZADO", "solo cuenta la línea completa");
+    assert.equal(parseVerdict("VEREDICTO: APROBADO\nVEREDICTO: RECHAZADO"), null, "contradictorio: sin veredicto");
+    const { findRelaxations } = await import("./guard-asserts.mjs");
+    assert.equal(findRelaxations("tests/nuevo.spec.ts", null, "test.skip('x', async () => {});").length, 1, "un fichero nuevo con skip cuenta");
+});

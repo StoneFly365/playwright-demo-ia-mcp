@@ -54,7 +54,8 @@ const timeouts = (src) => [...stripComments(src).matchAll(/(?:timeout\s*:\s*|set
 // Motivos por los que el cambio de un fichero necesita revisión humana. before = null si el fichero es nuevo.
 export function findRelaxations(file, before, after) {
     if (after == null) return [`${file}: se borra el fichero`];
-    if (before == null) return [];
+    // Un fichero nuevo se compara con uno vacío: no pierde aserciones, pero un skip o un timeout sí cuentan.
+    before ??= "";
     if (file === "playwright.config.ts" && before !== after) return [`${file}: cambia la configuración (reintentos, timeouts o filtros pueden ocultar fallos)`];
     const reasons = [];
     const left = extractAssertions(after);

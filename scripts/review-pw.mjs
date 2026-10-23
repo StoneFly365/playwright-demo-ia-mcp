@@ -14,8 +14,10 @@ import { runAgent } from "./agent.mjs";
 export const VERDICTS = ["APROBADO", "DUDAS", "RECHAZADO"];
 const PATHS = ["tests", "pages", "fixtures", "playwright.config.ts"];
 
+// Solo vale una línea completa "VEREDICTO: X". Si hay varias que se contradicen, no hay veredicto.
 export function parseVerdict(text) {
-    return /VEREDICTO:\s*(APROBADO|DUDAS|RECHAZADO)/.exec(text ?? "")?.[1] ?? null;
+    const found = new Set([...(text ?? "").matchAll(/^\s*VEREDICTO:\s*(APROBADO|DUDAS|RECHAZADO)\s*$/gm)].map((m) => m[1]));
+    return found.size === 1 ? [...found][0] : null;
 }
 
 export function buildReviewPrompt({ diff, guardReasons, lint, context }) {

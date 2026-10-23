@@ -12,7 +12,7 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 - **Cobertura multi-navegador** — 80 tests por navegador (240 en total) en Chromium, Firefox y WebKit.
 - **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
 - **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
-- **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira, con un check que impide ocultar un bug relajando el test.
+- **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira. Un check detecta si una PR automática relaja un test; para que además bloquee el merge hay que marcarlo como obligatorio en GitHub.
 
 ---
 

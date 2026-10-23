@@ -28,8 +28,15 @@ export function selectGroups(grouped, ids = []) {
 
 // Salida de `git status --porcelain -z`, sin recortar: el espacio inicial de " M fichero" es parte del
 // formato (estado XY + espacio + ruta). -z da las rutas sin comillas aunque lleven espacios o tildes.
+// En un renombrado o una copia (R o C), la ruta de origen va en la entrada siguiente, sin estado.
 export function changedFiles(statusZ) {
-    return statusZ.split("\0").filter(Boolean).map((entry) => entry.slice(3));
+    const entries = statusZ.split("\0").filter(Boolean);
+    const files = [];
+    for (let i = 0; i < entries.length; i++) {
+        files.push(entries[i].slice(3));
+        if (/^[RC]/.test(entries[i])) files.push(entries[++i]);
+    }
+    return files;
 }
 
 export function buildPrompt(groups, scenario) {
@@ -149,8 +156,9 @@ async function main() {
         return;
     }
 
-    const reasons = checkAgainst(base);
+    // Primero al índice: así el check y el revisor ven también los ficheros nuevos.
     git("add", "--", ...changed);
+    const reasons = checkAgainst(base);
     // Un segundo agente intenta tumbar el arreglo. Si falla, la PR se abre igual: el check de asserts es la barrera dura.
     log("Revisión adversarial (playwright-adversarial-reviewer)...");
     let review;
@@ -159,7 +167,8 @@ async function main() {
     } catch (e) {
         review = { verdict: null, text: null, error: e.message };
     }
-    const doubts = Boolean(review?.verdict && review.verdict !== "APROBADO");
+    // Si el revisor responde pero sin un veredicto válido, tampoco cuenta como aprobado. Si falla, no se marca.
+    const doubts = Boolean(review?.text) && review.verdict !== "APROBADO";
     const needsHuman = reasons.length > 0 || doubts;
     git("commit", "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
     git("push", "-u", "origin", branch);

@@ -195,7 +195,9 @@ jobs:
           fetch-depth: 0
 
       - name: Comprobar que no se relajan asserts
-        run: node scripts/guard-asserts.mjs "origin/${{ github.base_ref }}"
+        env:
+          BASE_REF: ${{ github.base_ref }}  # por variable de entorno, no expandido dentro del script
+        run: node scripts/guard-asserts.mjs "origin/$BASE_REF"
 
   eval:
     name: Acierto de la IA

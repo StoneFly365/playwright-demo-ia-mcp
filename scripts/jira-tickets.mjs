@@ -98,7 +98,8 @@ function jiraApi(env) {
     const base = env.JIRA_BASE_URL.replace(/\/+$/, "");
     const auth = `Basic ${Buffer.from(`${env.JIRA_EMAIL}:${env.JIRA_API_TOKEN}`).toString("base64")}`;
     const call = async (p, init = {}) => {
-        const res = await fetch(`${base}${p}`, { ...init, headers: { Authorization: auth, Accept: "application/json", ...init.headers } });
+        // Sin seguir redirecciones: una 307 reenviaría las credenciales y los adjuntos a otro destino.
+        const res = await fetch(`${base}${p}`, { ...init, redirect: "error", headers: { Authorization: auth, Accept: "application/json", ...init.headers } });
         if (!res.ok) throw new Error(`Jira respondió ${res.status} en ${p}: ${(await res.text()).slice(0, 300)}`);
         return res.json();
     };
@@ -109,10 +110,11 @@ function jiraApi(env) {
 // del token), y las prioridades que admite, si el campo está en la pantalla de creación.
 async function projectFields({ call }, projectKey, issueType) {
     const key = encodeURIComponent(projectKey);
-    const types = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes`);
+    // Los dos endpoints van paginados (50 por defecto): se piden de una vez los que caben.
+    const types = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes?maxResults=200`);
     const type = (types.issueTypes ?? types.values ?? []).find((t) => t.name === issueType);
     if (!type) throw new Error(`El proyecto ${projectKey} no tiene el tipo de incidencia "${issueType}". Cambia JIRA_ISSUE_TYPE.`);
-    const meta = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes/${type.id}`);
+    const meta = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes/${type.id}?maxResults=200`);
     const fields = meta.fields ?? meta.values ?? [];
     const reporter = fields.some((f) => f.fieldId === "reporter" && f.required);
     return {
