@@ -22,6 +22,8 @@ test("el healer solo recibe grupos test_roto, nunca bug_producto ni flaky", () =
 
 test("el prompt del healer lleva el diagnóstico, los tests y las reglas que no relajan asserts", () => {
     const p = buildPrompt([grouped.groups[0]], "cascade");
+    const p2 = buildPrompt([{ ...grouped.groups[0], fingerprint: 'elemento_no_encontrado|locator(\'[data-test="login-button"]\')' }]);
+    assert.ok(p2.includes('[data-test="login-button"]') && p2.includes("todas sus apariciones"), "la huella y la búsqueda del locator en todo el proyecto");
     for (const s of ["G001", "evidencia G001", "acción G001", "tests/a.spec.ts:4", "DEMO_SCENARIO=cascade", "No relajes ninguna aserción", "test.skip"]) {
         assert.ok(p.includes(s), `falta "${s}"`);
     }

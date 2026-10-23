@@ -32,6 +32,7 @@ export function changedFiles(statusZ) {
 export function buildPrompt(groups, scenario) {
     const block = (g) => [
         `## ${g.group_id} · ${g.count} tests · confianza ${g.confianza ?? "?"}`,
+        `Huella del fallo (patrón | elemento): ${g.fingerprint ?? "no disponible"}`,
         `Evidencia: ${g.evidencia ?? "no disponible"}`,
         `Acción propuesta por el triage: ${g.accion ?? "no disponible"}`,
         "Tests afectados:",
@@ -44,7 +45,8 @@ export function buildPrompt(groups, scenario) {
         scenario ? `Los fallos se reproducen con la variable de entorno DEMO_SCENARIO=${scenario}, que ya está puesta en este proceso.` : null,
         "",
         "Reglas:",
-        "- Ejecuta y depura solo los tests listados, no la suite completa.",
+        "- Ejecuta y depura solo los tests del grupo, no la suite completa. La lista puede estar recortada: si la huella incluye un locator, búscalo en todo tests/, pages/ y fixtures/ y corrige todas sus apariciones, no solo la del page object.",
+        "- Antes de terminar, ejecuta todos los ficheros de test donde aparecía el fallo y confirma que pasan, salvo los que fallen por otra causa.",
         "- Cambia lo mínimo, preferentemente el locator o el page object.",
         "- No relajes ninguna aserción: no borres expect, no añadas .not, no uses test.skip, test.fixme ni test.fail y no subas timeouts.",
         "- Cambia un valor esperado solo si la evidencia demuestra que el antiguo es el incorrecto, y dilo en el resumen. Ese cambio lo revisará una persona.",
