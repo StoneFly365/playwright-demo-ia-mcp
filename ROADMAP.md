@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 pendiente · Última actualización: 2026-10-22
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 en curso · Última actualización: 2026-10-22
 
 ## Objetivo
 
@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 falta OpenRouter |
-| 4 | Cerrar el circuito | 3-5 días | ⬜ |
+| 4 | Cerrar el circuito | 3-5 días | 🟨 en local; falta la prueba de punta a punta |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
 | — | Opcionales según cliente | — | ⬜ |
 
@@ -138,13 +138,29 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | `bug_producto` | Crear un ticket en Jira con traza y vídeo adjuntos. **El healer no toca estos tests.** |
 | `flaky` / `entorno` | Aviso en el resumen de la ejecución, sin acción automática. |
 
-- [ ] Ejecutar el healer sin intervención en CI (`claude -p` con el agente `playwright-test-healer`) filtrando por los grupos `test_roto`.
-- [ ] Abrir la PR con `gh pr create`, con el diagnóstico en la descripción.
-- [ ] Crear tickets en Jira por API REST para los grupos `bug_producto`.
-- [ ] Decidir el destino de los tickets: un proyecto Jira de demo propio o el conector Atlassian autorizado.
-- [ ] **Protección independiente de la clasificación:** un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
+- [x] Ejecutar el healer sin intervención (`npm run heal:ai`: `claude -p` con el agente `playwright-test-healer`) solo sobre los grupos `test_roto`. En local, con la suscripción.
+- [ ] El mismo healer en CI. Necesita un token de Claude en los secretos (`CLAUDE_CODE_OAUTH_TOKEN` o una API key) y permisos de escritura en el workflow.
+- [x] Abrir la PR en borrador con `gh pr create`, con el diagnóstico y el resumen del healer en la descripción.
+- [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
+- [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
+- [x] Destino de los tickets: el sandbox de Jira, proyecto `THP`. Sin credenciales, modo simulado. El conector Atlassian no sirve en CI.
+- [ ] Secretos `JIRA_*` en GitHub para crear tickets desde CI (sin adjuntos, porque la evidencia se queda en los jobs de cada navegador).
+- [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket simulado. Resultado abajo.
+- [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
+- [x] Revisión adversarial de Playwright (`npm run review:pw`, agente `playwright-adversarial-reviewer`): un segundo agente intenta tumbar el arreglo antes de abrir la PR, y su veredicto va en la descripción. Si no lo aprueba, la PR lleva `needs-human`.
+- [x] Lint de Playwright sin IA en CI (`eslint-plugin-playwright`), con trinquete: falla si aparece un aviso más de los 17 actuales.
+- [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`. **Detecta**, pero todavía no bloquea: para bloquear el merge hay que marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
 **Terminada cuando:** al ejecutar `cascade` aparezca una PR con la corrección, y al ejecutar `bug` aparezca un ticket.
+
+**Resultado (chromium, Claude Haiku 5.5 para el triage y el healer con Sonnet, en local):**
+
+| Escenario | Triage | Acción |
+|---|---|---|
+| `cascade` | 1 grupo `test_roto` (70 tests), confianza alta | Primera prueba (PR #11, cerrada): el healer cambió solo el page object y pasaban 68 de 70, porque `route-protection.spec.ts` usa el selector directamente. Con el prompt mejorado, PR #12 en borrador y sin `needs-human`: cambia las 5 apariciones a `getByRole('button', { name: 'Login' })` (page object, `menu.spec.ts` y `route-protection.spec.ts`) y pasan 70 de 70 con el escenario y 70 de 70 sin él |
+| `bug` | 2 grupos `bug_producto` (34 + 1), confianza alta | Tickets THP-1 y THP-2 en el sandbox de Jira, con 6 y 2 adjuntos (traza y vídeo) de la misma ejecución. El healer no los toca: "No hay grupos test_roto" |
+
+El prompt del healer lleva ahora la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Las PR #11 y #12 son de prueba: no se fusionan, porque el escenario `cascade` es simulado. Falta ver el job *Guard de asserts* en una PR `heal/*` contra `main`: estas van contra la rama de la fase y la CI solo corre en las PR a `main`.
 
 ## Fase 5 · Argumentos para cliente enterprise
 
@@ -170,6 +186,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 ## Riesgos y restricciones
 
 - Los `@demo-fail` fallan a propósito: no se corrigen.
+- Jira real: volver a lanzar `jira:tickets` sobre el mismo informe crea tickets duplicados, y la traza y el vídeo adjuntos no pasan por el redactor (pueden llevar datos de la sesión). En un proyecto de cliente, revisar qué contienen antes de activar las variables `JIRA_*`.
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
 - La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Desde la PR de la cuota, una ejecución de CI con fallos gasta 4 como mucho y una en verde ninguna, aunque tenga flaky. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.
@@ -204,3 +221,9 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | 2026-10-22 | El dashboard pasa a un tema oscuro único, sin modo claro | Es una página para enseñar en demos; un solo tema mantiene los colores de cada categoría iguales en todas las vistas |
 | 2026-10-22 | Iconos (trazos de Lucide) y gráficos hechos con SVG y CSS dentro de la página, sin librerías | La CSP bloquea cualquier recurso externo y los tests prohíben `innerHTML`; los gráficos necesarios caben en pocas líneas |
 | 2026-10-22 | El ciclo local se documenta con `;` y `PLAYWRIGHT_HTML_OPEN=never`, no con `test:ai` | `test:ai` encadena con `&&` y no llega a `report:ai` si hay fallos; el visor HTML de Playwright bloqueaba la cadena |
+| 2026-10-22 | El healer automático empieza en local (`npm run heal:ai`) y abre PR en borrador | No necesita secretos nuevos ni coste: usa la suscripción y `gh` del equipo. En CI haría falta un token de Claude en el repositorio |
+| 2026-10-22 | Jira en modo simulado hasta tener un proyecto de demo | Se construyen y se guardan las mismas peticiones REST; el modo real se activa solo con las variables `JIRA_*` |
+| 2026-10-23 | La prioridad de Jira sale de la severidad, no se colorea la portada | La prioridad es nativa: se filtra, se ordena y su icono sale en color en la tarjeta. La portada de un proyecto de negocio es una imagen adjunta, sin API conocida para fijarla |
+| 2026-10-23 | Revisión de Playwright en tres capas: lint sin IA, check de asserts sin IA y revisor adversarial con IA | El lint y el check son baratos y deterministas, pero no entienden la intención. El revisor cubre el sujeto de los `expect`, que el check no mira. CodeRabbit queda como opinión externa (y tiene límite de uso) |
+| 2026-10-23 | Antes de crear, `jira:tickets` lee los campos obligatorios del proyecto y pone el informador si hace falta | En el sandbox (`THP`) el informador es obligatorio por API y el primer modo real habría devuelto 400 |
+| 2026-10-22 | El check de asserts compara matcher y argumentos, no el sujeto, y solo se aplica a las ramas `heal/*` | Cambiar un selector es lo que debe hacer el healer; cambiar un valor esperado, no sin una persona. Las PR humanas pueden cambiar expectativas legítimamente |

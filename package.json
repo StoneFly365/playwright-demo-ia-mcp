@@ -15,10 +15,15 @@
     "test:firefox": "playwright test --project=firefox",
     "test:webkit": "playwright test --project=webkit",
     "test:report": "playwright show-report",
-    "test:unit": "node --test scripts/triage.test.mjs scripts/merge-results.test.mjs scripts/dashboard.test.mjs",
+    "test:unit": "node --test scripts/triage.test.mjs scripts/merge-results.test.mjs scripts/dashboard.test.mjs scripts/guard-asserts.test.mjs scripts/circuit.test.mjs",
     "report:ai": "node scripts/report-ai.mjs",
     "test:ai": "npm run test && npm run report:ai",
     "eval:ai": "node scripts/eval-ai.mjs",
+    "heal:ai": "node scripts/heal-ai.mjs",
+    "review:pw": "node scripts/review-pw.mjs",
+    "jira:tickets": "node scripts/jira-tickets.mjs",
+    "guard:asserts": "node scripts/guard-asserts.mjs",
+    "lint": "eslint . --max-warnings=17",
     "dashboard": "node scripts/dashboard.mjs",
     "dashboard:demo": "node scripts/dashboard.mjs --demo",
     "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
@@ -27,6 +32,9 @@
     "@playwright/test": "^1.49.0",
     "@types/node": "^20.19.39",
     "cross-env": "^10.1.0",
-    "typescript": "^5.0.0"
+    "eslint": "^9.39.5",
+    "eslint-plugin-playwright": "^2.12.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.72.0"
   }
 }

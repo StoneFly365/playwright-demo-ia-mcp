@@ -12,6 +12,7 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 - **Cobertura multi-navegador** — 80 tests por navegador (240 en total) en Chromium, Firefox y WebKit.
 - **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
 - **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
+- **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira. Un check detecta si una PR automática relaja un test; para que además bloquee el merge hay que marcarlo como obligatorio en GitHub.
 
 ---
 
@@ -51,7 +52,9 @@ flowchart LR
     LLM(["Claude CLI en local<br/>Gemini en CI"])
     CL & PAR <--> LLM
     PAR --> OUT[("playwright-report/<br/>ai-summary.txt · ai-corrections.md<br/>ai-tickets.json · ai-failures-grouped.json")]
-    OUT -.->|"diagnóstico (paso manual)"| H
+    OUT -->|"test_roto · npm run heal:ai"| H
+    H --> PR["PR en borrador<br/>guard-asserts: needs-human<br/>si relaja una aserción"]
+    OUT -->|"bug_producto · npm run jira:tickets"| JIRA(["Jira<br/>simulado sin credenciales"])
 ```
 
 ---
@@ -107,10 +110,18 @@ playwright-demo-ia-mcp/
 │   ├── dashboard-view.mjs          # Métricas y filtros del dashboard (también van dentro de la página)
 │   ├── dashboard.html              # Plantilla de la página del dashboard
 │   ├── dashboard.test.mjs          # Tests del dashboard (npm run test:unit)
+│   ├── heal-ai.mjs                 # Healer automático sobre los test_roto y PR en borrador
+│   ├── jira-tickets.mjs            # Tickets de Jira de los bug_producto (simulado sin credenciales)
+│   ├── guard-asserts.mjs           # Check que marca needs-human si un cambio relaja las pruebas
+│   ├── review-pw.mjs               # Revisión adversarial de un diff de tests (agente revisor)
+│   ├── agent.mjs                   # Lanza un agente de .claude/agents/ con claude -p
+│   ├── guard-asserts.test.mjs      # Tests del check (npm run test:unit)
+│   ├── circuit.test.mjs            # Tests de heal-ai.mjs y jira-tickets.mjs (npm run test:unit)
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages)
-├── .claude/agents/                 # Agentes Playwright: planner, generator, healer
+├── .claude/agents/                 # Agentes Playwright: planner, generator, healer y revisor adversarial
+├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
 ├── .mcp.json                       # Servidor MCP de Playwright (playwright run-test-mcp-server)
 ├── .github/workflows/
 │   ├── playwright.yml              # Pipeline CI/CD de tests (GitHub Actions)
@@ -265,7 +276,8 @@ flowchart TD
     F -.-> JOB
     W -.-> JOB
 
-    JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json<br/>· report:ai · Summary + artefacto ai-report"]
+    JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json<br/>· report:ai · tickets de Jira · Summary + artefacto ai-report"]
+    T --> GU["Job: Guard de asserts<br/>solo PR desde ramas heal/*"]
 ```
 
 > Los tres navegadores van en paralelo y el reporte IA se genera **una sola vez** con los resultados de los tres ([`scripts/merge-results.mjs`](scripts/merge-results.mjs)): como mucho 4 llamadas a la IA por ejecución, y un fallo que se repite en los tres navegadores sale como un único grupo. En push y PR, si lo único que hay son tests flaky, no se llama a la IA. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`.
@@ -389,6 +401,87 @@ Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aist
 
 ---
 
+## Cerrar el circuito (fase 4)
+
+Después de `report:ai`, cada tipo de fallo tiene su salida:
+
+| Tipo | Qué pasa | Cómo |
+|---|---|---|
+| `test_roto` | El healer corrige el test y abre una PR en borrador. Nunca se fusiona sola | `npm run heal:ai`, en local |
+| `bug_producto` | Ticket de Jira con la traza y el vídeo de los tests afectados. El healer no toca estos tests | `npm run jira:tickets`, en local y en CI |
+| `flaky` / `entorno` | Solo el aviso del resumen, sin acción automática | — |
+
+### Healer automático (`npm run heal:ai`)
+
+```bash
+npm run heal:ai                          # todos los test_roto del último report:ai
+npm run heal:ai -- --group G001          # solo ese grupo (se puede repetir)
+npm run heal:ai -- --dry-run             # enseña lo que recibiría el healer; no toca git, GitHub ni la IA
+DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable que al lanzar los tests
+```
+
+1. Lee `playwright-report/ai-failures-grouped.json` y se queda solo con los grupos `test_roto`. Aunque se pida a mano un `bug_producto`, no lo cura.
+2. Exige un árbol de trabajo limpio y crea una rama `heal/<grupos>-<fecha>`.
+3. Lanza `claude -p` con el agente `playwright-test-healer` y el servidor MCP de [`.mcp.json`](.mcp.json). Le pasa el diagnóstico de cada grupo y unas reglas: cambiar lo mínimo, no relajar asserts y no tocar nada fuera de `tests/`, `pages/` y `fixtures/`.
+4. Si toca otros ficheros, para y no abre PR. Si no cambia nada, borra la rama.
+5. Pasa el check de asserts y la [revisión adversarial](#revisión-adversarial-npm-run-reviewpw). Después confirma, hace push y abre una **PR en borrador** con `gh`, con el diagnóstico, el veredicto del revisor y el resumen del healer. Si el check encuentra algo o el revisor no aprueba el cambio, la PR lleva la etiqueta `needs-human`.
+6. Deja el resultado en `playwright-report/ai-heal.json` y vuelve a tu rama.
+
+Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Tarda varios minutos, porque el healer ejecuta y depura los tests. En CI todavía no se lanza: haría falta un token de Claude en los secretos del repositorio.
+
+> Con los `@demo-fail`, la corrección correcta es cambiar el valor esperado (`'3'` por `'4'`): la PR sale con `needs-human`, que es lo que debe pasar. **No la fusiones**: esos tests fallan aposta para la demo.
+
+### Check de asserts (`guard-asserts.mjs`)
+
+Es la protección que no depende de la IA. Si la clasificación se equivocara y el healer "arreglara" un bug real bajando la expectativa, el check lo marca. Compara cada aserción por su matcher y sus argumentos, sin el sujeto, porque cambiar un selector es justo lo que debe poder hacer el healer. Pide revisión humana si:
+
+- desaparece una aserción o cambia su valor esperado, o se le añade `.not`;
+- se añade `test.skip`, `test.fixme` o `test.fail`;
+- aparece un timeout nuevo o `test.slow()`;
+- se borra un fichero de `tests/`, `pages/` o `fixtures/`, o cambia `playwright.config.ts`.
+
+```bash
+npm run guard:asserts -- main     # compara main con tu árbol de trabajo
+```
+
+En CI corre como job **Guard de asserts (PR automáticas)**, solo en las PR que salen de ramas `heal/*`, y falla si encuentra algo. Para que además **bloquee el merge**, márcalo como check obligatorio en *Settings > Branches* (en las demás PR sale como omitido, que cuenta como superado).
+
+### Revisión adversarial (`npm run review:pw`)
+
+El agente [`playwright-adversarial-reviewer`](.claude/agents/playwright-adversarial-reviewer.md) solo lee: intenta demostrar que el cambio está mal. Busca, de más a menos grave:
+
+- **Ocultar un bug:** un locator que apunta a otro elemento (más amplio, con `.first()` o con un `filter` que no casa con nada), una comprobación más laxa o un paso que desaparece.
+- **Locators ambiguos o frágiles.**
+- **Riesgos de flaky.**
+- **Convenciones del repositorio:** page objects, imports de `fixtures/scenarios`, tests `@demo-fail` y líneas citadas en `learning/`.
+- **Alcance:** apariciones del mismo patrón que se han quedado sin corregir.
+
+Para cada hallazgo intenta construir el caso concreto en el que el test nuevo pasaría con la aplicación rota. Recibe el diff, el resultado del check de asserts y el lint de los ficheros cambiados. Responde con `VEREDICTO: APROBADO`, `DUDAS` o `RECHAZADO` y una lista de hallazgos.
+
+```bash
+npm run review:pw -- main      # cualquier cambio en tests/, pages/, fixtures/ o la configuración frente a main
+```
+
+`heal:ai` lo lanza solo antes de abrir cada PR. Para las PR de personas se lanza a mano. Usa Claude CLI con tu suscripción (Sonnet).
+
+Cubre lo que el check de asserts no mira, que es el sujeto de cada `expect`. Probado con una trampa: cambiar `inventoryPage.cartBadge` por `inventoryPage.cartBadge.filter({ hasText: 'vacío' })` en un `not.toBeVisible()`. El check no ve nada, y el revisor lo rechaza: el locator no casa con ningún elemento, así que el test pasaría aunque el badge apareciera con el carrito vacío.
+
+### Lint de Playwright (`npm run lint`)
+
+[`eslint-plugin-playwright`](https://github.com/playwright-community/eslint-plugin-playwright) con su configuración recomendada, sin IA, sobre `tests/`, `pages/` y `fixtures/`. Detecta `await` que faltan, `waitForTimeout`, `force: true`, `test.only` y `skip`, y aserciones que no esperan al elemento. En CI es el job **Lint de Playwright**, en cada push y PR. Falla con cualquier error o si aparece un aviso más de los 17 que hay hoy (13 `no-useless-not` y 4 condicionales en `problem-user-cart.spec.ts`): esa deuda queda a la vista y no puede crecer. Si se corrige alguno, baja `--max-warnings` en `package.json`.
+
+### Tickets de Jira (`npm run jira:tickets`)
+
+Convierte `ai-tickets.json` en peticiones a la API REST v3 de Jira: título, descripción, tests afectados, solución sugerida, etiquetas (severidad, componente y ejecución) y **prioridad**. La prioridad sale de la severidad, por posición entre las que admite el proyecto (`bloqueante` toma la más urgente), o por nombre con `JIRA_PRIORITY_MAP="bloqueante=Highest,alta=High,media=Medium,baja=Low"`. Así el icono de color de la prioridad sale en la tarjeta. Para colorear la tarjeta entera, en un tablero de Jira Software está en *Configuración del tablero > Colores de las tarjetas > Prioridad*. Adjunta la traza y el vídeo de hasta 3 tests del grupo, solo si son de la misma ejecución que el análisis.
+
+- **Modo simulado** (por defecto): sin credenciales no envía nada. Deja las peticiones completas y la lista de adjuntos en `playwright-report/ai-jira.json`. En CI va dentro del artefacto `ai-report`.
+- **Modo real**: con `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` y `JIRA_PROJECT_KEY` crea los tickets y sube los adjuntos. En local se leen solos de `.env` (que no está en git); en CI, de los secretos del repositorio. `JIRA_ISSUE_TYPE` es opcional (por defecto, `Bug`; tiene que existir en el proyecto). Si el proyecto exige informador al crear por API, se pone la cuenta del token. Volver a lanzarlo crea tickets duplicados.
+- En CI los tickets salen sin adjuntos: la traza y el vídeo se quedan en los jobs de cada navegador.
+
+Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos no: en un proyecto real, revisa qué contienen antes de activarlo.
+
+---
+
 ## Dashboard QA Intelligence
 
 Una página web local que enseña el flujo completo de una ejecución: tests → grupos de fallos → clasificación → evidencia → acción recomendada → acierto de la IA. **No usa IA**: lee los ficheros que ya han generado Playwright, `report:ai` y `eval:ai`, y no vuelve a generar nada.
@@ -457,6 +550,9 @@ Limitaciones:
 |---|---|
 | `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini en CI) |
 | `npm run eval:ai` | Sí: una clasificación por escenario. El dashboard nunca lo lanza |
+| `npm run heal:ai` | Sí: el agente healer (Claude CLI, en local). El dashboard nunca lo lanza |
+| `npm run review:pw` | Sí: el agente revisor (Claude CLI, en local). También lo lanza `heal:ai` |
+| `npm run jira:tickets`, `guard:asserts` y `lint` | No |
 | `npm run dashboard`, `dashboard:demo` y la página generada | No. Solo leen ficheros, no ejecutan tests y no necesitan claves |
 
 La página lleva una Content-Security-Policy `default-src 'none'`, que bloquea cualquier conexión de red, y los tests unitarios comprueban que ni el script ni la página contienen llamadas de red, procesos ni claves.
