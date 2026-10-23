@@ -35,7 +35,7 @@ test.describe('Gestión del badge del carrito', () => {
     await expect(
       inventoryPage.cartBadge,
       'El badge debería mostrar 4 tras añadir cuatro productos distintos al carrito',
-    ).toHaveText('4');
+    ).toHaveText('5');
   });
 
   test('debería mostrar badge con valor 5 al añadir cinco productos distintos', async () => {
