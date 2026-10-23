@@ -24,7 +24,7 @@ test.describe('Menú lateral', () => {
       'El usuario debería ser redirigido a la página de login tras cerrar sesión',
     ).toHaveURL('/inventory.html');
     await expect(
-      page.locator('[data-test="login-button"]'),
+      page.getByRole('button', { name: 'Login' }),
       'El botón de login debería ser visible tras cerrar sesión, confirmando que la sesión se ha cerrado correctamente',
     ).toBeVisible();
   });

@@ -9,7 +9,7 @@ test.describe('Protección de rutas', () => {
       'El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /inventory.html',
     ).toHaveURL('/');
     await expect(
-      page.locator('[data-test="login-button"]'),
+      page.getByRole('button', { name: 'Login' }),
       'El botón de login debería ser visible, confirmando que el acceso a /inventory.html está protegido sin sesión activa',
     ).toBeVisible();
   });
@@ -22,7 +22,7 @@ test.describe('Protección de rutas', () => {
       'El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /cart.html',
     ).toHaveURL('/');
     await expect(
-      page.locator('[data-test="login-button"]'),
+      page.getByRole('button', { name: 'Login' }),
       'El botón de login debería ser visible, confirmando que el acceso a /cart.html está protegido sin sesión activa',
     ).toBeVisible();
   });
@@ -36,7 +36,7 @@ test.describe('Protección de rutas', () => {
       'El usuario sin sesión debería ser redirigido a la página de login al intentar acceder directamente a /checkout-step-one.html',
     ).toHaveURL('/inventory.html');
     await expect(
-      page.locator('[data-test="login-button"]'),
+      page.getByRole('button', { name: 'Login' }),
       'El botón de login debería ser visible, confirmando que el acceso a /checkout-step-one.html está protegido sin sesión activa',
     ).toBeVisible();
   });
