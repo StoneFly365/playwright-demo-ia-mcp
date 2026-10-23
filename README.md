@@ -448,7 +448,8 @@ En CI corre como job **Guard de asserts (PR automáticas)**, solo en las PR que 
 Convierte `ai-tickets.json` en peticiones a la API REST v3 de Jira: título, descripción, tests afectados, solución sugerida y etiquetas (severidad, componente y ejecución). Adjunta la traza y el vídeo de hasta 3 tests del grupo, solo si son de la misma ejecución que el análisis.
 
 - **Modo simulado** (por defecto): sin credenciales no envía nada. Deja las peticiones completas y la lista de adjuntos en `playwright-report/ai-jira.json`. En CI va dentro del artefacto `ai-report`.
-- **Modo real**: con `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` y `JIRA_PROJECT_KEY` (en `.env` o en los secretos de CI) crea los tickets y sube los adjuntos. `JIRA_ISSUE_TYPE` es opcional (por defecto, `Bug`). Volver a lanzarlo crea tickets duplicados.
+- **Modo real**: con `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` y `JIRA_PROJECT_KEY` crea los tickets y sube los adjuntos. En local se leen solos de `.env` (que no está en git); en CI, de los secretos del repositorio. `JIRA_ISSUE_TYPE` es opcional (por defecto, `Bug`; tiene que existir en el proyecto). Si el proyecto exige informador al crear por API, se pone la cuenta del token. Volver a lanzarlo crea tickets duplicados.
+- En CI los tickets salen sin adjuntos: la traza y el vídeo se quedan en los jobs de cada navegador.
 
 Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos no: en un proyecto real, revisa qué contienen antes de activarlo.
 

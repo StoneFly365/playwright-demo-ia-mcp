@@ -78,25 +78,49 @@ export function planTickets({ tickets, grouped, report, projectKey, issueType })
     });
 }
 
-async function createIssue(env, plan) {
-    const auth = `Basic ${Buffer.from(`${env.JIRA_EMAIL}:${env.JIRA_API_TOKEN}`).toString("base64")}`;
+function jiraApi(env) {
     const base = env.JIRA_BASE_URL.replace(/\/+$/, "");
-    const res = await fetch(`${base}/rest/api/3/issue`, {
-        method: "POST", headers: { Authorization: auth, "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(plan.body),
-    });
-    if (!res.ok) throw new Error(`Jira respondió ${res.status} al crear el ticket de ${plan.groupId}: ${(await res.text()).slice(0, 300)}`);
-    const { key } = await res.json();
+    const auth = `Basic ${Buffer.from(`${env.JIRA_EMAIL}:${env.JIRA_API_TOKEN}`).toString("base64")}`;
+    const call = async (p, init = {}) => {
+        const res = await fetch(`${base}${p}`, { ...init, headers: { Authorization: auth, Accept: "application/json", ...init.headers } });
+        if (!res.ok) throw new Error(`Jira respondió ${res.status} en ${p}: ${(await res.text()).slice(0, 300)}`);
+        return res.json();
+    };
+    return { base, call };
+}
+
+// Campos que exige el proyecto y que no salen del ticket. Hoy solo el informador: hay proyectos que
+// lo piden al crear por API, y entonces se pone la cuenta del token.
+async function requiredFields({ call }, projectKey, issueType) {
+    const key = encodeURIComponent(projectKey);
+    const types = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes`);
+    const type = (types.issueTypes ?? types.values ?? []).find((t) => t.name === issueType);
+    if (!type) throw new Error(`El proyecto ${projectKey} no tiene el tipo de incidencia "${issueType}". Cambia JIRA_ISSUE_TYPE.`);
+    const meta = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes/${type.id}`);
+    const reporter = (meta.fields ?? meta.values ?? []).some((f) => f.fieldId === "reporter" && f.required);
+    return reporter ? { reporter: { id: (await call("/rest/api/3/myself")).accountId } } : {};
+}
+
+async function createIssue(jira, plan, extraFields) {
+    const body = { fields: { ...plan.body.fields, ...extraFields } };
+    const { key } = await jira.call("/rest/api/3/issue", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const present = plan.attachments.filter((p) => existsSync(p));
+    let attached = 0;
     if (present.length) {
         const form = new FormData();
         for (const p of present) form.append("file", await openAsBlob(p), `${path.basename(path.dirname(p))}-${path.basename(p)}`);
-        const up = await fetch(`${base}/rest/api/3/issue/${key}/attachments`, { method: "POST", headers: { Authorization: auth, "X-Atlassian-Token": "no-check" }, body: form });
-        if (!up.ok) console.warn(`⚠️  ${key} creado, pero los adjuntos fallaron (${up.status}).`);
+        try {
+            attached = (await jira.call(`/rest/api/3/issue/${key}/attachments`, { method: "POST", headers: { "X-Atlassian-Token": "no-check" }, body: form })).length;
+        } catch (e) {
+            console.warn(`⚠️  ${key} creado, pero los adjuntos fallaron: ${e.message}`);
+        }
     }
-    return { key, url: `${base}/browse/${key}` };
+    return { key, url: `${jira.base}/browse/${key}`, attached };
 }
 
 async function main() {
+    // Credenciales locales en .env (en CI llegan como secretos).
+    try { process.loadEnvFile(); } catch {}
     const args = process.argv.slice(2);
     const i = args.indexOf("--dir");
     // Con --dir todo está en la misma carpeta (como el artefacto ai-report); sin él, test-results.json está en la raíz.
@@ -115,6 +139,8 @@ async function main() {
         projectKey: process.env.JIRA_PROJECT_KEY ?? "DEMO", issueType: process.env.JIRA_ISSUE_TYPE ?? "Bug",
     });
 
+    const jira = real ? jiraApi(process.env) : null;
+    const extraFields = real ? await requiredFields(jira, process.env.JIRA_PROJECT_KEY, process.env.JIRA_ISSUE_TYPE ?? "Bug") : {};
     const results = [];
     for (const plan of plans) {
         const attachments = plan.attachments.map((p) => ({ file: path.relative(".", p).replaceAll("\\", "/"), exists: existsSync(p), bytes: existsSync(p) ? statSync(p).size : null }));
@@ -123,8 +149,8 @@ async function main() {
             continue;
         }
         try {
-            results.push({ group: plan.groupId, ...(await createIssue(process.env, plan)), attachments });
-            console.log(`✅ ${plan.groupId}: ${results.at(-1).url}`);
+            results.push({ group: plan.groupId, ...(await createIssue(jira, plan, extraFields)), attachments });
+            console.log(`✅ ${plan.groupId}: ${results.at(-1).url} (${results.at(-1).attached} adjuntos)`);
         } catch (e) {
             results.push({ group: plan.groupId, error: e.message, attachments });
             console.error(`❌ ${e.message}`);

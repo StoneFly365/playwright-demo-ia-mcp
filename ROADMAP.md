@@ -142,8 +142,9 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [ ] El mismo healer en CI. Necesita un token de Claude en los secretos (`CLAUDE_CODE_OAUTH_TOKEN` o una API key) y permisos de escritura en el workflow.
 - [x] Abrir la PR en borrador con `gh pr create`, con el diagnóstico y el resumen del healer en la descripción.
 - [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
-- [ ] Probar el modo real de Jira contra un proyecto de demo (falta el proyecto y las credenciales).
-- [x] Destino de los tickets: modo simulado hasta tener un proyecto Jira de demo propio. El conector Atlassian no sirve en CI.
+- [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
+- [x] Destino de los tickets: el sandbox de Jira, proyecto `THP`. Sin credenciales, modo simulado. El conector Atlassian no sirve en CI.
+- [ ] Secretos `JIRA_*` en GitHub para crear tickets desde CI (sin adjuntos, porque la evidencia se queda en los jobs de cada navegador).
 - [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket simulado. Resultado abajo.
 - [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`; falta marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
@@ -154,7 +155,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | Escenario | Triage | Acción |
 |---|---|---|
 | `cascade` | 1 grupo `test_roto` (70 tests), confianza alta | PR #11 en borrador, sin `needs-human`: cambia el login del page object a `getByRole('button', { name: 'Login' })`. Con el escenario activo pasan 68 de 70; los 2 de `route-protection.spec.ts` usan el selector directamente en el test y el healer solo ejecutó dos ficheros |
-| `bug` | 2 grupos `bug_producto` (34 + 1), confianza alta | 2 tickets simulados en `ai-jira.json`, con 6 y 2 adjuntos (traza y vídeo) de la misma ejecución. El healer no los toca: "No hay grupos test_roto" |
+| `bug` | 2 grupos `bug_producto` (34 + 1), confianza alta | Tickets THP-1 y THP-2 en el sandbox de Jira, con 6 y 2 adjuntos (traza y vídeo) de la misma ejecución. El healer no los toca: "No hay grupos test_roto" |
 
 Tras la prueba, el prompt del healer lleva la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Falta repetir `cascade` con ese prompt y ver el job *Guard de asserts* en una PR `heal/*` contra `main`: la PR #11 va contra la rama de la fase y la CI solo corre en las PR a `main`.
 
@@ -218,4 +219,5 @@ Tras la prueba, el prompt del healer lleva la huella del grupo y pide corregir t
 | 2026-10-22 | El ciclo local se documenta con `;` y `PLAYWRIGHT_HTML_OPEN=never`, no con `test:ai` | `test:ai` encadena con `&&` y no llega a `report:ai` si hay fallos; el visor HTML de Playwright bloqueaba la cadena |
 | 2026-10-22 | El healer automático empieza en local (`npm run heal:ai`) y abre PR en borrador | No necesita secretos nuevos ni coste: usa la suscripción y `gh` del equipo. En CI haría falta un token de Claude en el repositorio |
 | 2026-10-22 | Jira en modo simulado hasta tener un proyecto de demo | Se construyen y se guardan las mismas peticiones REST; el modo real se activa solo con las variables `JIRA_*` |
+| 2026-10-23 | Antes de crear, `jira:tickets` lee los campos obligatorios del proyecto y pone el informador si hace falta | En el sandbox (`THP`) el informador es obligatorio por API y el primer modo real habría devuelto 400 |
 | 2026-10-22 | El check de asserts compara matcher y argumentos, no el sujeto, y solo se aplica a las ramas `heal/*` | Cambiar un selector es lo que debe hacer el healer; cambiar un valor esperado, no sin una persona. Las PR humanas pueden cambiar expectativas legítimamente |
