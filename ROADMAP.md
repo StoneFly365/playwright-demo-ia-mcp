@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 en curso · Última actualización: 2026-10-22
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Última actualización: 2026-10-23
 
 ## Objetivo
 
@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 falta OpenRouter |
-| 4 | Cerrar el circuito | 3-5 días | 🟨 en local; falta la prueba de punta a punta |
+| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI y marcar el guard como obligatorio |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
 | — | Opcionales según cliente | — | ⬜ |
 
@@ -145,7 +145,8 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
 - [x] Destino de los tickets: el sandbox de Jira, proyecto `THP`. Sin credenciales, modo simulado. El conector Atlassian no sirve en CI.
 - [ ] Secretos `JIRA_*` en GitHub para crear tickets desde CI (sin adjuntos, porque la evidencia se queda en los jobs de cada navegador).
-- [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket simulado. Resultado abajo.
+- [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket de Jira. Resultado abajo.
+- [x] Job *Guard de asserts* probado en GitHub (PR #13, cerrada): falla con `needs-human` cuando se cambia `toHaveText('3')` por `'4'` y pasa cuando solo cambia un selector del page object.
 - [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
 - [x] Revisión adversarial de Playwright (`npm run review:pw`, agente `playwright-adversarial-reviewer`): un segundo agente intenta tumbar el arreglo antes de abrir la PR, y su veredicto va en la descripción. Si no lo aprueba, la PR lleva `needs-human`.
 - [x] Lint de Playwright sin IA en CI (`eslint-plugin-playwright`), con trinquete: falla si aparece un aviso más de los 17 actuales.
@@ -160,7 +161,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | `cascade` | 1 grupo `test_roto` (70 tests), confianza alta | Primera prueba (PR #11, cerrada): el healer cambió solo el page object y pasaban 68 de 70, porque `route-protection.spec.ts` usa el selector directamente. Con el prompt mejorado, PR #12 en borrador y sin `needs-human`: cambia las 5 apariciones a `getByRole('button', { name: 'Login' })` (page object, `menu.spec.ts` y `route-protection.spec.ts`) y pasan 70 de 70 con el escenario y 70 de 70 sin él |
 | `bug` | 2 grupos `bug_producto` (34 + 1), confianza alta | Tickets THP-1 y THP-2 en el sandbox de Jira, con 6 y 2 adjuntos (traza y vídeo) de la misma ejecución. El healer no los toca: "No hay grupos test_roto" |
 
-El prompt del healer lleva ahora la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Las PR #11 y #12 son de prueba: no se fusionan, porque el escenario `cascade` es simulado. Falta ver el job *Guard de asserts* en una PR `heal/*` contra `main`: estas van contra la rama de la fase y la CI solo corre en las PR a `main`.
+El prompt del healer lleva ahora la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Las PR #11 y #12 son de prueba: no se fusionan, porque el escenario `cascade` es simulado. El job *Guard de asserts* se probó después en GitHub con una PR `heal/*` contra `main` (PR #13): falla con la aserción cambiada y pasa con el cambio de selector.
 
 ## Fase 5 · Argumentos para cliente enterprise
 
