@@ -1,7 +1,7 @@
 // Fase 4: lo que deciden heal-ai.mjs y jira-tickets.mjs sin llamar a la IA, a git ni a Jira.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { selectGroups, buildPrompt, buildPrBody } from "./heal-ai.mjs";
+import { selectGroups, buildPrompt, buildPrBody, changedFiles } from "./heal-ai.mjs";
 import { buildIssue, planTickets } from "./jira-tickets.mjs";
 
 const group = (id, tipo, extra = {}) => ({
@@ -26,6 +26,13 @@ test("el prompt del healer lleva el diagnóstico, los tests y las reglas que no 
         assert.ok(p.includes(s), `falta "${s}"`);
     }
     assert.ok(!buildPrompt([grouped.groups[0]]).includes("DEMO_SCENARIO"));
+});
+
+test("lee las rutas de git status sin perder la primera letra", () => {
+    // Caso real: el healer cambió solo un page object, que no tiene staged, así que empieza por espacio.
+    assert.deepEqual(changedFiles(" M pages/login.page.ts\0"), ["pages/login.page.ts"]);
+    assert.deepEqual(changedFiles(" M pages/a b.ts\0?? tests/nuevo.spec.ts\0M  tests/c.spec.ts\0"), ["pages/a b.ts", "tests/nuevo.spec.ts", "tests/c.spec.ts"]);
+    assert.deepEqual(changedFiles(""), []);
 });
 
 test("la PR avisa de needs-human solo si el check encuentra algo", () => {

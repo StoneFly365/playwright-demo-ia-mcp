@@ -23,6 +23,12 @@ export function selectGroups(grouped, ids = []) {
     return (grouped?.groups ?? []).filter((g) => g.tipo === "test_roto" && (!ids.length || ids.includes(g.group_id)));
 }
 
+// Salida de `git status --porcelain -z`, sin recortar: el espacio inicial de " M fichero" es parte del
+// formato (estado XY + espacio + ruta). -z da las rutas sin comillas aunque lleven espacios o tildes.
+export function changedFiles(statusZ) {
+    return statusZ.split("\0").filter(Boolean).map((entry) => entry.slice(3));
+}
+
 export function buildPrompt(groups, scenario) {
     const block = (g) => [
         `## ${g.group_id} · ${g.count} tests · confianza ${g.confianza ?? "?"}`,
@@ -131,8 +137,7 @@ async function main() {
         process.exit(1);
     }
 
-    // -z: rutas sin comillas ni escapes aunque lleven espacios o tildes.
-    const changed = git("status", "--porcelain", "-z").split("\0").filter(Boolean).map((l) => l.slice(3));
+    const changed = changedFiles(execFileSync("git", ["status", "--porcelain", "-z"], { encoding: "utf8" }));
     const outside = changed.filter((f) => !EDITABLE.test(f));
     if (outside.length) {
         console.error(`❌ El healer ha tocado ficheros fuera de tests/, pages/ y fixtures/: ${outside.join(", ")}. Revisa la rama ${branch} a mano; no se abre PR.`);
