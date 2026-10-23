@@ -78,6 +78,25 @@ jobs:
           path: test-results/
           retention-days: 7
 
+  # Reglas de Playwright sin IA (eslint-plugin-playwright). Falla con cualquier error o si aparece un
+  # aviso más de los que ya hay (--max-warnings en package.json): la deuda no puede crecer.
+  lint:
+    name: Lint de Playwright
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint (eslint-plugin-playwright)
+        run: npm run lint
+
   # Un solo reporte IA por ejecución con los resultados de los tres navegadores:
   # 4 llamadas como mucho en lugar de 4 por navegador, y los navegadores ya pueden ir en paralelo.
   report:

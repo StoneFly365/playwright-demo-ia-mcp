@@ -22,6 +22,7 @@
     "heal:ai": "node scripts/heal-ai.mjs",
     "jira:tickets": "node scripts/jira-tickets.mjs",
     "guard:asserts": "node scripts/guard-asserts.mjs",
+    "lint": "eslint . --max-warnings=17",
     "dashboard": "node scripts/dashboard.mjs",
     "dashboard:demo": "node scripts/dashboard.mjs --demo",
     "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
@@ -30,6 +31,9 @@
     "@playwright/test": "^1.49.0",
     "@types/node": "^20.19.39",
     "cross-env": "^10.1.0",
-    "typescript": "^5.0.0"
+    "eslint": "^9.39.5",
+    "eslint-plugin-playwright": "^2.12.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.72.0"
   }
 }
