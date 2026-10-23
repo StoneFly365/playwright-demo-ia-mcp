@@ -177,28 +177,6 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-  # Las PR que abre el healer (ramas heal/*) no pueden relajar las pruebas sin que lo vea una persona:
-  # falla si se borra o cambia una aserción, se añade skip/fixme o sube un timeout. No usa IA.
-  guard:
-    name: Guard de asserts (PR automáticas)
-    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'heal/')
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    env:
-      HOME: /home/runner  # fuera del contenedor de Playwright: el HOME=/root global no es accesible y rompe el checkout
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Comprobar que no se relajan asserts
-        env:
-          BASE_REF: ${{ github.base_ref }}  # por variable de entorno, no expandido dentro del script
-        run: node scripts/guard-asserts.mjs "origin/$BASE_REF"
-
   eval:
     name: Acierto de la IA
     if: github.event_name == 'workflow_dispatch' && inputs.suite == 'eval'

@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 falta OpenRouter |
-| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI y marcar el guard como obligatorio |
+| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI |
 | 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
 | — | Opcionales según cliente | — | ⬜ |
 
@@ -150,7 +150,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
 - [x] Revisión adversarial de Playwright (`npm run review:pw`, agente `playwright-adversarial-reviewer`): un segundo agente intenta tumbar el arreglo antes de abrir la PR, y su veredicto va en la descripción. Si no lo aprueba, la PR lleva `needs-human`.
 - [x] Lint de Playwright sin IA en CI (`eslint-plugin-playwright`), con trinquete: falla si aparece un aviso más de los 17 actuales.
-- [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`. **Detecta**, pero todavía no bloquea: para bloquear el merge hay que marcarlo como check obligatorio en GitHub): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
+- [x] **Protección independiente de la clasificación** (`scripts/guard-asserts.mjs`, job *Guard de asserts* en las PR de ramas `heal/*`. Es check obligatorio de `main`, también para administradores; una persona lo desbloquea con la etiqueta `asserts-aprobados`, que se retira sola si llegan commits nuevos): un check sobre el diff de cualquier PR automática que la marque como `needs-human` y bloquee su merge si relaja una aserción: borra un `expect`, cambia un valor esperado, añade `.not`, `test.skip` o `test.fixme`, o sube un timeout. Si la IA clasificara un bug real como `test_roto`, el healer podría "arreglar" el test y ocultar el bug; este check lo impide aunque la clasificación falle. Es un argumento de venta.
 
 **Terminada cuando:** al ejecutar `cascade` aparezca una PR con la corrección, y al ejecutar `bug` aparezca un ticket.
 
@@ -226,5 +226,6 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 | 2026-10-22 | Jira en modo simulado hasta tener un proyecto de demo | Se construyen y se guardan las mismas peticiones REST; el modo real se activa solo con las variables `JIRA_*` |
 | 2026-10-23 | La prioridad de Jira sale de la severidad, no se colorea la portada | La prioridad es nativa: se filtra, se ordena y su icono sale en color en la tarjeta. La portada de un proyecto de negocio es una imagen adjunta, sin API conocida para fijarla |
 | 2026-10-23 | Revisión de Playwright en tres capas: lint sin IA, check de asserts sin IA y revisor adversarial con IA | El lint y el check son baratos y deterministas, pero no entienden la intención. El revisor cubre el sujeto de los `expect`, que el check no mira. CodeRabbit queda como opinión externa (y tiene límite de uso) |
+| 2026-10-23 | El guard es check obligatorio de `main`, en un workflow propio, con la etiqueta `asserts-aprobados` como vía de aprobación | Sin el check obligatorio, la cruz roja no impedía fusionar. Sin la etiqueta, una corrección legítima de un valor esperado no se podría fusionar nunca. El workflow propio se relanza al cambiar etiquetas sin repetir los tests |
 | 2026-10-23 | Antes de crear, `jira:tickets` lee los campos obligatorios del proyecto y pone el informador si hace falta | En el sandbox (`THP`) el informador es obligatorio por API y el primer modo real habría devuelto 400 |
 | 2026-10-22 | El check de asserts compara matcher y argumentos, no el sujeto, y solo se aplica a las ramas `heal/*` | Cambiar un selector es lo que debe hacer el healer; cambiar un valor esperado, no sin una persona. Las PR humanas pueden cambiar expectativas legítimamente |
