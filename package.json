@@ -20,6 +20,7 @@
     "test:ai": "npm run test && npm run report:ai",
     "eval:ai": "node scripts/eval-ai.mjs",
     "heal:ai": "node scripts/heal-ai.mjs",
+    "review:pw": "node scripts/review-pw.mjs",
     "jira:tickets": "node scripts/jira-tickets.mjs",
     "guard:asserts": "node scripts/guard-asserts.mjs",
     "lint": "eslint . --max-warnings=17",

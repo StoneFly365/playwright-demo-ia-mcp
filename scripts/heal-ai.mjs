@@ -1,16 +1,19 @@
 #!/usr/bin/env node
 // Cierra el circuito de los test_roto: lanza el agente playwright-test-healer solo sobre esos
-// grupos, comprueba que no relaja ninguna aserción y abre una PR en borrador. Nunca se fusiona sola.
+// grupos, comprueba que no relaja ninguna aserción, pasa la revisión adversarial y abre una PR en
+// borrador. Nunca se fusiona sola.
 //
 // Uso: npm run heal:ai [-- --group G001] [-- --dry-run]
 //   --group    solo ese grupo (se puede repetir); sin él, todos los test_roto del último report:ai
 //   --dry-run  enseña lo que se mandaría al healer y no toca git, GitHub ni la IA
 // Para un escenario, lanza el healer con la misma variable que los tests: DEMO_SCENARIO=cascade npm run heal:ai
-import { execFileSync, spawn } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkAgainst } from "./guard-asserts.mjs";
+import { runAgent } from "./agent.mjs";
+import { reviewChanges } from "./review-pw.mjs";
 
 const GROUPED = "playwright-report/ai-failures-grouped.json";
 const OUT = "playwright-report/ai-heal.json";
@@ -58,7 +61,7 @@ export function buildPrompt(groups, scenario) {
     ].filter((l) => l != null).join("\n");
 }
 
-export function buildPrBody({ groups, summary, reasons, runStartTime }) {
+export function buildPrBody({ groups, summary, reasons, review, runStartTime }) {
     return [
         "## Corrección propuesta por el healer",
         "",
@@ -68,6 +71,12 @@ export function buildPrBody({ groups, summary, reasons, runStartTime }) {
         reasons.length
             ? `## ⚠️ ${LABEL}: el cambio puede relajar las pruebas\n\n${reasons.map((r) => `- ${r}`).join("\n")}\n\nNo se fusiona sin que una persona confirme que la expectativa antigua era la incorrecta.`
             : "## Sin asserts relajados\n\nNo se borra ni cambia ninguna aserción, no hay skip ni fixme y no sube ningún timeout.",
+        "",
+        "## Revisión adversarial",
+        "",
+        review?.text
+            ? `${review.verdict && review.verdict !== "APROBADO" ? `⚠️ ${LABEL}: el revisor no lo aprueba.\n\n` : ""}${review.text}`
+            : `_No disponible${review?.error ? `: ${review.error}` : ""}._`,
         "",
         "## Resumen del healer",
         "",
@@ -89,20 +98,7 @@ const git = (...args) => run("git", args);
 
 function runHealer(prompt) {
     log("Ejecutando el healer (claude -p con playwright-test-healer). Puede tardar varios minutos...");
-    return new Promise((resolve, reject) => {
-        const child = spawn("claude", [
-            "-p",
-            "--agent", "playwright-test-healer",
-            "--mcp-config", ".mcp.json", "--strict-mcp-config",
-            "--permission-mode", "acceptEdits",
-            "--allowedTools", "Read,Glob,Grep,LS,Edit,MultiEdit,Write,mcp__playwright-test",
-        ], { stdio: ["pipe", "pipe", "inherit"], env: process.env });
-        let out = "";
-        child.stdout.on("data", (d) => { out += d; process.stdout.write(d); });
-        child.on("error", reject);
-        child.on("close", (code) => (code === 0 ? resolve(out.trim()) : reject(new Error(`El healer salió con código ${code}`))));
-        child.stdin.end(prompt);
-    });
+    return runAgent("playwright-test-healer", prompt, { tools: "Read,Glob,Grep,LS,Edit,MultiEdit,Write,mcp__playwright-test", mcp: true });
 }
 
 async function main() {
@@ -155,17 +151,29 @@ async function main() {
 
     const reasons = checkAgainst(base);
     git("add", "--", ...changed);
+    // Un segundo agente intenta tumbar el arreglo. Si falla, la PR se abre igual: el check de asserts es la barrera dura.
+    log("Revisión adversarial (playwright-adversarial-reviewer)...");
+    let review;
+    try {
+        review = await reviewChanges(base, { context: groups.map((g) => `${g.group_id}: ${g.evidencia ?? ""} Acción propuesta: ${g.accion ?? ""}`).join("\n") });
+    } catch (e) {
+        review = { verdict: null, text: null, error: e.message };
+    }
+    const doubts = Boolean(review?.verdict && review.verdict !== "APROBADO");
+    const needsHuman = reasons.length > 0 || doubts;
     git("commit", "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
     git("push", "-u", "origin", branch);
-    if (reasons.length) run("gh", ["label", "create", LABEL, "--force", "--color", "D93F0B", "--description", "La PR automática puede relajar las pruebas: necesita revisión humana"]);
+    if (needsHuman) run("gh", ["label", "create", LABEL, "--force", "--color", "D93F0B", "--description", "La PR automática puede relajar las pruebas: necesita revisión humana"]);
     const url = run("gh", ["pr", "create", "--draft", "--base", from, "--head", branch,
         "--title", `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`,
-        "--body-file", "-", ...(reasons.length ? ["--label", LABEL] : [])],
-        { input: buildPrBody({ groups, summary, reasons, runStartTime: grouped.run_start_time }) });
+        "--body-file", "-", ...(needsHuman ? ["--label", LABEL] : [])],
+        { input: buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time }) });
     git("switch", from);
 
-    save({ groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: reasons.length > 0, reasons, summary });
-    console.log(`✅ PR en borrador: ${url}${reasons.length ? `\n⚠️  Marcada ${LABEL}:\n${reasons.map((r) => `   - ${r}`).join("\n")}` : ""}`);
+    save({ groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: needsHuman, reasons, review: review?.verdict ?? review?.error ?? null, summary });
+    const why = [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])];
+    console.log(`✅ PR en borrador: ${url} · revisión adversarial: ${review?.verdict ?? "no disponible"}`);
+    if (needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${why.map((r) => `   - ${r}`).join("\n")}`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

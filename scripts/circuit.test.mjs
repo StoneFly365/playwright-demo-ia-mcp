@@ -79,3 +79,20 @@ test("la prioridad de Jira sale de la severidad, por posición o con un mapa exp
     assert.equal(priorityFor("rara", thp), null);
     assert.equal(priorityFor("alta", []), null, "si el proyecto no tiene el campo, no se envía");
 });
+
+test("el veredicto del revisor adversarial se lee de su primera línea", async () => {
+    const { parseVerdict, buildReviewPrompt } = await import("./review-pw.mjs");
+    assert.equal(parseVerdict("VEREDICTO: RECHAZADO\n- [grave] tests/a.spec.ts:4 — …"), "RECHAZADO");
+    assert.equal(parseVerdict("Hola\nVEREDICTO:   DUDAS"), "DUDAS");
+    assert.equal(parseVerdict("sin formato"), null);
+    const p = buildReviewPrompt({ diff: "-a\n+b", guardReasons: ["x: cambia `toHaveText('3')`"], lint: "", context: "G001: evidencia" });
+    for (const s of ["-a\n+b", "toHaveText('3')", "G001: evidencia", "Sin avisos."]) assert.ok(p.includes(s), `falta "${s}"`);
+});
+
+test("la PR lleva la revisión adversarial y avisa si no la aprueba", () => {
+    const groups = [grouped.groups[0]];
+    const doubts = buildPrBody({ groups, summary: "", reasons: [], review: { verdict: "DUDAS", text: "VEREDICTO: DUDAS\n- [media] pages/login.page.ts:17 — …" } });
+    assert.match(doubts, /Revisión adversarial[\s\S]*needs-human: el revisor no lo aprueba[\s\S]*VEREDICTO: DUDAS/);
+    assert.doesNotMatch(buildPrBody({ groups, summary: "", reasons: [], review: { verdict: "APROBADO", text: "VEREDICTO: APROBADO\nSin hallazgos." } }), /no lo aprueba/);
+    assert.match(buildPrBody({ groups, summary: "", reasons: [], review: { error: "claude salió con código 1" } }), /No disponible: claude salió/);
+});
