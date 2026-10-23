@@ -165,7 +165,7 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 
 ## Fase 5 · Argumentos para cliente enterprise
 
-- [ ] Sección en el README: **qué datos salen y hacia dónde**, con el preprocesado y la redacción de la fase 2 como prueba.
+- [x] Sección en el README: **qué datos salen y hacia dónde** (destino por destino, con la lista de campos permitidos y el redactor de la fase 2 como prueba, y lo que hay que decidir con cada cliente).
 - [ ] Proveedor de IA elegible por variable de entorno. El cambio a Anthropic API, Bedrock o Vertex se construye solo cuando un cliente lo pida; mientras, basta con demostrar que se puede cambiar.
 
 ## Opcionales según cliente
