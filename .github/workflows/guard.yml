@@ -1,0 +1,53 @@
+name: Guard de asserts
+
+# Workflow propio para poder relanzarse al poner o quitar etiquetas sin repetir los tests.
+# Es un check obligatorio de main: las PR del healer (ramas heal/*) no se pueden fusionar si
+# relajan una aserción, salvo que una persona lo apruebe con la etiqueta asserts-aprobados.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: write  # solo para retirar la etiqueta de aprobación cuando llega un commit nuevo
+
+concurrency:
+  group: guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: Guard de asserts (PR automáticas)
+    # En las PR que no salen de heal/* se omite, y un check obligatorio omitido cuenta como superado.
+    if: startsWith(github.head_ref, 'heal/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # La aprobación vale para los commits que vio la persona: si llega otro, se retira.
+      - name: Retirar la aprobación si hay commits nuevos
+        if: github.event.action == 'synchronize' && contains(github.event.pull_request.labels.*.name, 'asserts-aprobados')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: gh pr edit "$PR" --repo "$REPO" --remove-label asserts-aprobados
+
+      - name: Comprobar que no se relajan asserts
+        env:
+          BASE_REF: ${{ github.base_ref }}  # por variable de entorno, no expandido dentro del script
+          APPROVED: ${{ github.event.action != 'synchronize' && contains(github.event.pull_request.labels.*.name, 'asserts-aprobados') }}
+        run: |
+          if node scripts/guard-asserts.mjs "origin/$BASE_REF"; then exit 0; fi
+          if [ "$APPROVED" = "true" ]; then
+            echo "Aprobado por una persona con la etiqueta asserts-aprobados." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          exit 1

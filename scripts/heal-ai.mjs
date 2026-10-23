@@ -76,7 +76,7 @@ export function buildPrBody({ groups, summary, reasons, review, runStartTime }) 
         ...groups.map((g) => `- **${g.group_id}** · ${g.count} tests · confianza ${g.confianza ?? "?"}: ${g.evidencia ?? ""}`),
         "",
         reasons.length
-            ? `## ⚠️ ${LABEL}: el cambio puede relajar las pruebas\n\n${reasons.map((r) => `- ${r}`).join("\n")}\n\nNo se fusiona sin que una persona confirme que la expectativa antigua era la incorrecta.`
+            ? `## ⚠️ ${LABEL}: el cambio puede relajar las pruebas\n\n${reasons.map((r) => `- ${r}`).join("\n")}\n\nNo se puede fusionar hasta que una persona confirme que la expectativa antigua era la incorrecta y ponga la etiqueta \`asserts-aprobados\`.`
             : "## Sin asserts relajados\n\nNo se borra ni cambia ninguna aserción, no hay skip ni fixme y no sube ningún timeout.",
         "",
         "## Revisión adversarial",

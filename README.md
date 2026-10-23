@@ -12,7 +12,7 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 - **Cobertura multi-navegador** — 80 tests por navegador (240 en total) en Chromium, Firefox y WebKit.
 - **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
 - **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
-- **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira. Un check detecta si una PR automática relaja un test; para que además bloquee el merge hay que marcarlo como obligatorio en GitHub.
+- **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira. Si una PR automática relaja un test, GitHub bloquea el merge hasta que una persona lo apruebe.
 
 ---
 
@@ -444,7 +444,9 @@ Es la protección que no depende de la IA. Si la clasificación se equivocara y 
 npm run guard:asserts -- main     # compara main con tu árbol de trabajo
 ```
 
-En CI corre como job **Guard de asserts (PR automáticas)**, solo en las PR que salen de ramas `heal/*`, y falla si encuentra algo. Para que además **bloquee el merge**, márcalo como check obligatorio en *Settings > Branches* (en las demás PR sale como omitido, que cuenta como superado).
+En CI corre en su propio workflow ([`guard.yml`](.github/workflows/guard.yml)), solo en las PR que salen de ramas `heal/*`. Falla si encuentra algo. Es un **check obligatorio de `main`**: mientras está en rojo, GitHub no deja fusionar la PR, tampoco a los administradores. En las demás PR sale como omitido, que cuenta como superado.
+
+Cuando el cambio es legítimo (el valor antiguo estaba mal), una persona lo aprueba poniendo la etiqueta **`asserts-aprobados`** en la PR. El check se vuelve a ejecutar y pasa. La aprobación vale solo para los commits revisados: si llega otro, el workflow retira la etiqueta y el check vuelve a mirar el cambio.
 
 ### Revisión adversarial (`npm run review:pw`)
 

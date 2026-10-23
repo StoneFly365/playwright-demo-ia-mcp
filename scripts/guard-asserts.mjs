@@ -95,7 +95,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     }
     const reasons = checkAgainst(base);
     const report = reasons.length
-        ? `### needs-human: el cambio puede relajar las pruebas\n\n${reasons.map((r) => `- ${r}`).join("\n")}\n\nNo se fusiona sin que una persona confirme que la expectativa antigua era la incorrecta.\n`
+        ? `### needs-human: el cambio puede relajar las pruebas\n\n${reasons.map((r) => `- ${r}`).join("\n")}\n\nNo se puede fusionar hasta que una persona confirme que la expectativa antigua era la incorrecta y ponga la etiqueta \`asserts-aprobados\`.\n`
         : "### Sin asserts relajados\n\nNo se borra ni cambia ninguna aserción, no hay skip ni fixme y no sube ningún timeout.\n";
     console.log(report);
     if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, report);
