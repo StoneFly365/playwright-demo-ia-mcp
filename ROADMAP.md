@@ -154,10 +154,10 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 
 | Escenario | Triage | Acción |
 |---|---|---|
-| `cascade` | 1 grupo `test_roto` (70 tests), confianza alta | PR #11 en borrador, sin `needs-human`: cambia el login del page object a `getByRole('button', { name: 'Login' })`. Con el escenario activo pasan 68 de 70; los 2 de `route-protection.spec.ts` usan el selector directamente en el test y el healer solo ejecutó dos ficheros |
+| `cascade` | 1 grupo `test_roto` (70 tests), confianza alta | Primera prueba (PR #11, cerrada): el healer cambió solo el page object y pasaban 68 de 70, porque `route-protection.spec.ts` usa el selector directamente. Con el prompt mejorado, PR #12 en borrador y sin `needs-human`: cambia las 5 apariciones a `getByRole('button', { name: 'Login' })` (page object, `menu.spec.ts` y `route-protection.spec.ts`) y pasan 70 de 70 con el escenario y 70 de 70 sin él |
 | `bug` | 2 grupos `bug_producto` (34 + 1), confianza alta | Tickets THP-1 y THP-2 en el sandbox de Jira, con 6 y 2 adjuntos (traza y vídeo) de la misma ejecución. El healer no los toca: "No hay grupos test_roto" |
 
-Tras la prueba, el prompt del healer lleva la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Falta repetir `cascade` con ese prompt y ver el job *Guard de asserts* en una PR `heal/*` contra `main`: la PR #11 va contra la rama de la fase y la CI solo corre en las PR a `main`.
+El prompt del healer lleva ahora la huella del grupo y pide corregir todas las apariciones del locator y ejecutar todos los ficheros afectados. Las PR #11 y #12 son de prueba: no se fusionan, porque el escenario `cascade` es simulado. Falta ver el job *Guard de asserts* en una PR `heal/*` contra `main`: estas van contra la rama de la fase y la CI solo corre en las PR a `main`.
 
 ## Fase 5 · Argumentos para cliente enterprise
 
