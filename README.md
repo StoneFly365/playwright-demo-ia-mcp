@@ -482,6 +482,45 @@ Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos n
 
 ---
 
+## Qué datos salen y hacia dónde
+
+Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máquina o del pipeline, hacia dónde, y qué controles hay. El dashboard no aparece porque no envía nada.
+
+| Destino | Quién lo envía | Qué sale | Qué no sale |
+|---|---|---|---|
+| **Anthropic** (Claude CLI, con tu suscripción, en local) | `report:ai`, `eval:ai` | Por cada grupo de fallos: patrón y huella, número de tests y navegadores, hasta 10 tests (título, fichero, línea y navegador), el error recortado a 1500 caracteres y la instantánea de la página en el fallo (`error-context.md`) recortada a 3000. Todo pasa antes por el redactor. Para el resumen, las correcciones y los tickets solo va un extracto del error de 600 caracteres, sin la instantánea | `test-results.json` completo, el código de los tests, trazas, vídeos, capturas y variables de entorno |
+| **Google** (Gemini API, capa gratuita, en CI) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
+| **Anthropic** (Claude CLI, en local) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Secretos de CI, porque se ejecuta en local. No tiene terminal (`Bash`) |
+| **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
+| **GitHub** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR: diagnóstico, veredicto del revisor y resumen del healer | — |
+| **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día) y el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
+| **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |
+| **CodeRabbit** (app de GitHub del repositorio) | Cada PR | El diff de la PR | — |
+
+**Controles que lo respaldan**
+
+- **Lista de campos permitidos.** Hacia la IA solo salen los campos que construye `groupFailures` en [`scripts/triage.mjs`](scripts/triage.mjs). El informe de Playwright no se envía entero.
+- **Redactor** (`redact` en `triage.mjs`, con tests en [`scripts/triage.test.mjs`](scripts/triage.test.mjs)). Enmascara:
+  - JWT y cabeceras `Authorization`, `Cookie` y `Set-Cookie`;
+  - valores de `password`, `secret`, `token` y `api_key`;
+  - emails y query strings de las URLs;
+  - lo que se escribe con `fill()` y los valores de los campos de texto de la instantánea;
+  - las rutas con nombre de usuario.
+
+  Se redacta antes de recortar, para que un token partido por el corte no se escape.
+- **Sin IA cuando no hace falta.** Una ejecución en verde no llama a la IA. En push y PR tampoco se llama si solo hay tests flaky. La agrupación y la detección de flaky se hacen en código.
+- **Los agentes no leen `.env`.** [`.claude/settings.json`](.claude/settings.json) prohíbe a Claude Code leer `.env` y `.env.*` en este proyecto, también al healer y al revisor. El resto del repositorio sí lo pueden leer: no guardes secretos en otros ficheros.
+- **Jira simulado por defecto.** Sin las variables `JIRA_*` no se envía nada. En CI los tickets saldrían sin adjuntos.
+- **El dashboard no se conecta a nada.** Tiene una CSP `default-src 'none'` y vuelve a pasar el redactor por todos los textos.
+
+**Lo que hay que decidir con cada cliente**
+
+- **Proveedor y condiciones.** Las capas gratuitas y las suscripciones personales no ofrecen las mismas garantías de uso y retención de datos que un contrato de empresa. Hay que revisar las condiciones del proveedor que se use (Gemini API, Anthropic, Bedrock o Vertex) antes de enviar datos de un cliente.
+- **Healer y revisor.** Leen código del repositorio sin redactar (todo menos `.env`). En un proyecto con secretos o datos reales en otros ficheros, hay que ampliar la lista de `deny` o ejecutarlos con un proveedor aprobado por el cliente.
+- **Adjuntos de Jira y artefactos de CI.** Las trazas y los vídeos no pasan por el redactor. Hay que revisar qué datos de prueba se usan y la retención de los artefactos.
+
+---
+
 ## Dashboard QA Intelligence
 
 Una página web local que enseña el flujo completo de una ejecución: tests → grupos de fallos → clasificación → evidencia → acción recomendada → acierto de la IA. **No usa IA**: lee los ficheros que ya han generado Playwright, `report:ai` y `eval:ai`, y no vuelve a generar nada.
