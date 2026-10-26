@@ -7,9 +7,21 @@ import { extractFailures, groupFailures, isOnlyFlaky } from "./triage.mjs";
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
 const MODEL = "claude-haiku-5-5";                    // Claude CLI (suscripción, local)
-const GEMINI_MODEL = "gemini-flash-latest";          // Google Gemini (free tier, CI)
 const TIPOS = new Set(["test_roto", "bug_producto", "entorno"]);  // los que puede asignar la IA
-const GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+
+// Proveedor por API compatible con la de OpenAI (OpenRouter, Gemini, un gateway de empresa...).
+// AI_API_KEY + AI_BASE_URL + AI_MODEL mandan; si no, GEMINI_API_KEY es el atajo de siempre;
+// sin ninguna clave, el CLI de Claude en local (null).
+const API = process.env.AI_API_KEY
+    ? { name: hostOf(process.env.AI_BASE_URL), url: process.env.AI_BASE_URL, model: process.env.AI_MODEL, key: process.env.AI_API_KEY }
+    : process.env.GEMINI_API_KEY
+        ? { name: "gemini", url: "https://generativelanguage.googleapis.com/v1beta/openai", model: "gemini-flash-latest", key: process.env.GEMINI_API_KEY }
+        : null;
+const PROVIDER = API ? `${API.name}:${API.model}` : `claude-cli:${MODEL}`;
+
+function hostOf(url) {
+    try { return new URL(url).hostname; } catch { return "api"; }
+}
 
 function log(msg)     { console.log(`👉 ${msg}`); }
 function success(msg) { console.log(`✅ ${msg}`); }
@@ -17,6 +29,7 @@ function errorLog(msg){ console.error(`❌ ${msg}`); }
 
 async function main() {
     log("Iniciando AI Reporting Pipeline...");
+    if (API && !(API.url && API.model)) throw new Error("Con AI_API_KEY hacen falta también AI_BASE_URL y AI_MODEL");
     await mkdir(REPORT_DIR, { recursive: true });
 
     if (!(await exists(INPUT_JSON))) {
@@ -88,7 +101,7 @@ async function main() {
     const withRunInfo = () => JSON.stringify({
         ...grouped,
         run_start_time: testResults.stats?.startTime ?? null,
-        provider: process.env.GEMINI_API_KEY ? `gemini:${GEMINI_MODEL}` : `claude-cli:${MODEL}`,
+        provider: PROVIDER,
         ai_requests: aiRequests,
     }, null, 2);
 
@@ -154,37 +167,36 @@ async function main() {
     success("AI Reporting finalizado correctamente 🎉");
 }
 
-// Peticiones enviadas al proveedor, reintentos incluidos (cada reintento de Gemini gasta cuota).
+// Peticiones enviadas al proveedor, reintentos incluidos (cada reintento gasta cuota).
 let aiRequests = 0;
 
-// En CI usa Google Gemini (free tier, GEMINI_API_KEY); en local, el CLI de
-// Claude con la suscripción. La presencia de GEMINI_API_KEY decide el proveedor.
+// En CI, el proveedor por API (ver API arriba); en local, el CLI de Claude con la suscripción.
 function runClaude(promptText, stdinText, label) {
-    return process.env.GEMINI_API_KEY
-        ? runGemini(promptText, stdinText, label)
+    return API
+        ? runApi(promptText, stdinText, label)
         : runClaudeCli(promptText, stdinText, label);
 }
 
-// Códigos transitorios de Gemini (sobrecarga/límite): merece reintentar.
-const GEMINI_RETRYABLE = new Set([429, 500, 502, 503, 504]);
-const GEMINI_MAX_RETRIES = 4;
+// Códigos transitorios (sobrecarga/límite): merece reintentar.
+const RETRYABLE = new Set([429, 500, 502, 503, 504]);
+const MAX_RETRIES = 4;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function runGemini(promptText, stdinText, label) {
-    log(`Ejecutando IA (Gemini): ${label}...`);
+async function runApi(promptText, stdinText, label) {
+    log(`Ejecutando IA (${PROVIDER}): ${label}...`);
     const start = Date.now();
 
     let res;
     for (let attempt = 1; ; attempt++) {
         aiRequests++;
-        res = await fetch(GEMINI_ENDPOINT, {
+        res = await fetch(`${API.url.replace(/\/$/, "")}/chat/completions`, {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
+                Authorization: `Bearer ${API.key}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                model: GEMINI_MODEL,
+                model: API.model,
                 temperature: 0,
                 messages: [
                     { role: "system", content: promptText },
@@ -195,19 +207,19 @@ async function runGemini(promptText, stdinText, label) {
 
         if (res.ok) break;
 
-        if (GEMINI_RETRYABLE.has(res.status) && attempt < GEMINI_MAX_RETRIES) {
+        if (RETRYABLE.has(res.status) && attempt < MAX_RETRIES) {
             const backoff = 2 ** attempt * 1000 + Math.floor(Math.random() * 500); // 2s,4s,8s + jitter
-            log(`Gemini ${res.status} en ${label}, reintento ${attempt}/${GEMINI_MAX_RETRIES - 1} en ${backoff}ms...`);
+            log(`${API.name} ${res.status} en ${label}, reintento ${attempt}/${MAX_RETRIES - 1} en ${backoff}ms...`);
             await sleep(backoff);
             continue;
         }
 
-        throw new Error(`Gemini ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
+        throw new Error(`${API.name} ${res.status} en ${label}: ${(await res.text()).slice(0, 500)}`);
     }
 
     const data = await res.json();
     const content = data.choices?.[0]?.message?.content?.trim();
-    if (!content) throw new Error(`Respuesta vacía de Gemini en ${label}`);
+    if (!content) throw new Error(`Respuesta vacía de ${API.name} en ${label}`);
 
     const duration = ((Date.now() - start) / 1000).toFixed(2);
     success(`${label} completado en ${duration}s`);

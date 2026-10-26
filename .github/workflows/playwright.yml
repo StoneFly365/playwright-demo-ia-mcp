@@ -132,9 +132,13 @@ jobs:
         run: node scripts/merge-results.mjs test-results.json results-json/*/test-results.json
 
       - name: Generate AI report
-        continue-on-error: true  # cuota Gemini free tier es inestable; no debe tumbar el run si los tests pasan
+        continue-on-error: true  # la cuota gratuita de IA es inestable; no debe tumbar el run si los tests pasan
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # OpenRouter manda si existe el secreto; si no, Gemini. El modelo, en la variable AI_MODEL del repositorio.
+          AI_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          AI_BASE_URL: https://openrouter.ai/api/v1
+          AI_MODEL: ${{ vars.AI_MODEL }}
           # En push y PR no se gasta cuota de IA solo por tests flaky; a mano (workflow_dispatch), sí.
           AI_SKIP_FLAKY_ONLY: ${{ github.event_name != 'workflow_dispatch' && '1' || '' }}
         run: npm run report:ai
@@ -197,6 +201,10 @@ jobs:
       - name: Evaluar la clasificación de la IA
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # OpenRouter manda si existe el secreto; si no, Gemini. El modelo, en la variable AI_MODEL del repositorio.
+          AI_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          AI_BASE_URL: https://openrouter.ai/api/v1
+          AI_MODEL: ${{ vars.AI_MODEL }}
         run: npm run eval:ai
 
       - name: Show AI eval
