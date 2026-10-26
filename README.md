@@ -95,7 +95,7 @@ flowchart LR
     end
 
     JSON --> CHK
-    LLM(["Claude CLI en local<br/>Gemini en CI"])
+    LLM(["Claude CLI en local<br/>API en CI: Gemini u OpenRouter"])
     CL & PAR <--> LLM
     PAR --> OUT[("playwright-report/<br/>ai-summary.txt · ai-corrections.md<br/>ai-tickets.json · ai-failures-grouped.json")]
     OUT -->|"test_roto · npm run heal:ai"| H
@@ -219,7 +219,7 @@ npx playwright install    # Chromium, Firefox y WebKit
 npm install -g @anthropic-ai/claude-code
 ```
 
-Ejecuta `claude` una vez para autenticarte y sigue el login. En CI el AI report se genera con Gemini, así que el CLI no hace falta allí.
+Ejecuta `claude` una vez para autenticarte y sigue el login. En CI el AI report se genera por API (Gemini u OpenRouter), así que el CLI no hace falta allí.
 
 ---
 
@@ -356,10 +356,15 @@ La IA solo **clasifica** los grupos que no son flaky, como `test_roto`, `bug_pro
 
 El script elige el proveedor según el entorno:
 
-- **En local:** el CLI de Claude (`claude`) con tu suscripción. No requiere API key.
-- **En CI:** si existe la variable `GEMINI_API_KEY`, usa **Google Gemini** (`gemini-flash-latest`, free tier). Así el pipeline no consume crédito de pago.
+- **Cualquier API compatible con la de OpenAI** (OpenRouter, Gemini, el gateway de un cliente...): con `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL`. Es lo que se usa para cambiar de proveedor sin tocar código.
+- **Atajo de Gemini:** si no hay `AI_API_KEY` pero sí `GEMINI_API_KEY`, usa **Google Gemini** (`gemini-flash-latest`, free tier).
+- **En local, sin ninguna clave:** el CLI de Claude (`claude`) con tu suscripción. No requiere API key.
 
-La presencia de `GEMINI_API_KEY` es lo que decide el proveedor (ver `runClaude` en [`scripts/report-ai.mjs`](scripts/report-ai.mjs)).
+Gana la primera opción que tenga clave (ver `API` en [`scripts/report-ai.mjs`](scripts/report-ai.mjs)). El proveedor y el modelo quedan en `ai-failures-grouped.json` y `ai-eval.json`, y los enseña el dashboard. Ejemplo con OpenRouter:
+
+```bash
+AI_API_KEY=sk-or-... AI_BASE_URL=https://openrouter.ai/api/v1 AI_MODEL=<modelo>:free npm run eval:ai
+```
 
 El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-encaja-todo).
 
@@ -374,7 +379,7 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 
 ### Acierto de la IA
 
-`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md` y, con los mismos datos, en `ai-eval.json` (lo lee el [dashboard](#dashboard-qa-intelligence)). Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa Gemini) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
+`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md` y, con los mismos datos, en `ai-eval.json` (lo lee el [dashboard](#dashboard-qa-intelligence)). Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa el proveedor de CI) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
 
 > La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Una evaluación gasta 4, y una ejecución de CI con fallos, otras 4 como mucho (el reporte es uno para los tres navegadores). Una CI en verde no gasta ninguna, aunque haya algún test flaky.
 
@@ -455,6 +460,8 @@ Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
 **Settings > Secrets and variables > Actions > New repository secret**
 
 Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
+
+Para usar **OpenRouter** en su lugar, añade el secreto `OPENROUTER_API_KEY` y la variable de repositorio `AI_MODEL` (**Settings > Secrets and variables > Actions > Variables**) con el modelo elegido tras pasar `npm run eval:ai`. Si existe el secreto, OpenRouter tiene prioridad sobre Gemini; si falta `AI_MODEL`, el reporte falla con un mensaje que lo dice.
 
 ---
 
@@ -548,7 +555,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 | Destino | Quién lo envía | Qué sale | Qué no sale |
 |---|---|---|---|
 | **Anthropic** (Claude CLI, con tu suscripción, en local) | `report:ai`, `eval:ai` | Por cada grupo de fallos: patrón y huella, número de tests y navegadores, hasta 10 tests (título, fichero, línea y navegador), el error recortado a 1500 caracteres y la instantánea de la página en el fallo (`error-context.md`) recortada a 3000. Todo pasa antes por el redactor. Para el resumen, las correcciones y los tickets solo va un extracto del error de 600 caracteres, sin la instantánea | `test-results.json` completo, el código de los tests, trazas, vídeos, capturas y variables de entorno |
-| **Google** (Gemini API, capa gratuita, en CI) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
+| **Google** (Gemini API, capa gratuita, en CI) u **OpenRouter** (si existe `OPENROUTER_API_KEY`; reenvía al proveedor del modelo elegido) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
 | **Anthropic** (Claude CLI, en local) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Secretos de CI, porque se ejecuta en local. No tiene terminal (`Bash`) |
 | **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
 | **GitHub** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR: diagnóstico, veredicto del revisor y resumen del healer | — |
@@ -574,7 +581,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 
 **Lo que hay que decidir con cada cliente**
 
-- **Proveedor y condiciones.** Las capas gratuitas y las suscripciones personales no ofrecen las mismas garantías de uso y retención de datos que un contrato de empresa. Hay que revisar las condiciones del proveedor que se use (Gemini API, Anthropic, Bedrock o Vertex) antes de enviar datos de un cliente.
+- **Proveedor y condiciones.** Las capas gratuitas y las suscripciones personales no ofrecen las mismas garantías de uso y retención de datos que un contrato de empresa. Hay que revisar las condiciones del proveedor que se use (Gemini API, OpenRouter y el proveedor del modelo, Anthropic, Bedrock o Vertex) antes de enviar datos de un cliente.
 - **Healer y revisor.** Leen código del repositorio sin redactar (todo menos `.env`). En un proyecto con secretos o datos reales en otros ficheros, hay que ampliar la lista de `deny` o ejecutarlos con un proveedor aprobado por el cliente.
 - **Adjuntos de Jira y artefactos de CI.** Las trazas y los vídeos no pasan por el redactor. Hay que revisar qué datos de prueba se usan y la retención de los artefactos.
 
@@ -646,7 +653,7 @@ Limitaciones:
 
 | Componente | ¿Llama a la IA? |
 |---|---|
-| `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini en CI) |
+| `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini u OpenRouter en CI) |
 | `npm run eval:ai` | Sí: una clasificación por escenario. El dashboard nunca lo lanza |
 | `npm run heal:ai` | Sí: el agente healer (Claude CLI, en local). El dashboard nunca lo lanza |
 | `npm run review:pw` | Sí: el agente revisor (Claude CLI, en local). También lo lanza `heal:ai` |
@@ -755,5 +762,5 @@ La URL base se define una sola vez en `playwright.config.ts`. Los page objects u
 - TypeScript `^5.0`
 - Node.js `^20`
 - Claude Code CLI (reporte IA en local)
-- Google Gemini `gemini-flash-latest` (reporte IA en CI)
+- Google Gemini `gemini-flash-latest` u OpenRouter (reporte IA en CI)
 - Playwright MCP + agentes planner / generator / healer

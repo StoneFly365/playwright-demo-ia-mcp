@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Última actualización: 2026-10-23
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Proveedor de IA configurable · Última actualización: 2026-10-26
 
 ## Objetivo
 
@@ -26,9 +26,9 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 1 | Escenarios de fallo realistas | 1-2 días | ✅ |
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
-| 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 falta OpenRouter |
+| 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 OpenRouter listo; falta el secreto |
 | 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI |
-| 5 | Argumentos para cliente enterprise | 1 día | ⬜ |
+| 5 | Argumentos para cliente enterprise | 1 día | ✅ |
 | — | Opcionales según cliente | — | ⬜ |
 
 Las fases 0 a 3 son el mínimo para enseñar algo distinto (unos 5-6 días). La fase 4 es la que más impresiona. Una rama y una PR por fase (`feat/escenarios-fallo`, `feat/ia-clasifica`...), para poder enseñar cada una por separado.
@@ -112,7 +112,8 @@ No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin
 - [x] En push y PR no se llama a la IA si solo hay tests flaky (`AI_SKIP_FLAKY_ONLY`).
 - [x] La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta como fallo lo que la IA no llegó a clasificar.
 - [x] Permisos del workflow: `contents: read` y checkout sin credenciales persistidas.
-- [ ] Proveedor configurable (URL, modelo y clave) y **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). Pendiente de que exista el secreto `OPENROUTER_API_KEY`. Elegir el modelo con `npm run eval:ai`.
+- [x] Proveedor configurable: `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL` para cualquier API compatible con la de OpenAI. `GEMINI_API_KEY` sigue funcionando como atajo. `eval:ai` toma el proveedor de lo que registra `report:ai`, sin repetir la lógica.
+- [ ] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow ya lo usa si existe el secreto `OPENROUTER_API_KEY`; falta crearlo y poner en la variable `AI_MODEL` el modelo elegido con `npm run eval:ai`. Modelo elegido: `nvidia/nemotron-3-ultra-550b-a55b:free`, 11 de 11 grupos (185 de 185 tests) en local el 26 de octubre, igual que Claude Haiku. De los gratuitos probados, `nemotron-3-super-120b` devolvió 404 y `gemma-4-31b-it`, 429.
 - [ ] Probar en CI el camino con fallos reales (`suite=fail`) con el job único de reporte. Solo se ha probado en verde.
 
 **Descartado:** Claude por API en CI. Funcionaría con el mismo modelo que en local y costaría menos de 1 $ al mes, pero la clave del repositorio es del plan personal y no se quiere ningún coste adicional.
@@ -166,7 +167,7 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 ## Fase 5 · Argumentos para cliente enterprise
 
 - [x] Sección en el README: **qué datos salen y hacia dónde** (destino por destino, con la lista de campos permitidos y el redactor de la fase 2 como prueba, y lo que hay que decidir con cada cliente).
-- [ ] Proveedor de IA elegible por variable de entorno. El cambio a Anthropic API, Bedrock o Vertex se construye solo cuando un cliente lo pida; mientras, basta con demostrar que se puede cambiar.
+- [x] Proveedor de IA elegible por variable de entorno (`AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL`). Vale para cualquier API compatible con la de OpenAI, gateways de empresa incluidos. Un cliente nativo de Anthropic API, Bedrock o Vertex se construye solo cuando un cliente lo pida.
 
 ## Opcionales según cliente
 
@@ -229,3 +230,4 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 | 2026-10-23 | El guard es check obligatorio de `main`, en un workflow propio, con la etiqueta `asserts-aprobados` como vía de aprobación | Sin el check obligatorio, la cruz roja no impedía fusionar. Sin la etiqueta, una corrección legítima de un valor esperado no se podría fusionar nunca. El workflow propio se relanza al cambiar etiquetas sin repetir los tests |
 | 2026-10-23 | Antes de crear, `jira:tickets` lee los campos obligatorios del proyecto y pone el informador si hace falta | En el sandbox (`THP`) el informador es obligatorio por API y el primer modo real habría devuelto 400 |
 | 2026-10-22 | El check de asserts compara matcher y argumentos, no el sujeto, y solo se aplica a las ramas `heal/*` | Cambiar un selector es lo que debe hacer el healer; cambiar un valor esperado, no sin una persona. Las PR humanas pueden cambiar expectativas legítimamente |
+| 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |

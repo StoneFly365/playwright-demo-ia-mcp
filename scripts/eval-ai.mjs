@@ -22,6 +22,7 @@ function run(cmd, env = {}) {
 }
 
 const rows = [];
+let provider;
 for (const name of names) {
     if (!golden[name]) throw new Error(`Escenario sin respuesta esperada en specs/ai-golden.json: ${name}`);
     console.log(`\n=== ${name}`);
@@ -37,7 +38,9 @@ for (const name of names) {
 
     let groups = [];
     try {
-        groups = JSON.parse(readFileSync(`${REPORT_DIR}/ai-failures-grouped.json`, "utf8")).groups;
+        const grouped = JSON.parse(readFileSync(`${REPORT_DIR}/ai-failures-grouped.json`, "utf8"));
+        groups = grouped.groups;
+        provider ??= grouped.provider;  // lo decide report-ai.mjs; aquí no se repite la lógica
     } catch {
         // Sin grupos el escenario queda como no evaluado, no aborta el resto.
     }
@@ -64,7 +67,7 @@ const lines = [
         : `**No se ha podido medir: la IA no ha clasificado ningún grupo.**`,
     ...(notEvaluated ? [``, `⚠️ ${notEvaluated} grupos o escenarios no se han podido evaluar porque la IA no respondió (revisa el log: cuota agotada, red...). No cuentan en la cifra.`] : []),
     ``,
-    `Proveedor: ${process.env.GEMINI_API_KEY ? "Gemini (gemini-flash-latest)" : "Claude CLI (claude-haiku-5-5)"} · navegador: chromium · ${new Date().toLocaleString("es-ES", { timeZone: "Europe/Madrid", dateStyle: "long", timeStyle: "short" })}`,
+    `Proveedor: ${provider ?? "no registrado"} · navegador: chromium · ${new Date().toLocaleString("es-ES", { timeZone: "Europe/Madrid", dateStyle: "long", timeStyle: "short" })}`,
     ``,
     `| Escenario | Esperado | Grupos | Clasificación obtenida | Acierto | Tiempo del reporte |`,
     `|---|---|---|---|---|---|`,
@@ -83,7 +86,7 @@ writeFileSync(`${REPORT_DIR}/ai-eval.md`, lines.join("\n") + "\n", "utf8");
 // Los mismos datos en JSON para el dashboard (scripts/dashboard.mjs); el .md sigue siendo el que va al resumen de CI.
 writeFileSync(`${REPORT_DIR}/ai-eval.json`, JSON.stringify({
     generated_at: new Date().toISOString(),
-    provider: process.env.GEMINI_API_KEY ? "gemini:gemini-flash-latest" : "claude-cli:claude-haiku-5-5",
+    provider: provider ?? null,
     browser: "chromium",
     totals: { ok_groups: okGroups, all_groups: allGroups, ok_tests: okTests, all_tests: allTests, not_evaluated: notEvaluated },
     scenarios: rows.map((r) => ({

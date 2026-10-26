@@ -24,8 +24,8 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 | M16 | Comparador numérico vs alfabético | [`tests/inventory.spec.ts:32`](../../../tests/inventory.spec.ts) vs [`:49`](../../../tests/inventory.spec.ts) | `(a, b) => b.localeCompare(a)` para texto, `(a, b) => a - b` para números | Por qué `sort()` sin comparador ordena mal los números |
 | M17 | Configuración de TypeScript | [`tsconfig.json:5`](../../../tsconfig.json) | `"strict": true` | Qué errores atrapa el compilador antes de que el test se ejecute |
 | M18 | Tipos disponibles en el proyecto | [`tsconfig.json:9`](../../../tsconfig.json) | `"types": ["node", "@playwright/test"]` | De dónde salen `Page`, `Locator`, `test` y `expect` |
-| M19 | `async`/`await` fuera de Playwright | [`scripts/report-ai.mjs:18-134`](../../../scripts/report-ai.mjs) | `await readFile(...)`, `await mkdir(...)` — el mismo `await` sin navegador de por medio | `async`/`await` es JavaScript, no una invención de Playwright |
-| M20 | Paralelismo con `Promise.all` | [`scripts/report-ai.mjs:93-97`](../../../scripts/report-ai.mjs) | Tres lecturas de fichero lanzadas a la vez, un solo `await` | Cuándo esperar en secuencia y cuándo en paralelo |
+| M19 | `async`/`await` fuera de Playwright | [`scripts/report-ai.mjs:30-168`](../../../scripts/report-ai.mjs) | `await readFile(...)`, `await mkdir(...)` — el mismo `await` sin navegador de por medio | `async`/`await` es JavaScript, no una invención de Playwright |
+| M20 | Paralelismo con `Promise.all` | [`scripts/report-ai.mjs:127-131`](../../../scripts/report-ai.mjs) | Tres lecturas de fichero lanzadas a la vez, un solo `await` | Cuándo esperar en secuencia y cuándo en paralelo |
 
 ## Trazabilidad completa del módulo
 
