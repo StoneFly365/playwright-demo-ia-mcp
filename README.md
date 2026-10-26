@@ -2,6 +2,52 @@
 
 Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.saucedemo.com) utilizando [Playwright](https://playwright.dev/) con TypeScript y el patrón **Page Object Model (POM)**.
 
+## Índice
+
+- [¿Qué demuestra esta demo?](#qué-demuestra-esta-demo)
+- [Cómo encaja todo](#cómo-encaja-todo)
+- [Learning Lab](#learning-lab)
+- [Usuarios de SauceDemo](#usuarios-de-saucedemo)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Requisitos previos](#requisitos-previos)
+- [Instalación](#instalación)
+  - [Claude Code CLI (opcional, solo para `report:ai` en local)](#claude-code-cli-opcional-solo-para-reportai-en-local)
+- [Ejecución de los tests](#ejecución-de-los-tests)
+- [Docker](#docker)
+  - [¿Cuándo usar Docker?](#cuándo-usar-docker)
+  - [Ejecutar los tests en Docker (local)](#ejecutar-los-tests-en-docker-local)
+  - [Docker en CI (GitHub Actions)](#docker-en-ci-github-actions)
+  - [Flujo del pipeline](#flujo-del-pipeline)
+- [Reporte IA (`report:ai`)](#reporte-ia-reportai)
+  - [Proveedor de IA](#proveedor-de-ia)
+  - [Ficheros generados](#ficheros-generados)
+  - [Acierto de la IA](#acierto-de-la-ia)
+  - [Ejemplo de salida](#ejemplo-de-salida)
+  - [Uso en local](#uso-en-local)
+  - [Uso en CI (GitHub Actions)](#uso-en-ci-github-actions)
+- [Cerrar el circuito (fase 4)](#cerrar-el-circuito-fase-4)
+  - [Healer automático (`npm run heal:ai`)](#healer-automático-npm-run-healai)
+  - [Check de asserts (`guard-asserts.mjs`)](#check-de-asserts-guard-assertsmjs)
+  - [Revisión adversarial (`npm run review:pw`)](#revisión-adversarial-npm-run-reviewpw)
+  - [Lint de Playwright (`npm run lint`)](#lint-de-playwright-npm-run-lint)
+  - [Tickets de Jira (`npm run jira:tickets`)](#tickets-de-jira-npm-run-jiratickets)
+- [Qué datos salen y hacia dónde](#qué-datos-salen-y-hacia-dónde)
+- [Dashboard QA Intelligence](#dashboard-qa-intelligence)
+  - [Qué lee y qué enseña](#qué-lee-y-qué-enseña)
+  - [No mezclar ejecuciones](#no-mezclar-ejecuciones)
+  - [Historial](#historial)
+  - [Qué llama a modelos y qué no](#qué-llama-a-modelos-y-qué-no)
+  - [Privacidad](#privacidad)
+  - [En CI](#en-ci)
+  - [Caché de clasificaciones: descartada por ahora](#caché-de-clasificaciones-descartada-por-ahora)
+- [Modo headless](#modo-headless)
+- [Configuración (`playwright.config.ts`)](#configuración-playwrightconfigts)
+- [Decisiones de diseño](#decisiones-de-diseño)
+  - [Page Object Model](#page-object-model)
+  - [Selectores `data-test`](#selectores-data-test)
+  - [`baseURL` en config](#baseurl-en-config)
+- [Tecnologías](#tecnologías)
+
 ---
 
 ## ¿Qué demuestra esta demo?
@@ -55,6 +101,12 @@ flowchart LR
     OUT -->|"test_roto · npm run heal:ai"| H
     H --> PR["PR en borrador<br/>guard-asserts: needs-human<br/>si relaja una aserción"]
     OUT -->|"bug_producto · npm run jira:tickets"| JIRA(["Jira<br/>simulado sin credenciales"])
+```
+
+**Versión para negocio.** El mismo circuito sin detalle técnico está en [`docs/diagramas/qa-ia-negocio.html`](docs/diagramas/qa-ia-negocio.html): descárgalo y ábrelo en el navegador, porque GitHub no renderiza HTML. Su fuente es [`qa-ia-negocio.workflow.json`](docs/diagramas/qa-ia-negocio.workflow.json). Si cambia el flujo, edita el JSON y regenera el HTML desde la raíz del repositorio con el skill [archify](https://github.com/tt-a1i/archify). No viene con el repositorio: necesitas tenerlo instalado como skill de Claude Code en `~/.claude/skills/archify`.
+
+```bash
+node ~/.claude/skills/archify/bin/archify.mjs deliver workflow docs/diagramas/qa-ia-negocio.workflow.json docs/diagramas/qa-ia-negocio.html --quality showcase
 ```
 
 ---
@@ -120,12 +172,14 @@ playwright-demo-ia-mcp/
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages)
+├── docs/diagramas/                 # Diagrama del circuito para negocio (HTML + fuente archify)
 ├── .claude/agents/                 # Agentes Playwright: planner, generator, healer y revisor adversarial
 ├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
 ├── .mcp.json                       # Servidor MCP de Playwright (playwright run-test-mcp-server)
 ├── .github/workflows/
 │   ├── playwright.yml              # Pipeline CI/CD de tests (GitHub Actions)
 │   └── docs.yml                    # Publicación del portal en GitHub Pages
+├── CLAUDE.md                       # Reglas para Claude Code: revisar la documentación en cambios de arquitectura
 ├── playwright.config.ts
 ├── package.json
 └── tsconfig.json

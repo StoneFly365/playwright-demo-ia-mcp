@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Cómo trabaja el QA con IA",
+    "quality_profile": "showcase",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "pruebas", "label": "Pruebas automáticas" },
+    { "id": "ia", "label": "Análisis con IA" },
+    { "id": "personas", "label": "Equipo" },
+    { "id": "producto", "label": "Producto", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "detectar", "label": "Detectar", "fromCol": 0, "toCol": 1 },
+    { "id": "entender", "label": "Entender", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "resolver", "label": "Resolver", "fromCol": 4, "toCol": 5 }
+  ],
+  "mainPath": ["ejecutar", "resultado", "explicar", "clasificar", "arreglo", "revision"],
+  "nodes": [
+    { "id": "ejecutar", "lane": "pruebas", "col": 0, "width": 196, "type": "backend", "label": "Se ejecutan las pruebas", "sublabel": "en cada cambio" },
+    { "id": "resultado", "lane": "pruebas", "col": 1, "width": 152, "type": "backend", "label": "¿Hay fallos?", "sublabel": "verde o rojo" },
+    { "id": "verde", "lane": "pruebas", "col": 2, "width": 152, "type": "frontend", "label": "Informe en verde", "sublabel": "avisa si hubo inestables" },
+    { "id": "explicar", "lane": "ia", "col": 2, "width": 152, "type": "cloud", "label": "La IA explica", "sublabel": "la causa probable" },
+    { "id": "otros", "lane": "personas", "col": 2, "width": 152, "type": "security", "label": "Lo revisa QA", "sublabel": "entorno o sin clasificar" },
+    { "id": "clasificar", "lane": "ia", "col": 3, "width": 152, "type": "cloud", "label": "La IA clasifica", "sublabel": "¿test o producto?" },
+    { "id": "arreglo", "lane": "ia", "col": 4, "width": 152, "type": "cloud", "label": "Arreglo propuesto", "sublabel": "en borrador" },
+    { "id": "revision", "lane": "personas", "col": 5, "width": 152, "type": "security", "label": "Revisión humana", "sublabel": "decide si se acepta" },
+    { "id": "ticket", "lane": "producto", "col": 4, "width": 152, "type": "external", "label": "Ticket en Jira", "sublabel": "bug con evidencias" }
+  ],
+  "edges": [
+    { "from": "ejecutar", "to": "resultado", "variant": "emphasis" },
+    { "from": "resultado", "to": "verde", "label": "no", "variant": "dashed", "role": "branch" },
+    { "from": "resultado", "to": "explicar", "label": "sí", "variant": "emphasis" },
+    { "from": "explicar", "to": "clasificar", "variant": "emphasis" },
+    { "from": "clasificar", "to": "arreglo", "label": "test roto", "variant": "emphasis" },
+    { "from": "arreglo", "to": "revision", "variant": "emphasis" },
+    { "from": "clasificar", "to": "ticket", "label": "bug de producto", "variant": "security", "role": "branch" },
+    { "from": "clasificar", "to": "otros", "label": "otros", "variant": "dashed", "role": "branch" }
+  ],
+  "cards": [
+    { "dot": "emerald", "title": "Qué gana negocio", "items": ["Cada fallo llega explicado, no solo en rojo", "Los bugs de producto acaban en Jira con evidencias", "Menos horas diagnosticando a mano"] },
+    { "dot": "rose", "title": "Una persona decide", "items": ["La IA propone, nunca acepta sola", "Si un arreglo relaja una comprobación, GitHub bloquea el cambio", "Hasta que alguien lo aprueba de forma explícita"] },
+    { "dot": "cyan", "title": "Datos bajo control", "items": ["A la IA solo sale un resumen del fallo", "Contraseñas, tokens y emails se enmascaran antes", "Sin pruebas en rojo no se llama a la IA"] }
+  ]
+}
