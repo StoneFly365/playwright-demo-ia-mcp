@@ -381,9 +381,9 @@ El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-
 
 `npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md` y, con los mismos datos, en `ai-eval.json` (lo lee el [dashboard](#dashboard-qa-intelligence)). Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa el proveedor de CI) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
 
-> La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Una evaluación gasta 4, y una ejecución de CI con fallos, otras 4 como mucho (el reporte es uno para los tres navegadores). Una CI en verde no gasta ninguna, aunque haya algún test flaky.
+> En CI se usa OpenRouter con un modelo gratuito: 50 peticiones al día sin créditos (con Gemini, 20 al día y 5 por minuto). Una evaluación gasta 4, y una ejecución de CI con fallos, otras 4 como mucho (el reporte es uno para los tres navegadores). Una CI en verde no gasta ninguna, aunque haya algún test flaky.
 
-Última medición (Claude Haiku 5.5, en local, 21 de octubre de 2026): **11 de 11 grupos bien clasificados, que cubren 185 de 185 tests fallados**.
+Última medición (Claude Haiku 5.5, en local, 21 de octubre de 2026): **11 de 11 grupos bien clasificados, que cubren 185 de 185 tests fallados**. Con `nvidia/nemotron-3-ultra-550b-a55b:free` por OpenRouter, la misma cifra en local y en dos ejecuciones de CI (26 de octubre de 2026).
 
 | Escenario | Esperado | Grupos | Acierto | Tiempo del reporte |
 |---|---|---|---|---|
