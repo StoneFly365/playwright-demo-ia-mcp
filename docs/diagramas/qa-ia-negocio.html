@@ -5186,11 +5186,12 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <!-- Edge paths -->
         <path data-edge-from="arreglo" data-edge-to="revision" data-edge-key="0" data-composition-points="931.2,269;931.2,367;975.2,367" d="M 931.2 269 L 931.2 367 L 975.2 367" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="clasificar" data-edge-to="arreglo" data-edge-label="test roto" data-edge-key="1" data-composition-points="794,243;855.2,243" d="M 794 243 L 855.2 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="clasificar" data-edge-to="ticket" data-edge-label="bug de producto" data-edge-key="2" data-composition-points="718,269;718,491;855.2,491" d="M 718 269 L 718 491 L 855.2 491" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
-        <path data-edge-from="ejecutar" data-edge-to="resultado" data-edge-key="3" data-composition-points="244,119;272,119" d="M 244 119 L 272 119" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="explicar" data-edge-to="clasificar" data-edge-key="4" data-composition-points="614,243;642,243" d="M 614 243 L 642 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="resultado" data-edge-to="explicar" data-edge-label="sí" data-edge-key="5" data-composition-points="348,145;348,243;462,243" d="M 348 145 L 348 243 L 462 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="resultado" data-edge-to="verde" data-edge-label="no" data-edge-key="6" data-composition-points="424,119;462,119" d="M 424 119 L 462 119" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="clasificar" data-edge-to="otros" data-edge-label="otros" data-edge-key="2" data-composition-points="711,269;711,367;614,367" d="M 711 269 L 711 367 L 614 367" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
+        <path data-edge-from="clasificar" data-edge-to="ticket" data-edge-label="bug de producto" data-edge-key="3" data-composition-points="725,269;725,491;855.2,491" d="M 725 269 L 725 491 L 855.2 491" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="ejecutar" data-edge-to="resultado" data-edge-key="4" data-composition-points="244,119;272,119" d="M 244 119 L 272 119" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="explicar" data-edge-to="clasificar" data-edge-key="5" data-composition-points="614,243;642,243" d="M 614 243 L 642 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="resultado" data-edge-to="explicar" data-edge-label="sí" data-edge-key="6" data-composition-points="348,145;348,243;462,243" d="M 348 145 L 348 243 L 462 243" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        <path data-edge-from="resultado" data-edge-to="verde" data-edge-label="no" data-edge-key="7" data-composition-points="424,119;462,119" d="M 424 119 L 462 119" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)"/>
 
         <!-- Nodes -->
         <g id="node-ejecutar" data-node-id="ejecutar" data-node-label="Se ejecutan las pruebas" tabindex="0" role="button" aria-label="Focus Se ejecutan las pruebas, en cada cambio, Pruebas automáticas › Detectar" aria-pressed="false" data-node-kind="backend" data-node-sublabel="en cada cambio" data-node-context="Pruebas automáticas › Detectar">
@@ -5215,8 +5216,8 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <text data-detail="context" x="348" y="131" class="t-muted" font-size="8" text-anchor="middle">verde o rojo</text>
         </g>
 
-        <g id="node-verde" data-node-id="verde" data-node-label="Informe en verde" tabindex="0" role="button" aria-label="Focus Informe en verde, sin usar la IA, Pruebas automáticas › Entender" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="sin usar la IA" data-node-context="Pruebas automáticas › Entender">
-          <title>Informe en verde · sin usar la IA · Pruebas automáticas › Entender</title>
+        <g id="node-verde" data-node-id="verde" data-node-label="Informe en verde" tabindex="0" role="button" aria-label="Focus Informe en verde, avisa si hubo inestables, Pruebas automáticas › Entender" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="avisa si hubo inestables" data-node-context="Pruebas automáticas › Entender">
+          <title>Informe en verde · avisa si hubo inestables · Pruebas automáticas › Entender</title>
           <rect x="462" y="93" width="152" height="52" rx="6" class="c-mask"/>
           <rect x="462" y="93" width="152" height="52" rx="6" class="c-frontend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(468 99) scale(0.6875)">
@@ -5226,18 +5227,18 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
             <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="538" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Informe en verde</text>
-          <text data-detail="context" x="538" y="131" class="t-muted" font-size="8" text-anchor="middle">sin usar la IA</text>
+          <text data-detail="context" x="538" y="131" class="t-muted" font-size="8" text-anchor="middle">avisa si hubo inestables</text>
         </g>
 
-        <g id="node-explicar" data-node-id="explicar" data-node-label="La IA explica" tabindex="0" role="button" aria-label="Focus La IA explica, agrupa y resume, Análisis con IA › Entender" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="agrupa y resume" data-node-context="Análisis con IA › Entender">
-          <title>La IA explica · agrupa y resume · Análisis con IA › Entender</title>
+        <g id="node-explicar" data-node-id="explicar" data-node-label="La IA explica" tabindex="0" role="button" aria-label="Focus La IA explica, la causa probable, Análisis con IA › Entender" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="la causa probable" data-node-context="Análisis con IA › Entender">
+          <title>La IA explica · la causa probable · Análisis con IA › Entender</title>
           <rect x="462" y="217" width="152" height="52" rx="6" class="c-mask"/>
           <rect x="462" y="217" width="152" height="52" rx="6" class="c-cloud" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(468 223) scale(0.6875)">
             <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="538" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">La IA explica</text>
-          <text data-detail="context" x="538" y="255" class="t-muted" font-size="8" text-anchor="middle">agrupa y resume</text>
+          <text data-detail="context" x="538" y="255" class="t-muted" font-size="8" text-anchor="middle">la causa probable</text>
         </g>
 
         <g id="node-clasificar" data-node-id="clasificar" data-node-label="La IA clasifica" tabindex="0" role="button" aria-label="Focus La IA clasifica, ¿test o producto?, Análisis con IA › Entender" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="¿test o producto?" data-node-context="Análisis con IA › Entender">
@@ -5260,6 +5261,18 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           </g>
           <text data-node-label="" data-detail-anchor="" x="931.2" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Arreglo propuesto</text>
           <text data-detail="context" x="931.2" y="255" class="t-muted" font-size="8" text-anchor="middle">en borrador</text>
+        </g>
+
+        <g id="node-otros" data-node-id="otros" data-node-label="Lo revisa QA" tabindex="0" role="button" aria-label="Focus Lo revisa QA, entorno o sin clasificar, Equipo › Entender" aria-pressed="false" data-node-kind="security" data-node-sublabel="entorno o sin clasificar" data-node-context="Equipo › Entender">
+          <title>Lo revisa QA · entorno o sin clasificar · Equipo › Entender</title>
+          <rect x="462" y="341" width="152" height="52" rx="6" class="c-mask"/>
+          <rect x="462" y="341" width="152" height="52" rx="6" class="c-security" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(468 347) scale(0.6875)">
+            <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
+            <path d="m5.8 8 1.5 1.5 3-3"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="538" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Lo revisa QA</text>
+          <text data-detail="context" x="538" y="379" class="t-muted" font-size="8" text-anchor="middle">entorno o sin clasificar</text>
         </g>
 
         <g id="node-revision" data-node-id="revision" data-node-label="Revisión humana" tabindex="0" role="button" aria-label="Focus Revisión humana, decide si se acepta, Equipo › Resolver" aria-pressed="false" data-node-kind="security" data-node-sublabel="decide si se acepta" data-node-context="Equipo › Resolver">
@@ -5292,17 +5305,21 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <rect x="798" y="223" width="53.199999999999996" height="14" rx="3" class="c-mask"/>
           <text x="824.6" y="233" class="t-backend" font-size="8" text-anchor="middle">test roto</text>
         </g>
-        <g data-detail="context" data-edge-from="clasificar" data-edge-to="ticket" data-edge-label="bug de producto" data-edge-key="2">
-          <rect x="745.6" y="471" width="82" height="14" rx="3" class="c-mask"/>
-          <text x="786.6" y="481" class="t-security" font-size="8" text-anchor="middle">bug de producto</text>
+        <g data-detail="context" data-edge-from="clasificar" data-edge-to="otros" data-edge-label="otros" data-edge-key="2">
+          <rect x="645.5" y="347" width="34" height="14" rx="3" class="c-mask"/>
+          <text x="662.5" y="357" class="t-database" font-size="8" text-anchor="middle">otros</text>
+        </g>
+        <g data-detail="context" data-edge-from="clasificar" data-edge-to="ticket" data-edge-label="bug de producto" data-edge-key="3">
+          <rect x="749.1" y="471" width="82" height="14" rx="3" class="c-mask"/>
+          <text x="790.1" y="481" class="t-security" font-size="8" text-anchor="middle">bug de producto</text>
         </g>
 
 
-        <g data-detail="context" data-edge-from="resultado" data-edge-to="explicar" data-edge-label="sí" data-edge-key="5">
+        <g data-detail="context" data-edge-from="resultado" data-edge-to="explicar" data-edge-label="sí" data-edge-key="6">
           <rect x="390" y="223" width="30" height="14" rx="3" class="c-mask"/>
           <text x="405" y="233" class="t-backend" font-size="8" text-anchor="middle">sí</text>
         </g>
-        <g data-detail="context" data-edge-from="resultado" data-edge-to="verde" data-edge-label="no" data-edge-key="6">
+        <g data-detail="context" data-edge-from="resultado" data-edge-to="verde" data-edge-label="no" data-edge-key="7">
           <rect x="428" y="99" width="30" height="14" rx="3" class="c-mask"/>
           <text x="443" y="109" class="t-database" font-size="8" text-anchor="middle">no</text>
         </g>

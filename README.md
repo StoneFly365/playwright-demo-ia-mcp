@@ -103,7 +103,7 @@ flowchart LR
     OUT -->|"bug_producto · npm run jira:tickets"| JIRA(["Jira<br/>simulado sin credenciales"])
 ```
 
-**Versión para negocio.** El mismo circuito sin detalle técnico está en [`docs/diagramas/qa-ia-negocio.html`](docs/diagramas/qa-ia-negocio.html): descárgalo y ábrelo en el navegador, porque GitHub no renderiza HTML. Su fuente es [`qa-ia-negocio.workflow.json`](docs/diagramas/qa-ia-negocio.workflow.json). Si cambia el flujo, edita el JSON y regenera el HTML desde la raíz del repositorio con el skill archify:
+**Versión para negocio.** El mismo circuito sin detalle técnico está en [`docs/diagramas/qa-ia-negocio.html`](docs/diagramas/qa-ia-negocio.html): descárgalo y ábrelo en el navegador, porque GitHub no renderiza HTML. Su fuente es [`qa-ia-negocio.workflow.json`](docs/diagramas/qa-ia-negocio.workflow.json). Si cambia el flujo, edita el JSON y regenera el HTML desde la raíz del repositorio con el skill [archify](https://github.com/tt-a1i/archify). No viene con el repositorio: necesitas tenerlo instalado como skill de Claude Code en `~/.claude/skills/archify`.
 
 ```bash
 node ~/.claude/skills/archify/bin/archify.mjs deliver workflow docs/diagramas/qa-ia-negocio.workflow.json docs/diagramas/qa-ia-negocio.html --quality showcase

@@ -21,8 +21,9 @@
   "nodes": [
     { "id": "ejecutar", "lane": "pruebas", "col": 0, "width": 196, "type": "backend", "label": "Se ejecutan las pruebas", "sublabel": "en cada cambio" },
     { "id": "resultado", "lane": "pruebas", "col": 1, "width": 152, "type": "backend", "label": "¿Hay fallos?", "sublabel": "verde o rojo" },
-    { "id": "verde", "lane": "pruebas", "col": 2, "width": 152, "type": "frontend", "label": "Informe en verde", "sublabel": "sin usar la IA" },
-    { "id": "explicar", "lane": "ia", "col": 2, "width": 152, "type": "cloud", "label": "La IA explica", "sublabel": "agrupa y resume" },
+    { "id": "verde", "lane": "pruebas", "col": 2, "width": 152, "type": "frontend", "label": "Informe en verde", "sublabel": "avisa si hubo inestables" },
+    { "id": "explicar", "lane": "ia", "col": 2, "width": 152, "type": "cloud", "label": "La IA explica", "sublabel": "la causa probable" },
+    { "id": "otros", "lane": "personas", "col": 2, "width": 152, "type": "security", "label": "Lo revisa QA", "sublabel": "entorno o sin clasificar" },
     { "id": "clasificar", "lane": "ia", "col": 3, "width": 152, "type": "cloud", "label": "La IA clasifica", "sublabel": "¿test o producto?" },
     { "id": "arreglo", "lane": "ia", "col": 4, "width": 152, "type": "cloud", "label": "Arreglo propuesto", "sublabel": "en borrador" },
     { "id": "revision", "lane": "personas", "col": 5, "width": 152, "type": "security", "label": "Revisión humana", "sublabel": "decide si se acepta" },
@@ -35,7 +36,8 @@
     { "from": "explicar", "to": "clasificar", "variant": "emphasis" },
     { "from": "clasificar", "to": "arreglo", "label": "test roto", "variant": "emphasis" },
     { "from": "arreglo", "to": "revision", "variant": "emphasis" },
-    { "from": "clasificar", "to": "ticket", "label": "bug de producto", "variant": "security", "role": "branch" }
+    { "from": "clasificar", "to": "ticket", "label": "bug de producto", "variant": "security", "role": "branch" },
+    { "from": "clasificar", "to": "otros", "label": "otros", "variant": "dashed", "role": "branch" }
   ],
   "cards": [
     { "dot": "emerald", "title": "Qué gana negocio", "items": ["Cada fallo llega explicado, no solo en rojo", "Los bugs de producto acaban en Jira con evidencias", "Menos horas diagnosticando a mano"] },
