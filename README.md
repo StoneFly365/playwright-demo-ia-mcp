@@ -176,9 +176,12 @@ playwright-demo-ia-mcp/
 ├── .claude/agents/                 # Agentes Playwright: planner, generator, healer y revisor adversarial
 ├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
 ├── .mcp.json                       # Servidor MCP de Playwright (playwright run-test-mcp-server)
-├── .github/workflows/
-│   ├── playwright.yml              # Pipeline CI/CD de tests (GitHub Actions)
-│   └── docs.yml                    # Publicación del portal en GitHub Pages
+├── .github/
+│   ├── pull_request_template.md    # Plantilla de PR con la línea Docs: que pide CLAUDE.md
+│   └── workflows/
+│       ├── playwright.yml          # Pipeline CI/CD de tests (GitHub Actions)
+│       ├── guard.yml               # Guard de asserts en las PR del healer (check obligatorio)
+│       └── docs.yml                # Publicación del portal en GitHub Pages
 ├── CLAUDE.md                       # Reglas para Claude Code: revisar la documentación en cambios de arquitectura
 ├── playwright.config.ts
 ├── package.json
