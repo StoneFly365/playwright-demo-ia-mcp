@@ -179,6 +179,7 @@ playwright-demo-ia-mcp/
 ├── .github/workflows/
 │   ├── playwright.yml              # Pipeline CI/CD de tests (GitHub Actions)
 │   └── docs.yml                    # Publicación del portal en GitHub Pages
+├── CLAUDE.md                       # Reglas para Claude Code: revisar la documentación en cambios de arquitectura
 ├── playwright.config.ts
 ├── package.json
 └── tsconfig.json
