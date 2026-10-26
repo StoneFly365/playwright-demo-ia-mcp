@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Proveedor de IA configurable · Última actualización: 2026-10-26
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Proveedor de IA configurable y OpenRouter en CI · Última actualización: 2026-10-26
 
 ## Objetivo
 
@@ -26,7 +26,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 1 | Escenarios de fallo realistas | 1-2 días | ✅ |
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
-| 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | 🟨 OpenRouter listo; falta el secreto |
+| 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | ✅ |
 | 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI |
 | 5 | Argumentos para cliente enterprise | 1 día | ✅ |
 | — | Opcionales según cliente | — | ⬜ |
@@ -113,8 +113,8 @@ No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin
 - [x] La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta como fallo lo que la IA no llegó a clasificar.
 - [x] Permisos del workflow: `contents: read` y checkout sin credenciales persistidas.
 - [x] Proveedor configurable: `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL` para cualquier API compatible con la de OpenAI. `GEMINI_API_KEY` sigue funcionando como atajo. `eval:ai` toma el proveedor de lo que registra `report:ai`, sin repetir la lógica.
-- [ ] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow ya lo usa si existe el secreto `OPENROUTER_API_KEY`; falta crearlo y poner en la variable `AI_MODEL` el modelo elegido con `npm run eval:ai`. Modelo elegido: `nvidia/nemotron-3-ultra-550b-a55b:free`, 11 de 11 grupos (185 de 185 tests) en local el 26 de octubre, igual que Claude Haiku. De los gratuitos probados, `nemotron-3-super-120b` devolvió 404 y `gemma-4-31b-it`, 429.
-- [ ] Probar en CI el camino con fallos reales (`suite=fail`) con el job único de reporte. Solo se ha probado en verde.
+- [x] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow ya lo usa si existe el secreto `OPENROUTER_API_KEY`; falta crearlo y poner en la variable `AI_MODEL` el modelo elegido con `npm run eval:ai`. Modelo elegido: `nvidia/nemotron-3-ultra-550b-a55b:free`, 11 de 11 grupos (185 de 185 tests) en local el 26 de octubre, igual que Claude Haiku. De los gratuitos probados, `nemotron-3-super-120b` devolvió 404 y `gemma-4-31b-it`, 429.
+- [x] Probar en CI el camino con fallos reales (`suite=fail`) con el job único de reporte. Probado el 26 de octubre con OpenRouter: 30 fallos de `@demo-fail` en 7 grupos, todos `test_roto`, con 3 peticiones (clasificación, resumen y correcciones). Las dos `suite=eval` en CI dieron 11 de 11, como en local.
 
 **Descartado:** Claude por API en CI. Funcionaría con el mismo modelo que en local y costaría menos de 1 $ al mes, pero la clave del repositorio es del plan personal y no se quiere ningún coste adicional.
 
@@ -190,7 +190,7 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 - Los `@demo-fail` fallan a propósito: no se corrigen.
 - Jira real: volver a lanzar `jira:tickets` sobre el mismo informe crea tickets duplicados, y la traza y el vídeo adjuntos no pasan por el redactor (pueden llevar datos de la sesión). En un proyecto de cliente, revisar qué contienen antes de activar las variables `JIRA_*`.
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
-- La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Desde la PR de la cuota, una ejecución de CI con fallos gasta 4 como mucho y una en verde ninguna, aunque tenga flaky. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
+- En CI se usa OpenRouter con un modelo gratuito: 50 peticiones al día sin créditos, y el modelo puede dejar de estar disponible (el 26 de octubre, dos de los tres gratuitos probados devolvían 404 o 429). Si eso pasa, se cambia la variable `AI_MODEL` tras pasar `eval:ai`, o se borra el secreto `OPENROUTER_API_KEY` para volver a Gemini. La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Desde la PR de la cuota, una ejecución de CI con fallos gasta 4 como mucho y una en verde ninguna, aunque tenga flaky. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.
 - Los tests nuevos que escriba el agente generator importan de `@playwright/test`. Para que les afecten los escenarios, hay que cambiar ese import por `../fixtures/scenarios`.
 
