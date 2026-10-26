@@ -113,7 +113,7 @@ No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin
 - [x] La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta como fallo lo que la IA no llegó a clasificar.
 - [x] Permisos del workflow: `contents: read` y checkout sin credenciales persistidas.
 - [x] Proveedor configurable: `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL` para cualquier API compatible con la de OpenAI. `GEMINI_API_KEY` sigue funcionando como atajo. `eval:ai` toma el proveedor de lo que registra `report:ai`, sin repetir la lógica.
-- [ ] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow ya lo usa si existe el secreto `OPENROUTER_API_KEY`; falta crearlo y poner en la variable `AI_MODEL` el modelo elegido con `npm run eval:ai`.
+- [ ] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow ya lo usa si existe el secreto `OPENROUTER_API_KEY`; falta crearlo y poner en la variable `AI_MODEL` el modelo elegido con `npm run eval:ai`. Modelo elegido: `nvidia/nemotron-3-ultra-550b-a55b:free`, 11 de 11 grupos (185 de 185 tests) en local el 26 de octubre, igual que Claude Haiku. De los gratuitos probados, `nemotron-3-super-120b` devolvió 404 y `gemma-4-31b-it`, 429.
 - [ ] Probar en CI el camino con fallos reales (`suite=fail`) con el job único de reporte. Solo se ha probado en verde.
 
 **Descartado:** Claude por API en CI. Funcionaría con el mismo modelo que en local y costaría menos de 1 $ al mes, pero la clave del repositorio es del plan personal y no se quiere ningún coste adicional.
