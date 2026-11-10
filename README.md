@@ -18,6 +18,11 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
   - [Ejecutar los tests en Docker (local)](#ejecutar-los-tests-en-docker-local)
   - [Docker en CI (GitHub Actions)](#docker-en-ci-github-actions)
   - [Flujo del pipeline](#flujo-del-pipeline)
+- [Diseñar desde Figma (`design:ai`)](#diseñar-desde-figma-designai)
+  - [Qué hace](#qué-hace)
+  - [Preparar el MCP de Figma](#preparar-el-mcp-de-figma)
+  - [Uso](#uso)
+  - [Qué sale](#qué-sale)
 - [Reporte IA (`report:ai`)](#reporte-ia-reportai)
   - [Proveedor de IA](#proveedor-de-ia)
   - [Ficheros generados](#ficheros-generados)
@@ -54,6 +59,7 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
 
 Suite E2E lista para producción que enseña, sobre una web real, cómo damos valor en QA automation:
 
+- **Diseño de pruebas desde Figma** — la IA lee la historia de usuario y el diseño por el MCP de Figma, recorre la app y propone casos, criterios de aceptación y las diferencias entre diseño y app antes de escribir un test.
 - **Page Object Model** — 6 páginas encapsuladas, tests legibles y mantenibles.
 - **Cobertura multi-navegador** — 80 tests por navegador (240 en total) en Chromium, Firefox y WebKit.
 - **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
@@ -64,7 +70,7 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 
 ## Cómo encaja todo
 
-Los agentes de [`.claude/agents/`](.claude/agents/) crean y reparan los tests. Usan el navegador y el runner a través del servidor MCP de Playwright definido en [`.mcp.json`](.mcp.json). Después, `report:ai` lee los resultados de la ejecución y la IA explica los fallos.
+Los agentes de [`.claude/agents/`](.claude/agents/) diseñan, crean y reparan los tests. El diseñador parte de una historia de usuario y de su diseño, que lee por el servidor MCP de Figma. Usan el navegador y el runner a través del servidor MCP de Playwright definido en [`.mcp.json`](.mcp.json). Después, `report:ai` lee los resultados de la ejecución y la IA explica los fallos.
 
 ```mermaid
 flowchart LR
@@ -72,7 +78,8 @@ flowchart LR
 
     subgraph AGENTS ["Agentes Claude Code · .claude/agents/"]
         direction TB
-        P["planner"] -->|"plan de test"| SP[("specs/")]
+        D["qa-test-designer<br/>npm run design:ai"] -->|"plan · criterios<br/>discrepancias"| SP[("specs/")]
+        P["planner"] -->|"plan de test"| SP
         SP --> G["generator"]
         G -->|"escribe spec"| T[("tests/ + pages/")]
         H["healer"] -->|"corrige"| T
@@ -81,6 +88,9 @@ flowchart LR
     MCP{{"MCP playwright-test<br/>playwright run-test-mcp-server"}}
     P & G & H <-->|"browser_* · test_run · test_debug"| MCP
     MCP <--> APP
+    HU[("specs/historias/")] --> D
+    FIG{{"MCP figma<br/>mcp.figma.com"}} <-->|"get_metadata · get_design_context"| D
+    D <--> MCP
 
     T --> RUN["npx playwright test<br/>Chromium · Firefox · WebKit"]
     RUN <--> APP
@@ -151,8 +161,13 @@ playwright-demo-ia-mcp/
 │   └── scenarios.ts                # Escenarios de fallo de la demo (DEMO_SCENARIO)
 ├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, arranque de los agentes)
 ├── specs/                          # Planes de test y documentación QA
+│   ├── historias/                  # Historias de usuario con sus criterios y sus frames de Figma (fase 1)
+│   ├── figma/                      # Guía del diseño de la demo e instantánea del frame (modo sin conexión)
+│   └── disenos/                    # Salida de design:ai: <HU>.design.json y <HU>.plan.md
 ├── prompts/                        # Prompts usados por el reporte IA
 ├── scripts/
+│   ├── design-ai.mjs               # Fase 1: historia + Figma + app → plan de pruebas (agente qa-test-designer)
+│   ├── design-ai.test.mjs          # Tests de design-ai.mjs (npm run test:unit)
 │   ├── report-ai.mjs               # Script de análisis IA de resultados
 │   ├── triage.mjs                  # Agrupación, flaky y redacción, sin IA
 │   ├── triage.test.mjs             # Tests de triage.mjs (npm run test:unit)
@@ -173,9 +188,9 @@ playwright-demo-ia-mcp/
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages)
 ├── docs/diagramas/                 # Diagrama del circuito para negocio (HTML + fuente archify)
-├── .claude/agents/                 # Agentes Playwright: planner, generator, healer y revisor adversarial
+├── .claude/agents/                 # Agentes: diseñador de pruebas, planner, generator, healer y revisor adversarial
 ├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
-├── .mcp.json                       # Servidor MCP de Playwright (playwright run-test-mcp-server)
+├── .mcp.json                       # Servidores MCP: Playwright (playwright run-test-mcp-server) y Figma (remoto oficial)
 ├── .github/
 │   ├── pull_request_template.md    # Plantilla de PR con la línea Docs: que pide CLAUDE.md
 │   └── workflows/
@@ -338,6 +353,78 @@ flowchart TD
 ```
 
 > Los tres navegadores van en paralelo y el reporte IA se genera **una sola vez** con los resultados de los tres ([`scripts/merge-results.mjs`](scripts/merge-results.mjs)): como mucho 4 llamadas a la IA por ejecución, y un fallo que se repite en los tres navegadores sale como un único grupo. En push y PR, si lo único que hay son tests flaky, no se llama a la IA. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`.
+
+---
+
+## Diseñar desde Figma (`design:ai`)
+
+Es la primera fase del ciclo de QA: las pruebas se diseñan a partir de la historia de usuario y de su diseño, antes de escribir un test. Las fases siguientes ya estaban: el generator automatiza, el healer mantiene y `report:ai` analiza.
+
+### Qué hace
+
+```mermaid
+flowchart LR
+    HU[("specs/historias/HU-001.md<br/>criterios CA1..CA7<br/>enlaces a Figma")] --> A
+    FIG{{"MCP figma<br/>o instantánea specs/figma/"}} --> A
+    APP{{"MCP playwright-test<br/>la app real"}} --> A
+    A["Agente qa-test-designer<br/>(la IA propone)"] --> J[("HU-001.design.json")]
+    J --> V["design-ai.mjs (código, sin IA)<br/>valida el JSON · cobertura de criterios"]
+    V --> PLAN[("HU-001.plan.md<br/>casos · Given/When/Then · trazabilidad<br/>discrepancias · dudas para negocio")]
+    PLAN -->|"una persona lo revisa<br/>--render --generate"| G["Agente generator<br/>tests/hu-001/"]
+    G --> CI["Suite · report:ai · heal:ai · Jira"]
+```
+
+Mismo principio que el resto del repositorio: **la IA hace lo que requiere criterio y el código lo determinista**.
+
+- **La IA** (agente [`qa-test-designer`](.claude/agents/qa-test-designer.md)) lee la historia, lee los frames de Figma por MCP (`get_metadata` y `get_design_context`) y recorre la app con el MCP de Playwright. Con eso propone:
+  - los criterios en Given/When/Then;
+  - los casos de prueba, cada uno trazado a sus criterios y con los localizadores reales de la app;
+  - las **discrepancias entre diseño y app**: qué dice Figma, qué hace la app y a qué criterio afecta;
+  - las **dudas para negocio**: criterios que no tienen respaldo ni en el diseño ni en la app. En esos casos no se inventa un caso de prueba.
+- **El código** ([`scripts/design-ai.mjs`](scripts/design-ai.mjs)):
+  - saca de la historia los criterios y los enlaces de Figma;
+  - decide si se usa el MCP de Figma o la instantánea;
+  - **valida** el JSON: no admite criterios inventados u olvidados ni casos sin criterio;
+  - calcula la **cobertura de criterios**;
+  - escribe el plan en el formato del planner, para que el generator lo use tal cual;
+  - comprueba que el agente solo ha escrito en `specs/disenos/` y `specs/figma/`.
+- **Una persona decide.** El plan es una propuesta. Los tests se generan solo cuando alguien lo revisa y lanza `--generate`, y salen importando el fixture de escenarios, así que también les afectan `DEMO_SCENARIO` y el triage.
+
+Ideas tomadas de [CoverIQ/Figma-UI-Test-Planner](https://github.com/CoverIQ/Figma-UI-Test-Planner) (la cadena historia → plan → casos → automatización) y de [figma-playwright-gen-ai](https://github.com/meeviefranc/figma-playwright-gen-ai) (emparejar las capas del diseño con los localizadores). La diferencia es que aquí Figma se lee por MCP y no por la API REST, y que se contrasta con la app real.
+
+### Preparar el MCP de Figma
+
+`.mcp.json` declara el servidor remoto oficial (`https://mcp.figma.com/mcp`). Necesita un asiento **Dev** o **Full** de Figma.
+
+1. Abre `claude` en la raíz del repositorio, ejecuta `/mcp`, elige **figma** y autentícate en el navegador. Se hace una vez por máquina.
+2. Crea el diseño de la demo con la guía [`specs/figma/README.md`](specs/figma/README.md): dos frames de SauceDemo con dos discrepancias a propósito.
+3. Pon el `FILE_KEY` y los `node-id` en las líneas `Figma:` de [`specs/historias/HU-001.md`](specs/historias/HU-001.md).
+
+Mientras la historia tenga `FILE_KEY`, el script usa sola la instantánea [`specs/figma/HU-001.figma.json`](specs/figma/HU-001.figma.json). Esa instantánea está escrita a mano según la guía. Cada ejecución con Figma real la reescribe con lo que devuelve el MCP, de modo que siempre hay una copia para la demo sin conexión.
+
+### Uso
+
+```bash
+npm run design:ai -- HU-001              # Figma por MCP (o la instantánea, si la historia aún no tiene fichero)
+npm run design:ai:demo                   # lo mismo, forzando la instantánea: no se conecta a Figma
+npm run design:ai -- HU-001 --dry-run    # enseña el prompt del agente y no llama a la IA
+npm run design:ai -- HU-001 --render     # sin IA: valida el JSON existente y reescribe el plan
+npm run design:ai -- HU-001 --render --generate   # tras revisar el plan: tests de los casos nuevos de prioridad alta
+npm run design:ai -- HU-001 --render --generate --all   # todos los casos nuevos
+```
+
+Usa Claude CLI con tu suscripción, igual que `heal:ai`. Necesita acceso a la app, porque el agente la recorre.
+
+### Qué sale
+
+| Fichero | Contenido |
+|---|---|
+| `specs/disenos/HU-001.design.json` | La propuesta de la IA, con la forma fija de las instrucciones del agente |
+| `specs/disenos/HU-001.plan.md` | Resumen de cobertura, discrepancias, dudas, criterios con su trazabilidad y casos en formato planner |
+| `specs/figma/HU-001.figma.json` | Instantánea del diseño, solo cuando se lee de Figma |
+| `tests/hu-001/*.spec.ts` | Con `--generate`: los tests que escribe el generator, pendientes de revisar |
+
+> **Para la demo:** un caso que comprueba algo que está en el diseño y no en la app, como el subtotal del carrito (D1), da un test que **falla**. Es lo esperado: `report:ai` lo clasifica como `bug_producto` y `jira:tickets` abre el ticket. Así se ve el ciclo completo, del diseño a Jira. Guion en [`docs/demo-disenar-figma.md`](docs/demo-disenar-figma.md).
 
 ---
 
@@ -558,6 +645,8 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 | **Google** (Gemini API, capa gratuita, en CI) u **OpenRouter** (si existe `OPENROUTER_API_KEY`; reenvía al proveedor del modelo elegido) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
 | **Anthropic** (Claude CLI, en local) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Secretos de CI, porque se ejecuta en local. No tiene terminal (`Bash`) |
 | **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
+| **Anthropic** (Claude CLI, en local) | `design:ai` | La historia de usuario, lo que el agente lea de Figma (capas, textos, componentes y, si la pide, una captura del frame), las instantáneas de la página de la app que recorre por el MCP y los ficheros del repositorio que decida leer. **No pasa por el redactor**: las historias y los diseños de la demo no llevan datos personales | `.env` (misma regla). No tiene terminal (`Bash`) y solo puede escribir en `specs/disenos/` y `specs/figma/`: el script lo comprueba al terminar |
+| **Figma** (MCP remoto `mcp.figma.com`, con el login OAuth de quien lo ejecuta) | `design:ai` | Las peticiones de lectura de los frames de la historia | Nada de la app ni de los tests. Con `--snapshot` no se conecta |
 | **GitHub** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR: diagnóstico, veredicto del revisor y resumen del healer | — |
 | **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día) y el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
 | **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |

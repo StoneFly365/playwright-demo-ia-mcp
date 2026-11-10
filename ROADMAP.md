@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Proveedor de IA configurable y OpenRouter en CI · Última actualización: 2026-10-26
+**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-10
 
 ## Objetivo
 
@@ -29,6 +29,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | ✅ |
 | 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI |
 | 5 | Argumentos para cliente enterprise | 1 día | ✅ |
+| 6 | Diseñar desde Figma (fase 1 del ciclo de QA) | 2 días | 🟨 construida; falta el fichero de Figma y la primera ejecución real |
 | — | Opcionales según cliente | — | ⬜ |
 
 Las fases 0 a 3 son el mínimo para enseñar algo distinto (unos 5-6 días). La fase 4 es la que más impresiona. Una rama y una PR por fase (`feat/escenarios-fallo`, `feat/ia-clasifica`...), para poder enseñar cada una por separado.
@@ -169,6 +170,24 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 - [x] Sección en el README: **qué datos salen y hacia dónde** (destino por destino, con la lista de campos permitidos y el redactor de la fase 2 como prueba, y lo que hay que decidir con cada cliente).
 - [x] Proveedor de IA elegible por variable de entorno (`AI_API_KEY`, `AI_BASE_URL`, `AI_MODEL`). Vale para cualquier API compatible con la de OpenAI, gateways de empresa incluidos. Un cliente nativo de Anthropic API, Bedrock o Vertex se construye solo cuando un cliente lo pida.
 
+## Fase 6 · Diseñar desde Figma
+
+Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco fases (diseñar, automatizar, mantener, analizar y aprender). La 2, la 3 y la 4 ya estaban; esta fase añade la 1. Rama `feat/disenar-desde-figma`.
+
+- [x] Servidor MCP oficial de Figma (`https://mcp.figma.com/mcp`) en `.mcp.json`, junto al de Playwright.
+- [x] Agente `qa-test-designer`: historia + Figma + app real → criterios en Given/When/Then, casos trazados, discrepancias entre diseño y app y dudas para negocio, en un JSON de forma fija.
+- [x] `npm run design:ai` (`scripts/design-ai.mjs`): valida el JSON, calcula la cobertura de criterios en código y escribe el plan en el formato del planner. Comprueba que el agente solo escribe en `specs/disenos/` y `specs/figma/`.
+- [x] `--generate`: el generator escribe los tests de los casos nuevos de prioridad alta en `tests/<hu>/`, importando el fixture de escenarios (resuelve el riesgo del import de `@playwright/test`).
+- [x] Modo sin conexión con una instantánea del frame (`--snapshot`), como el modo simulado de Jira.
+- [x] Historia de la demo `HU-001` y guía del fichero de Figma con dos discrepancias a propósito (subtotal en el carrito y ordenación por defecto) y un criterio sin respaldo (CA5).
+- [x] Tests unitarios (`scripts/design-ai.test.mjs`) dentro de `npm run test:unit`.
+- [ ] Crear el fichero de Figma con la guía y poner su `FILE_KEY` en la historia.
+- [ ] Primera ejecución real (Figma por MCP y app) y guardar la instantánea que escribe.
+- [ ] Medir si la IA encuentra D1, D2 y la duda de CA5 (añadirlo a `specs/ai-golden.json` si se repite).
+- [ ] Regenerar `docs/diagramas/qa-ia-negocio.html` con archify (el JSON ya incluye la fase Diseñar).
+
+**Terminada cuando:** `npm run design:ai -- HU-001` con el fichero real de Figma saque D1 y D2 como discrepancias y CA5 como duda, y `--generate` deje tests que pasan, salvo el del subtotal, que falla como `bug_producto`.
+
 ## Opcionales según cliente
 
 - [ ] `storageState` para no repetir el login en cada test.
@@ -180,6 +199,7 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 
 ## Guion de la demo final (10 minutos)
 
+0. Fase 1 · Diseñar: `npm run design:ai -- HU-001` lee la historia y el Figma, y saca casos, discrepancias y dudas (guion en `docs/demo-disenar-figma.md`).
 1. Suite en verde en Chromium, Firefox y WebKit.
 2. Se activa `cascade`: caen unos 70 tests. La IA los agrupa en uno, explica que cambió el selector del login y abre una PR con la corrección.
 3. Se activa `bug`: la IA explica que es un bug de la app, no del test, y crea un ticket en Jira. El healer no lo toca.
@@ -230,4 +250,8 @@ El prompt del healer lleva ahora la huella del grupo y pide corregir todas las a
 | 2026-10-23 | El guard es check obligatorio de `main`, en un workflow propio, con la etiqueta `asserts-aprobados` como vía de aprobación | Sin el check obligatorio, la cruz roja no impedía fusionar. Sin la etiqueta, una corrección legítima de un valor esperado no se podría fusionar nunca. El workflow propio se relanza al cambiar etiquetas sin repetir los tests |
 | 2026-10-23 | Antes de crear, `jira:tickets` lee los campos obligatorios del proyecto y pone el informador si hace falta | En el sandbox (`THP`) el informador es obligatorio por API y el primer modo real habría devuelto 400 |
 | 2026-10-22 | El check de asserts compara matcher y argumentos, no el sujeto, y solo se aplica a las ramas `heal/*` | Cambiar un selector es lo que debe hacer el healer; cambiar un valor esperado, no sin una persona. Las PR humanas pueden cambiar expectativas legítimamente |
+| 2026-11-10 | Figma se lee por el MCP oficial remoto, no por la API REST | Es lo que pide el cliente, no hace falta guardar un token en el repositorio y devuelve el contexto de diseño ya preparado para un modelo. A cambio, solo funciona en local con el login de Figma de cada persona |
+| 2026-11-10 | La IA devuelve un JSON de forma fija; la validación, la cobertura y el Markdown los hace el código | El mismo principio que el triage: lo que se puede comprobar con reglas no se le pregunta a la IA, y un JSON inválido no llega a convertirse en plan |
+| 2026-11-10 | Un criterio sin respaldo ni en el diseño ni en la app se convierte en duda, no en caso | Un caso inventado daría un test que comprueba algo que nadie ha definido |
+| 2026-11-10 | `--generate` solo genera los casos nuevos de prioridad alta, y después de que una persona revise el plan | La IA propone y una persona decide; generar todo llenaría la suite de casos que ya existen |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |
