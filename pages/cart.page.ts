@@ -4,7 +4,7 @@ export class CartPage {
   readonly cartItems: Locator;
 
   constructor(private readonly page: Page) {
-    this.cartItems = this.page.locator('[data-test="cart-item"]');
+    this.cartItems = this.page.locator('[data-test="inventory-item"]');
   }
 
   async removeItem(dataTestId: string): Promise<void> {
