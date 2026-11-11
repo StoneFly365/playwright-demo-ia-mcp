@@ -4,6 +4,15 @@ SauceDemo no tiene diseño público en Figma. Para la demo se crea un fichero co
 
 > La instantánea [`HU-001.figma.json`](HU-001.figma.json) está **escrita a mano** según esta guía (`"origen": "simulada"`). Cuando exista el fichero real, `npm run design:ai -- HU-001` la sustituye por lo que lea el MCP de Figma.
 
+## Fichero de la demo
+
+Ya existe un fichero hecho con esta guía, para enseñarlo en la demo:
+
+- [01 · Catálogo](https://www.figma.com/design/TQPnHfhveyoaPJwuVPHHeJ/SauceDemo-QA-IA?node-id=1-2)
+- [02 · Carrito](https://www.figma.com/design/TQPnHfhveyoaPJwuVPHHeJ/SauceDemo-QA-IA?node-id=1-68)
+
+Está en una cuenta Starter, que da muy pocas llamadas al MCP de Figma al mes. Por eso [`HU-001.md`](../historias/HU-001.md) sigue con `FILE_KEY` y la demo usa la instantánea (`npm run design:ai:demo`). Además, los tests de `scripts/design-ai.test.mjs` leen esa historia y esperan el `FILE_KEY`.
+
 ## 1. Crear el fichero
 
 1. En Figma, **New design file** con el nombre `SauceDemo · QA IA`.
