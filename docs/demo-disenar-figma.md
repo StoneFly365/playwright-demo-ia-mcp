@@ -28,6 +28,7 @@ Caso de uso Leroy Merlin: **fase 1 · Diseñar** del ciclo de QA con IA, encaden
 
 ## Mensajes para el cliente
 
+- **De dónde salen la historia y el diseño.** En un proyecto real no se crea nada: negocio escribe la historia en Jira, UX diseña en Figma y la IA cruza lo que ya existe con la app desplegada. En la demo hay que contarlo así: "SauceDemo no tiene diseño en Figma, así que hemos dibujado uno que la copia, con dos diferencias a propósito, como las que aparecen cuando diseño y desarrollo van a ritmos distintos. Y la historia tiene un criterio que nadie ha construido. Veamos si la IA lo encuentra sola." El valor está en comparar tres fuentes que normalmente nadie compara.
 - **Una persona decide.** La IA propone el plan; los tests no se generan hasta que alguien lo revisa.
 - **Vuestro stack.** Playwright + TypeScript + Page Objects y el MCP oficial de Figma. No hay herramienta paralela: son agentes y scripts del propio repositorio.
 - **Datos bajo control.** El agente solo puede escribir en `specs/`, y el código lo comprueba. A Figma se accede con el login de cada persona, sin tokens en el repositorio.
