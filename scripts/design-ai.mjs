@@ -208,7 +208,7 @@ export function buildGeneratorPrompt(story, casos, files) {
         ...casos.map((t) => `- ${t.id} ${t.titulo}`),
         "",
         "Reglas:",
-        `- Guarda cada test en ${files.tests}/ con un nombre de fichero sacado del título.`,
+        `- Guarda cada test en ${files.tests}/ con un nombre de fichero que empiece por el id del caso en minúsculas y siga con el título (tc-05-mostrar-el-subtotal.spec.ts).`,
         "- Importa test y expect de '../../fixtures/scenarios' (no de '@playwright/test'), para que les afecten los escenarios de la demo.",
         "- Usa los page objects de ../../pages cuando cubran el paso. No modifiques pages/ ni fixtures/.",
         "- Cada expect lleva un mensaje en español que diga qué debería pasar, como en el resto de tests/.",
