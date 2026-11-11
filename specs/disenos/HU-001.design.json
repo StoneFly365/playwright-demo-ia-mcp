@@ -1,0 +1,169 @@
+{
+  "historia": "HU-001",
+  "titulo": "Añadir productos al carrito y revisarlo antes de pagar",
+  "fuente_diseno": "instantanea",
+  "criterios": [
+    { "id": "CA1", "texto": "Cuando pulso «Add to cart» en un producto del catálogo, el botón pasa a «Remove» y el contador del carrito muestra 1.", "dado": "cliente con sesión iniciada y carrito vacío en el catálogo", "cuando": "pulsa «Add to cart» en un producto", "entonces": "el botón pasa a «Remove» y el contador del carrito muestra 1", "respaldo": "diseno_y_app" },
+    { "id": "CA2", "texto": "Si añado varios productos, el contador del carrito muestra cuántos he añadido.", "dado": "cliente en el catálogo con carrito vacío", "cuando": "añade varios productos", "entonces": "el contador muestra el número de productos añadidos", "respaldo": "diseno_y_app" },
+    { "id": "CA3", "texto": "En el carrito veo, de cada producto añadido, su nombre, su precio y la cantidad.", "dado": "cliente con productos añadidos", "cuando": "abre el carrito", "entonces": "cada producto muestra nombre, precio y cantidad", "respaldo": "diseno_y_app" },
+    { "id": "CA4", "texto": "El carrito muestra el subtotal de los productos antes de ir al checkout.", "dado": "cliente con productos en el carrito", "cuando": "abre el carrito", "entonces": "se muestra el subtotal de los productos", "respaldo": "solo_diseno" },
+    { "id": "CA5", "texto": "Puedo cambiar la cantidad de un producto desde el carrito.", "dado": "cliente con productos en el carrito", "cuando": "intenta cambiar la cantidad de un producto", "entonces": "la cantidad se modifica", "respaldo": "ninguno" },
+    { "id": "CA6", "texto": "Si quito un producto desde el carrito, desaparece de la lista y el contador baja. Si el carrito queda vacío, no se muestra el contador.", "dado": "cliente con productos en el carrito", "cuando": "pulsa «Remove» en un producto del carrito", "entonces": "el producto desaparece, el contador baja y, si queda vacío, no se muestra contador", "respaldo": "diseno_y_app" },
+    { "id": "CA7", "texto": "Desde el carrito puedo volver al catálogo o continuar al checkout.", "dado": "cliente en el carrito", "cuando": "pulsa «Continue Shopping» o «Checkout»", "entonces": "vuelve al catálogo o avanza al checkout", "respaldo": "diseno_y_app" }
+  ],
+  "casos": [
+    {
+      "id": "TC-01",
+      "titulo": "Añadir un producto cambia el botón a Remove y muestra contador 1",
+      "tipo": "positivo",
+      "prioridad": "alta",
+      "criterios": ["CA1"],
+      "pantallas": ["1:2"],
+      "precondicion": "standard_user con sesión iniciada, carrito vacío, en /inventory.html",
+      "pasos": ["Pulsar «Add to cart» de Sauce Labs Backpack"],
+      "esperado": ["El botón pasa a «Remove»", "El contador del carrito muestra 1"],
+      "localizadores": ["[data-test=\"add-to-cart-sauce-labs-backpack\"]", "[data-test=\"remove-sauce-labs-backpack\"]", "[data-test=\"shopping-cart-badge\"]"],
+      "existe_en": "tests/inventory-add-to-cart.spec.ts:75"
+    },
+    {
+      "id": "TC-02",
+      "titulo": "Añadir varios productos incrementa el contador",
+      "tipo": "positivo",
+      "prioridad": "alta",
+      "criterios": ["CA2"],
+      "pantallas": ["1:2"],
+      "precondicion": "standard_user con sesión iniciada, carrito vacío, en /inventory.html",
+      "pasos": ["Añadir Sauce Labs Backpack", "Añadir Sauce Labs Bike Light"],
+      "esperado": ["El contador muestra 2"],
+      "localizadores": ["[data-test=\"add-to-cart-sauce-labs-backpack\"]", "[data-test=\"add-to-cart-sauce-labs-bike-light\"]", "[data-test=\"shopping-cart-badge\"]"],
+      "existe_en": "tests/add-tshirt-to-cart.spec.ts:27"
+    },
+    {
+      "id": "TC-03",
+      "titulo": "Añadir los 6 productos muestra contador 6",
+      "tipo": "limite",
+      "prioridad": "media",
+      "criterios": ["CA2"],
+      "pantallas": ["1:2"],
+      "precondicion": "standard_user con sesión iniciada, carrito vacío",
+      "pasos": ["Pulsar «Add to cart» en los 6 productos del catálogo"],
+      "esperado": ["El contador muestra 6"],
+      "localizadores": ["[data-test=\"shopping-cart-badge\"]", "[data-test^=\"add-to-cart-\"]"],
+      "existe_en": "tests/inventory-add-to-cart.spec.ts:60"
+    },
+    {
+      "id": "TC-04",
+      "titulo": "Mostrar nombre, precio y cantidad de cada producto en el carrito",
+      "tipo": "positivo",
+      "prioridad": "alta",
+      "criterios": ["CA3"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user con Backpack y Bike Light añadidos",
+      "pasos": ["Pulsar el icono del carrito"],
+      "esperado": ["Se ve Sauce Labs Backpack, $29.99, cantidad 1", "Se ve Sauce Labs Bike Light, $9.99, cantidad 1"],
+      "localizadores": ["[data-test=\"shopping-cart-link\"]", "[data-test=\"inventory-item\"]", "[data-test=\"inventory-item-name\"]", "[data-test=\"inventory-item-price\"]", "[data-test=\"item-quantity\"]"],
+      "existe_en": "tests/cart-sync.spec.ts:21"
+    },
+    {
+      "id": "TC-05",
+      "titulo": "Mostrar el subtotal de los productos en el carrito",
+      "tipo": "positivo",
+      "prioridad": "alta",
+      "criterios": ["CA4"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user con Backpack ($29.99) y Bike Light ($9.99) en el carrito",
+      "pasos": ["Abrir /cart.html"],
+      "esperado": ["Se muestra «Subtotal: $39.98» antes del botón Checkout"],
+      "localizadores": ["[data-test=\"cart-subtotal\"]"],
+      "existe_en": null
+    },
+    {
+      "id": "TC-06",
+      "titulo": "Quitar un producto desde el carrito lo elimina y baja el contador",
+      "tipo": "positivo",
+      "prioridad": "alta",
+      "criterios": ["CA6"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user con Backpack y Bike Light en el carrito",
+      "pasos": ["Abrir el carrito", "Pulsar «Remove» de Sauce Labs Backpack"],
+      "esperado": ["Backpack desaparece de la lista", "El contador muestra 1"],
+      "localizadores": ["[data-test=\"remove-sauce-labs-backpack\"]", "[data-test=\"shopping-cart-badge\"]"],
+      "existe_en": "tests/add-tshirt-to-cart.spec.ts:58"
+    },
+    {
+      "id": "TC-07",
+      "titulo": "Quitar el último producto deja el carrito vacío sin contador",
+      "tipo": "limite",
+      "prioridad": "alta",
+      "criterios": ["CA6"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user con un único producto en el carrito",
+      "pasos": ["Abrir el carrito", "Pulsar «Remove» del único producto"],
+      "esperado": ["La lista queda vacía", "No se muestra el contador del carrito"],
+      "localizadores": ["[data-test=\"remove-sauce-labs-backpack\"]", "[data-test=\"shopping-cart-badge\"]"],
+      "existe_en": "tests/cart-sync.spec.ts:104"
+    },
+    {
+      "id": "TC-08",
+      "titulo": "Sin productos no se muestra el contador",
+      "tipo": "limite",
+      "prioridad": "media",
+      "criterios": ["CA6"],
+      "pantallas": ["1:2"],
+      "precondicion": "standard_user con sesión iniciada, carrito vacío",
+      "pasos": ["Cargar /inventory.html"],
+      "esperado": ["No hay contador junto al icono del carrito"],
+      "localizadores": ["[data-test=\"shopping-cart-link\"]", "[data-test=\"shopping-cart-badge\"]"],
+      "existe_en": "tests/cart-badge.spec.ts:21"
+    },
+    {
+      "id": "TC-09",
+      "titulo": "Continue Shopping vuelve al catálogo",
+      "tipo": "positivo",
+      "prioridad": "media",
+      "criterios": ["CA7"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user en /cart.html con un producto",
+      "pasos": ["Pulsar «Continue Shopping»"],
+      "esperado": ["La URL es /inventory.html", "Se muestra el catálogo con el producto en «Remove»"],
+      "localizadores": ["[data-test=\"continue-shopping\"]"],
+      "existe_en": "tests/add-tshirt-to-cart.spec.ts:69"
+    },
+    {
+      "id": "TC-10",
+      "titulo": "Checkout continúa al paso de datos del checkout",
+      "tipo": "positivo",
+      "prioridad": "media",
+      "criterios": ["CA7"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user en /cart.html con un producto",
+      "pasos": ["Pulsar «Checkout»"],
+      "esperado": ["La URL es /checkout-step-one.html"],
+      "localizadores": ["[data-test=\"checkout\"]"],
+      "existe_en": "tests/checkout.spec.ts"
+    },
+    {
+      "id": "TC-11",
+      "titulo": "Carrito vacío muestra Checkout y Continue Shopping sin productos",
+      "tipo": "negativo",
+      "prioridad": "baja",
+      "criterios": ["CA3", "CA7"],
+      "pantallas": ["1:3"],
+      "precondicion": "standard_user con carrito vacío",
+      "pasos": ["Abrir /cart.html"],
+      "esperado": ["No hay líneas de producto", "No hay contador", "Continue Shopping lleva al catálogo"],
+      "localizadores": ["[data-test=\"inventory-item\"]", "[data-test=\"continue-shopping\"]", "[data-test=\"checkout\"]"],
+      "existe_en": null
+    }
+  ],
+  "discrepancias": [
+    { "id": "D1", "tipo": "elemento_no_implementado", "pantalla": "1:3", "capa": "cart-subtotal", "diseno": "Texto «Subtotal: $39.98» entre la lista y los botones", "app": "El carrito no muestra ningún subtotal", "criterios": ["CA4"], "impacto": "alto", "recomendacion": "Implementar el subtotal en el carrito o retirar CA4 si no aplica" },
+    { "id": "D2", "tipo": "comportamiento", "pantalla": "1:3", "capa": "item-quantity", "diseno": "Cantidad por línea como elemento del carrito (valor «1»)", "app": "La cantidad es un texto fijo «1», sin control para modificarla", "criterios": ["CA5"], "impacto": "medio", "recomendacion": "Confirmar con negocio si la cantidad debe ser editable (ver duda CA5)" },
+    { "id": "D3", "tipo": "texto", "pantalla": "1:2", "capa": "product-sort-container", "diseno": "Opción seleccionada por defecto «Price (low to high)»", "app": "Por defecto «Name (A to Z)»", "criterios": [], "impacto": "bajo", "recomendacion": "Aclarar si el diseño muestra un estado no inicial" },
+    { "id": "D4", "tipo": "elemento_no_disenado", "pantalla": "1:2", "capa": "react-burger-menu / Dynamic Catalog", "diseno": "El diseño no incluye el menú lateral ni la opción «Dynamic Catalog»", "app": "El menú lateral incluye «All Items», «Dynamic Catalog», «About», «Logout» y «Reset App State»", "criterios": [], "impacto": "bajo", "recomendacion": "Completar el diseño o confirmar que queda fuera de alcance" }
+  ],
+  "dudas": [
+    { "criterio": "CA5", "pregunta": "¿La cantidad de un producto debe poder editarse en el carrito (más/menos o campo numérico), o basta con eliminar y volver a añadir?", "motivo": "Ni el diseño ni la app tienen control de cantidad; solo un valor fijo «1». No se propone caso." },
+    { "criterio": "CA4", "pregunta": "¿El subtotal es un requisito vigente? ¿Debe incluir impuestos o solo la suma de precios?", "motivo": "Solo está en el diseño; la app no lo muestra." }
+  ]
+}
