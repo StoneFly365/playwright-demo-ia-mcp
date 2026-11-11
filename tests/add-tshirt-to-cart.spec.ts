@@ -15,7 +15,7 @@ test.describe('Carrito de compra', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería añadir la Sauce Labs Bolt T-Shirt al carrito tras el login', async () => {
+  test('TC-CART-01 debería añadir la Sauce Labs Bolt T-Shirt al carrito tras el login', async () => {
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
 
     await expect(
@@ -24,7 +24,7 @@ test.describe('Carrito de compra', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir múltiples productos al carrito', async () => {
+  test('TC-CART-02 debería añadir múltiples productos al carrito', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
 
@@ -34,7 +34,7 @@ test.describe('Carrito de compra', () => {
     ).toHaveText('2');
   });
 
-  test('debería mostrar el número correcto en el badge del carrito', async () => {
+  test('TC-CART-03 debería mostrar el número correcto en el badge del carrito', async () => {
     await inventoryPage.addToCart('sauce-labs-onesie');
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
@@ -45,7 +45,7 @@ test.describe('Carrito de compra', () => {
     ).toHaveText('3');
   });
 
-  test('debería eliminar un producto desde el inventario', async () => {
+  test('TC-CART-04 debería eliminar un producto desde el inventario', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.removeFromCart('sauce-labs-backpack');
 
@@ -55,7 +55,7 @@ test.describe('Carrito de compra', () => {
     ).not.toBeVisible();
   });
 
-  test('debería eliminar un producto desde el carrito', async ({ page }) => {
+  test('TC-CART-05 debería eliminar un producto desde el carrito', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
     await inventoryPage.navigateToCart();
     await cartPage.removeItem('sauce-labs-bolt-t-shirt');
@@ -66,7 +66,7 @@ test.describe('Carrito de compra', () => {
     ).toHaveCount(0);
   });
 
-  test('debería volver al inventario al pulsar "Continuar comprando"', async ({ page }) => {
+  test('TC-CART-06 debería volver al inventario al pulsar "Continuar comprando"', async ({ page }) => {
     await inventoryPage.navigateToCart();
     await cartPage.continueShopping();
 

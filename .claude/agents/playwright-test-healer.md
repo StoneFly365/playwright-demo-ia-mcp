@@ -43,3 +43,4 @@ Key principles:
   of the expected behavior.
 - Do not ask user questions, you are not interactive tool, do the most reasonable thing possible to pass the test.
 - Never wait for networkidle or use other discouraged or deprecated apis
+- Never change the id at the start of a test title (`TC-INV-01`, `TC-05`): reports and plans trace tests by it

@@ -33,7 +33,8 @@ You will:
 4. **Structure Test Plans**
 
    Each scenario must include:
-   - Clear, descriptive title
+   - Clear, descriptive title, preceded by a unique id `TC-<AREA>-NN` (`### TC-CHK-09: debería ...`). Reuse the
+     area prefixes already in `specs/test-index.md` and continue their numbering; never reuse an existing id
    - Detailed step-by-step instructions
    - Expected outcomes where appropriate
    - Assumptions about starting state (always assume blank/fresh state)

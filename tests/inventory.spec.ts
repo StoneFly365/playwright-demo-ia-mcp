@@ -12,7 +12,7 @@ test.describe('Inventario', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería mostrar 6 productos en el inventario', { tag: '@demo-fail' }, async () => {
+  test('TC-CAT-01 debería mostrar 6 productos en el inventario', { tag: '@demo-fail' }, async () => {
     // ⚠️ FALLO INTENCIONADO: Cambiar 5 por 6 para revertir
     await expect(
       inventoryPage.inventoryItems,
@@ -20,7 +20,7 @@ test.describe('Inventario', () => {
     ).toHaveCount(5);
   });
 
-  test('debería ordenar los productos por nombre de Z a A', async () => {
+  test('TC-CAT-02 debería ordenar los productos por nombre de Z a A', async () => {
     await inventoryPage.sortBy('za');
     const names = await inventoryPage.getProductNames();
 
@@ -36,7 +36,7 @@ test.describe('Inventario', () => {
     ).toEqual(sorted);
   });
 
-  test('debería ordenar los productos por precio de menor a mayor', async () => {
+  test('TC-CAT-03 debería ordenar los productos por precio de menor a mayor', async () => {
     await inventoryPage.sortBy('lohi');
     const prices = await inventoryPage.getProductPrices();
     const values = prices.map(p => parseFloat(p.replace('$', '')));
@@ -53,7 +53,7 @@ test.describe('Inventario', () => {
     ).toEqual(sorted);
   });
 
-  test('debería ordenar los productos por precio de mayor a menor', async () => {
+  test('TC-CAT-04 debería ordenar los productos por precio de mayor a menor', async () => {
     await inventoryPage.sortBy('hilo');
     const prices = await inventoryPage.getProductPrices();
     const values = prices.map(p => parseFloat(p.replace('$', '')));
@@ -70,7 +70,7 @@ test.describe('Inventario', () => {
     ).toEqual(sorted);
   });
 
-  test('debería navegar al detalle del producto al hacer clic en el nombre', async ({ page }) => {
+  test('TC-CAT-05 debería navegar al detalle del producto al hacer clic en el nombre', async ({ page }) => {
     await inventoryPage.navigateToProduct('Sauce Labs Backpack');
 
     await expect(

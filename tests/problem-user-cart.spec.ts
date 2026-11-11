@@ -18,7 +18,7 @@ test.describe('Comportamiento con problem_user', () => {
     await loginPage.login('problem_user', 'secret_sauce');
   });
 
-  test('debería verificar el comportamiento del badge al añadir Sauce Labs Backpack con problem_user', async ({ page }) => {
+  test('TC-PROB-01 debería verificar el comportamiento del badge al añadir Sauce Labs Backpack con problem_user', async ({ page }) => {
     await expect(
       page,
       'El problem_user debería ser redirigido al inventario tras el login',
@@ -32,7 +32,7 @@ test.describe('Comportamiento con problem_user', () => {
     ).toHaveText('1');
   });
 
-  test('debería verificar cuántos de los 6 productos responden al "Add to cart" con problem_user', async () => {
+  test('TC-PROB-02 debería verificar cuántos de los 6 productos responden al "Add to cart" con problem_user', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
@@ -47,7 +47,7 @@ test.describe('Comportamiento con problem_user', () => {
     ).toHaveText('3');
   });
 
-  test('debería verificar consistencia entre estado del botón y badge con problem_user', async ({ page }) => {
+  test('TC-PROB-03 debería verificar consistencia entre estado del botón y badge con problem_user', async ({ page }) => {
     await inventoryPage.addToCart('test.allthethings()-t-shirt-(red)');
 
     const removeButtonVisible = await page.locator('[data-test="remove-test.allthethings()-t-shirt-(red)"]').isVisible();
@@ -66,7 +66,7 @@ test.describe('Comportamiento con problem_user', () => {
     }
   });
 
-  test('debería verificar que el carrito no contiene productos fantasma con problem_user', async ({ page }) => {
+  test('TC-PROB-04 debería verificar que el carrito no contiene productos fantasma con problem_user', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
@@ -87,7 +87,7 @@ test.describe('Comportamiento con problem_user', () => {
     ).toHaveCount(expectedCount);
   });
 
-  test('debería verificar el botón "Add to cart" en la página de detalle con problem_user', async ({ page }) => {
+  test('TC-PROB-05 debería verificar el botón "Add to cart" en la página de detalle con problem_user', async ({ page }) => {
     await productDetailPage.navigate(4);
 
     await expect(

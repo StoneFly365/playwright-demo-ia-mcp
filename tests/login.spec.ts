@@ -9,7 +9,7 @@ test.describe('Login', () => {
     await loginPage.navigate();
   });
 
-  test('debería redirigir a la página de inventario con login exitoso', { tag: '@demo-fail' }, async ({ page }) => {
+  test('TC-LOGIN-01 debería redirigir a la página de inventario con login exitoso', { tag: '@demo-fail' }, async ({ page }) => {
     await loginPage.login('standard_user', 'secret_sauce');
 
     // ⚠️ FALLO INTENCIONADO: Cambiar /home\.html$ por /inventory\.html$ para revertir
@@ -19,7 +19,7 @@ test.describe('Login', () => {
     ).toHaveURL(/.*\/home\.html$/);
   });
 
-  test('debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
+  test('TC-LOGIN-02 debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
     await loginPage.login('wrong_user', 'wrong_password');
 
     await expect(
@@ -32,7 +32,7 @@ test.describe('Login', () => {
     ).toContainText('Username and password do not match any user in this service');
   });
 
-  test('debería mostrar error cuando el usuario está bloqueado', async () => {
+  test('TC-LOGIN-03 debería mostrar error cuando el usuario está bloqueado', async () => {
     await loginPage.login('locked_out_user', 'secret_sauce');
 
     await expect(
@@ -45,7 +45,7 @@ test.describe('Login', () => {
     ).toContainText('Sorry, this user has been locked out.');
   });
 
-  test('debería mostrar error cuando el campo de usuario está vacío', async () => {
+  test('TC-LOGIN-04 debería mostrar error cuando el campo de usuario está vacío', async () => {
     await loginPage.login('', 'secret_sauce');
 
     await expect(
@@ -58,7 +58,7 @@ test.describe('Login', () => {
     ).toContainText('Username is required');
   });
 
-  test('debería mostrar error cuando el campo de contraseña está vacío', async () => {
+  test('TC-LOGIN-05 debería mostrar error cuando el campo de contraseña está vacío', async () => {
     await loginPage.login('standard_user', '');
 
     await expect(
@@ -71,7 +71,7 @@ test.describe('Login', () => {
     ).toContainText('Password is required');
   });
 
-  test('debería mostrar error cuando ambos campos están vacíos', async () => {
+  test('TC-LOGIN-06 debería mostrar error cuando ambos campos están vacíos', async () => {
     await loginPage.login('', '');
 
     await expect(
@@ -84,7 +84,7 @@ test.describe('Login', () => {
     ).toContainText('Username is required');
   });
 
-  test('debería permitir acceder con el usuario problem_user', async ({ page }) => {
+  test('TC-LOGIN-07 debería permitir acceder con el usuario problem_user', async ({ page }) => {
     await loginPage.login('problem_user', 'secret_sauce');
 
     await expect(
@@ -93,7 +93,7 @@ test.describe('Login', () => {
     ).toHaveURL(/.*\/inventory\.html$/);
   });
 
-  test('debería permitir acceder con el usuario performance_glitch_user', async ({ page }) => {
+  test('TC-LOGIN-08 debería permitir acceder con el usuario performance_glitch_user', async ({ page }) => {
     await loginPage.login('performance_glitch_user', 'secret_sauce');
 
     await expect(

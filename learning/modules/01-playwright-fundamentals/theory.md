@@ -45,7 +45,7 @@ Y las cuatro opciones del CLI que vas a usar a diario:
 **Los tags.** Diez tests del proyecto están marcados así:
 
 ```typescript
-test('debería mostrar 6 productos en el inventario', { tag: '@demo-fail' }, async () => {
+test('TC-CAT-01 debería mostrar 6 productos en el inventario', { tag: '@demo-fail' }, async () => {
 ```
 
 Eso es lo que permite partir la suite en dos con `--grep` y `--grep-invert`. La *estrategia* de etiquetado es el módulo 07; aquí solo la usas.

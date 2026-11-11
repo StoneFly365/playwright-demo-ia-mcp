@@ -15,7 +15,7 @@ test.describe('Menú lateral', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería cerrar sesión al pulsar Logout', { tag: '@demo-fail' }, async ({ page }) => {
+  test('TC-MENU-01 debería cerrar sesión al pulsar Logout', { tag: '@demo-fail' }, async ({ page }) => {
     await menuPage.logout();
 
     // ⚠️ FALLO INTENCIONADO: Cambiar '/inventory.html' por '/' para revertir
@@ -29,7 +29,7 @@ test.describe('Menú lateral', () => {
     ).toBeVisible();
   });
 
-  test('debería resetear el estado del carrito al pulsar Reset App State', async () => {
+  test('TC-MENU-02 debería resetear el estado del carrito al pulsar Reset App State', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
 
     await expect(

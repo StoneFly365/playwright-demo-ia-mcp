@@ -21,7 +21,7 @@ test.describe('Checkout', () => {
     await cartPage.checkout();
   });
 
-  test('debería completar el proceso de compra con datos válidos', async ({ page }) => {
+  test('TC-CHK-01 debería completar el proceso de compra con datos válidos', async ({ page }) => {
     await checkoutPage.fillInfo('Juan', 'García', '28001');
     await checkoutPage.continue();
     await checkoutPage.finish();
@@ -36,7 +36,7 @@ test.describe('Checkout', () => {
     ).toBeVisible();
   });
 
-  test('debería mostrar error si el nombre es obligatorio', { tag: '@demo-fail' }, async () => {
+  test('TC-CHK-02 debería mostrar error si el nombre es obligatorio', { tag: '@demo-fail' }, async () => {
     await checkoutPage.fillInfo('', 'García', '28001');
     await checkoutPage.continue();
 
@@ -51,7 +51,7 @@ test.describe('Checkout', () => {
     ).toContainText('Last Name is required');
   });
 
-  test('debería mostrar error si el apellido es obligatorio', async () => {
+  test('TC-CHK-03 debería mostrar error si el apellido es obligatorio', async () => {
     await checkoutPage.fillInfo('Juan', '', '28001');
     await checkoutPage.continue();
 
@@ -65,7 +65,7 @@ test.describe('Checkout', () => {
     ).toContainText('Last Name is required');
   });
 
-  test('debería mostrar error si el código postal es obligatorio', async () => {
+  test('TC-CHK-04 debería mostrar error si el código postal es obligatorio', async () => {
     await checkoutPage.fillInfo('Juan', 'García', '');
     await checkoutPage.continue();
 
@@ -79,7 +79,7 @@ test.describe('Checkout', () => {
     ).toContainText('Postal Code is required');
   });
 
-  test('debería cancelar el checkout desde el paso 1 y volver al carrito', async ({ page }) => {
+  test('TC-CHK-05 debería cancelar el checkout desde el paso 1 y volver al carrito', async ({ page }) => {
     await checkoutPage.cancel();
 
     await expect(
@@ -88,7 +88,7 @@ test.describe('Checkout', () => {
     ).toHaveURL(/.*\/cart\.html$/);
   });
 
-  test('debería cancelar el checkout desde el paso 2 y volver al inventario', async ({ page }) => {
+  test('TC-CHK-06 debería cancelar el checkout desde el paso 2 y volver al inventario', async ({ page }) => {
     await checkoutPage.fillInfo('Juan', 'García', '28001');
     await checkoutPage.continue();
     await checkoutPage.cancel();
@@ -99,7 +99,7 @@ test.describe('Checkout', () => {
     ).toHaveURL(/.*\/inventory\.html$/);
   });
 
-  test('debería mostrar el resumen de precios correctamente en el paso 2', async () => {
+  test('TC-CHK-07 debería mostrar el resumen de precios correctamente en el paso 2', async () => {
     await checkoutPage.fillInfo('Juan', 'García', '28001');
     await checkoutPage.continue();
 
@@ -117,7 +117,7 @@ test.describe('Checkout', () => {
     ).toBeVisible();
   });
 
-  test('debería volver al inventario tras finalizar el pedido', async ({ page }) => {
+  test('TC-CHK-08 debería volver al inventario tras finalizar el pedido', async ({ page }) => {
     await checkoutPage.fillInfo('Juan', 'García', '28001');
     await checkoutPage.continue();
     await checkoutPage.finish();

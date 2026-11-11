@@ -13,7 +13,7 @@ test.describe('Detalle de producto', () => {
     await productDetailPage.navigate(0);
   });
 
-  test('debería mostrar el nombre, descripción y precio del producto correctamente', async () => {
+  test('TC-PDP-01 debería mostrar el nombre, descripción y precio del producto correctamente', async () => {
     await expect(
       productDetailPage.productName,
       'El nombre del producto debería ser visible en la página de detalle',
@@ -32,7 +32,7 @@ test.describe('Detalle de producto', () => {
     ).toContainText('$');
   });
 
-  test('debería añadir el producto al carrito desde el detalle', async () => {
+  test('TC-PDP-02 debería añadir el producto al carrito desde el detalle', async () => {
     await productDetailPage.addToCart();
 
     await expect(
@@ -41,7 +41,7 @@ test.describe('Detalle de producto', () => {
     ).toHaveText('1');
   });
 
-  test('debería eliminar el producto del carrito desde el detalle', { tag: '@demo-fail' }, async () => {
+  test('TC-PDP-03 debería eliminar el producto del carrito desde el detalle', { tag: '@demo-fail' }, async () => {
     await productDetailPage.addToCart();
     await productDetailPage.removeFromCart();
 
@@ -52,7 +52,7 @@ test.describe('Detalle de producto', () => {
     ).toHaveText('1');
   });
 
-  test('debería volver al inventario al pulsar "Volver a productos"', async ({ page }) => {
+  test('TC-PDP-04 debería volver al inventario al pulsar "Volver a productos"', async ({ page }) => {
     await productDetailPage.backToProducts();
 
     await expect(

@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures/scenarios';
 
 test.describe('Protección de rutas', () => {
-  test('debería redirigir al login si se accede a /inventory.html sin sesión', async ({ page }) => {
+  test('TC-ROUTE-01 debería redirigir al login si se accede a /inventory.html sin sesión', async ({ page }) => {
     await page.goto('/inventory.html');
 
     await expect(
@@ -14,7 +14,7 @@ test.describe('Protección de rutas', () => {
     ).toBeVisible();
   });
 
-  test('debería redirigir al login si se accede a /cart.html sin sesión', async ({ page }) => {
+  test('TC-ROUTE-02 debería redirigir al login si se accede a /cart.html sin sesión', async ({ page }) => {
     await page.goto('/cart.html');
 
     await expect(
@@ -27,7 +27,7 @@ test.describe('Protección de rutas', () => {
     ).toBeVisible();
   });
 
-  test('debería redirigir al login si se accede a /checkout-step-one.html sin sesión', { tag: '@demo-fail' }, async ({ page }) => {
+  test('TC-ROUTE-03 debería redirigir al login si se accede a /checkout-step-one.html sin sesión', { tag: '@demo-fail' }, async ({ page }) => {
     await page.goto('/checkout-step-one.html');
 
     // ⚠️ FALLO INTENCIONADO: Cambiar '/inventory.html' por '/' para revertir

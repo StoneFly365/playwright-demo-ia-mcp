@@ -18,14 +18,14 @@ test.describe('Gestión del badge del carrito', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería no mostrar el badge al cargar el inventario con carrito vacío', async () => {
+  test('TC-BADGE-01 debería no mostrar el badge al cargar el inventario con carrito vacío', async () => {
     await expect(
       inventoryPage.cartBadge,
       'El badge del carrito no debería ser visible al acceder al inventario con el carrito vacío',
     ).not.toBeVisible();
   });
 
-  test('debería mostrar badge con valor 4 al añadir cuatro productos distintos', { tag: '@demo-fail' }, async () => {
+  test('TC-BADGE-02 debería mostrar badge con valor 4 al añadir cuatro productos distintos', { tag: '@demo-fail' }, async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
@@ -38,7 +38,7 @@ test.describe('Gestión del badge del carrito', () => {
     ).toHaveText('3');
   });
 
-  test('debería mostrar badge con valor 5 al añadir cinco productos distintos', async () => {
+  test('TC-BADGE-03 debería mostrar badge con valor 5 al añadir cinco productos distintos', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
@@ -51,7 +51,7 @@ test.describe('Gestión del badge del carrito', () => {
     ).toHaveText('5');
   });
 
-  test('debería persistir el badge tras recargar la página del inventario', async ({ page }) => {
+  test('TC-BADGE-04 debería persistir el badge tras recargar la página del inventario', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
 
@@ -72,7 +72,7 @@ test.describe('Gestión del badge del carrito', () => {
     ).toHaveText('2');
   });
 
-  test('debería persistir el badge al navegar a la página de detalle de un producto', async ({ page }) => {
+  test('TC-BADGE-05 debería persistir el badge al navegar a la página de detalle de un producto', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
 
     await expect(
@@ -92,7 +92,7 @@ test.describe('Gestión del badge del carrito', () => {
     ).toHaveText('1');
   });
 
-  test('debería restablecer el badge al usar "Reset App State" desde el menú lateral', async ({ page }) => {
+  test('TC-BADGE-06 debería restablecer el badge al usar "Reset App State" desde el menú lateral', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-onesie');
 
