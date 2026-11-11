@@ -23,7 +23,7 @@ La demo trabaja con la **instantánea** del diseño ([`specs/figma/HU-001.figma.
 | 2:45 | Dudas para negocio: **CA5** | "La historia pide cambiar la cantidad, pero ni el diseño ni la app lo tienen. La IA no se inventa un caso: le pregunta a negocio." |
 | 3:15 | El plan revisado: en el ensayo, la IA dio por cubiertos casos que los tests existentes solo cubrían a medias | "La IA propone y una persona revisa. Aquí corregimos tres casos y una discrepancia antes de generar nada." |
 | 3:45 | Los tests generados en `tests/hu-001/` | "Con el plan aprobado, el generator escribe los tests de los casos nuevos sobre nuestro arquetipo, con los page objects de siempre." |
-| 4:30 | Ejecutar `tests/hu-001` → falla el del subtotal → `npm run report:ai` | "El test del subtotal falla, y la IA lo clasifica como bug de producto. De aquí sale el ticket de Jira. Es el mismo circuito de siempre, pero ahora arranca en el diseño." |
+| 4:30 | Ejecutar `tests/hu-001` → falla el del subtotal → `npm run report:ai` → `playwright-report/ai-summary.txt` | "El test del subtotal falla. La IA de informes no conoce el diseño: lo marca como posible test desfasado y pide confirmarlo con el diseño. El plan ya lo dijo en la discrepancia D1: el diseño pide un subtotal que la app no tiene. Una persona cruza las dos cosas, decide que es un bug de producto y abre el ticket. Es el mismo circuito de siempre, pero ahora arranca en el diseño." |
 
 ## Plan B
 
