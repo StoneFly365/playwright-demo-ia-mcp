@@ -13,25 +13,25 @@
     { "id": "producto", "label": "Producto", "variant": "exception" }
   ],
   "phases": [
-    { "id": "disenar", "label": "Diseñar", "fromCol": 0, "toCol": 1 },
-    { "id": "detectar", "label": "Detectar", "fromCol": 2, "toCol": 3 },
-    { "id": "entender", "label": "Entender", "fromCol": 4, "toCol": 5, "variant": "emphasis" },
-    { "id": "resolver", "label": "Resolver", "fromCol": 6, "toCol": 7 }
+    { "id": "disenar", "label": "Diseñar", "fromCol": 0, "toCol": 0 },
+    { "id": "detectar", "label": "Detectar", "fromCol": 1, "toCol": 2 },
+    { "id": "entender", "label": "Entender", "fromCol": 3, "toCol": 4, "variant": "emphasis" },
+    { "id": "resolver", "label": "Resolver", "fromCol": 5, "toCol": 5 }
   ],
   "mainPath": ["historia", "disenar", "ejecutar", "resultado", "explicar", "clasificar", "arreglo", "revision"],
   "nodes": [
     { "id": "historia", "lane": "personas", "col": 0, "width": 152, "type": "security", "label": "Historia y diseño", "sublabel": "negocio y Figma" },
-    { "id": "disenar", "lane": "ia", "col": 1, "width": 152, "type": "cloud", "label": "La IA diseña las pruebas", "sublabel": "casos y criterios" },
-    { "id": "dudas", "lane": "producto", "col": 1, "width": 152, "type": "external", "label": "Dudas y diferencias", "sublabel": "diseño frente a app" },
-    { "id": "ejecutar", "lane": "pruebas", "col": 2, "width": 196, "type": "backend", "label": "Se ejecutan las pruebas", "sublabel": "en cada cambio" },
-    { "id": "resultado", "lane": "pruebas", "col": 3, "width": 152, "type": "backend", "label": "¿Hay fallos?", "sublabel": "verde o rojo" },
-    { "id": "verde", "lane": "pruebas", "col": 4, "width": 152, "type": "frontend", "label": "Informe en verde", "sublabel": "avisa si hubo inestables" },
-    { "id": "explicar", "lane": "ia", "col": 4, "width": 152, "type": "cloud", "label": "La IA explica", "sublabel": "la causa probable" },
-    { "id": "otros", "lane": "personas", "col": 4, "width": 152, "type": "security", "label": "Lo revisa QA", "sublabel": "entorno o sin clasificar" },
-    { "id": "clasificar", "lane": "ia", "col": 5, "width": 152, "type": "cloud", "label": "La IA clasifica", "sublabel": "¿test o producto?" },
-    { "id": "arreglo", "lane": "ia", "col": 6, "width": 152, "type": "cloud", "label": "Arreglo propuesto", "sublabel": "en borrador" },
-    { "id": "revision", "lane": "personas", "col": 7, "width": 152, "type": "security", "label": "Revisión humana", "sublabel": "decide si se acepta" },
-    { "id": "ticket", "lane": "producto", "col": 6, "width": 152, "type": "external", "label": "Ticket en Jira", "sublabel": "bug con evidencias" }
+    { "id": "disenar", "lane": "ia", "col": 0, "width": 180, "type": "cloud", "label": "La IA diseña las pruebas", "sublabel": "casos y criterios" },
+    { "id": "dudas", "lane": "producto", "col": 0, "width": 152, "type": "external", "label": "Dudas y diferencias", "sublabel": "diseño frente a app" },
+    { "id": "ejecutar", "lane": "pruebas", "col": 1, "width": 196, "type": "backend", "label": "Se ejecutan las pruebas", "sublabel": "en cada cambio" },
+    { "id": "resultado", "lane": "pruebas", "col": 2, "width": 152, "type": "backend", "label": "¿Hay fallos?", "sublabel": "verde o rojo" },
+    { "id": "verde", "lane": "pruebas", "col": 3, "width": 152, "type": "frontend", "label": "Informe en verde", "sublabel": "avisa si hubo inestables" },
+    { "id": "explicar", "lane": "ia", "col": 3, "width": 152, "type": "cloud", "label": "La IA explica", "sublabel": "la causa probable" },
+    { "id": "otros", "lane": "personas", "col": 3, "width": 152, "type": "security", "label": "Lo revisa QA", "sublabel": "entorno o sin clasificar" },
+    { "id": "clasificar", "lane": "ia", "col": 4, "width": 152, "type": "cloud", "label": "La IA clasifica", "sublabel": "¿test o producto?" },
+    { "id": "arreglo", "lane": "ia", "col": 5, "width": 152, "type": "cloud", "label": "Arreglo propuesto", "sublabel": "en borrador" },
+    { "id": "revision", "lane": "personas", "col": 5, "width": 152, "type": "security", "label": "Revisión humana", "sublabel": "decide si se acepta" },
+    { "id": "ticket", "lane": "producto", "col": 5,"width": 152, "type": "external", "label": "Ticket en Jira", "sublabel": "bug con evidencias" }
   ],
   "edges": [
     { "from": "historia", "to": "disenar", "variant": "emphasis" },
