@@ -25,13 +25,19 @@ Caso de uso Leroy Merlin: **fase 1 · Diseñar** del ciclo de QA con IA, encaden
 | ❓ 2:45 | Dudas para negocio: **CA5** | "La historia pide cambiar la cantidad, pero ni el diseño ni la app lo tienen. La IA no se inventa un caso: le pregunta a negocio." |
 | 👤 3:15 | El plan revisado: en el ensayo, la IA dio por cubiertos casos que los tests existentes solo cubrían a medias | "La IA propone y una persona revisa. Aquí corregimos tres casos y una discrepancia antes de generar nada." |
 | 🧪 3:45 | Los tests generados en `tests/hu-001/` | "Con el plan aprobado, el generator escribe los tests de los casos nuevos de prioridad alta sobre nuestro arquetipo, con los page objects de siempre." 💬 Si preguntan: el plan tiene 5 casos nuevos y hay 4 tests porque TC-11 es de prioridad baja y se queda en el plan. |
-| 🔴 4:30 | Ejecutar `tests/hu-001` → falla el del subtotal → `npm run report:ai` → `playwright-report/ai-summary.txt` | "El test del subtotal falla. La IA de informes no conoce el diseño: lo marca como posible test desfasado y pide confirmarlo con el diseño. El plan ya lo dijo en la discrepancia D1: el diseño pide un subtotal que la app no tiene. Y antes de que fallase nada, ya había preguntado a negocio si el subtotal sigue siendo un requisito (duda CA4). Una persona cruza las dos cosas, decide que es un bug de producto y abre el ticket. Es el mismo circuito de siempre, pero ahora arranca en el diseño." 🎯 |
+| 🔴 4:30 | Ejecutar `tests/hu-001` → falla el del subtotal → `npm run report:ai` → `playwright-report/ai-summary.txt` | "El test del subtotal falla. La IA de informes no conoce el diseño: lo marca como test desactualizado y pide confirmar con negocio si el subtotal es un requisito. Es la misma pregunta que el plan ya hizo en la duda CA4, antes de que fallase nada, y la discrepancia D1 ya decía que el diseño pide un subtotal que la app no tiene. Una persona cruza las dos cosas, decide que es un bug de producto y abre el ticket. Es el mismo circuito de siempre, pero ahora arranca en el diseño." 🎯 |
 
 ## 🛟 Plan B
 
 - ⏳ **Si la IA tarda o falla:** no hace falta esperarla; el plan que se enseña es el revisado, en GitHub.
 - ♻️ **Si el plan local ha cambiado** (por la ejecución en directo o por un ensayo): `git checkout -- specs/disenos` recupera el plan revisado. `--render` no basta, porque vuelve a escribir el plan desde el JSON y la ejecución también lo ha sobrescrito.
 - 🎨 **Si preguntan por qué no se lee Figma en directo:** "La lectura por el MCP oficial de Figma está preparada. Para la demo trabajamos con una descripción del diseño guardada en el repositorio, para no depender de la red ni del cupo de la cuenta."
+
+## 🎥 Si la demo se graba
+
+- ♻️ Entre toma y toma, `git checkout -- specs/disenos`: cada ejecución de `design:ai` sobrescribe el plan y el JSON. No hagas commit de lo que deje una toma.
+- ✂️ La espera del minuto 0:45 se recorta en el montaje: `design:ai:demo` tarda varios minutos, mientras que `report:ai` tarda menos de un minuto.
+- 🗂️ En la reunión, ten abiertos el plan revisado en GitHub y este guion para las preguntas (Plan B y mensajes para el cliente).
 
 ## 🧹 Después
 
