@@ -10,7 +10,7 @@ La demo trabaja con la **instantánea** del diseño ([`specs/figma/HU-001.figma.
 2. Ensayo completo: `npm run design:ai:demo`. Tarda varios minutos. Revisa el plan de `specs/disenos/`, corrige el JSON si hace falta, regenera el plan con `npm run design:ai -- HU-001 --render` y **confírmalo**: es lo que se enseña en directo.
 3. Genera los tests: `npm run design:ai -- HU-001 --render --generate`. Ejecútalos con `npx playwright test tests/hu-001 --project=chromium` y comprueba que solo falla el del subtotal.
 4. Si la demo es en otro día, comprueba que la sesión de Claude no ha caducado (`claude auth login`).
-5. Abrir en pestañas: los dos frames de Figma (enlaces en [`specs/figma/README.md`](../specs/figma/README.md)), la app en `/cart.html` con dos productos y el plan generado.
+5. Abrir en pestañas: los dos frames de Figma (enlaces en [`specs/figma/README.md`](../specs/figma/README.md)), la app en `/cart.html` con dos productos y el plan revisado **en GitHub, en esta rama** (`specs/disenos/HU-001.plan.md`). No lo enseñes desde el fichero local: la ejecución en directo del minuto 0:45 escribe en `specs/disenos/` y lo sobrescribe en cuanto termina.
 
 ## En directo
 
@@ -18,16 +18,21 @@ La demo trabaja con la **instantánea** del diseño ([`specs/figma/HU-001.figma.
 |---|---|---|
 | 0:00 | La historia `HU-001.md` y los dos frames de Figma | "Esto es lo que recibe hoy un QA: una historia con 7 criterios y un diseño. El diseño de pruebas se hace a mano." |
 | 0:45 | Lanzar `npm run design:ai:demo` y dejarlo corriendo | "Un agente lee la historia, lee el diseño y recorre la app real con Playwright. Tarda unos minutos; mientras, os enseño el resultado de ayer." |
-| 1:15 | `specs/disenos/HU-001.plan.md`: resumen y casos | "Cada caso apunta a un criterio y lleva los localizadores reales de la app. La cobertura no la calcula la IA, la calcula el código: 6 de 7." |
+| 1:15 | El plan revisado en GitHub: resumen y casos | "Cada caso apunta a un criterio y lleva los localizadores reales de la app. La cobertura no la calcula la IA, la calcula el código: 6 de 7." |
 | 2:15 | Tabla de discrepancias: **D1 subtotal**, **D2 ordenación** | "Antes de escribir una línea de test, ya sabemos que el diseño pide un subtotal que la app no tiene." Es el momento *wow*. |
 | 2:45 | Dudas para negocio: **CA5** | "La historia pide cambiar la cantidad, pero ni el diseño ni la app lo tienen. La IA no se inventa un caso: le pregunta a negocio." |
 | 3:15 | El plan revisado: en el ensayo, la IA dio por cubiertos casos que los tests existentes solo cubrían a medias | "La IA propone y una persona revisa. Aquí corregimos tres casos y una discrepancia antes de generar nada." |
-| 3:45 | Los tests generados en `tests/hu-001/` | "Con el plan aprobado, el generator escribe los tests de los casos nuevos sobre nuestro arquetipo, con los page objects de siempre." |
-| 4:30 | Ejecutar `tests/hu-001` → falla el del subtotal → `npm run report:ai` → `playwright-report/ai-summary.txt` | "El test del subtotal falla. La IA de informes no conoce el diseño: lo marca como posible test desfasado y pide confirmarlo con el diseño. El plan ya lo dijo en la discrepancia D1: el diseño pide un subtotal que la app no tiene. Una persona cruza las dos cosas, decide que es un bug de producto y abre el ticket. Es el mismo circuito de siempre, pero ahora arranca en el diseño." |
+| 3:45 | Los tests generados en `tests/hu-001/` | "Con el plan aprobado, el generator escribe los tests de los casos nuevos de prioridad alta sobre nuestro arquetipo, con los page objects de siempre." Si preguntan: el plan tiene 5 casos nuevos y hay 4 tests porque TC-11 es de prioridad baja y se queda en el plan. |
+| 4:30 | Ejecutar `tests/hu-001` → falla el del subtotal → `npm run report:ai` → `playwright-report/ai-summary.txt` | "El test del subtotal falla. La IA de informes no conoce el diseño: lo marca como posible test desfasado y pide confirmarlo con el diseño. El plan ya lo dijo en la discrepancia D1: el diseño pide un subtotal que la app no tiene. Y antes de que fallase nada, ya había preguntado a negocio si el subtotal sigue siendo un requisito (duda CA4). Una persona cruza las dos cosas, decide que es un bug de producto y abre el ticket. Es el mismo circuito de siempre, pero ahora arranca en el diseño." |
 
 ## Plan B
 
-- **Si la IA tarda o falla:** el plan del ensayo ya está confirmado. `npm run design:ai -- HU-001 --render` lo reescribe sin llamar a la IA.
+- **Si la IA tarda o falla:** no hace falta esperarla; el plan que se enseña es el revisado, en GitHub.
+- **Si el plan local ha cambiado** (por la ejecución en directo o por un ensayo): `git checkout -- specs/disenos` recupera el plan revisado. `--render` no basta, porque vuelve a escribir el plan desde el JSON y la ejecución también lo ha sobrescrito.
+
+## Después
+
+`git checkout -- specs/disenos` para dejar la rama como estaba.
 - **Si preguntan por qué no se lee Figma en directo:** "La lectura por el MCP oficial de Figma está preparada. Para la demo trabajamos con una descripción del diseño guardada en el repositorio, para no depender de la red ni del cupo de la cuenta."
 
 ## Mensajes para el cliente
