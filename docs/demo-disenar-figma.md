@@ -9,8 +9,9 @@ Caso de uso Leroy Merlin: **fase 1 · Diseñar** del ciclo de QA con IA, encaden
 1. 🔑 Comprobar que [`specs/historias/HU-001.md`](../specs/historias/HU-001.md) sigue con `FILE_KEY`. Así el script usa siempre la instantánea, y los tests de `scripts/design-ai.test.mjs` lo esperan.
 2. 🔁 Ensayo: `npm run design:ai:demo`. No llama a la IA: reproduce la propuesta grabada [`specs/disenos/grabacion/HU-001.design.json`](../specs/disenos/grabacion/HU-001.design.json), salida real de `qa-test-designer`, y escribe el plan en segundos. Sale **siempre el mismo plan**, así que la demo se puede repetir cuantas veces haga falta. Después, `git checkout -- specs/disenos` para volver al plan revisado.
    - 🎲 Para regrabar con la IA de verdad: `npm run design:ai -- HU-001 --snapshot` (varios minutos y cada ejecución sale distinta), copia `specs/disenos/HU-001.design.json` a `specs/disenos/grabacion/` y revisa este guion, porque cita discrepancias y dudas por su id.
-3. 🧪 Genera los tests: `npm run design:ai -- HU-001 --render --generate`. Ejecútalos con `npx playwright test tests/hu-001 --project=chromium` y comprueba que solo falla el del subtotal.
-4. 🔐 Si la demo es en otro día, comprueba que la sesión de Claude no ha caducado (`claude auth login`).
+3. 🧪 Ejecuta los tests de `tests/hu-001` con `npx playwright test tests/hu-001 --project=chromium` y comprueba que solo falla el del subtotal. Están confirmados en git; no hace falta volver a generarlos.
+4. 📝 El informe del punto 8 también está grabado ([`specs/disenos/grabacion/report-ai/`](../specs/disenos/grabacion/report-ai/)): `npm run report:ai:demo` lo copia a `playwright-report/`. La fecha que muestra es la de la grabación.
+   - 🎲 Para regrabarlo: ejecuta los tests, `npm run report:ai` (necesita la sesión de Claude: `claude auth login`) y copia los cuatro `playwright-report/ai-*` a esa carpeta. Hazlo siempre que cambien los tests de `tests/hu-001`.
 5. 🗂️ Abrir en pestañas: los dos frames de Figma (enlaces en [`specs/figma/README.md`](../specs/figma/README.md)) y la app en `/cart.html` con dos productos. En VS Code, el repositorio en esta rama con `specs/disenos` limpio (`git status` sin cambios ahí).
 
 > ⚠️ Todo se enseña en local. El punto 2 escribe la propuesta de la IA en `specs/disenos/HU-001.plan.md`, encima del plan revisado. El revisado no se pierde: es la versión confirmada en git, y en el punto 6 se compara con la propuesta en el panel **Source Control** de VS Code.
@@ -72,12 +73,12 @@ Es el momento *wow*.
 - **Enseña:**
   1. Ejecuta `npx playwright test tests/hu-001 --project=chromium`: falla el test del subtotal.
   2. Ctrl+C para cerrar el informe HTML, que deja la terminal ocupada.
-  3. `npm run report:ai` y abre `playwright-report/ai-summary.txt`.
+  3. `npm run report:ai:demo` y abre `playwright-report/ai-summary.txt`. No llama a la IA: copia el análisis grabado de una ejecución real de este mismo fallo, así que el texto sale siempre igual.
 - **Di:** "El test del subtotal falla. La IA de informes no conoce el diseño: lo marca como test desactualizado y pide confirmar con negocio si el subtotal es un requisito. Es la misma pregunta que añadimos al revisar el plan, la duda CA4, antes de que fallase nada, y la discrepancia D2 ya decía que el diseño pide un subtotal que la app no tiene. Una persona cruza las dos cosas, decide que es un bug de producto y abre el ticket. Es el mismo circuito de siempre, pero ahora arranca en el diseño."
 
 ## 🛟 Plan B
 
-- 🎙️ **Si preguntan si la IA es de verdad:** "La propuesta es una ejecución real del agente, grabada. La reproducimos para que la demo salga igual cada vez; en vivo tarda minutos y cada ejecución cambia algo, por eso una persona revisa siempre el plan."
+- 🎙️ **Si preguntan si la IA es de verdad:** "La propuesta y el informe son ejecuciones reales de la IA, grabadas. La reproducimos para que la demo salga igual cada vez; en vivo tarda minutos y cada ejecución cambia algo, por eso una persona revisa siempre el plan."
 - ♻️ **Si el diff del punto 6 sale vacío o raro:** `specs/disenos` no estaba limpio antes del punto 2. `git checkout -- specs/disenos` y `npm run design:ai:demo` otra vez.
 - 🎨 **Si preguntan por qué no se lee Figma en directo:** "La lectura por el MCP oficial de Figma está preparada. Para la demo trabajamos con una descripción del diseño guardada en el repositorio, para no depender de la red ni del cupo de la cuenta."
 

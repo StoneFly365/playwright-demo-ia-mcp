@@ -744,6 +744,7 @@ Limitaciones:
 | Componente | ¿Llama a la IA? |
 |---|---|
 | `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini u OpenRouter en CI) |
+| `npm run report:ai:demo` | No: copia el análisis grabado de `tests/hu-001` (`specs/disenos/grabacion/report-ai/`) para la demo de diseñar desde Figma |
 | `npm run eval:ai` | Sí: una clasificación por escenario. El dashboard nunca lo lanza |
 | `npm run heal:ai` | Sí: el agente healer (Claude CLI, en local). El dashboard nunca lo lanza |
 | `npm run review:pw` | Sí: el agente revisor (Claude CLI, en local). También lo lanza `heal:ai` |

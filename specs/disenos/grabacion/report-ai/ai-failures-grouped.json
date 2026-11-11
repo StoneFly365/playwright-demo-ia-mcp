@@ -1,0 +1,36 @@
+{
+  "generated_at": "11 de noviembre de 2026 a las 18:12",
+  "source": "playwright-json",
+  "total_failed_tests": 1,
+  "total_flaky_tests": 0,
+  "total_groups": 1,
+  "groups": [
+    {
+      "group_id": "G001",
+      "fingerprint": "elemento_no_encontrado|locator('[data-test=\"cart-subtotal\"]')",
+      "pattern": "elemento_no_encontrado",
+      "tipo": "test_roto",
+      "count": 1,
+      "browsers": [
+        "chromium"
+      ],
+      "affected_tests": [
+        {
+          "title": "TC-05 Mostrar el subtotal de los productos en el carrito",
+          "file": "hu-001/tc-05-mostrar-el-subtotal-de-los-productos-en-el-carrito.spec.ts",
+          "line": 9,
+          "browser": "chromium"
+        }
+      ],
+      "sample_error": "Error: El carrito debería mostrar «Subtotal: $39.98»\n\nexpect(locator).toHaveText(expected) failed\n\nLocator: locator('[data-test=\"cart-subtotal\"]')\nExpected: \"Subtotal: $39.98\"\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - El carrito debería mostrar «Subtotal: $39.98» with timeout 5000ms\n  - waiting for locator('[data-test=\"cart-subtotal\"]')\n\n\n  24 |       page.locator('[data-test=\"cart-subtotal\"]'),\n  25 |       'El carrito debería mostrar «Subtotal: $39.98»',\n> 26 |     ).toHaveText('Subtotal: $39.98');\n     |       ^\n  27 |   });\n  28 | });\n  29 |\n    at ~\\Documents\\3. workspace\\playwright\\playwright-demo-ia-mcp\\tests\\hu-001\\tc-05-mostrar-el-subtotal-de-los-productos-en-el-carrito.spec.ts:26:7",
+      "page_context": "# Page snapshot\n\n```yaml\n- generic [ref=e3]:\n  - generic [ref=e4]:\n    - banner [ref=e5]:\n      - generic [ref=e6]:\n        - generic [ref=e7]:\n          - button \"Open Menu\" [ref=e8] [cursor=pointer]\n          - img \"Open Menu\" [ref=e9]\n        - generic [ref=e11]: Swag Labs\n        - button \"Cart, 2 items\" [ref=e13]:\n          - generic [ref=e14]: \"2\"\n      - generic [ref=e16]: Your Cart\n    - main [ref=e17]:\n      - generic [ref=e18]:\n        - generic [ref=e19]:\n          - generic [ref=e20]: QTY\n          - generic [ref=e21]: Description\n          - generic [ref=e22]:\n            - generic [ref=e23]: \"1\"\n            - generic [ref=e24]:\n              - button \"View details for Sauce Labs Backpack\" [ref=e25] [cursor=pointer]:\n                - generic [ref=e26]: Sauce Labs Backpack\n              - generic [ref=e27]: carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.\n              - generic [ref=e28]:\n                - generic [ref=e29]: $29.99\n                - button \"Remove\" [ref=e30] [cursor=pointer]\n          - generic [ref=e31]:\n            - generic [ref=e32]: \"1\"\n            - generic [ref=e33]:\n              - button \"View details for Sauce Labs Bike Light\" [ref=e34] [cursor=pointer]:\n                - generic [ref=e35]: Sauce Labs Bike Light\n              - generic [ref=e36]: A red light isn't the desired state in testing but it sure helps when riding your bike at night. Water-resistant with 3 lighting modes, 1 AAA battery included.\n              - generic [ref=e37]:\n                - generic [ref=e38]: $9.99\n                - button \"Remove\" [ref=e39] [cursor=pointer]\n        - generic [ref=e40]:\n          - button \"Continue Shopping\" [ref=e41] [cursor=pointer]\n          - button \"Checkout\" [ref=e42] [cursor=pointer]\n  - contentinfo [ref=e43]:\n    - list [ref=e44]:\n      - listitem [ref=e45]:\n        - link \"X\" [ref=e46] [cursor=pointer]:\n          - /url: https://x.com/saucelabs\n      - listitem [ref=e47]:\n        - link \"Facebook\" [ref=e48] [cursor=pointer]:\n          - /url: https://www.facebook.com/saucelabs\n      - listitem [ref=e49]:\n        - link \"LinkedIn\" [ref=e50] [cursor=pointer]:\n          - /url: https://www.linkedin.com/company/sauce-labs/\n    - generic [ref=e51]: © 2026 Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy\n```",
+      "omitted_tests": 0,
+      "confianza": "media",
+      "evidencia": "El locator `[data-test=\"cart-subtotal\"]` no existe. page_context muestra un carrito coherente con 2 productos ($29.99 y $9.99, suma 39.98) y botones Continue Shopping y Checkout, pero ningún elemento ni texto de subtotal. El test exige un elemento que la página no muestra.",
+      "accion": "Confirmar con negocio si el subtotal forma parte de la HU; si no, corregir el test, y si sí, abrir un bug a producto por subtotal ausente en el carrito."
+    }
+  ],
+  "run_start_time": "2026-11-11T17:11:56.057Z",
+  "provider": "claude-cli:claude-haiku-5-5",
+  "ai_requests": 3
+}

@@ -1,0 +1,20 @@
+RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
+Fecha: 11 de noviembre de 2026 a las 18:12
+
+RESULTADO GLOBAL
+Total de pruebas ejecutadas: 4
+✅ Pruebas correctas:           3
+❌ Pruebas fallidas:            1
+⏭️ Pruebas omitidas:            0
+⚠️ Pruebas inestables (flaky):  0
+
+ATENCIÓN REQUERIDA
+1. La comprobación del subtotal del carrito falla en 1 prueba (TC-05, Mostrar el subtotal de los productos en el carrito, en Chromium): la prueba busca un subtotal que la página no muestra (prueba desactualizada). El resto de la pantalla del carrito se ve coherente, con 2 productos y el total esperado de 39,98 $.
+
+CONCLUSIÓN
+Tres de las cuatro pruebas pasan correctamente y no hay ningún fallo atribuido a la aplicación en esta ejecución, así que no se detecta ningún bloqueo crítico para producción. El único fallo afecta a la fiabilidad de la prueba, no a la aplicación, pero la confirmación de negocio sobre si el subtotal forma parte de la historia de usuario es necesaria antes de cerrar el caso.
+
+ACCIONES RECOMENDADAS
+1. Confirmar con negocio si el subtotal del carrito forma parte de la historia de usuario HU-001.
+2. Si no forma parte, actualizar la prueba TC-05 para que deje de esperar ese elemento.
+3. Si sí forma parte, abrir una incidencia para el equipo de producto por subtotal ausente en el carrito.

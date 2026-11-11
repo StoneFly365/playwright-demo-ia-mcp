@@ -19,6 +19,7 @@
     "design:ai": "node scripts/design-ai.mjs",
     "design:ai:demo": "node scripts/design-ai.mjs HU-001 --replay",
     "report:ai": "node scripts/report-ai.mjs",
+    "report:ai:demo": "node scripts/report-ai.mjs --replay",
     "test:ai": "npm run test && npm run report:ai",
     "eval:ai": "node scripts/eval-ai.mjs",
     "heal:ai": "node scripts/heal-ai.mjs",

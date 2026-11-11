@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-import { readFile, mkdir, writeFile, access } from "node:fs/promises";
+import { readFile, mkdir, writeFile, access, cp } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { extractFailures, groupFailures, isOnlyFlaky } from "./triage.mjs";
 
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
+const REPLAY_DIR = "specs/disenos/grabacion/report-ai";
 const MODEL = "claude-haiku-5-5";                    // Claude CLI (suscripción, local)
 const TIPOS = new Set(["test_roto", "bug_producto", "entorno"]);  // los que puede asignar la IA
 
@@ -31,6 +32,15 @@ async function main() {
     log("Iniciando AI Reporting Pipeline...");
     if (API && !(API.url && API.model)) throw new Error("Con AI_API_KEY hacen falta también AI_BASE_URL y AI_MODEL");
     await mkdir(REPORT_DIR, { recursive: true });
+
+    // --replay: la demo de diseñar desde Figma no llama a la IA y copia el análisis grabado de una
+    // ejecución real de tests/hu-001, para que salga siempre igual. Solo vale para ese fallo.
+    if (process.argv.includes("--replay")) {
+        log(`Reproduciendo el análisis grabado ${REPLAY_DIR}: no se llama a la IA.`);
+        await cp(REPLAY_DIR, REPORT_DIR, { recursive: true });
+        success(`AI Reporting reproducido en ${REPORT_DIR}/ 🎉`);
+        return;
+    }
 
     if (!(await exists(INPUT_JSON))) {
         throw new Error(`No existe ${INPUT_JSON}. Ejecuta primero npm run test`);
