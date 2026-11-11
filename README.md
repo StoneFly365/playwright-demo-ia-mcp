@@ -406,7 +406,8 @@ Mientras la historia tenga `FILE_KEY`, el script usa sola la instantánea [`spec
 
 ```bash
 npm run design:ai -- HU-001              # Figma por MCP (o la instantánea, si la historia aún no tiene fichero)
-npm run design:ai:demo                   # lo mismo, forzando la instantánea: no se conecta a Figma
+npm run design:ai -- HU-001 --snapshot   # lo mismo, forzando la instantánea: no se conecta a Figma
+npm run design:ai:demo                   # sin IA: reproduce la propuesta grabada en specs/disenos/grabacion/ (siempre el mismo plan)
 npm run design:ai -- HU-001 --dry-run    # enseña el prompt del agente y no llama a la IA
 npm run design:ai -- HU-001 --render     # sin IA: valida el JSON existente y reescribe el plan
 npm run design:ai -- HU-001 --render --generate   # tras revisar el plan: tests de los casos nuevos de prioridad alta

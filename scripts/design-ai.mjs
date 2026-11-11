@@ -9,8 +9,10 @@
 //   --render    no llama a la IA: valida y vuelve a escribir el plan desde specs/disenos/HU-001.design.json
 //   --generate  al terminar, lanza el agente generator con los casos de prioridad alta que no existen aún
 //   --dry-run   enseña el prompt que recibiría el agente y no llama a la IA
+//   --replay    no llama a la IA: copia la propuesta grabada (specs/disenos/grabacion/HU-001.design.json)
+//               y escribe el plan desde ella. Siempre el mismo resultado: es lo que usa la demo
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { runAgent } from "./agent.mjs";
 
@@ -34,6 +36,7 @@ export const paths = (id) => ({
     snapshot: `${SNAPSHOTS}/${id}.figma.json`,
     design: `${DESIGNS}/${id}.design.json`,
     plan: `${DESIGNS}/${id}.plan.md`,
+    recording: `${DESIGNS}/grabacion/${id}.design.json`,
     tests: `tests/${id.toLowerCase()}`,
 });
 
@@ -247,7 +250,11 @@ async function main() {
     const story = parseStory(readFileSync(files.story, "utf8"), id);
     if (!story.criterios.length) throw new Error(`${files.story} no tiene criterios con el formato "- **CA1.** texto".`);
 
-    if (!args.includes("--render")) {
+    if (args.includes("--replay")) {
+        if (!existsSync(files.recording)) throw new Error(`No existe la propuesta grabada ${files.recording}.`);
+        log(`Reproduciendo la propuesta grabada ${files.recording}: no se llama a la IA.`);
+        copyFileSync(files.recording, files.design);
+    } else if (!args.includes("--render")) {
         const { source, reason } = chooseSource(story, { snapshot: args.includes("--snapshot") });
         if (source === "instantanea") {
             if (!existsSync(files.snapshot)) throw new Error(`Modo instantánea (${reason}) y no existe ${files.snapshot}.`);
