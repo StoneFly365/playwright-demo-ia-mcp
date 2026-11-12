@@ -4,6 +4,8 @@ Caso de uso Leroy Merlin: **fase 1 · Diseñar** del ciclo de QA con IA, encaden
 
 📸 La demo trabaja con la **instantánea** del diseño ([`specs/figma/HU-001.figma.json`](../specs/figma/HU-001.figma.json)), no con el MCP de Figma: la cuenta de Figma de la demo es Starter y apenas tiene llamadas al mes. El fichero de Figma real solo se enseña en el navegador, y eso no gasta llamadas.
 
+🤖 La skill `/demo-figma` de Claude Code conduce la demo con este guion: `/demo-figma ensayo` hace la preparación de un tirón y dice si la demo está lista; `/demo-figma` la lleva paso a paso: ejecuta cada punto, en el chat solo pone el título y espera a `sigue`. Como el chat se ve al compartir pantalla, no enseña las frases ni las notas: ten este guion abierto fuera de la pantalla compartida. Si cambias el guion, la skill lo sigue sin tocarla.
+
 ## 🧰 Preparación (la víspera)
 
 1. 🔑 Comprobar que [`specs/historias/HU-001.md`](../specs/historias/HU-001.md) sigue con `FILE_KEY`. Así el script usa siempre la instantánea, y los tests de `scripts/design-ai.test.mjs` lo esperan.
