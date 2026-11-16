@@ -37,3 +37,6 @@ _site/
 
 # Historial local del dashboard (npm run dashboard -- --save)
 qa-history/
+
+# Sesión guardada por fixtures/global-setup.ts (storageState)
+playwright/.auth/

@@ -1,8 +1,10 @@
-import { test, expect } from '../fixtures/scenarios';
+import { test, expect, standardUserSession } from '../fixtures/scenarios';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
 import { CartPage } from '../pages/cart.page';
 import { ProductDetailPage } from '../pages/product-detail.page';
+
+test.use(standardUserSession);
 
 test.describe('Sincronización del estado entre inventario y carrito', () => {
   let inventoryPage: InventoryPage;
@@ -14,8 +16,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     inventoryPage = new InventoryPage(page);
     cartPage = new CartPage(page);
     productDetailPage = new ProductDetailPage(page);
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.loginAsStandardUser();
   });
 
   test('TC-SYNC-01 debería mostrar los productos añadidos desde el inventario en la página del carrito', { tag: '@demo-fail' }, async ({ page }) => {

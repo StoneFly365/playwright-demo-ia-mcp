@@ -4,6 +4,11 @@ import { test as base, expect, Route } from '@playwright/test';
 // DEMO_SCENARIO elige uno; sin la variable la página no se toca y la suite se comporta igual.
 const scenario = process.env.DEMO_SCENARIO;
 
+// Sesión de standard_user que guarda fixtures/global-setup.ts. Sin escenario, los specs que la usan
+// arrancan ya logueados. Con un escenario entran por el formulario, para que cascade siga tumbándolos.
+export const STANDARD_USER_STATE = 'playwright/.auth/standard_user.json';
+export const standardUserSession = scenario ? {} : { storageState: STANDARD_USER_STATE };
+
 export const test = base.extend({
   page: async ({ page }, use, testInfo) => {
     // Con un escenario activo cada fallo tarda 10 s y no los 30 del test. Con 5 s no le basta a performance_glitch_user.

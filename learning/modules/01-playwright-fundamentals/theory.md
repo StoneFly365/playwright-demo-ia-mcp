@@ -421,7 +421,7 @@ test.describe('Login', () => {                     // 2. agrupación
 });
 ```
 
-**Cada test recibe su propia `page`**, en un contexto de navegador limpio: sin cookies ni sesión de los demás. Por eso los 13 `beforeEach` de la suite hacen login por UI en cada test y por eso los tests pueden ejecutarse en paralelo (`fullyParallel: true`) sin pisarse. Que ese login repetido sea caro es cierto, y tiene solución — `storageState`, módulo 03.
+**Cada test recibe su propia `page`**, en un contexto de navegador limpio: sin cookies ni sesión de los demás. Por eso los `beforeEach` de la suite tienen que iniciar sesión en cada test y por eso los tests pueden ejecutarse en paralelo (`fullyParallel: true`) sin pisarse. Para no repetir el login por UI, los specs de `standard_user` cargan una sesión guardada una sola vez (`storageState`, en [`fixtures/global-setup.ts`](../../../fixtures/global-setup.ts)); los de login y los de otros usuarios siguen entrando por el formulario. Cómo se monta — módulo 03.
 
 El único fichero sin `beforeEach` es [`tests/route-protection.spec.ts`](../../../tests/route-protection.spec.ts): comprueba qué pasa al entrar por URL **sin** sesión, así que un `beforeEach` que hiciera login destruiría el caso. **El hook responde a una necesidad, no a un ritual.**
 

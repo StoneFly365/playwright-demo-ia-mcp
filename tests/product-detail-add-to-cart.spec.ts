@@ -1,7 +1,9 @@
-import { test, expect } from '../fixtures/scenarios';
+import { test, expect, standardUserSession } from '../fixtures/scenarios';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
 import { ProductDetailPage } from '../pages/product-detail.page';
+
+test.use(standardUserSession);
 
 test.describe('Añadir productos desde la página de detalle', () => {
   let inventoryPage: InventoryPage;
@@ -11,8 +13,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     const loginPage = new LoginPage(page);
     inventoryPage = new InventoryPage(page);
     productDetailPage = new ProductDetailPage(page);
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.loginAsStandardUser();
   });
 
   test('TC-DET-01 debería añadir la Sauce Labs Backpack al carrito desde su página de detalle (id=4)', async ({ page }) => {

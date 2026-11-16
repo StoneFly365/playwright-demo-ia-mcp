@@ -190,7 +190,7 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 
 ## Opcionales según cliente
 
-- [ ] `storageState` para no repetir el login en cada test.
+- [x] `storageState` para no repetir el login en cada test. Solo sin `DEMO_SCENARIO`, para que `cascade` siga tumbando 70 tests (comprobado). En chromium la suite verde pasa de 20,9 s a 19,8 s: el login de SauceDemo es rápido y casi no se nota.
 - [ ] Spec de accesibilidad con axe.
 - [ ] Regresión visual con `toHaveScreenshot`.
 - [ ] Usar la rama `arquetipo` para apuntar a una segunda app más parecida al sector del cliente.

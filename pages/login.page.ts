@@ -16,4 +16,15 @@ export class LoginPage {
     await this.page.locator('[data-test="password"]').fill(password);
     await this.page.locator('[data-test="login-button"]').click();
   }
+
+  // Con la sesión de storageState va directo al inventario; sin ella, entra por el formulario.
+  async loginAsStandardUser(): Promise<void> {
+    const cookies = await this.page.context().cookies();
+    if (cookies.some((c) => c.name === 'session-username')) {
+      await this.page.goto('/inventory.html');
+      return;
+    }
+    await this.navigate();
+    await this.login('standard_user', 'secret_sauce');
+  }
 }
