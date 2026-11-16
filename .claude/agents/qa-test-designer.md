@@ -39,7 +39,7 @@ Escribe **un único fichero JSON** en la ruta que te diga el prompt, con esta fo
       "pantallas": ["1:2"],
       "precondicion": "…",
       "pasos": ["…"],
-      "esperado": ["…"],
+      "esperado": ["[CA1] …"],
       "localizadores": ["[data-test=\"add-to-cart-sauce-labs-backpack\"]"],
       "existe_en": null
     }
@@ -59,7 +59,7 @@ Si te piden actualizar la instantánea, escribe también `specs/figma/<ID>.figma
 
 - **Cada criterio tiene al menos un caso**, salvo que no tenga respaldo ni en el diseño ni en la app (`respaldo: "ninguno"`). En ese caso no inventes el caso: abre una **duda**.
 - **Cada caso apunta al menos a un criterio.** No añadas casos sin criterio.
-- **Un caso es un flujo de usuario, no un criterio.** Es una secuencia continua desde una pantalla de partida, con una sola precondición y un solo objetivo. Un caso cubre todos los criterios que se comprueban a lo largo de ese flujo: no hagas un caso por criterio. Traza el `esperado` por criterio, con el prefijo `[CAx]` en cada línea, para no perder la trazabilidad al fusionar.
+- **Un caso es un flujo de usuario, no un criterio.** Es una secuencia continua desde una pantalla de partida, con una sola precondición y un solo objetivo. Un caso cubre todos los criterios que se comprueban a lo largo de ese flujo: no hagas un caso por criterio. Traza el `esperado` por criterio, con el prefijo `[CAx]` en cada línea, para no perder la trazabilidad al fusionar: `"[CA1] El botón pasa a «Remove»"`. Si una misma comprobación cubre varios criterios del caso, nómbralos todos: `"[CA1, CA2] El contador muestra 2"`. Cada criterio del caso tiene que salir en algún esperado; el script rechaza el JSON si no.
 - **No fusiones** criterios cuando:
   - la precondición o el objetivo del usuario son distintos;
   - el criterio es negativo o de límite (carrito vacío, quitar el último producto…): va en su propio caso;
