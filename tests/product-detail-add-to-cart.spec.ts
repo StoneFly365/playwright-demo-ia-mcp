@@ -15,7 +15,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería añadir la Sauce Labs Backpack al carrito desde su página de detalle (id=4)', async ({ page }) => {
+  test('TC-DET-01 debería añadir la Sauce Labs Backpack al carrito desde su página de detalle (id=4)', async ({ page }) => {
     await productDetailPage.navigate(4);
 
     await expect(
@@ -31,7 +31,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Bolt T-Shirt al carrito desde su página de detalle (id=6)', async () => {
+  test('TC-DET-02 debería añadir la Sauce Labs Bolt T-Shirt al carrito desde su página de detalle (id=6)', async () => {
     await productDetailPage.navigate(6);
     await productDetailPage.addToCart();
 
@@ -41,7 +41,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Fleece Jacket al carrito desde su página de detalle (id=5)', async () => {
+  test('TC-DET-03 debería añadir la Sauce Labs Fleece Jacket al carrito desde su página de detalle (id=5)', async () => {
     await productDetailPage.navigate(5);
     await productDetailPage.addToCart();
 
@@ -51,7 +51,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)', { tag: '@demo-fail' }, async () => {
+  test('TC-DET-04 debería añadir la Sauce Labs Onesie al carrito desde su página de detalle (id=2)', { tag: '@demo-fail' }, async () => {
     await productDetailPage.navigate(2);
     await productDetailPage.addToCart();
 
@@ -62,7 +62,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toHaveText('2');
   });
 
-  test('debería añadir la Sauce Labs (Red) T-Shirt al carrito desde su página de detalle (id=3)', async () => {
+  test('TC-DET-05 debería añadir la Sauce Labs (Red) T-Shirt al carrito desde su página de detalle (id=3)', async () => {
     await productDetailPage.navigate(3);
     await productDetailPage.addToCart();
 
@@ -72,7 +72,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toHaveText('1');
   });
 
-  test('debería cambiar el botón a "Remove" en detalle tras añadir el producto', async ({ page }) => {
+  test('TC-DET-06 debería cambiar el botón a "Remove" en detalle tras añadir el producto', async ({ page }) => {
     await productDetailPage.navigate(4);
 
     await expect(
@@ -96,7 +96,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).not.toBeVisible();
   });
 
-  test('debería eliminar la Sauce Labs Fleece Jacket desde su detalle y hacer desaparecer el badge', async () => {
+  test('TC-DET-07 debería eliminar la Sauce Labs Fleece Jacket desde su detalle y hacer desaparecer el badge', async () => {
     await productDetailPage.navigate(5);
     await productDetailPage.addToCart();
 
@@ -113,7 +113,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).not.toBeVisible();
   });
 
-  test('debería navegar al detalle desde la imagen del producto en el inventario', async ({ page }) => {
+  test('TC-DET-08 debería navegar al detalle desde la imagen del producto en el inventario', async ({ page }) => {
     await page
       .locator('[data-test="inventory-item"]')
       .filter({ hasText: 'Sauce Labs Fleece Jacket' })
@@ -130,7 +130,7 @@ test.describe('Añadir productos desde la página de detalle', () => {
     ).toContainText('Sauce Labs Fleece Jacket');
   });
 
-  test('debería persistir el badge al volver al inventario después de añadir desde el detalle', async ({ page }) => {
+  test('TC-DET-09 debería persistir el badge al volver al inventario después de añadir desde el detalle', async ({ page }) => {
     await productDetailPage.navigate(2);
     await productDetailPage.addToCart();
 

@@ -12,7 +12,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería añadir la Sauce Labs Backpack al carrito como único producto', async () => {
+  test('TC-INV-01 debería añadir la Sauce Labs Backpack al carrito como único producto', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
 
     await expect(
@@ -21,7 +21,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Bike Light al carrito como único producto', async () => {
+  test('TC-INV-02 debería añadir la Sauce Labs Bike Light al carrito como único producto', async () => {
     await inventoryPage.addToCart('sauce-labs-bike-light');
 
     await expect(
@@ -30,7 +30,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Fleece Jacket al carrito como único producto', async () => {
+  test('TC-INV-03 debería añadir la Sauce Labs Fleece Jacket al carrito como único producto', async () => {
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
 
     await expect(
@@ -39,7 +39,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs Onesie al carrito como único producto', async () => {
+  test('TC-INV-04 debería añadir la Sauce Labs Onesie al carrito como único producto', async () => {
     await inventoryPage.addToCart('sauce-labs-onesie');
 
     await expect(
@@ -48,7 +48,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir la Sauce Labs (Red) T-Shirt al carrito como único producto', async () => {
+  test('TC-INV-05 debería añadir la Sauce Labs (Red) T-Shirt al carrito como único producto', async () => {
     await inventoryPage.addToCart('test.allthethings()-t-shirt-(red)');
 
     await expect(
@@ -57,7 +57,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir los 6 productos al carrito y mostrar badge con valor 6', { tag: '@demo-fail' }, async () => {
+  test('TC-INV-06 debería añadir los 6 productos al carrito y mostrar badge con valor 6', { tag: '@demo-fail' }, async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
@@ -72,7 +72,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).toHaveText('5');
   });
 
-  test('debería cambiar el botón de "Add to cart" a "Remove" tras añadir un producto', async ({ page }) => {
+  test('TC-INV-07 debería cambiar el botón de "Add to cart" a "Remove" tras añadir un producto', async ({ page }) => {
     await expect(
       page.locator('[data-test="add-to-cart-sauce-labs-backpack"]'),
       'El botón "Add to cart" debería ser visible antes de añadir el producto',
@@ -90,7 +90,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).not.toBeVisible();
   });
 
-  test('debería restablecer el botón a "Add to cart" tras eliminar el producto desde el inventario', async ({ page }) => {
+  test('TC-INV-08 debería restablecer el botón a "Add to cart" tras eliminar el producto desde el inventario', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-bike-light');
 
     await expect(
@@ -110,7 +110,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
     ).not.toBeVisible();
   });
 
-  test('debería decrementar el badge al eliminar un producto con otros en el carrito', async () => {
+  test('TC-INV-09 debería decrementar el badge al eliminar un producto con otros en el carrito', async () => {
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
     await inventoryPage.addToCart('sauce-labs-onesie');
 

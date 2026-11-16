@@ -18,7 +18,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería mostrar los productos añadidos desde el inventario en la página del carrito', { tag: '@demo-fail' }, async ({ page }) => {
+  test('TC-SYNC-01 debería mostrar los productos añadidos desde el inventario en la página del carrito', { tag: '@demo-fail' }, async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-fleece-jacket');
     await inventoryPage.navigateToCart();
@@ -34,7 +34,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     ).toBeVisible();
   });
 
-  test('debería mantener el contenido del carrito al navegar entre inventario y carrito repetidamente', async ({ page }) => {
+  test('TC-SYNC-02 debería mantener el contenido del carrito al navegar entre inventario y carrito repetidamente', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-onesie');
     await inventoryPage.navigateToCart();
 
@@ -62,7 +62,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     ).toHaveCount(1);
   });
 
-  test('debería mostrar correctamente en el carrito el producto añadido desde el detalle', async ({ page }) => {
+  test('TC-SYNC-03 debería mostrar correctamente en el carrito el producto añadido desde el detalle', async ({ page }) => {
     await productDetailPage.navigate(5);
     await productDetailPage.addToCart();
     await page.locator('[data-test="shopping-cart-link"]').click();
@@ -81,7 +81,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     ).toContainText('$');
   });
 
-  test('debería reflejar en el inventario los botones "Remove" de los productos en carrito al volver desde el carrito', async ({ page }) => {
+  test('TC-SYNC-04 debería reflejar en el inventario los botones "Remove" de los productos en carrito al volver desde el carrito', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
     await inventoryPage.addToCart('sauce-labs-onesie');
     await inventoryPage.navigateToCart();
@@ -101,7 +101,7 @@ test.describe('Sincronización del estado entre inventario y carrito', () => {
     ).toHaveText('2');
   });
 
-  test('debería eliminar múltiples productos desde el carrito y dejar el carrito vacío', async ({ page }) => {
+  test('TC-SYNC-05 debería eliminar múltiples productos desde el carrito y dejar el carrito vacío', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
     await inventoryPage.addToCart('sauce-labs-onesie');

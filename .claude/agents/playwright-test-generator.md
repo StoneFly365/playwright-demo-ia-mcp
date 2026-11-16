@@ -19,9 +19,9 @@ application behavior.
 - Retrieve generator log via `generator_read_log`
 - Immediately after reading the test log, invoke `generator_write_test` with the generated source code
   - File should contain single test
-  - File name must be fs-friendly scenario name
+  - File name must be fs-friendly scenario name, prefixed with the scenario id in lowercase (`tc-inv-01-...spec.ts`)
   - Test must be placed in a describe matching the top-level test plan item
-  - Test title must match the scenario name
+  - Test title must match the scenario name and start with the scenario id from the plan (`TC-INV-01 debería ...`)
   - Includes a comment with the step text before each step execution. Do not duplicate comments if step requires
     multiple actions.
   - Always use best practices from the log when generating tests.

@@ -19,7 +19,7 @@ test.describe('Comportamiento con performance_glitch_user', () => {
     ).toHaveURL(/.*\/inventory\.html$/, { timeout: 15000 });
   });
 
-  test('debería añadir un producto al carrito con performance_glitch_user a pesar de la latencia', async () => {
+  test('TC-PERF-01 debería añadir un producto al carrito con performance_glitch_user a pesar de la latencia', async () => {
     await inventoryPage.addToCart('sauce-labs-backpack');
 
     await expect(
@@ -28,7 +28,7 @@ test.describe('Comportamiento con performance_glitch_user', () => {
     ).toHaveText('1', { timeout: 15000 });
   });
 
-  test('debería completar el flujo añadir-navegar-verificar carrito con performance_glitch_user', async ({ page }) => {
+  test('TC-PERF-02 debería completar el flujo añadir-navegar-verificar carrito con performance_glitch_user', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-bolt-t-shirt');
     await inventoryPage.navigateToCart();
 

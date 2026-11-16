@@ -21,7 +21,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     await loginPage.login('standard_user', 'secret_sauce');
   });
 
-  test('debería volver a añadir un producto después de haberlo eliminado desde el inventario', async ({ page }) => {
+  test('TC-EDGE-01 debería volver a añadir un producto después de haberlo eliminado desde el inventario', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await expect(
       inventoryPage.cartBadge,
@@ -46,7 +46,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     ).toHaveText('1');
   });
 
-  test('debería volver a añadir desde el inventario un producto eliminado desde el carrito', async ({ page }) => {
+  test('TC-EDGE-02 debería volver a añadir desde el inventario un producto eliminado desde el carrito', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-onesie');
     await inventoryPage.navigateToCart();
     await cartPage.removeItem('sauce-labs-onesie');
@@ -70,7 +70,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     ).toHaveText('1');
   });
 
-  test('debería impedir añadir el mismo producto dos veces (interfaz no lo permite)', async ({ page }) => {
+  test('TC-EDGE-03 debería impedir añadir el mismo producto dos veces (interfaz no lo permite)', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
 
     await expect(
@@ -94,7 +94,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     ).toHaveCount(1);
   });
 
-  test('debería acceder directamente por URL a un producto (id=1) y añadirlo al carrito', async ({ page }) => {
+  test('TC-EDGE-04 debería acceder directamente por URL a un producto (id=1) y añadirlo al carrito', async ({ page }) => {
     await productDetailPage.navigate(1);
 
     await expect(
@@ -122,7 +122,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     ).toHaveText('1');
   });
 
-  test('debería añadir productos al carrito con el inventario ordenado por precio ascendente', async () => {
+  test('TC-EDGE-05 debería añadir productos al carrito con el inventario ordenado por precio ascendente', async () => {
     await inventoryPage.sortBy('lohi');
     await inventoryPage.addToCart('sauce-labs-onesie');
 
@@ -139,7 +139,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     ).toHaveText('2');
   });
 
-  test('debería añadir productos al carrito con el inventario ordenado por nombre de Z a A', async () => {
+  test('TC-EDGE-06 debería añadir productos al carrito con el inventario ordenado por nombre de Z a A', async () => {
     await inventoryPage.sortBy('za');
     await inventoryPage.addToCart('test.allthethings()-t-shirt-(red)');
 
@@ -156,7 +156,7 @@ test.describe('Casos límite y escenarios de borde del carrito', () => {
     ).toHaveText('2');
   });
 
-  test('debería verificar el comportamiento del carrito tras logout y nuevo login', async ({ page }) => {
+  test('TC-EDGE-07 debería verificar el comportamiento del carrito tras logout y nuevo login', async ({ page }) => {
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.addToCart('sauce-labs-bike-light');
 
