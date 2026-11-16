@@ -7,7 +7,8 @@ export function runAgent(agent, prompt, { tools, mcp = false, echo = true } = {}
         const child = spawn("claude", [
             "-p",
             "--agent", agent,
-            ...(mcp ? ["--mcp-config", ".mcp.json", "--strict-mcp-config"] : []),
+            // mcp: true usa .mcp.json; una ruta usa ese fichero (design-ai pasa .mcp.figma.json).
+            ...(mcp ? ["--mcp-config", mcp === true ? ".mcp.json" : mcp, "--strict-mcp-config"] : []),
             "--permission-mode", "acceptEdits",
             "--allowedTools", tools,
         ], { stdio: ["pipe", "pipe", "inherit"], env: process.env });
