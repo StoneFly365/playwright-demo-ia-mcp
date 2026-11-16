@@ -17,6 +17,6 @@
 2. Si no forma parte: corregir el test. Quitar la aserción del subtotal o ajustarla al alcance real de la HU.
 3. Si sí forma parte: no modificar el test. Abrir bug a producto por subtotal ausente en el carrito y dejar el test fallando como evidencia.
 
-🧪 **Tests afectados:** TC-05 Mostrar el subtotal de los productos en el carrito
+🧪 **Tests afectados:** TC-04 Mostrar el subtotal de los productos en el carrito
 
 ---

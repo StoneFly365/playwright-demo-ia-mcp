@@ -16,8 +16,8 @@
       ],
       "affected_tests": [
         {
-          "title": "TC-05 Mostrar el subtotal de los productos en el carrito",
-          "file": "hu-001/tc-05-mostrar-el-subtotal-de-los-productos-en-el-carrito.spec.ts",
+          "title": "TC-04 Mostrar el subtotal de los productos en el carrito",
+          "file": "hu-001/tc-04-mostrar-el-subtotal-de-los-productos-en-el-carrito.spec.ts",
           "line": 9,
           "browser": "chromium"
         }

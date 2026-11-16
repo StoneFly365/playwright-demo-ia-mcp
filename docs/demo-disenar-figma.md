@@ -34,7 +34,7 @@ Unos 5 minutos en total. Cada punto dice qué enseñar y qué decir.
 
 ### 3. 📋 El plan que propone
 
-- **Enseña:** `specs/disenos/HU-001.plan.md` recién escrito: el resumen (6 de 7 criterios, 11 casos, 2 nuevos, 4 discrepancias, 1 duda) y los casos.
+- **Enseña:** `specs/disenos/HU-001.plan.md` recién escrito: el resumen (6 de 7 criterios, 8 casos, 1 nuevo, 4 discrepancias, 1 duda) y los casos.
 - **Di:** "Esto es lo que propone la IA. Cada caso apunta a un criterio y lleva los localizadores reales de la app. La cobertura no la calcula la IA, la calcula el código: 6 de 7."
 
 ### 4. 🔍 Discrepancias entre diseño y app ✨
@@ -58,7 +58,7 @@ Es el momento *wow*.
 ### 6. 👤 Una persona revisa
 
 - **Enseña:** VS Code › **Source Control** › `specs/disenos/HU-001.plan.md`. A la izquierda, el plan revisado (confirmado en git); a la derecha, la propuesta de la IA. Señala:
-  - Tres casos que la propuesta da por «ya cubiertos» (TC-05, TC-08 y TC-09) y el revisado añade como nuevos (TC-04, TC-06 y TC-07): mostrar nombre, precio y cantidad; quitar un producto desde el carrito, y quitar el último producto.
+  - Tres casos que la propuesta da por «ya cubiertos» (TC-03, TC-05 y TC-06) y el revisado marca como nuevos: mostrar nombre, precio y cantidad; quitar un producto desde el carrito, y quitar el último producto.
   - El revisado quita la discrepancia de cantidad.
   - El revisado añade la duda **CA4** sobre el subtotal.
 - **Di:** "La IA ha dado por cubiertos tres casos que los tests existentes solo cubren a medias, ha contado la cantidad como discrepancia cuando ya es la duda CA5 y no ha preguntado a negocio por el subtotal. Eso es lo que corregimos al revisar: añadimos la duda CA4, si el subtotal sigue siendo un requisito. La IA propone y una persona revisa antes de generar nada."
@@ -68,7 +68,7 @@ Es el momento *wow*.
 
 - **Enseña:** los tests de `tests/hu-001/`.
 - **Di:** "Con el plan revisado, el generator escribe los tests de los casos nuevos de prioridad alta sobre nuestro arquetipo, con los page objects de siempre."
-- 💬 **Si preguntan:** el plan revisado tiene 5 casos nuevos y hay 4 tests porque TC-11 es de prioridad baja y se queda en el plan.
+- 💬 **Si preguntan:** el plan revisado tiene 4 casos nuevos y hay 4 tests, uno por caso. Los otros 4 casos ya existían y no se vuelven a generar.
 
 ### 8. 🔴 Falla el subtotal 🎯
 

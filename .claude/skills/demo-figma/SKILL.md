@@ -65,9 +65,9 @@ En el paso 6, después del bloque del paso muestra esta tabla, para que se vea d
 ```
 | Qué | Propuesta de la IA | Plan revisado |
 |---|---|---|
-| Mostrar nombre, precio y cantidad | TC-05 «ya cubierto» | TC-04 caso nuevo |
-| Quitar un producto desde el carrito | TC-08 «ya cubierto» | TC-06 caso nuevo |
-| Quitar el último producto | TC-09 «ya cubierto» | TC-07 caso nuevo |
+| Mostrar nombre, precio y cantidad | TC-03 «ya cubierto» | TC-03 caso nuevo |
+| Quitar un producto desde el carrito | TC-05 «ya cubierto» | TC-05 caso nuevo |
+| Quitar el último producto | TC-06 «ya cubierto» | TC-06 caso nuevo |
 | Discrepancia de cantidad | Sí | Se quita (ya es la duda CA5) |
 | Duda CA4 sobre el subtotal | No la plantea | Se añade |
 ```
@@ -82,9 +82,9 @@ Sin pausas ni bloques para el público. Al final, un único informe.
 
 1. Comprobación previa. Si hay restos de una toma, descártalos con `git checkout -- specs/disenos` sin preguntar (son reproducibles). Cualquier otro fallo: para e informa.
 2. `npm run design:ai:demo` y comprueba con `diff -q` que `specs/disenos/HU-001.design.json` es igual a la grabación.
-3. Comprueba que el plan recién escrito sigue diciendo lo que cita el guion (paso 3: 6 de 7 criterios, 11 casos, 2 nuevos, 4 discrepancias, 1 duda; paso 4: D1-D4; paso 5: CA5). Si no, la grabación y el guion no cuadran.
+3. Comprueba que el plan recién escrito sigue diciendo lo que cita el guion (paso 3: 6 de 7 criterios, 8 casos, 1 nuevo, 4 discrepancias, 1 duda; paso 4: D1-D4; paso 5: CA5). Si no, la grabación y el guion no cuadran.
 4. Comprueba que `git diff specs/disenos/HU-001.plan.md` no sale vacío (el paso 6 necesita diferencias).
-5. `cd "/C${PWD#/?}" && npx playwright test tests/hu-001 --project=chromium --reporter=list`: debe fallar **solo** el test del subtotal (`tc-05-…`).
+5. `cd "/C${PWD#/?}" && npx playwright test tests/hu-001 --project=chromium --reporter=list`: debe fallar **solo** el test del subtotal (`tc-04-…`).
 6. `cd "/C${PWD#/?}" && npm run report:ai:demo` y comprueba que `playwright-report/ai-summary.txt` existe y habla del subtotal.
 7. `git checkout -- specs/disenos`.
 

@@ -59,6 +59,13 @@ Si te piden actualizar la instantánea, escribe también `specs/figma/<ID>.figma
 
 - **Cada criterio tiene al menos un caso**, salvo que no tenga respaldo ni en el diseño ni en la app (`respaldo: "ninguno"`). En ese caso no inventes el caso: abre una **duda**.
 - **Cada caso apunta al menos a un criterio.** No añadas casos sin criterio.
+- **Un caso es un flujo de usuario, no un criterio.** Es una secuencia continua desde una pantalla de partida, con una sola precondición y un solo objetivo. Un caso cubre todos los criterios que se comprueban a lo largo de ese flujo: no hagas un caso por criterio. Traza el `esperado` por criterio, con el prefijo `[CAx]` en cada línea, para no perder la trazabilidad al fusionar.
+- **No fusiones** criterios cuando:
+  - la precondición o el objetivo del usuario son distintos;
+  - el criterio es negativo o de límite (carrito vacío, quitar el último producto…): va en su propio caso;
+  - el criterio tiene una discrepancia o una duda abierta, porque su fallo taparía a los demás;
+  - el caso pasaría de unos 6 pasos o de 3 criterios.
+  Ejemplo: «añadir dos productos y ver el contador» (CA1, CA2) es un solo caso; «quitar el último producto» es otro, aunque comparta criterio con «quitar un producto».
 - Incluye negativos y límites cuando tengan sentido (carrito vacío, quitar el último producto…).
 - Si un caso ya está cubierto por un test existente, ponlo igualmente y rellena `existe_en` con `fichero:línea`. Así la persona ve la cobertura completa.
 - Una **discrepancia** es una diferencia observada entre Figma y la app, con lo que dice cada uno. No es una discrepancia lo que solo dice la historia: eso es una duda.

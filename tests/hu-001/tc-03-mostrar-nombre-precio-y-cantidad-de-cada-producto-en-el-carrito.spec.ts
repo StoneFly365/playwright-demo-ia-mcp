@@ -6,7 +6,7 @@ import { LoginPage } from '../../pages/login.page';
 import { InventoryPage } from '../../pages/inventory.page';
 
 test.describe('HU-001 · Añadir productos al carrito y revisarlo antes de pagar', () => {
-  test('TC-04 Mostrar nombre, precio y cantidad de cada producto en el carrito', async ({ page }) => {
+  test('TC-03 Mostrar nombre, precio y cantidad de cada producto en el carrito', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
     await loginPage.navigate();
