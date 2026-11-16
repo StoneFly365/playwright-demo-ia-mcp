@@ -98,11 +98,24 @@ La pista clave para distinguir un bug de un test roto es el texto accesible de l
 - [x] `specs/ai-golden.json`: clasificación esperada de cada escenario.
 - [x] `scripts/eval-ai.mjs` (`npm run eval:ai`): ejecuta cada escenario, lanza el reporte, compara con lo esperado y saca el porcentaje de aciertos, por grupos y por tests.
 - [x] Publicar la cifra en el README y en el resumen de CI. No en cada ejecución, porque gastaría cuota de IA en cada push: es un job aparte que se lanza a mano con `suite=eval`.
-- [ ] Medir el tiempo de triage con IA frente a hacerlo a mano en un escenario (dato para el cliente). Medido el lado IA: entre 19 y 57 s por escenario. Falta cronometrar a una persona haciendo el mismo triage.
+- [x] Medir el tiempo de triage con IA frente a hacerlo a mano en un escenario (dato para el cliente). Lado IA medido: entre 19 y 57 s por escenario. Lado manual **estimado, no cronometrado** (tabla abajo).
 
 **Terminada cuando:** exista una cifra del tipo "la IA clasifica bien X de Y fallos" que se pueda enseñar.
 
 **Resultado (Claude Haiku 5.5, en local):** 11 de 11 grupos, que cubren 185 de 185 tests fallados. Ojo al presentarlo: son 5 escenarios diseñados por nosotros y una sola ejecución. Conviene contarlo como "11 de 11 en escenarios controlados" y no como "100 % de acierto".
+
+**Tiempo de triage, a mano frente a IA (estimación, 16 de noviembre de 2026).** El tiempo a mano es una estimación por pasos, no una medición. Supone un QA que conoce la suite y SauceDemo y que parte del informe HTML de Playwright con trazas, capturas y vídeo. Cuenta hasta tener cada fallo clasificado y, en `bug`, el ticket escrito. No cuenta arreglar el test ni buscar la causa raíz de un flaky. El tiempo con IA es el del reporte medido más lo que tarda una persona en leer y validar lo que dice la IA: 3 minutos, o 5 cuando hay varios grupos o tickets que revisar.
+
+| Escenario | Qué tiene que hacer la persona | A mano | Con IA (reporte + revisión) | Ahorro |
+|---|---|---|---|---|
+| `demo-fail` | 10 tests con 7 causas distintas: abrir la traza de cada uno y decidir | 35-55 min | 57 s + 5 min ≈ 6 min | ×7 |
+| `cascade` | Ver que los 70 fallos comparten causa, abrir la traza, encontrar el botón con otro `data-test` | 20-30 min | 23 s + 3 min ≈ 3,5 min | ×7 |
+| `bug` | Descartar que el test esté mal, reproducir el badge en la app y escribir 2 tickets | 30-50 min | 34 s + 5 min ≈ 5,5 min | ×7 |
+| `env` | Ver `ERR_CONNECTION_REFUSED` en todos y confirmar que el entorno está caído | 10-15 min | 21 s + 3 min ≈ 3,5 min | ×3,5 |
+| `flaky` | Ver que fallan en el primer intento y pasan al reintentar | 10-15 min | 19 s + 3 min ≈ 3,5 min | ×3,5 |
+| **Total** | | **105-165 min (unas 2 h 15 min)** | **unos 22 min** | **×6** |
+
+Cómo contarlo al cliente: "el triage de estos cinco escenarios pasa de unas dos horas a unos veinte minutos, y la persona sigue decidiendo". El ahorro es mayor cuanto más cuesta investigar cada fallo (`bug`, `demo-fail`) y menor cuando el fallo se ve a la primera (`env`, `flaky`). Antes de dar la cifra como dato propio, conviene cronometrar al menos un escenario con una persona del cliente.
 
 ## Fase 3b · Cuota de IA en CI
 
