@@ -49,6 +49,7 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
 - [Configuración (`playwright.config.ts`)](#configuración-playwrightconfigts)
 - [Decisiones de diseño](#decisiones-de-diseño)
   - [Page Object Model](#page-object-model)
+  - [Id en el título de cada test](#id-en-el-título-de-cada-test)
   - [Selectores `data-test`](#selectores-data-test)
   - [`baseURL` en config](#baseurl-en-config)
 - [Tecnologías](#tecnologías)
@@ -827,7 +828,7 @@ export class LoginPage {
 
 ```typescript
 // tests/login.spec.ts
-test('debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
+test('TC-LOGIN-02 debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
   await loginPage.login('wrong_user', 'wrong_password');
 
   await expect(loginPage.errorMessage).toBeVisible();
@@ -838,6 +839,9 @@ test('debería mostrar error cuando las credenciales no corresponden a ningún u
 ```
 
 El test no conoce selectores ni pasos de UI, solo llama métodos del page object.
+
+### Id en el título de cada test
+Cada test empieza por un id `TC-<AREA>-NN` (`TC-LOGIN-02`, `TC-CHK-09`), el mismo que en el plan de `specs/` y en [`specs/test-index.md`](specs/test-index.md). Así un fallo del informe o del dashboard se traza al caso del plan sin buscar por texto. El planner asigna los ids continuando la numeración de cada área, el generator los pone en el título y en el nombre del fichero, y el healer nunca los cambia.
 
 ### Selectores `data-test`
 Se usan los atributos `data-test` que provee SauceDemo, los más resilientes ante cambios de estilos o estructura HTML. La excepción es el menú lateral ([`pages/menu.page.ts`](pages/menu.page.ts)), que usa selectores por `id` (`#react-burger-menu-btn`, `#logout_sidebar_link`…).
