@@ -102,6 +102,7 @@ export function validateDesign(d, story) {
         if (!RESPALDOS.includes(c.respaldo)) errs.push(`criterio ${c.id}: respaldo "${c.respaldo}" no válido`);
     }
     for (const id of esperados) if (!ids.has(id)) errs.push(`falta el criterio ${id} de la historia`);
+    const sinRespaldo = new Set(d.criterios.filter((c) => c.respaldo === "ninguno").map((c) => c.id));
 
     const casos = new Set();
     for (const t of d.casos) {
@@ -113,16 +114,33 @@ export function validateDesign(d, story) {
         if (!TIPOS_CASO.includes(t.tipo)) errs.push(`caso ${n}: tipo "${t.tipo}" no válido`);
         if (!PRIORIDADES.includes(t.prioridad)) errs.push(`caso ${n}: prioridad "${t.prioridad}" no válida`);
         if (!strArr(t.criterios)) errs.push(`caso ${n}: no apunta a ningún criterio`);
-        else for (const c of t.criterios) if (!ids.has(c)) errs.push(`caso ${n}: apunta a ${c}, que no existe`);
+        else for (const c of t.criterios) {
+            if (!ids.has(c)) errs.push(`caso ${n}: apunta a ${c}, que no existe`);
+            else if (sinRespaldo.has(c)) errs.push(`caso ${n}: apunta a ${c}, que no tiene respaldo; va como duda, no como caso`);
+        }
         if (!strArr(t.pasos)) errs.push(`caso ${n}: sin pasos`);
         if (!strArr(t.esperado)) errs.push(`caso ${n}: sin resultado esperado`);
+        else if (strArr(t.criterios)) {
+            // Trazabilidad dentro del caso: cada esperado dice su criterio y cada criterio tiene algún esperado.
+            const trazados = new Set();
+            for (const e of t.esperado) {
+                const ca = /^\[(CA\d+)\]\s/.exec(e)?.[1];
+                if (!ca || !t.criterios.includes(ca)) errs.push(`caso ${n}: el esperado "${e}" no empieza por [CAx] de uno de sus criterios`);
+                else trazados.add(ca);
+            }
+            for (const c of t.criterios) if (!trazados.has(c)) errs.push(`caso ${n}: ningún esperado comprueba ${c}`);
+        }
+        for (const k of ["pantallas", "localizadores"]) if (t[k] !== undefined && !Array.isArray(t[k])) errs.push(`caso ${n}: ${k} tiene que ser una lista`);
     }
     for (const x of d.discrepancias) {
         if (!TIPOS_DISCREPANCIA.includes(x.tipo)) errs.push(`discrepancia ${x.id}: tipo "${x.tipo}" no válido`);
         if (!IMPACTOS.includes(x.impacto)) errs.push(`discrepancia ${x.id}: impacto "${x.impacto}" no válido`);
         if (!isStr(x.diseno) || !isStr(x.app)) errs.push(`discrepancia ${x.id}: tiene que decir qué dice el diseño y qué hace la app`);
+        if (x.criterios !== undefined && !Array.isArray(x.criterios)) errs.push(`discrepancia ${x.id}: criterios tiene que ser una lista`);
     }
     for (const q of d.dudas) if (!isStr(q.pregunta)) errs.push(`duda sobre ${q.criterio}: sin pregunta`);
+    const conDuda = new Set(d.dudas.map((q) => q.criterio));
+    for (const c of sinRespaldo) if (!conDuda.has(c)) errs.push(`criterio ${c}: no tiene respaldo y falta su duda para negocio`);
     return errs;
 }
 
