@@ -168,6 +168,7 @@ playwright-demo-ia-mcp/
 ├── scripts/
 │   ├── design-ai.mjs               # Fase 1: historia + Figma + app → plan de pruebas (agente qa-test-designer)
 │   ├── design-ai.test.mjs          # Tests de design-ai.mjs (npm run test:unit)
+│   ├── fixtures/design-ai/         # Copia fija de HU-001.md para esos tests
 │   ├── report-ai.mjs               # Script de análisis IA de resultados
 │   ├── triage.mjs                  # Agrupación, flaky y redacción, sin IA
 │   ├── triage.test.mjs             # Tests de triage.mjs (npm run test:unit)

@@ -11,7 +11,7 @@ Ya existe un fichero hecho con esta guía, para enseñarlo en la demo:
 - [01 · Catálogo](https://www.figma.com/design/TQPnHfhveyoaPJwuVPHHeJ/SauceDemo-QA-IA?node-id=1-2)
 - [02 · Carrito](https://www.figma.com/design/TQPnHfhveyoaPJwuVPHHeJ/SauceDemo-QA-IA?node-id=1-68)
 
-Está en una cuenta Starter, que da muy pocas llamadas al MCP de Figma al mes. Por eso [`HU-001.md`](../historias/HU-001.md) sigue con `FILE_KEY` y la demo usa la instantánea (`npm run design:ai -- HU-001 --snapshot`). Además, los tests de `scripts/design-ai.test.mjs` leen esa historia y esperan el `FILE_KEY`.
+Está en una cuenta Starter, que da muy pocas llamadas al MCP de Figma al mes. Por eso [`HU-001.md`](../historias/HU-001.md) sigue con `FILE_KEY` y la demo usa la instantánea (`npm run design:ai -- HU-001 --snapshot`). Los tests de `scripts/design-ai.test.mjs` usan su propia copia de la historia, así que poner el `FILE_KEY` real no los rompe.
 
 ## 1. Crear el fichero
 

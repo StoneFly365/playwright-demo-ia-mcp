@@ -49,6 +49,6 @@
   "cards": [
     { "dot": "emerald", "title": "Qué gana negocio", "items": ["Las pruebas salen de la historia y del diseño, antes de programar", "Cada fallo llega explicado, no solo en rojo", "Los bugs de producto acaban en Jira con evidencias", "Menos horas diagnosticando a mano"] },
     { "dot": "rose", "title": "Una persona decide", "items": ["La IA propone, nunca acepta sola", "Si un arreglo relaja una comprobación, GitHub bloquea el cambio", "Hasta que alguien lo aprueba de forma explícita"] },
-    { "dot": "cyan", "title": "Datos bajo control", "items": ["A la IA solo sale un resumen del fallo", "Contraseñas, tokens y emails se enmascaran antes", "Sin pruebas en rojo no se llama a la IA"] }
+    { "dot": "cyan", "title": "Datos bajo control", "items": ["De un fallo, a la IA solo sale un resumen", "Contraseñas, tokens y emails se enmascaran antes", "Al diseñar, la IA lee la historia, el diseño y la app sin enmascarar: solo datos de prueba"] }
   ]
 }

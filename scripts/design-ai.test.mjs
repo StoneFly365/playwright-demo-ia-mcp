@@ -7,7 +7,8 @@ import {
     selectForGeneration, buildGeneratorPrompt, paths,
 } from "./design-ai.mjs";
 
-const story = parseStory(readFileSync("specs/historias/HU-001.md", "utf8"), "HU-001");
+// Copia fija de la historia: la de specs/historias/ cambia al poner el FILE_KEY real (ver specs/figma/README.md).
+const story = parseStory(readFileSync("scripts/fixtures/design-ai/HU-001.md", "utf8"), "HU-001");
 
 const caso = (id, criterios, extra = {}) => ({
     id, titulo: `caso ${id}`, tipo: "positivo", prioridad: "alta", criterios, pantallas: ["1:2"],
@@ -99,15 +100,20 @@ test("solo se generan los casos nuevos de prioridad alta, salvo que se pidan tod
     assert.deepEqual(selectForGeneration(valido(), { all: true }).map((t) => t.id), ["TC-01", "TC-02", "TC-04", "TC-05", "TC-06"]);
 });
 
+test("no se vuelven a generar los casos que ya tienen fichero de test", () => {
+    const existentes = ["tc-01-caso-tc-01.spec.ts", "tc-050-otro.spec.ts"];
+    assert.deepEqual(selectForGeneration(valido(), { existentes }).map((t) => t.id), ["TC-04", "TC-05", "TC-06"]);
+});
+
 test("el generator importa del fixture de escenarios y escribe en la carpeta de la historia", () => {
     const p = buildGeneratorPrompt(story, [caso("TC-01", ["CA1"])], paths("HU-001"));
     assert.ok(p.includes("'../../fixtures/scenarios'") && p.includes("tests/hu-001/") && p.includes("TC-01 caso TC-01"));
+    assert.match(p, /no lo sobrescribas/);
 });
 
-test("la instantánea de la demo trae las dos discrepancias a propósito", () => {
+// Solo lo que se mantiene tanto en la instantánea escrita a mano como en la que reescribe una ejecución con Figma.
+test("la instantánea del diseño se puede leer y trae frames con capas", () => {
     const snap = JSON.parse(readFileSync("specs/figma/HU-001.figma.json", "utf8"));
-    assert.equal(snap.origen, "simulada");
-    const capas = snap.frames.flatMap((f) => f.capas);
-    assert.equal(capas.find((c) => c.nombre === "cart-subtotal")?.texto, "Subtotal: $39.98");
-    assert.equal(capas.find((c) => c.nombre === "product-sort-container")?.texto, "Price (low to high)");
+    assert.ok(["simulada", "figma-mcp"].includes(snap.origen));
+    assert.ok(snap.frames.length > 0 && snap.frames.every((f) => Array.isArray(f.capas)));
 });

@@ -10,7 +10,7 @@
 //   --generate  al terminar, lanza el agente generator con los casos de prioridad alta que no existen aún
 //   --dry-run   enseña el prompt que recibiría el agente y no llama a la IA
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { runAgent } from "./agent.mjs";
 
@@ -200,8 +200,11 @@ export function renderPlan(d, story) {
     return lines.join("\n");
 }
 
-export function selectForGeneration(d, { all = false } = {}) {
-    return d.casos.filter((t) => !t.existe_en && (all || t.prioridad === "alta"));
+// existentes: ficheros que ya hay en tests/<hu>/. Un caso con fichero (tc-05-…) no se vuelve a generar,
+// para no machacar un test que alguien ya ha revisado o retocado.
+export function selectForGeneration(d, { all = false, existentes = [] } = {}) {
+    const generado = (t) => existentes.some((f) => f.startsWith(`${t.id.toLowerCase()}-`));
+    return d.casos.filter((t) => !t.existe_en && !generado(t) && (all || t.prioridad === "alta"));
 }
 
 export function buildGeneratorPrompt(story, casos, files) {
@@ -216,18 +219,24 @@ export function buildGeneratorPrompt(story, casos, files) {
         "- Cada expect lleva un mensaje en español que diga qué debería pasar, como en el resto de tests/.",
         `- Pon en el título del describe el id de la historia (${story.id}) y en el del test el id del caso.`,
         "- No generes tests para los casos que no estén en la lista.",
+        "- Si ya existe un fichero que empieza por el id del caso, no lo sobrescribas.",
     ].join("\n");
 }
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8" });
 
-function changedOutside() {
+function changedFiles() {
     try {
-        return run("git", ["status", "--porcelain", "-z"]).split("\0").filter(Boolean)
-            .map((e) => e.slice(3)).filter((f) => f && !WRITABLE.test(f) && !f.startsWith("playwright-report/") && !f.startsWith("test-results"));
+        return run("git", ["status", "--porcelain", "-z"]).split("\0").filter(Boolean).map((e) => e.slice(3)).filter(Boolean);
     } catch {
         return [];
     }
+}
+
+// before: lo que ya estaba cambiado antes de lanzar el agente (p. ej. la historia con el FILE_KEY recién puesto).
+// ponytail: compara nombres, no contenidos; si el agente toca un fichero que ya estaba cambiado, no se ve.
+function changedOutside(before) {
+    return changedFiles().filter((f) => !before.has(f) && !WRITABLE.test(f) && !f.startsWith("playwright-report/") && !f.startsWith("test-results"));
 }
 
 function printSummary(d, cov, files) {
@@ -261,10 +270,13 @@ async function main() {
             return;
         }
         mkdirSync(DESIGNS, { recursive: true });
+        // Sin el resultado anterior: si el agente no escribe uno nuevo, se para en vez de reutilizar el viejo.
+        rmSync(files.design, { force: true });
+        const before = new Set(changedFiles());
         log("Ejecutando el agente qa-test-designer (claude -p). Puede tardar unos minutos...");
         const tools = ["Read,Glob,Grep,LS,Write,mcp__playwright-test", ...(source === "figma-mcp" ? ["mcp__figma"] : [])].join(",");
         await runAgent("qa-test-designer", prompt, { tools, mcp: source === "figma-mcp" ? MCP_FIGMA : true });
-        const outside = changedOutside();
+        const outside = changedOutside(before);
         if (outside.length) throw new Error(`El agente ha tocado ficheros fuera de specs/disenos/ y specs/figma/: ${outside.join(", ")}. Revísalos a mano.`);
     }
 
@@ -277,9 +289,10 @@ async function main() {
     printSummary(design, cov, files);
 
     if (args.includes("--generate")) {
-        const casos = selectForGeneration(design, { all: args.includes("--all") });
+        const existentes = existsSync(files.tests) ? readdirSync(files.tests) : [];
+        const casos = selectForGeneration(design, { all: args.includes("--all"), existentes });
         if (!casos.length) {
-            console.log("\n✅ No hay casos nuevos de prioridad alta que generar.");
+            console.log(`\n✅ No hay casos nuevos que generar (o ya tienen su test en ${files.tests}/).`);
             return;
         }
         mkdirSync(files.tests, { recursive: true });
