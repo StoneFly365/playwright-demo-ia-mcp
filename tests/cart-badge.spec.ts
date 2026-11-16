@@ -1,8 +1,10 @@
-import { test, expect } from '../fixtures/scenarios';
+import { test, expect, standardUserSession } from '../fixtures/scenarios';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
 import { MenuPage } from '../pages/menu.page';
 import { ProductDetailPage } from '../pages/product-detail.page';
+
+test.use(standardUserSession);
 
 test.describe('Gestión del badge del carrito', () => {
   let inventoryPage: InventoryPage;
@@ -14,8 +16,7 @@ test.describe('Gestión del badge del carrito', () => {
     inventoryPage = new InventoryPage(page);
     menuPage = new MenuPage(page);
     productDetailPage = new ProductDetailPage(page);
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.loginAsStandardUser();
   });
 
   test('TC-BADGE-01 debería no mostrar el badge al cargar el inventario con carrito vacío', async () => {

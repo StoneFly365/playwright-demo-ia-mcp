@@ -1,6 +1,8 @@
-import { test, expect } from '../fixtures/scenarios';
+import { test, expect, standardUserSession } from '../fixtures/scenarios';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
+
+test.use(standardUserSession);
 
 test.describe('Añadir productos individuales desde el inventario', () => {
   let inventoryPage: InventoryPage;
@@ -8,8 +10,7 @@ test.describe('Añadir productos individuales desde el inventario', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     inventoryPage = new InventoryPage(page);
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.loginAsStandardUser();
   });
 
   test('TC-INV-01 debería añadir la Sauce Labs Backpack al carrito como único producto', async () => {

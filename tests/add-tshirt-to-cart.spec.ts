@@ -1,7 +1,9 @@
-import { test, expect } from '../fixtures/scenarios';
+import { test, expect, standardUserSession } from '../fixtures/scenarios';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
 import { CartPage } from '../pages/cart.page';
+
+test.use(standardUserSession);
 
 test.describe('Carrito de compra', () => {
   let inventoryPage: InventoryPage;
@@ -11,8 +13,7 @@ test.describe('Carrito de compra', () => {
     const loginPage = new LoginPage(page);
     inventoryPage = new InventoryPage(page);
     cartPage = new CartPage(page);
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.loginAsStandardUser();
   });
 
   test('TC-CART-01 debería añadir la Sauce Labs Bolt T-Shirt al carrito tras el login', async () => {

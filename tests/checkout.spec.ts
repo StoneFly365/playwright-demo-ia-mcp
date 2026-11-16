@@ -1,8 +1,10 @@
-import { test, expect } from '../fixtures/scenarios';
+import { test, expect, standardUserSession } from '../fixtures/scenarios';
 import { LoginPage } from '../pages/login.page';
 import { InventoryPage } from '../pages/inventory.page';
 import { CartPage } from '../pages/cart.page';
 import { CheckoutPage } from '../pages/checkout.page';
+
+test.use(standardUserSession);
 
 test.describe('Checkout', () => {
   let inventoryPage: InventoryPage;
@@ -14,8 +16,7 @@ test.describe('Checkout', () => {
     inventoryPage = new InventoryPage(page);
     cartPage = new CartPage(page);
     checkoutPage = new CheckoutPage(page);
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.loginAsStandardUser();
     await inventoryPage.addToCart('sauce-labs-backpack');
     await inventoryPage.navigateToCart();
     await cartPage.checkout();

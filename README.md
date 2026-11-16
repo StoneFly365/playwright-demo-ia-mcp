@@ -159,6 +159,7 @@ playwright-demo-ia-mcp/
 │   ├── checkout.page.ts            # POM: proceso de checkout
 │   └── menu.page.ts                # POM: menú lateral
 ├── fixtures/
+│   ├── global-setup.ts             # Login único de standard_user (storageState)
 │   └── scenarios.ts                # Escenarios de fallo de la demo (DEMO_SCENARIO)
 ├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, arranque de los agentes)
 ├── specs/                          # Planes de test y documentación QA
@@ -797,6 +798,9 @@ npx playwright test --retries=2 --trace=on
 | Browsers | Chromium · Firefox · WebKit |
 | Reintentos en CI | 2 |
 | Workers en CI | 4 |
+| `globalSetup` | `fixtures/global-setup.ts`, solo sin `DEMO_SCENARIO` |
+
+**Sesión guardada (`storageState`).** [`fixtures/global-setup.ts`](fixtures/global-setup.ts) inicia sesión una vez con `standard_user` y guarda la sesión en `playwright/.auth/` (fuera de git). Los specs de `standard_user` la cargan con `test.use(standardUserSession)` y su `beforeEach` llama a `loginPage.loginAsStandardUser()`, que va directo al inventario si hay sesión y entra por el formulario si no. Login, protección de rutas, `problem_user` y `performance_glitch_user` siguen entrando por el formulario. Con `DEMO_SCENARIO` no se guarda sesión y todos entran por el formulario: así `cascade` sigue tumbando los 70 tests. La cookie de SauceDemo dura 10 minutos; si caduca a mitad de ejecución, los tests vuelven a entrar por el formulario.
 
 ---
 
