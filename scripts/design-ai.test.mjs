@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
     parseFigmaUrl, parseStory, chooseSource, buildPrompt, validateDesign, coverage, renderPlan,
-    selectForGeneration, buildGeneratorPrompt, paths,
+    selectForGeneration, buildGeneratorPrompt, paths, changedOutside,
 } from "./design-ai.mjs";
 
 // Copia fija de la historia: la de specs/historias/ cambia al poner el FILE_KEY real (ver specs/figma/README.md).
@@ -116,4 +116,10 @@ test("la instantánea del diseño se puede leer y trae frames con capas", () => 
     const snap = JSON.parse(readFileSync("specs/figma/HU-001.figma.json", "utf8"));
     assert.ok(["simulada", "figma-mcp"].includes(snap.origen));
     assert.ok(snap.frames.length > 0 && snap.frames.every((f) => Array.isArray(f.capas)));
+});
+
+test("se detecta lo que toca el agente fuera de specs/, también en ficheros que ya estaban cambiados", () => {
+    const before = new Map([["specs/historias/HU-001.md", "a"], ["pages/login.page.ts", "b"]]);
+    const after = new Map([["specs/historias/HU-001.md", "a"], ["pages/login.page.ts", "c"], ["specs/disenos/HU-001.design.json", "d"], ["tests/x.spec.ts", "e"]]);
+    assert.deepEqual(changedOutside(before, after), ["pages/login.page.ts", "tests/x.spec.ts"]);
 });

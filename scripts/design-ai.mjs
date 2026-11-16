@@ -10,6 +10,7 @@
 //   --generate  al terminar, lanza el agente generator con los casos de prioridad alta que no existen aún
 //   --dry-run   enseña el prompt que recibiría el agente y no llama a la IA
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { runAgent } from "./agent.mjs";
@@ -225,18 +226,29 @@ export function buildGeneratorPrompt(story, casos, files) {
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8" });
 
+const fingerprint = (f) => {
+    try {
+        return createHash("sha1").update(readFileSync(f)).digest("hex");
+    } catch {
+        return "borrado";
+    }
+};
+
+// Ficheros cambiados respecto a git, con la huella de su contenido.
 function changedFiles() {
     try {
-        return run("git", ["status", "--porcelain", "-z"]).split("\0").filter(Boolean).map((e) => e.slice(3)).filter(Boolean);
+        const files = run("git", ["status", "--porcelain", "-z", "-uall"]).split("\0").filter(Boolean).map((e) => e.slice(3)).filter(Boolean);
+        return new Map(files.map((f) => [f, fingerprint(f)]));
     } catch {
-        return [];
+        return new Map();
     }
 }
 
 // before: lo que ya estaba cambiado antes de lanzar el agente (p. ej. la historia con el FILE_KEY recién puesto).
-// ponytail: compara nombres, no contenidos; si el agente toca un fichero que ya estaba cambiado, no se ve.
-function changedOutside(before) {
-    return changedFiles().filter((f) => !before.has(f) && !WRITABLE.test(f) && !f.startsWith("playwright-report/") && !f.startsWith("test-results"));
+// Se compara el contenido, así que también se detecta si el agente toca un fichero que ya estaba cambiado.
+export function changedOutside(before, after = changedFiles()) {
+    return [...after].filter(([f, h]) => before.get(f) !== h).map(([f]) => f)
+        .filter((f) => !WRITABLE.test(f) && !f.startsWith("playwright-report/") && !f.startsWith("test-results"));
 }
 
 function printSummary(d, cov, files) {
@@ -270,12 +282,21 @@ async function main() {
             return;
         }
         mkdirSync(DESIGNS, { recursive: true });
-        // Sin el resultado anterior: si el agente no escribe uno nuevo, se para en vez de reutilizar el viejo.
+        // El resultado anterior se aparta: solo vale el que escriba esta ejecución. Si el agente falla o no
+        // escribe nada, se restaura para poder seguir usándolo con --render.
+        const previo = existsSync(files.design) ? readFileSync(files.design) : null;
         rmSync(files.design, { force: true });
-        const before = new Set(changedFiles());
+        const before = changedFiles();
         log("Ejecutando el agente qa-test-designer (claude -p). Puede tardar unos minutos...");
         const tools = ["Read,Glob,Grep,LS,Write,mcp__playwright-test", ...(source === "figma-mcp" ? ["mcp__figma"] : [])].join(",");
-        await runAgent("qa-test-designer", prompt, { tools, mcp: source === "figma-mcp" ? MCP_FIGMA : true });
+        try {
+            await runAgent("qa-test-designer", prompt, { tools, mcp: source === "figma-mcp" ? MCP_FIGMA : true });
+        } finally {
+            if (!existsSync(files.design) && previo) {
+                writeFileSync(files.design, previo);
+                throw new Error(`El agente no ha escrito un resultado nuevo. Se ha restaurado el anterior en ${files.design}.`);
+            }
+        }
         const outside = changedOutside(before);
         if (outside.length) throw new Error(`El agente ha tocado ficheros fuera de specs/disenos/ y specs/figma/: ${outside.join(", ")}. Revísalos a mano.`);
     }
