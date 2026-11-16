@@ -1,0 +1,37 @@
+{
+  "origen": "simulada",
+  "nota": "Escrita a mano según specs/figma/README.md. npm run design:ai -- HU-001 la sustituye por lo que lea el MCP de Figma.",
+  "file_key": "FILE_KEY",
+  "frames": [
+    {
+      "node_id": "1:2",
+      "nombre": "01 · Catálogo",
+      "url_app": "/inventory.html",
+      "capas": [
+        { "nombre": "title", "tipo": "TEXT", "texto": "Products" },
+        { "nombre": "product-sort-container", "tipo": "INSTANCE", "componente": "Select", "texto": "Price (low to high)", "opciones": ["Name (A to Z)", "Name (Z to A)", "Price (low to high)", "Price (high to low)"] },
+        { "nombre": "shopping-cart-link", "tipo": "INSTANCE", "componente": "Icon/Cart" },
+        { "nombre": "shopping-cart-badge", "tipo": "TEXT", "texto": "1" },
+        { "nombre": "inventory-item", "tipo": "FRAME", "repeticiones": 6, "hijos": ["inventory-item-name", "inventory-item-desc", "inventory-item-price", "boton"] },
+        { "nombre": "add-to-cart-sauce-labs-backpack", "tipo": "INSTANCE", "componente": "Button/Secondary", "texto": "Add to cart" },
+        { "nombre": "remove-sauce-labs-bike-light", "tipo": "INSTANCE", "componente": "Button/Remove", "estado": "añadido", "texto": "Remove" }
+      ],
+      "textos": ["Products", "Price (low to high)", "Sauce Labs Backpack", "$29.99", "Sauce Labs Bike Light", "$9.99", "Sauce Labs Bolt T-Shirt", "$15.99", "Sauce Labs Fleece Jacket", "$49.99", "Sauce Labs Onesie", "$7.99", "Test.allTheThings() T-Shirt (Red)", "$15.99", "Add to cart", "Remove"]
+    },
+    {
+      "node_id": "1:3",
+      "nombre": "02 · Carrito",
+      "url_app": "/cart.html",
+      "capas": [
+        { "nombre": "title", "tipo": "TEXT", "texto": "Your Cart" },
+        { "nombre": "cart-quantity-label", "tipo": "TEXT", "texto": "QTY" },
+        { "nombre": "cart-desc-label", "tipo": "TEXT", "texto": "Description" },
+        { "nombre": "inventory-item", "tipo": "FRAME", "repeticiones": 2, "hijos": ["item-quantity", "inventory-item-name", "inventory-item-desc", "inventory-item-price", "remove"] },
+        { "nombre": "cart-subtotal", "tipo": "TEXT", "texto": "Subtotal: $39.98" },
+        { "nombre": "continue-shopping", "tipo": "INSTANCE", "componente": "Button/Secondary", "texto": "Continue Shopping" },
+        { "nombre": "checkout", "tipo": "INSTANCE", "componente": "Button/Primary", "texto": "Checkout" }
+      ],
+      "textos": ["Your Cart", "QTY", "Description", "1", "Sauce Labs Backpack", "$29.99", "Sauce Labs Bike Light", "$9.99", "Remove", "Subtotal: $39.98", "Continue Shopping", "Checkout"]
+    }
+  ]
+}
