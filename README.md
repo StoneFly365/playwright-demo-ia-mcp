@@ -386,7 +386,7 @@ Mismo principio que el resto del repositorio: **la IA hace lo que requiere crite
 - **El código** ([`scripts/design-ai.mjs`](scripts/design-ai.mjs)):
   - saca de la historia los criterios y los enlaces de Figma;
   - decide si se usa el MCP de Figma o la instantánea;
-  - **valida** el JSON: no admite criterios inventados u olvidados ni casos sin criterio;
+  - **valida** el JSON: no admite criterios inventados u olvidados, casos sin criterio ni casos sobre un criterio sin respaldo (ese va como duda, y la duda tiene que estar). Cada resultado esperado empieza por el criterio que comprueba (`[CA1] …`, o `[CA1, CA2] …` si cubre varios), y cada criterio del caso tiene al menos uno. Las discrepancias y las dudas solo pueden nombrar criterios que existen;
   - calcula la **cobertura de criterios**;
   - escribe el plan en el formato del planner, para que el generator lo use tal cual;
   - comprueba que el agente solo ha escrito en `specs/disenos/` y `specs/figma/`.

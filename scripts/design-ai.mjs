@@ -85,6 +85,10 @@ const isStr = (v) => typeof v === "string" && v.trim() !== "";
 const strArr = (v) => Array.isArray(v) && v.length > 0 && v.every(isStr);
 
 // Devuelve la lista de problemas. Vacía = el JSON se puede usar.
+// Criterios del prefijo de un resultado esperado: "[CA1] …", "[CA1]: …" o "[CA1, CA2] …". Sin prefijo, [].
+export const esperadoCriterios = (e) =>
+    (/^\s*\[\s*(CA\d+(?:\s*,\s*CA\d+)*)\s*\]/i.exec(e)?.[1] ?? "").split(",").map((c) => c.trim().toUpperCase()).filter(Boolean);
+
 export function validateDesign(d, story) {
     const errs = [];
     if (!d || typeof d !== "object") return ["el resultado no es un objeto JSON"];
@@ -102,6 +106,7 @@ export function validateDesign(d, story) {
         if (!RESPALDOS.includes(c.respaldo)) errs.push(`criterio ${c.id}: respaldo "${c.respaldo}" no válido`);
     }
     for (const id of esperados) if (!ids.has(id)) errs.push(`falta el criterio ${id} de la historia`);
+    const sinRespaldo = new Set(d.criterios.filter((c) => c.respaldo === "ninguno").map((c) => c.id));
 
     const casos = new Set();
     for (const t of d.casos) {
@@ -112,17 +117,42 @@ export function validateDesign(d, story) {
         if (!isStr(t.titulo)) errs.push(`caso ${n}: falta el título`);
         if (!TIPOS_CASO.includes(t.tipo)) errs.push(`caso ${n}: tipo "${t.tipo}" no válido`);
         if (!PRIORIDADES.includes(t.prioridad)) errs.push(`caso ${n}: prioridad "${t.prioridad}" no válida`);
-        if (!strArr(t.criterios)) errs.push(`caso ${n}: no apunta a ningún criterio`);
-        else for (const c of t.criterios) if (!ids.has(c)) errs.push(`caso ${n}: apunta a ${c}, que no existe`);
+        // Solo los criterios válidos del caso: los demás ya tienen su error y no se vuelven a contar abajo.
+        const crit = strArr(t.criterios) ? t.criterios.filter((c) => ids.has(c) && !sinRespaldo.has(c)) : null;
+        if (!crit) errs.push(`caso ${n}: no apunta a ningún criterio`);
+        else for (const c of t.criterios) {
+            if (!ids.has(c)) errs.push(`caso ${n}: apunta a ${c}, que no existe`);
+            else if (sinRespaldo.has(c)) errs.push(`caso ${n}: apunta a ${c}, que no tiene respaldo; va como duda, no como caso`);
+        }
         if (!strArr(t.pasos)) errs.push(`caso ${n}: sin pasos`);
         if (!strArr(t.esperado)) errs.push(`caso ${n}: sin resultado esperado`);
+        else if (crit) {
+            // Trazabilidad dentro del caso: cada esperado dice qué criterio comprueba ([CA1] o, si comprueba
+            // varios a la vez, [CA1, CA2]) y cada criterio del caso tiene algún esperado.
+            const trazados = new Set();
+            for (const e of t.esperado) {
+                const cas = esperadoCriterios(e);
+                if (!cas.length || !cas.every((c) => t.criterios.includes(c))) errs.push(`caso ${n}: el esperado "${e}" no empieza por el [CAx] de uno de sus criterios`);
+                else cas.forEach((c) => trazados.add(c));
+            }
+            for (const c of crit) if (!trazados.has(c)) errs.push(`caso ${n}: ningún esperado comprueba ${c}`);
+        }
+        if (t.localizadores !== undefined && !(Array.isArray(t.localizadores) && t.localizadores.every(isStr))) errs.push(`caso ${n}: localizadores tiene que ser una lista de textos`);
     }
     for (const x of d.discrepancias) {
         if (!TIPOS_DISCREPANCIA.includes(x.tipo)) errs.push(`discrepancia ${x.id}: tipo "${x.tipo}" no válido`);
         if (!IMPACTOS.includes(x.impacto)) errs.push(`discrepancia ${x.id}: impacto "${x.impacto}" no válido`);
         if (!isStr(x.diseno) || !isStr(x.app)) errs.push(`discrepancia ${x.id}: tiene que decir qué dice el diseño y qué hace la app`);
+        // Puede no afectar a ningún criterio (lista vacía), pero si nombra uno, tiene que existir.
+        if (x.criterios !== undefined && !Array.isArray(x.criterios)) errs.push(`discrepancia ${x.id}: criterios tiene que ser una lista`);
+        else for (const c of x.criterios ?? []) if (!ids.has(c)) errs.push(`discrepancia ${x.id}: apunta a ${c}, que no existe`);
     }
-    for (const q of d.dudas) if (!isStr(q.pregunta)) errs.push(`duda sobre ${q.criterio}: sin pregunta`);
+    for (const q of d.dudas) {
+        if (!isStr(q.pregunta)) errs.push(`duda sobre ${q.criterio}: sin pregunta`);
+        if (!ids.has(q.criterio)) errs.push(`duda sobre ${q.criterio}: ese criterio no existe`);
+    }
+    const conDuda = new Set(d.dudas.map((q) => q.criterio));
+    for (const c of sinRespaldo) if (!conDuda.has(c)) errs.push(`criterio ${c}: no tiene respaldo y falta su duda para negocio`);
     return errs;
 }
 
@@ -304,7 +334,13 @@ async function main() {
     if (!existsSync(files.design)) throw new Error(`No existe ${files.design}: el agente no ha escrito el resultado.`);
     const design = JSON.parse(readFileSync(files.design, "utf8"));
     const errs = validateDesign(design, story);
-    if (errs.length) throw new Error(`El resultado no es válido; no se escribe el plan:\n${errs.map((e) => `   - ${e}`).join("\n")}`);
+    if (errs.length) {
+        // Un JSON de antes de los prefijos [CAx] solo falla por eso: se dice para no tener que adivinarlo.
+        const sinPrefijos = errs.some((e) => e.includes("no empieza por el [CAx]"))
+            ? "\n   Los resultados esperados llevan delante el criterio que comprueban ([CA1] …). Si el JSON es anterior a esa regla, vuelve a lanzar el agente o añade los prefijos a mano."
+            : "";
+        throw new Error(`El resultado no es válido; no se escribe el plan:\n${errs.map((e) => `   - ${e}`).join("\n")}${sinPrefijos}`);
+    }
     writeFileSync(files.plan, renderPlan(design, story) + "\n");
     const cov = coverage(design);
     printSummary(design, cov, files);

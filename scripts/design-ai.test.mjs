@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
     parseFigmaUrl, parseStory, chooseSource, buildPrompt, validateDesign, coverage, renderPlan,
-    selectForGeneration, buildGeneratorPrompt, paths, changedOutside,
+    selectForGeneration, buildGeneratorPrompt, paths, changedOutside, esperadoCriterios,
 } from "./design-ai.mjs";
 
 // Copia fija de la historia: la de specs/historias/ cambia al poner el FILE_KEY real (ver specs/figma/README.md).
@@ -12,7 +12,7 @@ const story = parseStory(readFileSync("scripts/fixtures/design-ai/HU-001.md", "u
 
 const caso = (id, criterios, extra = {}) => ({
     id, titulo: `caso ${id}`, tipo: "positivo", prioridad: "alta", criterios, pantallas: ["1:2"],
-    precondicion: "sesión iniciada", pasos: ["paso"], esperado: ["resultado"], localizadores: ['[data-test="x"]'], existe_en: null, ...extra,
+    precondicion: "sesión iniciada", pasos: ["paso"], esperado: criterios.map((c) => `[${c}] resultado`), localizadores: ['[data-test="x"]'], existe_en: null, ...extra,
 });
 const criterio = (id, respaldo = "diseno_y_app") => ({ id, texto: id, dado: "d", cuando: "c", entonces: "e", respaldo });
 const valido = () => ({
@@ -69,6 +69,57 @@ test("la validación rechaza criterios inventados u olvidados y casos sin trazar
         assert.ok(errs.includes(s), `falta "${s}" en:\n${errs}`);
     }
     assert.deepEqual(validateDesign({ historia: "HU-002" }, story).slice(0, 1), ['historia es "HU-002" y debería ser "HU-001"']);
+});
+
+test("cada esperado lleva el [CAx] de uno de sus criterios y cada criterio tiene un esperado", () => {
+    const d = valido();
+    d.casos.push(caso("TC-07", ["CA1", "CA2"], { esperado: ["[CA1] botón Remove", "contador a 2", "[CA3] otro criterio"] }));
+    const errs = validateDesign(d, story).join("\n");
+    for (const s of ['TC-07: el esperado "contador a 2" no empieza', 'TC-07: el esperado "[CA3] otro criterio" no empieza', "TC-07: ningún esperado comprueba CA2"]) {
+        assert.ok(errs.includes(s), `falta "${s}" en:\n${errs}`);
+    }
+    assert.ok(!errs.includes("ningún esperado comprueba CA1"));
+});
+
+test("el prefijo admite variantes razonables y una comprobación que cubre varios criterios", () => {
+    assert.deepEqual(esperadoCriterios("[CA1] botón Remove"), ["CA1"]);
+    assert.deepEqual(esperadoCriterios(" [ca1]: botón"), ["CA1"]);
+    assert.deepEqual(esperadoCriterios("[CA1]Botón"), ["CA1"]);
+    assert.deepEqual(esperadoCriterios("[CA1, CA2] el contador muestra 2"), ["CA1", "CA2"]);
+    assert.deepEqual(esperadoCriterios("el contador muestra 2"), []);
+    const d = valido();
+    d.casos.push(caso("TC-07", ["CA1", "CA2"], { esperado: ["[CA1, CA2] el contador muestra 2"] }));
+    assert.deepEqual(validateDesign(d, story), []);
+});
+
+test("un criterio sin respaldo va como duda: ni caso propio ni sin pregunta", () => {
+    const d = valido();
+    d.casos.push(caso("TC-07", ["CA5"]));
+    d.dudas = [];
+    const errs = validateDesign(d, story).join("\n");
+    assert.ok(errs.includes("TC-07: apunta a CA5, que no tiene respaldo"), errs);
+    assert.ok(errs.includes("criterio CA5: no tiene respaldo y falta su duda para negocio"), errs);
+});
+
+test("los campos que pinta el plan como listas tienen que ser listas, y los ids tienen que existir", () => {
+    const d = valido();
+    d.casos[0].localizadores = "cart-subtotal";
+    d.casos[1].localizadores = [null, { css: "x" }];
+    d.discrepancias[0].criterios = "CA4";
+    const errs = validateDesign(d, story).join("\n");
+    for (const s of ["TC-01: localizadores tiene que ser una lista de textos", "TC-02: localizadores tiene que ser una lista de textos", "D1: criterios tiene que ser una lista"]) {
+        assert.ok(errs.includes(s), `falta "${s}" en:\n${errs}`);
+    }
+    d.casos[1].localizadores = ['[data-test="x"]'];
+    d.discrepancias[0].criterios = ["CA42"];
+    d.dudas.push({ criterio: "CA99", pregunta: "¿?", motivo: "m" });
+    const ids = validateDesign(d, story).join("\n");
+    assert.ok(ids.includes("D1: apunta a CA42, que no existe") && ids.includes("duda sobre CA99: ese criterio no existe"), ids);
+    d.discrepancias[0].criterios = [];
+    d.dudas.pop();
+    delete d.casos[0].localizadores;
+    delete d.discrepancias[0].criterios;
+    assert.deepEqual(validateDesign(d, story), []);
 });
 
 test("una discrepancia tiene que decir qué dice Figma y qué hace la app", () => {
