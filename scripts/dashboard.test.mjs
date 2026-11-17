@@ -7,7 +7,7 @@ import vm from "node:vm";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readArtifact, loadRun, loadEval, buildData, buildHtml, saveSnapshot, loadHistory, normalizeTests } from "./dashboard.mjs";
-import { TIPOS, groupMetrics, filterGroups, browsersOf, evalMetrics } from "./dashboard-view.mjs";
+import { TIPOS, groupMetrics, filterGroups, browsersOf, evalMetrics, actionsFor } from "./dashboard-view.mjs";
 import { mergeReports } from "./merge-results.mjs";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -153,7 +153,7 @@ test("artefactos inexistentes, vacíos o malformados no tumban el resto", () => 
     assert.equal(run.analysis, null);
     assert.equal(run.tickets, null);
     const status = Object.fromEntries(run.artifacts.map((a) => [a.name, a.status]));
-    assert.deepEqual(status, { "test-results.json": "ok", "ai-failures-grouped.json": "json_invalido", "ai-summary.txt": "vacio", "ai-corrections.md": "ausente", "ai-tickets.json": "formato_desconocido" });
+    assert.deepEqual(status, { "test-results.json": "ok", "ai-failures-grouped.json": "json_invalido", "ai-summary.txt": "vacio", "ai-corrections.md": "ausente", "ai-tickets.json": "formato_desconocido", "ai-heal.json": "ausente", "ai-jira.json": "ausente" });
 });
 
 test("informes parciales: campos opcionales ausentes y tipos fuera de la taxonomía", () => {
@@ -169,6 +169,41 @@ test("informes parciales: campos opcionales ausentes y tipos fuera de la taxonom
     // Sin test-results.json el análisis se muestra, pero avisando de que no se puede vincular.
     assert.ok(run.warnings.some((w) => w.includes("falta test-results.json")));
     assert.equal(normalizeTests({ suites: [] }), null);
+});
+
+test("acciones ejecutadas: la PR del healer y los tickets de Jira, vinculados a la ejecución", () => {
+    const dir = fullDir();
+    write(dir, "playwright-report/ai-heal.json", { run_start_time: START, groups: ["G001"], pr: "https://github.com/o/r/pull/12", needs_human: true, reasons: ["r"], review: "APROBADO" });
+    write(dir, "playwright-report/ai-jira.json", { run_start_time: START, mode: "real", tickets: [{ group: "G002", key: "THP-1", url: "https://x.atlassian.net/browse/THP-1" }, { group: "G009", error: "403" }] });
+    let run = loadRun(dir);
+    assert.equal(run.heal.pr, "https://github.com/o/r/pull/12");
+    assert.deepEqual(actionsFor("G001", run.heal, run.jira), [{ kind: "pr", url: "https://github.com/o/r/pull/12", needsHuman: true }]);
+    assert.deepEqual(actionsFor("G002", run.heal, run.jira).map((a) => [a.kind, a.mode, a.key]), [["ticket", "real", "THP-1"]]);
+    assert.deepEqual(actionsFor("G003", run.heal, run.jira), []);
+
+    // Un enlace que no es https no llega a la página; un informe de otra ejecución no se muestra.
+    write(dir, "playwright-report/ai-heal.json", { run_start_time: START, groups: ["G001"], pr: "javascript:alert(1)" });
+    write(dir, "playwright-report/ai-jira.json", { run_start_time: "2026-10-20T09:00:00.000Z", mode: "real", tickets: [] });
+    run = loadRun(dir);
+    assert.equal(run.heal.pr, null);
+    assert.equal(run.jira, null);
+    assert.ok(run.warnings.some((w) => w.includes("ai-jira.json es de otra ejecución")));
+
+    // Sin run_start_time (versiones anteriores), por fecha; con formato roto, aviso y se sigue.
+    age(write(dir, "playwright-report/ai-jira.json", { mode: "simulado", tickets: [{ group: "G002" }] }), 3600);
+    write(dir, "playwright-report/ai-heal.json", { pr: "https://github.com/o/r/pull/1" });
+    run = loadRun(dir);
+    assert.equal(run.jira, null);
+    assert.equal(run.heal, null);
+    assert.equal(run.artifacts.find((a) => a.name === "ai-heal.json").status, "formato_desconocido");
+
+    // El historial conserva las acciones.
+    const history = tmp();
+    write(dir, "playwright-report/ai-heal.json", { run_start_time: START, groups: ["G001"], pr: null });
+    saveSnapshot(history, "runs", loadRun(dir));
+    const saved = loadHistory(history).runs[0];
+    assert.deepEqual(saved.heal.groups, ["G001"]);
+    assert.equal(saved.jira, null);
 });
 
 test("filtros y búsqueda: categoría, origen, navegador, test y error, combinables", () => {

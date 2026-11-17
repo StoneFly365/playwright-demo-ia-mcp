@@ -152,7 +152,7 @@ async function main() {
         git("switch", from);
         git("branch", "-D", branch);
         console.log("✅ El healer no ha propuesto cambios: no hay PR. Su explicación está arriba.");
-        save({ groups: groups.map((g) => g.group_id), pr: null, needs_human: false, reasons: [], summary });
+        save({ run_start_time: grouped.run_start_time ?? null, groups: groups.map((g) => g.group_id), pr: null, needs_human: false, reasons: [], summary });
         return;
     }
 
@@ -179,7 +179,7 @@ async function main() {
         { input: buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time }) });
     git("switch", from);
 
-    save({ groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: needsHuman, reasons, review: review?.verdict ?? review?.error ?? null, summary });
+    save({ run_start_time: grouped.run_start_time ?? null, groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: needsHuman, reasons, review: review?.verdict ?? review?.error ?? null, summary });
     const why = [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])];
     console.log(`✅ PR en borrador: ${url} · revisión adversarial: ${review?.verdict ?? "no disponible"}`);
     if (needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${why.map((r) => `   - ${r}`).join("\n")}`);

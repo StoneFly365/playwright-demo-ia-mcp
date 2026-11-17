@@ -705,6 +705,8 @@ Abre el `.html` generado directamente en el navegador: no necesita servidor, con
 | `test-results.json` | Playwright (o `merge-results.mjs` en CI) | Total, pasados, fallidos, omitidos, flaky, % de éxito, navegadores, identificador de la ejecución | Las métricas de tests salen como `n/d` y el resto de ficheros no se puede vincular a una ejecución |
 | `ai-failures-grouped.json` | `report:ai` | Grupos con categoría, origen, confianza, evidencia, acción, tests, navegadores, error e instantánea; filtros y búsqueda | No hay grupos ni distribución por categoría |
 | `ai-summary.txt`, `ai-corrections.md`, `ai-tickets.json` | `report:ai` | Resumen, correcciones sugeridas y tickets propuestos | Se indica que no existen |
+| `ai-heal.json` | `heal:ai` | Acción ejecutada en cada grupo curado: la PR en borrador del healer y si lleva `needs-human` | Se indica que no hay acciones registradas |
+| `ai-jira.json` | `jira:tickets` | Acción ejecutada en cada grupo `bug_producto`: el ticket creado en Jira, o preparado sin enviar en modo simulado | Se indica que no hay acciones registradas |
 | `ai-eval.json` (o `ai-eval.md` antiguo) | `eval:ai` | Acierto por grupos y por tests, tests en grupos correctos e incorrectos, resultado por escenario, proveedor y fecha | Estado vacío que explica cómo generarla |
 
 Un fichero inexistente, vacío, con JSON malformado o con un formato antiguo no rompe la página: la sección **Artefactos leídos** dice qué se ha podido usar y por qué no.
@@ -712,13 +714,13 @@ Un fichero inexistente, vacío, con JSON malformado o con un formato antiguo no 
 - **Tests y grupos van por separado.** Los tests cuentan una vez por navegador; un grupo es una causa (70 tests de `cascade` son 1 grupo). Nunca se suman.
 - **Origen de la clasificación.** `flaky` lo decide el código (*Determinista*); `test_roto`, `bug_producto` y `entorno`, la IA; `sin_clasificar` es que la clasificación falló. Las categorías son las mismas cinco del triage.
 - **Pendientes de revisión.** Los artefactos no guardan un estado de revisión. Se marcan los `sin_clasificar` y los de la IA con confianza distinta de `alta`.
-- **Recomendado no es ejecutado.** Las acciones, correcciones y tickets se muestran como propuestas. El dashboard es de solo lectura: no lanza el healer, no abre PR y no crea tickets. Las acciones ejecutadas salen como "ninguna registrada", porque el circuito automático (fase 4) aún no existe.
+- **Recomendado no es ejecutado.** La acción, las correcciones y los tickets que propone la IA salen como propuestas. Lo que la fase 4 hizo de verdad sale aparte, como **acción ejecutada**: la PR del healer (`ai-heal.json`) y el ticket de Jira (`ai-jira.json`), en la tarjeta de cada grupo y en la sección de recomendaciones. Si no se ha lanzado `heal:ai` ni `jira:tickets`, se dice que no hay acciones registradas. El dashboard es de solo lectura: no lanza el healer, no abre PR y no crea tickets. Solo enlaza a la PR y al ticket, y solo si el enlace es `https`.
 - **Peticiones a la IA y proveedor.** Desde esta versión `report:ai` guarda en `ai-failures-grouped.json` el proveedor y el número de peticiones que hizo (`ai_requests`, reintentos incluidos). En informes anteriores salen como `n/d`. No hay datos de tokens ni de coste, así que no se muestran.
 - Cada indicador explica cómo se calcula en el desplegable **Cómo se calcula cada indicador**, al final de la página.
 
 ### No mezclar ejecuciones
 
-`report:ai` guarda ahora `run_start_time` (la hora de inicio que pone Playwright en `test-results.json`), y el dashboard solo asocia el análisis a la ejecución si coincide. En informes anteriores compara los contadores de fallos y flaky y la fecha de los ficheros. `ai-summary.txt`, `ai-corrections.md` y `ai-tickets.json` no llevan identificador: solo se muestran si son posteriores a `test-results.json`. Lo que es de otra ejecución no se muestra y aparece un aviso. Esto importa porque `report:ai` no borra los ficheros de la ejecución anterior cuando no tiene nada que analizar.
+`report:ai` guarda ahora `run_start_time` (la hora de inicio que pone Playwright en `test-results.json`), y el dashboard solo asocia el análisis a la ejecución si coincide. En informes anteriores compara los contadores de fallos y flaky y la fecha de los ficheros. `ai-heal.json` y `ai-jira.json` también guardan `run_start_time`; si vienen de una versión anterior, se vinculan por fecha. `ai-summary.txt`, `ai-corrections.md` y `ai-tickets.json` no llevan identificador: solo se muestran si son posteriores a `test-results.json`. Lo que es de otra ejecución no se muestra y aparece un aviso. Esto importa porque `report:ai` no borra los ficheros de la ejecución anterior cuando no tiene nada que analizar.
 
 ### Historial
 

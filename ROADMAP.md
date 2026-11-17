@@ -143,7 +143,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Rediseño visual para la demo: tema oscuro con colores fijos por función y por categoría, cabecera con el estado de la ejecución, tarjetas con icono, gráficos (resultados, categorías, origen de la clasificación, historial y acierto) y detalle de grupo en dos columnas. Solo cambia `scripts/dashboard.html`; la lógica y los datos son los mismos.
 - [x] README: ciclo completo para alimentar el historial en bash y PowerShell (`npm test; npm run report:ai; npm run dashboard -- --save`).
 - Caché de clasificaciones: descartada, no es un pendiente. Motivo en el [registro de decisiones](#registro-de-decisiones) (21 de octubre) y en el README. Si se retoma, en una rama propia.
-- [ ] Acciones ejecutadas: el dashboard solo puede mostrarlas cuando la fase 4 deje constancia de ellas en un artefacto.
+- [x] Acciones ejecutadas: el dashboard lee `ai-heal.json` (`heal:ai`) y `ai-jira.json` (`jira:tickets`) y enseña, en cada grupo y en la sección de recomendaciones, la PR del healer y el ticket de Jira. Los dos ficheros guardan ahora `run_start_time` para no mezclar ejecuciones.
 
 ## Fase 4 · Cerrar el circuito
 
@@ -205,7 +205,7 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 
 - [x] `storageState` para no repetir el login en cada test. Solo sin `DEMO_SCENARIO`, para que `cascade` siga tumbando 70 tests (comprobado). En chromium la suite verde pasa de 20,9 s a 19,8 s: el login de SauceDemo es rápido y casi no se nota.
 - [x] Spec de accesibilidad con axe: `tests/accessibility.spec.ts`, 8 tests `@a11y` con WCAG 2.1 A y AA (login, error de login, inventario, detalle, carrito, los dos pasos del checkout y la confirmación). SauceDemo pasa todos en los tres navegadores. `npm run test:a11y` los lanza solos.
-- [ ] Regresión visual con `toHaveScreenshot`.
+- Regresión visual con `toHaveScreenshot`: descartada, no es un pendiente. Motivo en el [registro de decisiones](#registro-de-decisiones) (17 de noviembre). Si un cliente la pide, en una rama propia.
 - [ ] Usar la rama `arquetipo` para apuntar a una segunda app más parecida al sector del cliente.
 
 ---
@@ -271,4 +271,5 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 | 2026-11-10 | `--generate` solo genera los casos nuevos de prioridad alta, y después de que una persona revise el plan | La IA propone y una persona decide; generar todo llenaría la suite de casos que ya existen |
 | 2026-11-17 | Los escenarios de fallo y `eval:ai` excluyen los tests `@a11y` | Los escenarios y sus cifras (70 tests) se calibraron sobre la suite funcional; una página que no carga no dice nada de su accesibilidad |
 | 2026-11-17 | Se corrige `CartPage.cartItems` (`[data-test="cart-item"]`, que no existe, pasa a `[data-test="inventory-item"]`) y el Lab 5 conserva el defecto en una copia del Page Object dentro del sandbox | Un locator roto en `pages/` no debe quedarse en el proyecto por ser material del curso; con la copia, el caso B del Lab 5 sigue igual y el ejercicio del módulo 02 de sustituir `.cart_item` por `cartItems` vuelve a ser posible |
+| 2026-11-17 | Sin regresión visual (`toHaveScreenshot`) | Las capturas de referencia cambian con el navegador y el sistema operativo, y SauceDemo es una web de terceros: cualquier cambio suyo daría falsos fallos. Compensa en una app propia con diseño que vigilar, no en esta demo, que se centra en clasificar fallos funcionales. Las capturas del reporte de Playwright no lo sustituyen: solo se guardan cuando un test falla por otro motivo |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |
