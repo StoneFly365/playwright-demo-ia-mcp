@@ -202,7 +202,9 @@ jobs:
     name: Healer (PR en borrador)
     needs: report
     if: always() && github.event_name == 'workflow_dispatch' && inputs.heal && inputs.suite != 'eval'
-    runs-on: ubuntu-latest  # fuera del contenedor: hace falta gh, que la imagen de Playwright no trae
+    # Fuera del contenedor: hace falta gh, que la imagen de Playwright no trae. Fijado a 24.04 porque
+    # ubuntu-latest ya es 26.04 y Playwright 1.58 no tiene navegadores para esa versión.
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
       contents: write        # rama heal/* y push
