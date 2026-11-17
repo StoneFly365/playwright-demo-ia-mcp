@@ -12,6 +12,15 @@ on:
         type: choice
         default: green
         options: [green, fail, all, eval]  # eval: mide el acierto de la IA con los escenarios de fallo
+      scenario:
+        description: 'Escenario de fallo de la demo (DEMO_SCENARIO). Excluye @demo-fail y @a11y'
+        type: choice
+        default: ninguno
+        options: [ninguno, cascade, bug, flaky, env]
+      heal:
+        description: 'Lanzar el healer sobre los grupos test_roto y abrir una PR en borrador'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -19,6 +28,8 @@ permissions:
 env:
   TZ: 'Europe/Madrid'
   HOME: /root  # Firefox no arranca si $HOME no pertenece al usuario actual; /github/home es de otro UID
+  # Vacío salvo que se elija un escenario al lanzar a mano: sin la variable, la suite se comporta igual.
+  DEMO_SCENARIO: ${{ github.event_name == 'workflow_dispatch' && inputs.scenario != 'ninguno' && inputs.scenario || '' }}
 
 jobs:
   test:
@@ -45,6 +56,8 @@ jobs:
       - name: Determine grep filter
         id: suite
         run: |
+          # Con un escenario, lo mismo que npm run test:scenario:*: sin @demo-fail ni @a11y.
+          if [ -n "$DEMO_SCENARIO" ]; then echo 'grep=--grep-invert "@demo-fail|@a11y"' >> "$GITHUB_OUTPUT"; exit 0; fi
           case "${{ github.event_name == 'workflow_dispatch' && inputs.suite || 'green' }}" in
             green) echo "grep=--grep-invert @demo-fail" >> "$GITHUB_OUTPUT" ;;
             fail)  echo "grep=--grep @demo-fail"        >> "$GITHUB_OUTPUT" ;;
@@ -128,6 +141,17 @@ jobs:
           pattern: results-json-*
           path: results-json
 
+      # La instantánea de la página en el fallo (error-context.md) vive en test-results/. Sin ella la IA
+      # no ve que el elemento sigue en la página y confunde un test roto con un problema de entorno.
+      # test-results.json la cita por ruta absoluta, que es la misma en este contenedor.
+      # Trae también trazas y vídeos: con los secretos JIRA_*, jira:tickets los adjunta sin redactar.
+      - name: Download test results (failures)
+        uses: actions/download-artifact@v4
+        with:
+          pattern: test-results-*
+          path: test-results
+          merge-multiple: true
+
       - name: Unir los resultados de los tres navegadores
         run: node scripts/merge-results.mjs test-results.json results-json/*/test-results.json
 
@@ -181,6 +205,76 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  # Fase 4 en CI: el healer cura los grupos test_roto del reporte y abre una PR en borrador.
+  # Solo a mano (heal: true), nunca en push ni en PR: gasta cuota de la suscripción de Claude y abre PR.
+  # Las PR que abre GITHUB_TOKEN no disparan otros workflows: para que corran los tests y el guard,
+  # una persona cierra y reabre la PR. El check de asserts y la revisión adversarial ya van dentro de heal:ai.
+  heal:
+    name: Healer (PR en borrador)
+    needs: [test, report]
+    # Solo si fallaron tests: sin fallos no hay ai-failures-grouped.json y no hay nada que curar.
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.heal && inputs.suite != 'eval' && needs.test.result == 'failure'
+    # Fuera del contenedor: hace falta gh, que la imagen de Playwright no trae. Fijado a 24.04 porque
+    # ubuntu-latest ya es 26.04 y Playwright 1.58 no tiene navegadores para esa versión.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: write        # rama heal/* y push
+      pull-requests: write   # PR en borrador
+      issues: write          # etiqueta needs-human
+    env:
+      HOME: /home/runner  # fuera del contenedor el HOME=/root global no es accesible
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # deja las credenciales: heal:ai hace push de la rama heal/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      # El healer ejecuta los tests afectados para comprobar su arreglo.
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@2.1.317
+
+      - name: Download AI report
+        uses: actions/download-artifact@v4
+        with:
+          name: ai-report
+          path: playwright-report
+
+      - name: Identidad de git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Healer
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: npm run heal:ai
+
+      - name: Show healer result
+        if: always()
+        run: |
+          echo "## Healer" >> $GITHUB_STEP_SUMMARY
+          if [ -f playwright-report/ai-heal.json ]; then
+            node -e "const h=require('./playwright-report/ai-heal.json');for(const e of h.heals??[])console.log('- '+e.groups.join(', ')+': '+(e.pr??'sin cambios, no hay PR')+(e.needs_human?' · needs-human':''))" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "_Sin ai-heal.json: no había grupos test_roto o el healer falló (revisa el paso 'Healer')._" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload healer result
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-heal
+          path: playwright-report/ai-heal.json
+          if-no-files-found: ignore
+          retention-days: 30
+
   eval:
     name: Acierto de la IA
     if: github.event_name == 'workflow_dispatch' && inputs.suite == 'eval'
@@ -188,6 +282,8 @@ jobs:
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-jammy
     timeout-minutes: 45
+    env:
+      DEMO_SCENARIO: ''  # eval:ai pone el escenario de cada ejecución; el de la entrada no debe colarse
 
     steps:
       - name: Checkout repository

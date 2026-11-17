@@ -2,7 +2,8 @@ import { test as base, expect, Route } from '@playwright/test';
 
 // Escenarios de fallo realistas para la demo del reporte IA (ROADMAP.md, fase 1).
 // DEMO_SCENARIO elige uno; sin la variable la página no se toca y la suite se comporta igual.
-const scenario = process.env.DEMO_SCENARIO;
+// Vacía cuenta como sin escenario: el workflow de CI la exporta como cadena vacía si no se elige ninguno.
+const scenario = process.env.DEMO_SCENARIO || undefined;
 
 // Sesión de standard_user que guarda fixtures/global-setup.ts. Sin escenario, los specs que la usan
 // arrancan ya logueados. Con un escenario entran por el formulario, para que cascade siga tumbándolos.
