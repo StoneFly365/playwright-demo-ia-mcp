@@ -197,6 +197,10 @@ details[open] > summary .chev { transform: rotate(180deg); color: var(--text); }
 .box.rec .label { color: var(--blue-t); }
 .box.rec-ia { border-color: rgba(167, 139, 250, .4); background: linear-gradient(135deg, rgba(167, 139, 250, .14), rgba(34, 211, 238, .04) 75%), var(--panel-3); }
 .box.rec p { font-weight: 500; color: #f8fafc; }
+.box.done { border-color: rgba(52, 211, 153, .35); background: linear-gradient(135deg, rgba(52, 211, 153, .1), transparent 70%), var(--panel-3); }
+.box.done .label { color: var(--green); }
+.box.done ul { margin: 0; padding-left: 18px; }
+.box.done li { overflow-wrap: anywhere; }
 .box.err { border-color: rgba(251, 113, 133, .3); }
 .box.err .label { color: var(--coral); }
 .box.err pre { border: 0; border-left: 2px solid var(--coral); border-radius: 0 8px 8px 0; background: rgba(251, 113, 133, .05); }
@@ -570,8 +574,20 @@ function confidence(c) {
   return h("span", { class: `conf conf-${n}`, title: `Confianza ${c}` }, h("span", { class: "bars", "aria-hidden": "true" }, [1, 2, 3].map((i) => h("i", { class: i <= n ? "on" : null }))), h("span", { class: "sr" }, "confianza "), c);
 }
 const browserTag = (b) => h("span", { class: "br" }, icon("globe"), b);
+// Solo llegan enlaces https (dashboard.mjs descarta el resto). Abren fuera: la página no se conecta a nada.
+const extLink = (url, text = url) => h("a", { href: url, target: "_blank", rel: "noopener noreferrer" }, text);
+
+function actionItem(a) {
+  if (a.kind === "pr") return a.url
+    ? h("li", {}, "PR en borrador del healer: ", extLink(a.url), a.needsHuman ? [" ", h("span", { class: "pill review", title: "El check de asserts o la revisión adversarial piden una persona" }, icon("eye"), "needs-human")] : null)
+    : h("li", {}, "El healer lo intentó y no propuso cambios: no hay PR.");
+  if (a.error) return h("li", {}, `Ticket de Jira: falló al crearse (${a.error}).`);
+  if (a.mode === "simulado") return h("li", {}, "Ticket de Jira preparado en modo simulado: no se envió.");
+  return h("li", {}, "Ticket de Jira: ", a.url ? extLink(a.url, a.key ?? a.url) : (a.key ?? "creado"));
+}
 
 function groupCard(g) {
+  const acts = actionsFor(g.id, run().heal, run().jira);
   const omitted = g.omittedTests ? h("li", { class: "muted" }, `y ${g.omittedTests} tests más que el artefacto no lista`) : null;
   const evidence = g.evidencia ?? (g.origen === "codigo" ? "El test falló y pasó al reintentar (decidido por el código)." : "no disponible");
   return h("details", { class: `group t-${g.tipo}` },
@@ -588,7 +604,8 @@ function groupCard(g) {
       h("div", { class: "stackv" },
         h("div", { class: "box ev" }, label("search", "Evidencia"), h("p", {}, evidence)),
         h("div", { class: `box rec${g.origen === "ia" ? " rec-ia" : ""}` },
-          label(g.origen === "ia" ? "sparkles" : "lightbulb", "Acción recomendada", "propuesta · no ejecutada"), h("p", {}, g.accion ?? "La clasificación no trae acción.")),
+          label(g.origen === "ia" ? "sparkles" : "lightbulb", "Acción recomendada", acts.length ? "propuesta" : "propuesta · no ejecutada"), h("p", {}, g.accion ?? "La clasificación no trae acción.")),
+        acts.length ? h("div", { class: "box done" }, label("check", "Acción ejecutada", "registrada por heal:ai o jira:tickets"), h("ul", {}, acts.map(actionItem))) : null,
         g.error ? h("div", { class: "box err" }, label("terminal", "Error (redactado)"), h("pre", {}, g.error)) : null,
         h("div", { class: "box" }, label("list", "Tests afectados", plural(g.count, "test")), h("ul", { class: "tests" },
           g.tests.map((t) => h("li", {}, h("span", {}, t.title), h("span", { class: "loc" }, [t.file, t.line].filter((x) => x != null).join(":")), t.browser ? browserTag(t.browser) : null)), omitted)),
@@ -635,12 +652,20 @@ function renderGroups() {
 
 function renderRecommendations() {
   const r = run();
+  const heal = r.heal, jira = r.jira;
+  const healLine = heal && h("li", {}, code("heal:ai"), ` sobre ${heal.groups.join(", ") || "ningún grupo"}: `,
+    heal.pr ? ["PR en borrador ", extLink(heal.pr), heal.needsHuman ? " · necesita revisión humana (needs-human)" : " · sin asserts relajados ni dudas del revisor"] : "sin cambios propuestos, no hay PR.");
+  const jiraLine = jira && h("li", {}, code("jira:tickets"), jira.mode === "real" ? " en Jira: " : " en modo simulado (sin credenciales, no se envió nada): ",
+    jira.tickets.length ? jira.tickets.map((t, i) => [i ? ", " : "", `${t.group ?? "?"} → `, t.error ? `error (${t.error})` : t.url ? extLink(t.url, t.key ?? t.url) : (t.key ?? "preparado")]) : "sin tickets.");
   fill("recomendaciones",
     head("lightbulb", "Recomendaciones y propuestas", "blue"),
-    h("div", { class: "notice" }, icon("info"), h("p", {}, h("strong", {}, "Acciones ejecutadas: ninguna registrada. "), "Los artefactos no registran acciones automáticas y el dashboard no lanza el healer, no abre PR y no crea tickets. Todo lo de esta sección son propuestas generadas en ", code("report:ai"), ".")),
+    heal || jira
+      ? [h("h3", {}, "Acciones ejecutadas (ai-heal.json, ai-jira.json)"), h("div", { class: "box done" }, label("check", "Lo que la fase 4 hizo de verdad"), h("ul", {}, healLine, jiraLine)),
+        h("p", { class: "small muted" }, "El dashboard no lanza el healer, no abre PR y no crea tickets: solo enseña lo que registraron ", code("heal:ai"), " y ", code("jira:tickets"), ".")]
+      : h("div", { class: "notice" }, icon("info"), h("p", {}, h("strong", {}, "Acciones ejecutadas: ninguna registrada para esta ejecución. "), "Las registran ", code("npm run heal:ai"), " (", code("ai-heal.json"), ") y ", code("npm run jira:tickets"), " (", code("ai-jira.json"), "); el dashboard no lanza ninguna. Todo lo de esta sección son propuestas generadas en ", code("report:ai"), ".")),
     h("h3", {}, "Correcciones sugeridas (ai-corrections.md) · no aplicadas"),
     r.corrections ? h("div", { class: "ai-panel" }, label("sparkles", "Propuesta de la IA", "no aplicada"), h("pre", {}, r.corrections)) : empty("No hay ai-corrections.md de esta ejecución."),
-    h("h3", {}, "Tickets propuestos (ai-tickets.json) · no creados en Jira"),
+    h("h3", {}, "Tickets propuestos por la IA (ai-tickets.json)"),
     r.tickets == null ? empty("No hay ai-tickets.json de esta ejecución.")
       : !r.tickets.length ? empty("Sin tickets: solo se proponen para los grupos bug_producto.")
       : r.tickets.map((t) => h("div", { class: "ticket" },
@@ -766,6 +791,7 @@ function renderDefinitions() {
       def("sin_clasificar", "La llamada de clasificación falló o el informe no trae tipo."),
       def("Pendientes de revisión", "Los artefactos no guardan revisiones. Se marcan los sin_clasificar y los de IA con confianza media, baja o sin confianza."),
       def("Peticiones a la IA", "ai_requests de ai-failures-grouped.json: peticiones de report:ai al proveedor, reintentos incluidos. No hay datos de tokens ni de coste."),
+      def("Acciones ejecutadas", "Lo que registran heal:ai (ai-heal.json: la PR en borrador del healer) y jira:tickets (ai-jira.json: los tickets creados o preparados en modo simulado). Las acciones recomendadas son propuestas de la IA; las ejecutadas, hechos."),
       def("Vínculo", "El análisis se asocia a la ejecución por run_start_time. Los ficheros sin identificador (resumen, correcciones, tickets) solo se aceptan si son posteriores a test-results.json."),
       def("Acierto de la IA", "De ai-eval.json (npm run eval:ai): grupos bien clasificados / grupos evaluados, y lo mismo ponderado por tests."))));
 }

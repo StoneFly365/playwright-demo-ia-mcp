@@ -156,8 +156,9 @@ async function main() {
     }
     const missing = ENV.filter((k) => !process.env[k]);
     const real = missing.length === 0;
+    const grouped = read(path.join(dir, "ai-failures-grouped.json"));
     const plans = planTickets({
-        tickets, grouped: read(path.join(dir, "ai-failures-grouped.json")), report: read(testsFile),
+        tickets, grouped, report: read(testsFile),
         projectKey: process.env.JIRA_PROJECT_KEY ?? "DEMO", issueType: process.env.JIRA_ISSUE_TYPE ?? "Bug",
     });
 
@@ -181,7 +182,7 @@ async function main() {
         }
     }
     mkdirSync(path.dirname(OUT), { recursive: true });
-    writeFileSync(OUT, JSON.stringify({ generated_at: new Date().toISOString(), mode: real ? "real" : "simulado", missing_env: missing, tickets: results }, null, 2) + "\n");
+    writeFileSync(OUT, JSON.stringify({ generated_at: new Date().toISOString(), run_start_time: grouped?.run_start_time ?? null, mode: real ? "real" : "simulado", missing_env: missing, tickets: results }, null, 2) + "\n");
     console.log(real
         ? `✅ ${results.filter((r) => r.key).length} de ${results.length} tickets creados en Jira. Detalle en ${OUT}.`
         : `✅ Modo simulado (faltan ${missing.join(", ")}): ${results.length} tickets preparados en ${OUT}, sin enviar nada.`);

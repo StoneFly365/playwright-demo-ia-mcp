@@ -38,6 +38,16 @@ export function filterGroups(groups, { tipo = "", origen = "", browser = "", tes
         && (!qError || has(g.error, qError) || has(g.fingerprint, qError)));
 }
 
+// Acciones ejecutadas sobre un grupo: la PR del healer (ai-heal.json) y el ticket de Jira (ai-jira.json).
+export function actionsFor(groupId, heal, jira) {
+    const out = [];
+    if (heal?.groups.includes(groupId)) out.push({ kind: "pr", url: heal.pr, needsHuman: heal.needsHuman });
+    for (const t of jira?.tickets ?? []) {
+        if (t.group === groupId) out.push({ kind: "ticket", mode: jira.mode, key: t.key, url: t.url, error: t.error });
+    }
+    return out;
+}
+
 export function browsersOf(groups) {
     return [...new Set(groups.flatMap((g) => g.browsers))].sort();
 }

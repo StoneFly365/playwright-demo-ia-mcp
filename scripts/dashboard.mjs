@@ -119,6 +119,37 @@ export function linkByDate(tests, testsMtime, mtime) {
     return mtime < testsMtime ? "otra_ejecucion" : "por_fecha";
 }
 
+// ai-heal.json y ai-jira.json guardan run_start_time desde esta versión; los anteriores se vinculan por fecha.
+export function linkById(tests, testsMtime, raw, mtime) {
+    if (str(raw?.run_start_time) && tests?.startTime) return raw.run_start_time === tests.startTime ? "ok" : "otra_ejecucion";
+    return linkByDate(tests, testsMtime, mtime);
+}
+
+// Lo que la fase 4 hizo de verdad (heal:ai y jira:tickets), no lo que propuso la IA.
+// Solo se aceptan enlaces https: la página los muestra como enlaces.
+const https = (v) => (str(v) && /^https:\/\//.test(v) ? v : null);
+
+export function normalizeHeal(raw) {
+    if (!isObj(raw) || !Array.isArray(raw.groups)) return null;
+    return {
+        generatedAt: str(raw.generated_at),
+        groups: strings(raw.groups),
+        pr: https(raw.pr),
+        needsHuman: raw.needs_human === true,
+        reasons: strings(raw.reasons),
+        review: str(raw.review),
+    };
+}
+
+export function normalizeJira(raw) {
+    if (!isObj(raw) || !Array.isArray(raw.tickets)) return null;
+    return {
+        generatedAt: str(raw.generated_at),
+        mode: raw.mode === "real" ? "real" : "simulado",
+        tickets: raw.tickets.filter(isObj).map((t) => ({ group: str(t.group), key: str(t.key), url: https(t.url), error: str(t.error) })),
+    };
+}
+
 function normalizeTicket(t) {
     return {
         titulo: str(t.titulo) ?? "(sin título)",
@@ -165,6 +196,17 @@ export function loadRun(dir = ".", { source = "local" } = {}) {
     if (rawTickets && !Array.isArray(rawTickets)) ticketsArtifact.status = "formato_desconocido";
     const tickets = Array.isArray(rawTickets) ? rawTickets.filter(isObj).map(normalizeTicket) : null;
 
+    const action = (name, normalize) => {
+        const a = read(path.join(reportDir, name), { json: true });
+        if (a.status !== "ok") return null;
+        const value = normalize(a.value);
+        if (!value) { a.status = "formato_desconocido"; return null; }
+        a.link = linkById(tests, testsMtime, a.value, a.mtime);
+        return a.link === "otra_ejecucion" ? null : value;
+    };
+    const heal = action("ai-heal.json", normalizeHeal);
+    const jira = action("ai-jira.json", normalizeJira);
+
     for (const a of artifacts) {
         if (a.link === "otra_ejecucion") warnings.push(`${a.name} es de otra ejecución distinta de test-results.json: no se muestra para no mezclar resultados.`);
         if (a.link === "sin_verificar" && tests === null) warnings.push(`${a.name} no se puede vincular a una ejecución porque falta test-results.json.`);
@@ -180,6 +222,8 @@ export function loadRun(dir = ".", { source = "local" } = {}) {
         summary,
         corrections,
         tickets,
+        heal,
+        jira,
         artifacts: artifacts.map(({ name, status, link }) => ({ name, status, link: link ?? null })),
         warnings,
     };
@@ -265,6 +309,11 @@ function reviveRun(v) {
         tickets: Array.isArray(v.tickets) ? v.tickets.filter(isObj).map((t) => normalizeTicket({
             ...t, pasos_para_reproducir: t.pasos, solucion_sugerida: t.solucion,
         })) : null,
+        heal: isObj(v.heal) ? normalizeHeal({
+            generated_at: v.heal.generatedAt, groups: v.heal.groups, pr: v.heal.pr,
+            needs_human: v.heal.needsHuman, reasons: v.heal.reasons, review: v.heal.review,
+        }) : null,
+        jira: isObj(v.jira) ? normalizeJira({ generated_at: v.jira.generatedAt, mode: v.jira.mode, tickets: v.jira.tickets }) : null,
         artifacts: list(v.artifacts).filter(isObj).map((x) => ({ name: String(x.name), status: String(x.status), link: str(x.link) })),
         warnings: strings(v.warnings),
         source: "historial",

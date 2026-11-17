@@ -143,7 +143,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Rediseño visual para la demo: tema oscuro con colores fijos por función y por categoría, cabecera con el estado de la ejecución, tarjetas con icono, gráficos (resultados, categorías, origen de la clasificación, historial y acierto) y detalle de grupo en dos columnas. Solo cambia `scripts/dashboard.html`; la lógica y los datos son los mismos.
 - [x] README: ciclo completo para alimentar el historial en bash y PowerShell (`npm test; npm run report:ai; npm run dashboard -- --save`).
 - Caché de clasificaciones: descartada, no es un pendiente. Motivo en el [registro de decisiones](#registro-de-decisiones) (21 de octubre) y en el README. Si se retoma, en una rama propia.
-- [ ] Acciones ejecutadas: el dashboard solo puede mostrarlas cuando la fase 4 deje constancia de ellas en un artefacto.
+- [x] Acciones ejecutadas: el dashboard lee `ai-heal.json` (`heal:ai`) y `ai-jira.json` (`jira:tickets`) y enseña, en cada grupo y en la sección de recomendaciones, la PR del healer y el ticket de Jira. Los dos ficheros guardan ahora `run_start_time` para no mezclar ejecuciones.
 
 ## Fase 4 · Cerrar el circuito
 
