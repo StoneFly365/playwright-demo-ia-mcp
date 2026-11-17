@@ -326,12 +326,13 @@ npm run test:report
 
 El workflow [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) ejecuta el job dentro de la imagen mediante `container:`. No necesita pasos de `setup-node` ni `playwright install`: la imagen ya lo trae todo.
 
-Se dispara con `push` o `pull_request` a `main`, o manualmente. En `push` y `pull_request` ejecuta la suite verde (excluye `@demo-fail`). En el lanzamiento manual se elige la suite con el input `suite`: `green` (por defecto), `fail` o `all`.
+Se dispara con `push` o `pull_request` a `main`, o manualmente. En `push` y `pull_request` ejecuta la suite verde (excluye `@demo-fail`). En el lanzamiento manual se elige la suite con el input `suite`: `green` (por defecto), `fail` o `all`. Con `scenario` se activa un escenario de fallo de la demo (`cascade`, `bug`, `flaky` o `env`, como `npm run test:scenario:*`), y con `heal` se lanza el [healer](#healer-automático-npm-run-healai) al terminar el reporte.
 
 ```bash
 # Lanzar el workflow manualmente (requiere gh CLI)
 gh workflow run "Playwright Tests"                 # suite verde
 gh workflow run "Playwright Tests" -f suite=fail   # solo fallos intencionados
+gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true   # cascade y PR del healer
 
 # Seguir el último run en vivo
 gh run watch
@@ -358,6 +359,7 @@ flowchart TD
     W -.-> JOB
 
     JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json<br/>· report:ai · tickets de Jira · Summary + artefacto ai-report"]
+    R --> HL["Job: Healer (solo a mano, heal=true)<br/>heal:ai sobre los test_roto · PR en borrador"]
     T --> GU["Job: Guard de asserts<br/>solo PR desde ramas heal/*"]
 ```
 
@@ -587,7 +589,14 @@ DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable q
 5. Pasa el check de asserts y la [revisión adversarial](#revisión-adversarial-npm-run-reviewpw). Después confirma, hace push y abre una **PR en borrador** con `gh`, con el diagnóstico, el veredicto del revisor y el resumen del healer. Si el check encuentra algo o el revisor no aprueba el cambio, la PR lleva la etiqueta `needs-human`.
 6. Añade el resultado a `playwright-report/ai-heal.json` y vuelve a tu rama. Si ya había resultados de la misma ejecución (por ejemplo, al curar los grupos de uno en uno con `--group`), los conserva.
 
-Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Tarda varios minutos, porque el healer ejecuta y depura los tests. En CI todavía no se lanza: haría falta un token de Claude en los secretos del repositorio.
+Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Tarda varios minutos, porque el healer ejecuta y depura los tests.
+
+**En CI** lo lanza el job **Healer**, solo a mano: `gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true`. Nunca corre en push ni en PR, porque gasta cuota y abre PR. Descarga el artefacto `ai-report`, ejecuta `heal:ai` sobre la rama elegida y deja `ai-heal.json` en el artefacto `ai-heal` y en el Summary. Necesita:
+
+- El secreto `CLAUDE_CODE_OAUTH_TOKEN`, que se genera con `claude setup-token` y se guarda con `gh secret set CLAUDE_CODE_OAUTH_TOKEN`. Usa la suscripción de quien lo genera.
+- Que el repositorio deje a GitHub Actions abrir PR: **Settings > Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests**.
+
+Las PR que abre el `GITHUB_TOKEN` del workflow no disparan otros workflows: los tests y el guard no se ejecutan solos en la PR del healer. Para que corran, una persona cierra y reabre la PR. El check de asserts y la revisión adversarial sí van dentro de `heal:ai`, antes de abrirla. El dashboard del artefacto `ai-report` se genera antes del healer, así que no incluye su PR.
 
 > Con los `@demo-fail`, la corrección correcta es cambiar el valor esperado (`'3'` por `'4'`): la PR sale con `needs-human`, que es lo que debe pasar. **No la fusiones**: esos tests fallan aposta para la demo.
 

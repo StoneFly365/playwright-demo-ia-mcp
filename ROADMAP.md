@@ -154,7 +154,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 | `flaky` / `entorno` | Aviso en el resumen de la ejecución, sin acción automática. |
 
 - [x] Ejecutar el healer sin intervención (`npm run heal:ai`: `claude -p` con el agente `playwright-test-healer`) solo sobre los grupos `test_roto`. En local, con la suscripción.
-- [ ] El mismo healer en CI. Necesita un token de Claude en los secretos (`CLAUDE_CODE_OAUTH_TOKEN` o una API key) y permisos de escritura en el workflow.
+- [x] El mismo healer en CI: job **Healer** del workflow, solo a mano (`heal: true`), con el secreto `CLAUDE_CODE_OAUTH_TOKEN`. El lanzamiento manual admite también `scenario` para reproducir `cascade` y el resto en CI. Las PR que abre `GITHUB_TOKEN` no disparan los tests ni el guard: una persona cierra y reabre la PR.
 - [x] Abrir la PR en borrador con `gh pr create`, con el diagnóstico y el resumen del healer en la descripción.
 - [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
 - [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
