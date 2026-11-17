@@ -94,10 +94,19 @@ export function buildPrBody({ groups, summary, reasons, review, runStartTime }) 
     ].join("\n");
 }
 
+// Cada heal:ai de la misma ejecución se añade a los anteriores: curar G001 y después G002 con
+// --group no debe borrar la PR de G001. Con otra ejecución, o con un fichero antiguo, se empieza de cero.
+export function mergeHeal(existing, runStartTime, entry, now = new Date().toISOString()) {
+    const same = Array.isArray(existing?.heals) && existing.run_start_time === runStartTime;
+    return { generated_at: now, run_start_time: runStartTime, heals: [...(same ? existing.heals : []), { generated_at: now, ...entry }] };
+}
+
 // Los tests que lanza el healer pueden vaciar playwright-report/ (lo hace el reporter HTML).
-function save(result) {
+function save(runStartTime, entry) {
+    let existing = null;
+    try { existing = JSON.parse(readFileSync(OUT, "utf8")); } catch {}
     mkdirSync(path.dirname(OUT), { recursive: true });
-    writeFileSync(OUT, JSON.stringify({ generated_at: new Date().toISOString(), ...result }, null, 2) + "\n");
+    writeFileSync(OUT, JSON.stringify(mergeHeal(existing, runStartTime, entry), null, 2) + "\n");
 }
 
 const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: "utf8", ...opts }).trim();
@@ -152,7 +161,7 @@ async function main() {
         git("switch", from);
         git("branch", "-D", branch);
         console.log("✅ El healer no ha propuesto cambios: no hay PR. Su explicación está arriba.");
-        save({ run_start_time: grouped.run_start_time ?? null, groups: groups.map((g) => g.group_id), pr: null, needs_human: false, reasons: [], summary });
+        save(grouped.run_start_time ?? null, { groups: groups.map((g) => g.group_id), pr: null, needs_human: false, reasons: [], review: null, summary });
         return;
     }
 
@@ -179,7 +188,8 @@ async function main() {
         { input: buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time }) });
     git("switch", from);
 
-    save({ run_start_time: grouped.run_start_time ?? null, groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: needsHuman, reasons, review: review?.verdict ?? review?.error ?? null, summary });
+    // review guarda solo el veredicto; si el revisor falló, va aparte en review_error para no confundirlo con una aprobación.
+    save(grouped.run_start_time ?? null, { groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: needsHuman, reasons, review: review?.verdict ?? null, review_error: review?.error ?? null, summary });
     const why = [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])];
     console.log(`✅ PR en borrador: ${url} · revisión adversarial: ${review?.verdict ?? "no disponible"}`);
     if (needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${why.map((r) => `   - ${r}`).join("\n")}`);

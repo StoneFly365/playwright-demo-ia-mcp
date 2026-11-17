@@ -120,8 +120,12 @@ export function linkByDate(tests, testsMtime, mtime) {
 }
 
 // ai-heal.json y ai-jira.json guardan run_start_time desde esta versión; los anteriores se vinculan por fecha.
-export function linkById(tests, testsMtime, raw, mtime) {
-    if (str(raw?.run_start_time) && tests?.startTime) return raw.run_start_time === tests.startTime ? "ok" : "otra_ejecucion";
+// La referencia es la hora de inicio de test-results.json o, si no hay, la del análisis. Con identificador,
+// solo vale si coincide: un test-results.json sin hora de inicio no se da por bueno.
+export function linkById(tests, testsMtime, raw, mtime, analysisStart = null) {
+    const id = str(raw?.run_start_time);
+    const ref = tests?.startTime ?? str(analysisStart);
+    if (id && (tests || ref)) return id === ref ? "ok" : "otra_ejecucion";
     return linkByDate(tests, testsMtime, mtime);
 }
 
@@ -129,16 +133,21 @@ export function linkById(tests, testsMtime, raw, mtime) {
 // Solo se aceptan enlaces https: la página los muestra como enlaces.
 const https = (v) => (str(v) && /^https:\/\//.test(v) ? v : null);
 
+const healEntry = (e) => ({
+    groups: strings(e.groups),
+    pr: https(e.pr),
+    needsHuman: e.needs_human === true,
+    reasons: strings(e.reasons),
+    // Solo APROBADO es una aprobación; cualquier otro texto (o un fallo del revisor) no lo es.
+    review: str(e.review),
+    reviewError: str(e.review_error),
+});
+
+// heals[] guarda cada heal:ai de la misma ejecución; los ficheros anteriores traen un solo resultado en la raíz.
 export function normalizeHeal(raw) {
-    if (!isObj(raw) || !Array.isArray(raw.groups)) return null;
-    return {
-        generatedAt: str(raw.generated_at),
-        groups: strings(raw.groups),
-        pr: https(raw.pr),
-        needsHuman: raw.needs_human === true,
-        reasons: strings(raw.reasons),
-        review: str(raw.review),
-    };
+    if (!isObj(raw)) return null;
+    const entries = Array.isArray(raw.heals) ? raw.heals.filter(isObj) : Array.isArray(raw.groups) ? [raw] : null;
+    return entries && { generatedAt: str(raw.generated_at), heals: entries.map(healEntry) };
 }
 
 export function normalizeJira(raw) {
@@ -201,7 +210,7 @@ export function loadRun(dir = ".", { source = "local" } = {}) {
         if (a.status !== "ok") return null;
         const value = normalize(a.value);
         if (!value) { a.status = "formato_desconocido"; return null; }
-        a.link = linkById(tests, testsMtime, a.value, a.mtime);
+        a.link = linkById(tests, testsMtime, a.value, a.mtime, analysis?.runStartTime);
         return a.link === "otra_ejecucion" ? null : value;
     };
     const heal = action("ai-heal.json", normalizeHeal);
@@ -310,8 +319,11 @@ function reviveRun(v) {
             ...t, pasos_para_reproducir: t.pasos, solucion_sugerida: t.solucion,
         })) : null,
         heal: isObj(v.heal) ? normalizeHeal({
-            generated_at: v.heal.generatedAt, groups: v.heal.groups, pr: v.heal.pr,
-            needs_human: v.heal.needsHuman, reasons: v.heal.reasons, review: v.heal.review,
+            generated_at: v.heal.generatedAt,
+            // Las copias guardadas con la versión anterior traen un solo resultado en la raíz.
+            heals: (Array.isArray(v.heal.heals) ? v.heal.heals : [v.heal]).filter(isObj).map((e) => ({
+                groups: e.groups, pr: e.pr, needs_human: e.needsHuman, reasons: e.reasons, review: e.review, review_error: e.reviewError,
+            })),
         }) : null,
         jira: isObj(v.jira) ? normalizeJira({ generated_at: v.jira.generatedAt, mode: v.jira.mode, tickets: v.jira.tickets }) : null,
         artifacts: list(v.artifacts).filter(isObj).map((x) => ({ name: String(x.name), status: String(x.status), link: str(x.link) })),

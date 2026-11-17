@@ -579,7 +579,8 @@ const extLink = (url, text = url) => h("a", { href: url, target: "_blank", rel: 
 
 function actionItem(a) {
   if (a.kind === "pr") return a.url
-    ? h("li", {}, "PR en borrador del healer: ", extLink(a.url), a.needsHuman ? [" ", h("span", { class: "pill review", title: "El check de asserts o la revisión adversarial piden una persona" }, icon("eye"), "needs-human")] : null)
+    ? h("li", {}, "PR en borrador del healer: ", extLink(a.url), a.needsHuman ? [" ", h("span", { class: "pill review", title: "El check de asserts o la revisión adversarial piden una persona" }, icon("eye"), "needs-human")]
+      : a.approved ? null : " · la revisión adversarial no está disponible")
     : h("li", {}, "El healer lo intentó y no propuso cambios: no hay PR.");
   if (a.error) return h("li", {}, `Ticket de Jira: falló al crearse (${a.error}).`);
   if (a.mode === "simulado") return h("li", {}, "Ticket de Jira preparado en modo simulado: no se envió.");
@@ -653,14 +654,18 @@ function renderGroups() {
 function renderRecommendations() {
   const r = run();
   const heal = r.heal, jira = r.jira;
-  const healLine = heal && h("li", {}, code("heal:ai"), ` sobre ${heal.groups.join(", ") || "ningún grupo"}: `,
-    heal.pr ? ["PR en borrador ", extLink(heal.pr), heal.needsHuman ? " · necesita revisión humana (needs-human)" : " · sin asserts relajados ni dudas del revisor"] : "sin cambios propuestos, no hay PR.");
+  // Una línea por cada vez que se lanzó heal:ai en esta ejecución.
+  const healLines = (heal?.heals ?? []).map((e) => h("li", {}, code("heal:ai"), ` sobre ${e.groups.join(", ") || "ningún grupo"}: `,
+    !e.pr ? "sin cambios propuestos, no hay PR."
+      : ["PR en borrador ", extLink(e.pr), e.needsHuman ? " · necesita revisión humana (needs-human)"
+        : e.review === "APROBADO" ? " · sin asserts relajados y aprobada por el revisor adversarial"
+        : ` · sin asserts relajados; la revisión adversarial no está disponible${e.reviewError ? ` (${e.reviewError})` : ""}`]));
   const jiraLine = jira && h("li", {}, code("jira:tickets"), jira.mode === "real" ? " en Jira: " : " en modo simulado (sin credenciales, no se envió nada): ",
     jira.tickets.length ? jira.tickets.map((t, i) => [i ? ", " : "", `${t.group ?? "?"} → `, t.error ? `error (${t.error})` : t.url ? extLink(t.url, t.key ?? t.url) : (t.key ?? "preparado")]) : "sin tickets.");
   fill("recomendaciones",
     head("lightbulb", "Recomendaciones y propuestas", "blue"),
     heal || jira
-      ? [h("h3", {}, "Acciones ejecutadas (ai-heal.json, ai-jira.json)"), h("div", { class: "box done" }, label("check", "Lo que la fase 4 hizo de verdad"), h("ul", {}, healLine, jiraLine)),
+      ? [h("h3", {}, "Acciones ejecutadas (ai-heal.json, ai-jira.json)"), h("div", { class: "box done" }, label("check", "Lo que la fase 4 hizo de verdad"), h("ul", {}, healLines, jiraLine)),
         h("p", { class: "small muted" }, "El dashboard no lanza el healer, no abre PR y no crea tickets: solo enseña lo que registraron ", code("heal:ai"), " y ", code("jira:tickets"), ".")]
       : h("div", { class: "notice" }, icon("info"), h("p", {}, h("strong", {}, "Acciones ejecutadas: ninguna registrada para esta ejecución. "), "Las registran ", code("npm run heal:ai"), " (", code("ai-heal.json"), ") y ", code("npm run jira:tickets"), " (", code("ai-jira.json"), "); el dashboard no lanza ninguna. Todo lo de esta sección son propuestas generadas en ", code("report:ai"), ".")),
     h("h3", {}, "Correcciones sugeridas (ai-corrections.md) · no aplicadas"),
