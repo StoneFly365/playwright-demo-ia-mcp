@@ -58,7 +58,7 @@ Recién clonado el repositorio:
 | `03-locators.spec.ts` | 2 | ✅ 2 verdes | Lab 3: el bloque 3.1 ya resuelto, como ejemplo |
 | `05-diagnostico.spec.ts` | 2 | ❌ 2 rojos | Lab 5: dos fallos auténticos que debes diagnosticar |
 
-> **Los 2 fallos son correctos.** Uno es una violación de strict mode de la aplicación real; el otro, un locator del proyecto que no encuentra nada. Los dos se diagnostican en el Lab 5.
+> **Los 2 fallos son correctos.** Uno es una violación de strict mode de la aplicación real; el otro, un locator de Page Object que no encuentra nada. Los dos se diagnostican en el Lab 5.
 
 ## Progresión esperada
 
@@ -79,8 +79,9 @@ Recién clonado el repositorio:
 | `03-locators.spec.ts` | ✅ Es el Lab 3 |
 | `04-cobertura.spec.ts` | ✅ Lo creas tú en el Lab 4 |
 | `05-diagnostico.spec.ts` | ✅ Solo los **locators**, nunca los `expect` |
+| `05-cart.page.ts` | ✅ Copia del Page Object del carrito con el defecto del caso B. Se corrige en el Lab 5 |
 | `playwright.config.ts` | ⚠️ Léelo (Lab 3, bloque 3.2). No hace falta cambiarlo |
-| `pages/`, `tests/` del proyecto | ❌ **Nunca.** Incluido `pages/cart.page.ts`, aunque descubras qué le pasa |
+| `pages/`, `tests/` del proyecto | ❌ **Nunca** |
 
 Los ficheros que creas tú —informes, `03-decisiones.md`, el Challenge— van en esta misma carpeta.
 

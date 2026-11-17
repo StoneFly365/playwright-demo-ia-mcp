@@ -72,7 +72,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 8 h sesión (4 sesiones) + 3 h personal + 1 h assessment = **12 h** (caso de referencia FOUNDATION); ver la tabla por nivel de entrada en el documento de diseño, sección 11 |
 | **Nivel** | 2 MODIFY → 4 DESIGN |
 | **Dependencias** | 00 |
-| **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 12 scripts de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:34` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:117-121` (`filter` + `hasText`); 🔬 `CartPage.cartItems` (`pages/cart.page.ts:7`) — locator roto, 0 elementos, base del Lab 5 |
+| **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 12 scripts de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:34` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:117-121` (`filter` + `hasText`); 🔬 el locator roto que tuvo `CartPage.cartItems` (`pages/cart.page.ts:7`) hasta noviembre de 2026, 0 elementos; el Lab 5 lo usa desde una copia en el sandbox |
 | **Entregables** | Suite ejecutada en los tres navegadores (🔬 medido: 87 tests, 23,8 s, 77 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
 
 → **[Ir al módulo](../modules/01-playwright-fundamentals/)**
@@ -89,8 +89,8 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 3 h + 2 h |
 | **Nivel** | 3 CREATE |
 | **Dependencias** | 01 |
-| **Repository mapping** | Los 6 POM de `pages/`; hallazgo **A1 — ⚠️ premisa corregida** (ver la nota de abajo): `CartPage.cartItems` ([`pages/cart.page.ts:7`](../../pages/cart.page.ts)) apunta a `[data-test="cart-item"]`, atributo que **no existe** en la aplicación, y **ningún test lo usa** (0 usos desde `tests/`); los **12 usos de `.cart_item` en 5 specs** son el rodeo. Hallazgo **A10** (solape entre `add-tshirt-to-cart.spec.ts` e `inventory-add-to-cart.spec.ts`); `pages/menu.page.ts` como excepción justificada (selectores por `id` porque SauceDemo no expone `data-test` en el menú) |
-| **Entregables** | Un Page Object nuevo creado desde cero; el locator roto de `CartPage.cartItems` diagnosticado y reparado **en una copia de trabajo** (nunca en el repositorio); propuesta escrita sobre la cobertura duplicada |
+| **Repository mapping** | Los 6 POM de `pages/`; hallazgo **A1 — ⚠️ premisa corregida** (ver la nota de abajo): `CartPage.cartItems` ([`pages/cart.page.ts:7`](../../pages/cart.page.ts)) apuntó hasta noviembre de 2026 a `[data-test="cart-item"]`, atributo que **no existe** en la aplicación, y **ningún test lo usa** (0 usos desde `tests/`); los **12 usos de `.cart_item` en 5 specs** son el rodeo. Hallazgo **A10** (solape entre `add-tshirt-to-cart.spec.ts` e `inventory-add-to-cart.spec.ts`); `pages/menu.page.ts` como excepción justificada (selectores por `id` porque SauceDemo no expone `data-test` en el menú) |
+| **Entregables** | Un Page Object nuevo creado desde cero; los 12 usos de `.cart_item` sustituidos por `CartPage.cartItems`, ya corregido, **en una copia de trabajo** (nunca en el repositorio); propuesta escrita sobre la cobertura duplicada |
 
 > ### ⚠️ Nota de partida para el discovery de M02 — inventario medido (18/08/2026)
 >
@@ -103,7 +103,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 > | DOM real de la línea de carrito | `<div class="cart_item" data-test="inventory-item">` | [`module-01-technical-validation.md`](module-01-technical-validation.md), hallazgo H1 |
 > | `MenuPage.open()` llamado desde `tests/` | **0 llamadas directas**, pero **uso interno válido** en `logout()` y `resetAppState()` ([`pages/menu.page.ts:11,16`](../../pages/menu.page.ts)) — **no es un defecto** | `grep -ro "\.open()" tests/` |
 >
-> **Consecuencia para M02:** el ejercicio previsto de *"sustituir `.cart_item` por `CartPage.cartItems`"* **rompería los 5 specs**, porque el locator del POM resuelve 0 elementos. El ejercicio válido es el contrario: diagnosticar por qué un locator de POM roto sobrevive sin que nadie lo note. Detalle en [`module-01-discovery-design.md`](module-01-discovery-design.md) §15.4 y en el [Lab 5 de M01](../modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md), caso B.
+> **Consecuencia para M02:** mientras el locator estuvo roto, el ejercicio de *"sustituir `.cart_item` por `CartPage.cartItems`"* **rompía los 5 specs**. Desde noviembre de 2026 el locator está corregido en el proyecto y el ejercicio vuelve a ser válido. El diagnóstico de por qué un locator de POM roto sobrevive sin que nadie lo note se queda en M01, con una copia del Page Object en el sandbox. Detalle en [`module-01-discovery-design.md`](module-01-discovery-design.md) §15.4 y en el [Lab 5 de M01](../modules/01-playwright-fundamentals/labs/lab-5-troubleshoot.md), caso B.
 
 ---
 

@@ -166,7 +166,7 @@ Cada uno está desarrollado, con síntoma y corrección, en las soluciones del m
 | Resolver una ambigüedad con `.first()` | Muy alta | Hace desaparecer el error, no el problema |
 | Predecir **después** de ejecutar en el Lab 2 | Alta | La predicción es la mitad del ejercicio |
 | Verificar el valor del desplegable en vez del orden de los productos (Lab 4) | Alta | Confunde el control con el comportamiento |
-| **"Arreglar" `pages/cart.page.ts` en el Lab 5** | Media pero **crítica** | Reflejo de corregir; destruye el material del módulo 02 |
+| **Corregir el caso B del Lab 5 en el test y no en `05-cart.page.ts`** | Media | Sortea el defecto en vez de corregirlo: `cartItems` sigue roto para el siguiente test |
 | Calcular el importe esperado leyendo la misma pantalla que verifica | Media | Problema de oráculo; ya aparece en el Lab 2 |
 | Añadir `waitForTimeout` por desconfianza en el auto-waiting | Media | Frecuente en perfiles de Selenium |
 | Escribir el diagnóstico del Lab 5 después de corregir | Media | Se detecta: la casilla "Comprobación" está vacía |

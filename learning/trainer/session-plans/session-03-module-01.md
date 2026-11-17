@@ -188,7 +188,7 @@ Cierra conectando con el módulo 02: *"la pregunta de por qué la arquitectura p
 | Lab 3, bloque 3.6 | Alguien usa `.first()` | Es el antipatrón central. Que lo grep-ee él mismo |
 | Lab 4 | Comparan contra una lista de nombres escrita a mano | *¿Qué pasa cuando entre un producto nuevo?* |
 | Lab 4 | Verifican el valor del desplegable, no el orden | *¿Has comprobado que se pulsó el botón o que pasó algo?* |
-| **Lab 5** | **Alguien corrige `pages/cart.page.ts`** | **El error más frecuente del módulo.** Revertir y convertirlo en conversación |
+| **Lab 5** | **Alguien corrige el caso B en el test y no en `05-cart.page.ts`** | **El error más frecuente del módulo.** Convertirlo en conversación: *¿qué le pasa al siguiente test que use `cartItems`?* |
 | Lab 5 | Diagnóstico escrito después de corregir | Se nota en que la casilla "Comprobación" está vacía |
 | Challenge | Calculan el total leyéndolo del propio resumen | Es el problema de oráculo del Lab 2, otra vez |
 | Parte C | "Usé data-test porque es lo que usa el proyecto" | *No demostrado*. Se repite en la revisión del Challenge |

@@ -97,7 +97,7 @@ Los **2 fallos son el Lab 5** y son correctos. Los 4 verdes son el punto de part
 | `tests/`, `pages/`, `scripts/`, `prompts/`, `specs/` | ❌ **Solo lectura.** Ningún Lab de este módulo los modifica |
 | `playwright.config.ts` (raíz), `package.json`, `.github/` | ❌ No se tocan |
 
-**Esto incluye [`pages/cart.page.ts`](../../../pages/cart.page.ts), aunque descubras que tiene un locator roto.** Ese defecto es el material del Lab 5 y del módulo 02: corregirlo deja sin ejercicio a los dos.
+**El locator roto del Lab 5 no está en `pages/`.** El proyecto lo corrigió en noviembre de 2026; el Lab trabaja con una copia del Page Object que lo conserva, `learning/student/sandbox/01-playwright/05-cart.page.ts`.
 
 El sandbox del módulo 01 tiene [su propia configuración](../../student/sandbox/01-playwright/playwright.config.ts) —con `baseURL`, los tres navegadores y `testIdAttribute`— separada de la del módulo 00, que sigue siendo lógica pura sin navegador.
 

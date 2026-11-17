@@ -382,20 +382,20 @@ Tres categorías, y la tercera es la que casi nadie enseña.
 
 **Frágil.** Funciona hoy y depende de algo que puede cambiar sin que cambie el comportamiento: una clase de estilo, una posición, un texto traducible. Ejemplo medido: `getByRole('combobox')` localiza el desplegable de ordenación **solo porque es el único de la página** — no tiene `id`, ni `aria-label`, ni `<label>`. El día que alguien añada un segundo desplegable, ese locator empieza a resolver 2 elementos y todos los tests que lo usan se caen a la vez.
 
-**Muerto.** Un locator que **no encuentra nada** — y del que nadie se entera porque ningún test lo usa. En este repositorio hay uno:
+**Muerto.** Un locator que **no encuentra nada** — y del que nadie se entera porque ningún test lo usa. En este repositorio hubo uno hasta noviembre de 2026:
 
 ```typescript
-// pages/cart.page.ts:7
+// pages/cart.page.ts:7, antes de corregirlo
 this.cartItems = this.page.locator('[data-test="cart-item"]');
 ```
 
-Ese atributo **no existe** en la aplicación. Resuelve 0 elementos, siempre. El HTML real del ítem de carrito es `<div class="cart_item" data-test="inventory-item">`. Y **ningún test usa `CartPage.cartItems`**: los 12 usos de `.cart_item` repartidos en 5 specs son el rodeo que alguien tomó cuando el locator del Page Object no funcionó.
+Ese atributo **no existe** en la aplicación. Resolvía 0 elementos, siempre. El HTML real del ítem de carrito es `<div class="cart_item" data-test="inventory-item">`. Y **ningún test usa `CartPage.cartItems`**: los 12 usos de `.cart_item` repartidos en 5 specs son el rodeo que alguien tomó cuando el locator del Page Object no funcionaba.
 
 > **La lección:** un locator que no encuentra nada es **invisible hasta que alguien lo ejecuta**. Un test roto grita; un locator sin usar, no. Por eso el código de test también necesita ser ejercitado.
 
-Este defecto **no se corrige**. Es el caso B del Lab 5 y material del módulo 02, donde se razona sobre qué falla en la arquitectura para que algo así pase desapercibido.
+El proyecto ya está corregido. El caso B del Lab 5 trabaja con una copia del Page Object que conserva el defecto, y el módulo 02 razona sobre qué falla en la arquitectura para que algo así pase desapercibido.
 
-**Ábrelo:** [`pages/cart.page.ts:7`](../../../pages/cart.page.ts) y, al lado, [`tests/cart-edge-cases.spec.ts`](../../../tests/cart-edge-cases.spec.ts) — el Page Object declara un locator y los tests usan otro. Ahora ya sabes por qué.
+**Ábrelo:** [`05-cart.page.ts`](../../student/sandbox/01-playwright/05-cart.page.ts), la copia con el defecto, y al lado [`tests/cart-edge-cases.spec.ts`](../../../tests/cart-edge-cases.spec.ts) — el Page Object declaraba un locator y los tests usan otro. Ahora ya sabes por qué.
 
 ---
 
@@ -456,6 +456,6 @@ El formulario de checkout de esta tienda —dos pasos, validación por campo, me
 
 Tres reglas, las mismas de siempre:
 
-1. **Solo se trabaja en `learning/student/sandbox/01-playwright/`.** `tests/` y `pages/` son de lectura, incluido el locator roto de `cart.page.ts`.
+1. **Solo se trabaja en `learning/student/sandbox/01-playwright/`.** `tests/` y `pages/` son de lectura.
 2. **Nunca se modifica una aserción para llegar a verde.** Si un test falla, el problema está en el código o en el locator.
 3. **Diagnosticar antes que corregir.** En el Lab 5 el informe se escribe **antes** de tocar nada.

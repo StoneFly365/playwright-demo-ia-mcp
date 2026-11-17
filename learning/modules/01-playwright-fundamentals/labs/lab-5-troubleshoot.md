@@ -10,11 +10,11 @@ Diagnosticar dos tests en rojo cuya causa **no está en la lógica ni en la apli
 
 ## Contexto
 
-Los dos fallos de este Lab son **auténticos**: uno lo produce el HTML real de la aplicación y el otro es un defecto que lleva meses en el repositorio sin que nadie lo haya notado.
+Los dos fallos de este Lab son **auténticos**: uno lo produce el HTML real de la aplicación y el otro es un defecto que estuvo meses en el repositorio sin que nadie lo notara.
 
 Ninguno de los dos se parece a "el test está mal escrito". Los dos tienen la forma más incómoda que existe: **el test parece razonable y aun así falla.**
 
-> **Regla del programa, que aquí se aplica con especial cuidado:** las aserciones describen el comportamiento correcto y **no se tocan**. Y **`pages/cart.page.ts` tampoco se toca**, aunque descubras exactamente qué le pasa. Ese defecto es material del módulo 02 y del propio programa: si lo arreglas, el ejercicio desaparece para el resto del grupo.
+> **Regla del programa, que aquí se aplica con especial cuidado:** las aserciones describen el comportamiento correcto y **no se tocan**. Y el proyecto (`tests/`, `pages/`) **tampoco**. El defecto del caso B estuvo en `pages/cart.page.ts` hasta noviembre de 2026; el proyecto ya está corregido y el sandbox conserva una copia del Page Object con el defecto, `05-cart.page.ts`. Esa copia sí es tuya. **No abras `pages/cart.page.ts` hasta terminar**: tiene la respuesta.
 
 ## Prerrequisitos
 
@@ -27,7 +27,8 @@ Ninguno de los dos se parece a "el test está mal escrito". Los dos tienen la fo
 |---|---|
 | [`learning/student/sandbox/01-playwright/05-diagnostico.spec.ts`](../../../student/sandbox/01-playwright/05-diagnostico.spec.ts) | **El que corriges.** Llega en rojo: 2 fallos |
 | `learning/student/sandbox/01-playwright/05-diagnostico.md` | **El informe. Se escribe antes de corregir** |
-| [`pages/cart.page.ts:7`](../../../../pages/cart.page.ts) | Lectura. **No se modifica** |
+| [`learning/student/sandbox/01-playwright/05-cart.page.ts`](../../../student/sandbox/01-playwright/05-cart.page.ts) | Copia del Page Object del carrito con el defecto del caso B. **Se corrige en el Paso 4** |
+| [`pages/cart.page.ts`](../../../../pages/cart.page.ts) | La versión corregida del proyecto. **Ábrela solo al terminar**, para comparar. No se modifica |
 | [`tests/cart-sync.spec.ts:32`](../../../../tests/cart-sync.spec.ts) | Lectura del Paso 5 |
 
 ---
@@ -77,13 +78,13 @@ Preguntas a responder en el informe, además del formato:
 
 ### Paso 4 — Caso B
 
-Este es distinto. El test usa `CartPage.cartItems`, un locator del Page Object del proyecto.
+Este es distinto. El test usa `CartPage.cartItems`, un locator del Page Object. La copia del sandbox, `05-cart.page.ts`, es idéntica a la que tuvo el proyecto durante meses.
 
 Preguntas a responder, además del formato:
 
 1. ¿Por qué el fallo dice `Expected: 1 / Received: 0` en lugar de "locator no encontrado"?
 2. Comprueba en el navegador cuál es el HTML real de una línea de carrito. ¿Qué atributos tiene?
-3. **¿Por qué nadie lo había detectado?** Ejecuta esto y usa el resultado como pista:
+3. **¿Por qué nadie lo detectó en el proyecto?** Ejecuta esto y usa el resultado como pista:
 
 ```bash
 grep -rn "cartItems" tests/ pages/
@@ -92,7 +93,7 @@ grep -rc "cart_item" tests/*.spec.ts | grep -v ":0"
 
 4. ¿Qué relación hay entre ese locator roto y el hecho de que 5 specs usen `.cart_item` directamente?
 
-**Restricción de la corrección:** `pages/cart.page.ts` **no se toca**. Corriges en tu copia del sandbox: sustituye el uso del locator roto por uno que sí encuentre el elemento, y explica en el informe **por qué esa corrección es la del sandbox y no la del proyecto**.
+**Restricción de la corrección:** corriges el locator en `05-cart.page.ts`, **no en el test**. Explica en el informe por qué la corrección va en el Page Object y qué pasaría si, en su lugar, cambiaras el locator dentro del test.
 
 ### Paso 5 — El `.first()` del proyecto
 
@@ -121,7 +122,7 @@ Los 2 tests en verde, **sin ninguna aserción modificada**. Verifica esto últim
 
 - `05-diagnostico.md` con los 2 casos completos, **escritos antes que las correcciones**, incluidas las preguntas de los pasos 3, 4 y 5.
 - `05-diagnostico.spec.ts` con los 2 tests en verde.
-- `pages/cart.page.ts` **intacto**.
+- `pages/` y `tests/` del proyecto **intactos**.
 
 ## Validación
 
@@ -151,7 +152,7 @@ El punto 2 y el punto 4 son el criterio de superación real de este Lab. Un `exp
 ## Preguntas de reflexión
 
 1. **El error ha desaparecido. ¿Ha desaparecido el problema?** Aplícala a las dos correcciones que has hecho.
-2. El caso B lleva meses en el repositorio. ¿Qué habría hecho falta para detectarlo antes: más tests, otra revisión de código, otra herramienta? Argumenta.
+2. El caso B estuvo meses en el repositorio. ¿Qué habría hecho falta para detectarlo antes: más tests, otra revisión de código, otra herramienta? Argumenta.
 3. Los dos casos son "fallos de locator". ¿Cómo los distinguirías, **solo por el mensaje de error**, de un fallo de la aplicación?
 
 ## Criterios de finalización

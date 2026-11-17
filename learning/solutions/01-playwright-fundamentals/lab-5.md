@@ -1,6 +1,6 @@
 # Solución — Lab 5 (TROUBLESHOOT)
 
-**Verificado:** los 2 fallos reproducidos y las 2 correcciones en verde en Chromium. `pages/cart.page.ts` **sin tocar**.
+**Verificado:** los 2 fallos reproducidos y las 2 correcciones en verde en Chromium. `pages/` y `tests/` del proyecto **sin tocar**.
 
 > **Instrucción para el formador:** no publiques este documento hasta que todo el grupo haya entregado su `05-diagnostico.md`. El valor del Lab está en el proceso de diagnóstico, y aquí está el resultado.
 
@@ -77,17 +77,16 @@ await page.locator('.cart_item').count();                // → 1
 await page.getByTestId('inventory-item').count();        // → 1
 ```
 
-**Causa raíz:** [`pages/cart.page.ts:7`](../../../pages/cart.page.ts) declara `cartItems` como `[data-test="cart-item"]`, y **ese atributo no existe en la aplicación**. El HTML real de una línea de carrito es `<div class="cart_item" data-test="inventory-item">`. El locator resuelve 0 elementos **siempre**: el producto sí está en el carrito.
+**Causa raíz:** [`05-cart.page.ts:11`](../../student/sandbox/01-playwright/05-cart.page.ts), la copia del Page Object que tuvo el proyecto hasta noviembre de 2026, declara `cartItems` como `[data-test="cart-item"]`, y **ese atributo no existe en la aplicación**. El HTML real de una línea de carrito es `<div class="cart_item" data-test="inventory-item">`. El locator resuelve 0 elementos **siempre**: el producto sí está en el carrito.
 
-**Corrección — en el sandbox, no en el proyecto:**
+**Corrección — en el Page Object de la copia, no en el test:**
 
 ```typescript
-// El Page Object del proyecto se conserva tal cual: es material del módulo 02.
-await expect(
-  page.getByTestId('inventory-item'),
-  'El carrito debería contener exactamente 1 línea de producto tras añadir la Sauce Labs Backpack',
-).toHaveCount(1);
+// learning/student/sandbox/01-playwright/05-cart.page.ts
+this.cartItems = this.page.locator('[data-test="inventory-item"]');
 ```
+
+Es la misma corrección que recibió el proyecto en noviembre de 2026 ([`pages/cart.page.ts:7`](../../../pages/cart.page.ts)). El test no cambia: si el defecto está en el Page Object, el arreglo va en el Page Object.
 
 **Cómo evitarlo:** un locator declarado en un Page Object **que ningún test usa no está probado por nadie**. Cuando se añade un locator al POM, o se usa o no se añade.
 
@@ -98,7 +97,7 @@ await expect(
 3. **Por qué nadie lo detectó:**
    ```bash
    grep -rn "cartItems" tests/ pages/
-   # solo la declaración en pages/cart.page.ts:7 — ningún test lo usa
+   # solo la declaración en pages/cart.page.ts:7 — ningún test del proyecto lo usa
    grep -rc "cart_item" tests/*.spec.ts | grep -v ":0"
    # 12 usos en 5 ficheros
    ```
@@ -129,7 +128,7 @@ Sobre [`tests/cart-sync.spec.ts:30-33`](../../../tests/cart-sync.spec.ts):
 
 ## Preguntas de reflexión
 
-1. **¿Ha desaparecido el problema?** En A, sí: el locator ahora identifica un único elemento por contenido. En B, **no**: el defecto sigue en `pages/cart.page.ts`, deliberadamente. Lo que ha desaparecido es su efecto en el test del sandbox. Distinguir "he sorteado el defecto" de "he corregido el defecto" es el objetivo de la pregunta.
+1. **¿Ha desaparecido el problema?** En A, sí: el locator ahora identifica un único elemento por contenido. En B depende de dónde se corrigió. Si el alumno cambió el locator dentro del test, **no**: ha sorteado el defecto y `CartPage.cartItems` sigue roto para el siguiente que lo use. Si corrigió `05-cart.page.ts`, sí. Distinguir "he sorteado el defecto" de "he corregido el defecto" es el objetivo de la pregunta.
 2. **Qué habría hecho falta para detectar B antes:** un test que usara `CartPage.cartItems`. Ni más revisiones de código —el locator *parece* correcto— ni otra herramienta. Lo que faltaba es **ejercitar el código de test**, que es exactamente lo que no se hace nunca.
 3. **Distinguir por el mensaje:** un fallo de locator menciona el **locator** (`strict mode violation`, `waiting for locator`, `Received: 0` en un `toHaveCount`). Un fallo de aplicación menciona **valores de negocio** que el elemento sí tiene (`Expected: "3" / Received: "1"`). Si el elemento se encontró, el problema no es de localización.
 
@@ -137,7 +136,8 @@ Sobre [`tests/cart-sync.spec.ts:30-33`](../../../tests/cart-sync.spec.ts):
 
 | Error | Señal | Cómo responder |
 |---|---|---|
-| **Corrige `pages/cart.page.ts`** | `git diff --stat pages/` no está vacío | Revertir y convertirlo en conversación: *¿por qué crees que sigue ahí?* Es el error más frecuente del Lab |
+| **Corrige B en el test y no en el Page Object** | `05-cart.page.ts` sin cambios | Ha sorteado el defecto, no lo ha corregido: *¿qué le pasa al siguiente test que use `cartItems`?* Es el error más frecuente del Lab |
+| Toca `pages/cart.page.ts` del proyecto | `git diff --stat pages/` no está vacío | Revertir: el proyecto ya está corregido y el ejercicio está en la copia del sandbox |
 | Usa `.first()` en el caso A | Lo detecta el `grep` de la validación | El error desaparece; el problema no |
 | Escribe el informe después de corregir | Los diagnósticos son genéricos y la casilla "Comprobación" está vacía | La comprobación con `count()` es obligatoria |
 | Concluye en B que "el carrito está vacío" | Diagnóstico invertido | Que ejecute con `--headed` y mire la pantalla |

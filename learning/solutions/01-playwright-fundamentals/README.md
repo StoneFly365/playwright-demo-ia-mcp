@@ -46,7 +46,7 @@ npx tsc --noEmit
 En el módulo 01 hay dos tentaciones nuevas, y las dos invalidan el ejercicio:
 
 1. **Resolver una ambigüedad con `.first()`.** El error desaparece, el problema no. Está penalizado en el assessment.
-2. **"Arreglar" `pages/cart.page.ts`.** El locator roto es material del Lab 5 y del módulo 02. Si un alumno lo corrige en el repositorio, se revierte y se convierte en conversación: *¿por qué crees que ese defecto sigue ahí?*
+2. **Corregir el caso B del Lab 5 en el test en vez de en el Page Object.** El defecto está en `05-cart.page.ts` (la copia del sandbox) y ahí va la corrección. Cambiar el locator dentro del test lo sortea y deja `cartItems` roto. Se convierte en conversación: *¿qué le pasa al siguiente test que use `cartItems`?*
 
 ## Para el formador
 
