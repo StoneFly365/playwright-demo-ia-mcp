@@ -39,9 +39,11 @@ export function filterGroups(groups, { tipo = "", origen = "", browser = "", tes
 }
 
 // Acciones ejecutadas sobre un grupo: la PR del healer (ai-heal.json) y el ticket de Jira (ai-jira.json).
+// Si el healer pasó varias veces por el mismo grupo, cuenta la última.
 export function actionsFor(groupId, heal, jira) {
     const out = [];
-    if (heal?.groups.includes(groupId)) out.push({ kind: "pr", url: heal.pr, needsHuman: heal.needsHuman });
+    const last = (heal?.heals ?? []).filter((e) => e.groups.includes(groupId)).at(-1);
+    if (last) out.push({ kind: "pr", url: last.pr, needsHuman: last.needsHuman, approved: last.review === "APROBADO" });
     for (const t of jira?.tickets ?? []) {
         if (t.group === groupId) out.push({ kind: "ticket", mode: jira.mode, key: t.key, url: t.url, error: t.error });
     }

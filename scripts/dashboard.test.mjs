@@ -6,7 +6,8 @@ import { tmpdir } from "node:os";
 import vm from "node:vm";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { readArtifact, loadRun, loadEval, buildData, buildHtml, saveSnapshot, loadHistory, normalizeTests } from "./dashboard.mjs";
+import { readArtifact, loadRun, loadEval, buildData, buildHtml, saveSnapshot, loadHistory, normalizeTests, normalizeHeal, linkById } from "./dashboard.mjs";
+import { mergeHeal } from "./heal-ai.mjs";
 import { TIPOS, groupMetrics, filterGroups, browsersOf, evalMetrics, actionsFor } from "./dashboard-view.mjs";
 import { mergeReports } from "./merge-results.mjs";
 
@@ -173,19 +174,26 @@ test("informes parciales: campos opcionales ausentes y tipos fuera de la taxonom
 
 test("acciones ejecutadas: la PR del healer y los tickets de Jira, vinculados a la ejecución", () => {
     const dir = fullDir();
-    write(dir, "playwright-report/ai-heal.json", { run_start_time: START, groups: ["G001"], pr: "https://github.com/o/r/pull/12", needs_human: true, reasons: ["r"], review: "APROBADO" });
+    // Dos heal:ai en la misma ejecución (G001 y después G003): las dos PR se conservan.
+    let heal = mergeHeal(null, START, { groups: ["G001"], pr: "https://github.com/o/r/pull/12", needs_human: true, reasons: ["r"], review: "APROBADO" });
+    heal = mergeHeal(heal, START, { groups: ["G003"], pr: "https://github.com/o/r/pull/13", needs_human: false, reasons: [], review: null, review_error: "timeout" });
+    write(dir, "playwright-report/ai-heal.json", heal);
     write(dir, "playwright-report/ai-jira.json", { run_start_time: START, mode: "real", tickets: [{ group: "G002", key: "THP-1", url: "https://x.atlassian.net/browse/THP-1" }, { group: "G009", error: "403" }] });
     let run = loadRun(dir);
-    assert.equal(run.heal.pr, "https://github.com/o/r/pull/12");
-    assert.deepEqual(actionsFor("G001", run.heal, run.jira), [{ kind: "pr", url: "https://github.com/o/r/pull/12", needsHuman: true }]);
+    assert.equal(run.heal.heals.length, 2);
+    assert.deepEqual(actionsFor("G001", run.heal, run.jira), [{ kind: "pr", url: "https://github.com/o/r/pull/12", needsHuman: true, approved: true }]);
+    // Revisor caído y sin asserts relajados: no cuenta como aprobado.
+    assert.deepEqual(actionsFor("G003", run.heal, run.jira), [{ kind: "pr", url: "https://github.com/o/r/pull/13", needsHuman: false, approved: false }]);
+    assert.equal(run.heal.heals[1].reviewError, "timeout");
     assert.deepEqual(actionsFor("G002", run.heal, run.jira).map((a) => [a.kind, a.mode, a.key]), [["ticket", "real", "THP-1"]]);
-    assert.deepEqual(actionsFor("G003", run.heal, run.jira), []);
+    assert.deepEqual(actionsFor("G004", run.heal, run.jira), []);
 
+    // Un fichero de la versión anterior (un solo resultado en la raíz) se sigue leyendo.
     // Un enlace que no es https no llega a la página; un informe de otra ejecución no se muestra.
     write(dir, "playwright-report/ai-heal.json", { run_start_time: START, groups: ["G001"], pr: "javascript:alert(1)" });
     write(dir, "playwright-report/ai-jira.json", { run_start_time: "2026-10-20T09:00:00.000Z", mode: "real", tickets: [] });
     run = loadRun(dir);
-    assert.equal(run.heal.pr, null);
+    assert.deepEqual(run.heal.heals.map((e) => [e.groups, e.pr]), [[["G001"], null]]);
     assert.equal(run.jira, null);
     assert.ok(run.warnings.some((w) => w.includes("ai-jira.json es de otra ejecución")));
 
@@ -199,11 +207,37 @@ test("acciones ejecutadas: la PR del healer y los tickets de Jira, vinculados a 
 
     // El historial conserva las acciones.
     const history = tmp();
-    write(dir, "playwright-report/ai-heal.json", { run_start_time: START, groups: ["G001"], pr: null });
+    write(dir, "playwright-report/ai-heal.json", mergeHeal(null, START, { groups: ["G001"], pr: null }));
     saveSnapshot(history, "runs", loadRun(dir));
     const saved = loadHistory(history).runs[0];
-    assert.deepEqual(saved.heal.groups, ["G001"]);
+    assert.deepEqual(saved.heal.heals[0].groups, ["G001"]);
     assert.equal(saved.jira, null);
+});
+
+test("heal:ai acumula los resultados de la misma ejecución y empieza de cero con otra", () => {
+    const a = mergeHeal(null, START, { groups: ["G001"], pr: "https://github.com/o/r/pull/1" }, "t1");
+    const b = mergeHeal(a, START, { groups: ["G002"], pr: null }, "t2");
+    assert.deepEqual(b.heals.map((e) => [e.groups[0], e.generated_at]), [["G001", "t1"], ["G002", "t2"]]);
+    assert.deepEqual(mergeHeal(b, "2026-11-18T00:00:00.000Z", { groups: ["G003"] }, "t3").heals.map((e) => e.groups[0]), ["G003"]);
+    // Un fichero de la versión anterior no se mezcla: no tiene heals[].
+    assert.equal(mergeHeal({ run_start_time: START, groups: ["G009"] }, START, { groups: ["G001"] }).heals.length, 1);
+    // Un mismo grupo curado dos veces: cuenta el último intento.
+    const twice = normalizeHeal(mergeHeal(b, START, { groups: ["G001"], pr: "https://github.com/o/r/pull/2" }));
+    assert.equal(actionsFor("G001", twice, null)[0].url, "https://github.com/o/r/pull/2");
+});
+
+test("las acciones con identificador solo valen si coinciden con la ejecución", () => {
+    const tests = { startTime: START };
+    assert.equal(linkById(tests, 1, { run_start_time: START }, 2), "ok");
+    assert.equal(linkById(tests, 1, { run_start_time: "otra" }, 2), "otra_ejecucion");
+    // test-results.json sin hora de inicio: no se acepta por fecha una acción que sí la trae.
+    assert.equal(linkById({ startTime: null }, 1, { run_start_time: START }, 2), "otra_ejecucion");
+    // Sin test-results.json, se compara con la hora de inicio del análisis.
+    assert.equal(linkById(null, null, { run_start_time: START }, 2, START), "ok");
+    assert.equal(linkById(null, null, { run_start_time: "otra" }, 2, START), "otra_ejecucion");
+    // Sin identificador en la acción, como antes: por fecha.
+    assert.equal(linkById(tests, 1, {}, 2), "por_fecha");
+    assert.equal(linkById(null, null, {}, 2), "sin_verificar");
 });
 
 test("filtros y búsqueda: categoría, origen, navegador, test y error, combinables", () => {

@@ -585,7 +585,7 @@ DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable q
 3. Lanza `claude -p` con el agente `playwright-test-healer` y el servidor MCP de [`.mcp.json`](.mcp.json). Le pasa el diagnóstico de cada grupo y unas reglas: cambiar lo mínimo, no relajar asserts y no tocar nada fuera de `tests/`, `pages/` y `fixtures/`.
 4. Si toca otros ficheros, para y no abre PR. Si no cambia nada, borra la rama.
 5. Pasa el check de asserts y la [revisión adversarial](#revisión-adversarial-npm-run-reviewpw). Después confirma, hace push y abre una **PR en borrador** con `gh`, con el diagnóstico, el veredicto del revisor y el resumen del healer. Si el check encuentra algo o el revisor no aprueba el cambio, la PR lleva la etiqueta `needs-human`.
-6. Deja el resultado en `playwright-report/ai-heal.json` y vuelve a tu rama.
+6. Añade el resultado a `playwright-report/ai-heal.json` y vuelve a tu rama. Si ya había resultados de la misma ejecución (por ejemplo, al curar los grupos de uno en uno con `--group`), los conserva.
 
 Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Tarda varios minutos, porque el healer ejecuta y depura los tests. En CI todavía no se lanza: haría falta un token de Claude en los secretos del repositorio.
 
@@ -705,7 +705,7 @@ Abre el `.html` generado directamente en el navegador: no necesita servidor, con
 | `test-results.json` | Playwright (o `merge-results.mjs` en CI) | Total, pasados, fallidos, omitidos, flaky, % de éxito, navegadores, identificador de la ejecución | Las métricas de tests salen como `n/d` y el resto de ficheros no se puede vincular a una ejecución |
 | `ai-failures-grouped.json` | `report:ai` | Grupos con categoría, origen, confianza, evidencia, acción, tests, navegadores, error e instantánea; filtros y búsqueda | No hay grupos ni distribución por categoría |
 | `ai-summary.txt`, `ai-corrections.md`, `ai-tickets.json` | `report:ai` | Resumen, correcciones sugeridas y tickets propuestos | Se indica que no existen |
-| `ai-heal.json` | `heal:ai` | Acción ejecutada en cada grupo curado: la PR en borrador del healer y si lleva `needs-human` | Se indica que no hay acciones registradas |
+| `ai-heal.json` | `heal:ai` | Acción ejecutada en cada grupo curado: la PR en borrador del healer, si lleva `needs-human` y si la revisión adversarial la aprobó o no estuvo disponible | Se indica que no hay acciones registradas |
 | `ai-jira.json` | `jira:tickets` | Acción ejecutada en cada grupo `bug_producto`: el ticket creado en Jira, o preparado sin enviar en modo simulado | Se indica que no hay acciones registradas |
 | `ai-eval.json` (o `ai-eval.md` antiguo) | `eval:ai` | Acierto por grupos y por tests, tests en grupos correctos e incorrectos, resultado por escenario, proveedor y fecha | Estado vacío que explica cómo generarla |
 
@@ -720,7 +720,7 @@ Un fichero inexistente, vacío, con JSON malformado o con un formato antiguo no 
 
 ### No mezclar ejecuciones
 
-`report:ai` guarda ahora `run_start_time` (la hora de inicio que pone Playwright en `test-results.json`), y el dashboard solo asocia el análisis a la ejecución si coincide. En informes anteriores compara los contadores de fallos y flaky y la fecha de los ficheros. `ai-heal.json` y `ai-jira.json` también guardan `run_start_time`; si vienen de una versión anterior, se vinculan por fecha. `ai-summary.txt`, `ai-corrections.md` y `ai-tickets.json` no llevan identificador: solo se muestran si son posteriores a `test-results.json`. Lo que es de otra ejecución no se muestra y aparece un aviso. Esto importa porque `report:ai` no borra los ficheros de la ejecución anterior cuando no tiene nada que analizar.
+`report:ai` guarda ahora `run_start_time` (la hora de inicio que pone Playwright en `test-results.json`), y el dashboard solo asocia el análisis a la ejecución si coincide. En informes anteriores compara los contadores de fallos y flaky y la fecha de los ficheros. `ai-heal.json` y `ai-jira.json` también guardan `run_start_time` y solo se muestran si coincide con la de `test-results.json` (o, si falta ese fichero, con la del análisis); si vienen de una versión anterior, se vinculan por fecha. `ai-summary.txt`, `ai-corrections.md` y `ai-tickets.json` no llevan identificador: solo se muestran si son posteriores a `test-results.json`. Lo que es de otra ejecución no se muestra y aparece un aviso. Esto importa porque `report:ai` no borra los ficheros de la ejecución anterior cuando no tiene nada que analizar.
 
 ### Historial
 
