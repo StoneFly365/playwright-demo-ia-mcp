@@ -80,4 +80,4 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 npx playwright test -c learning/student/sandbox/01-playwright
 ```
 
-> **Usa `--project=chromium` mientras practicas.** No es por tiempo —la suite entera tarda ~22 s— sino por cortesía: diez personas ejecutando a la vez contra un servicio público y gratuito.
+> **Usa `--project=chromium` mientras practicas.** No es por tiempo —la suite entera tarda ~24 s— sino por cortesía: diez personas ejecutando a la vez contra un servicio público y gratuito.

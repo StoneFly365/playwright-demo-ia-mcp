@@ -50,6 +50,7 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
 - [Decisiones de diseño](#decisiones-de-diseño)
   - [Page Object Model](#page-object-model)
   - [Id en el título de cada test](#id-en-el-título-de-cada-test)
+  - [Accesibilidad con axe](#accesibilidad-con-axe)
   - [Selectores `data-test`](#selectores-data-test)
   - [`baseURL` en config](#baseurl-en-config)
 - [Tecnologías](#tecnologías)
@@ -62,7 +63,8 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 
 - **Diseño de pruebas desde Figma** — la IA lee la historia de usuario y el diseño por el MCP de Figma, recorre la app y propone casos, criterios de aceptación y las diferencias entre diseño y app antes de escribir un test.
 - **Page Object Model** — 6 páginas encapsuladas, tests legibles y mantenibles.
-- **Cobertura multi-navegador** — 80 tests por navegador (240 en total) en Chromium, Firefox y WebKit.
+- **Cobertura multi-navegador** — 88 tests por navegador (264 en total) en Chromium, Firefox y WebKit.
+- **Accesibilidad** — axe comprueba WCAG 2.1 AA en las pantallas del flujo de compra.
 - **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
 - **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
 - **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira. Si una PR automática relaja un test, GitHub bloquea el merge hasta que una persona lo apruebe.
@@ -161,7 +163,7 @@ playwright-demo-ia-mcp/
 ├── fixtures/
 │   ├── global-setup.ts             # Login único de standard_user (storageState)
 │   └── scenarios.ts                # Escenarios de fallo de la demo (DEMO_SCENARIO)
-├── tests/                          # 15 ficheros, 80 tests (incluye seed.spec.ts, arranque de los agentes)
+├── tests/                          # 16 ficheros, 88 tests (incluye seed.spec.ts, arranque de los agentes)
 ├── specs/                          # Planes de test y documentación QA
 │   ├── historias/                  # Historias de usuario con sus criterios y sus frames de Figma (fase 1)
 │   ├── figma/                      # Guía del diseño de la demo e instantánea del frame (modo sin conexión)
@@ -260,6 +262,9 @@ npm run test:headed
 # Demo: separar suite verde de fallos intencionados
 npm run test:demo:green   # solo tests que pasan (excluye @demo-fail)
 npm run test:demo:fail    # solo los fallos intencionados (@demo-fail)
+
+# Accesibilidad: axe con las reglas WCAG 2.1 A y AA
+npm run test:a11y
 
 # Demo: escenarios de fallo realistas (excluyen @demo-fail)
 npm run test:scenario:cascade   # cambio del frontend: unos 70 tests caen por una sola causa
@@ -847,6 +852,11 @@ El test no conoce selectores ni pasos de UI, solo llama métodos del page object
 ### Id en el título de cada test
 Cada test empieza por un id `TC-<AREA>-NN` (`TC-LOGIN-02`, `TC-CHK-09`), el mismo que en el plan de `specs/` y en [`specs/test-index.md`](specs/test-index.md). Así un fallo del informe o del dashboard se traza al caso del plan sin buscar por texto. El planner asigna los ids continuando la numeración de cada área, el generator los pone en el título y en el nombre del fichero, y el healer nunca los cambia.
 
+### Accesibilidad con axe
+[`tests/accessibility.spec.ts`](tests/accessibility.spec.ts) pasa [axe](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) con las reglas WCAG 2.1 de nivel A y AA por las pantallas del flujo de compra: login (también con el mensaje de error), inventario, detalle, carrito, los dos pasos del checkout y la confirmación. Si hay violaciones, el test falla y el mensaje dice la regla, su impacto y los elementos afectados. Hoy SauceDemo pasa todas.
+
+Los tests llevan la etiqueta `@a11y` y los escenarios de fallo (`npm run test:scenario:*` y `eval:ai`) los excluyen: los escenarios y sus cifras (70 tests en `cascade`, `env` y `flaky`) se calibraron sobre la suite funcional, y una página que no carga no dice nada de su accesibilidad. En la suite normal y en CI se ejecutan con el resto.
+
 ### Selectores `data-test`
 Se usan los atributos `data-test` que provee SauceDemo, los más resilientes ante cambios de estilos o estructura HTML. La excepción es el menú lateral ([`pages/menu.page.ts`](pages/menu.page.ts)), que usa selectores por `id` (`#react-burger-menu-btn`, `#logout_sidebar_link`…).
 
@@ -863,3 +873,4 @@ La URL base se define una sola vez en `playwright.config.ts`. Los page objects u
 - Claude Code CLI (reporte IA en local)
 - Google Gemini `gemini-flash-latest` u OpenRouter (reporte IA en CI)
 - Playwright MCP + agentes planner / generator / healer
+- [axe-core](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) `@axe-core/playwright 4.14.0` (accesibilidad)

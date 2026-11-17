@@ -1,7 +1,7 @@
 # Índice de Tests — SauceDemo E2E
 
-**Última actualización:** 2026-10-21  
-**Total de tests:** 80 (79 + `seed.spec.ts`, arranque de los agentes con sesión iniciada)  
+**Última actualización:** 2026-11-17  
+**Total de tests:** 88 (87 + `seed.spec.ts`, arranque de los agentes con sesión iniciada)  
 **Framework:** Playwright + TypeScript · Page Object Model  
 **App bajo test:** https://www.saucedemo.com
 
@@ -27,8 +27,9 @@
 | [cart-edge-cases.spec.ts](#cart-edge-casesspects) | Casos límite del carrito | 7 | 0 |
 | [problem-user-cart.spec.ts](#problem-user-cartspects) | Comportamiento problem_user | 5 | 0 |
 | [performance-glitch-user-cart.spec.ts](#performance-glitch-user-cartspects) | Comportamiento performance_glitch_user | 2 | 0 |
+| [accessibility.spec.ts](#accessibilityspects) | Accesibilidad (axe, WCAG 2.1 AA) | 8 | 0 |
 | [seed.spec.ts](../tests/seed.spec.ts) | Seed (arranque de los agentes) | 1 | 0 |
-| **TOTAL** | | **80** | **10** |
+| **TOTAL** | | **88** | **10** |
 
 ---
 
@@ -255,6 +256,24 @@
 
 ---
 
+## accessibility.spec.ts
+
+**Suites:** `Accesibilidad sin sesión` y `Accesibilidad con sesión`, etiquetadas `@a11y`  
+**Qué comprueba:** que axe no encuentre violaciones de las reglas WCAG 2.1 de nivel A y AA en cada pantalla. Los escenarios de fallo (`DEMO_SCENARIO`) no ejecutan esta spec.
+
+| ID | Nombre del test | Estado esperado |
+|---|---|---|
+| TC-A11Y-01 | debería cumplir WCAG 2.1 AA en la página de login | PASS |
+| TC-A11Y-02 | debería cumplir WCAG 2.1 AA con el mensaje de error del login | PASS |
+| TC-A11Y-03 | debería cumplir WCAG 2.1 AA en el inventario | PASS |
+| TC-A11Y-04 | debería cumplir WCAG 2.1 AA en el detalle de producto | PASS |
+| TC-A11Y-05 | debería cumplir WCAG 2.1 AA en el carrito con un producto | PASS |
+| TC-A11Y-06 | debería cumplir WCAG 2.1 AA en el paso 1 del checkout | PASS |
+| TC-A11Y-07 | debería cumplir WCAG 2.1 AA en el resumen del checkout | PASS |
+| TC-A11Y-08 | debería cumplir WCAG 2.1 AA en la confirmación del pedido | PASS |
+
+---
+
 ## Cobertura funcional
 
 | Área | Cobertura |
@@ -273,3 +292,4 @@
 | Usuarios especiales: problem_user | ✅ |
 | Usuarios especiales: performance_glitch_user | ✅ |
 | Usuarios especiales: locked_out_user | ✅ (validación en login) |
+| Accesibilidad WCAG 2.1 AA (login, inventario, detalle, carrito, checkout) | ✅ (menú lateral sin analizar) |

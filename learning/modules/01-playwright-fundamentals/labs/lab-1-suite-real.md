@@ -41,7 +41,7 @@ Lo que este Lab entrena no es escribir tests: es la habilidad de **leer el resul
 
 Abre [`playwright.config.ts`](../../../../playwright.config.ts) y responde por escrito, **antes** de ejecutar:
 
-1. ¿Cuántas ejecuciones de test producirá `npm test`? *(pista: no es 79)*
+1. ¿Cuántas ejecuciones de test producirá `npm test`? *(pista: no es 87)*
 2. ¿Por qué `pages/login.page.ts` puede escribir `goto('/')` sin poner la URL completa?
 3. ¿Qué valor de timeout tiene una aserción en este proyecto? *(no está escrito en el fichero — esa es la pregunta)*
 4. ¿Qué se guarda cuando un test falla, y dónde lo configura?
@@ -109,7 +109,7 @@ Escribe la respuesta en `01-ejecuciones.md`:
 - Las 3 líneas del modo headed.
 - La respuesta del Paso 6.
 
-Las cifras de referencia de la ejecución 1, medidas en un equipo de desarrollo: **79 tests, ~22 segundos, 69 verdes y 10 rojos**. Tu tiempo puede variar; el número de tests y de fallos, no.
+Las cifras de referencia de la ejecución 1, medidas en un equipo de desarrollo: **87 tests, ~24 segundos, 77 verdes y 10 rojos**. Tu tiempo puede variar; el número de tests y de fallos, no.
 
 ## Validación
 

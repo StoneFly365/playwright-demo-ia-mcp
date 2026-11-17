@@ -25,7 +25,7 @@ El módulo entero va de eso: cómo se localiza un elemento sin ambigüedad, y po
 Playwright se ejecuta desde la línea de comandos. El proyecto trae [12 scripts en `package.json`](../../../package.json) que son atajos de lo mismo:
 
 ```bash
-npm test                      # todo: 79 tests × 3 navegadores = 237 ejecuciones
+npm test                      # todo: 87 tests × 3 navegadores = 261 ejecuciones
 npm run test:chromium         # un solo navegador
 npm run test:demo:green       # solo los tests que deberían pasar
 npm run test:demo:fail        # solo los 10 que fallan a propósito
@@ -56,10 +56,10 @@ Eso es lo que permite partir la suite en dos con `--grep` y `--grep-invert`. La 
 
 ## 2. Interpretar lo que devuelve
 
-Una ejecución completa en Chromium tarda **~22 segundos** y termina así:
+Una ejecución completa en Chromium tarda **~24 segundos** y termina así:
 
 ```
-  69 passed
+  77 passed
   10 failed
 ```
 
@@ -93,7 +93,7 @@ Confundir las tres es lo que hace que una suite acabe con `expect` retocados has
 
 ## 3. Auto-waiting: por qué nadie espera
 
-En 79 tests de este proyecto hay **cero** `waitForTimeout`, **cero** `waitForSelector` y **cero** `waitForLoadState`. No es un descuido: es cómo funciona Playwright.
+En 87 tests de este proyecto hay **cero** `waitForTimeout`, **cero** `waitForSelector` y **cero** `waitForLoadState`. No es un descuido: es cómo funciona Playwright.
 
 Dos mecanismos, y conviene no mezclarlos:
 
@@ -233,7 +233,7 @@ Y dónde **no**:
 
 Moraleja operativa: **el nombre accesible se comprueba, no se supone.**
 
-**Ábrelo:** [`tests/checkout.spec.ts:34`](../../../tests/checkout.spec.ts) — el **único** `getByRole` de los 79 tests, y da la casualidad de que apunta al único heading real de la aplicación.
+**Ábrelo:** [`tests/checkout.spec.ts:34`](../../../tests/checkout.spec.ts) — el **único** `getByRole` de los 87 tests, y da la casualidad de que apunta al único heading real de la aplicación.
 
 ---
 
@@ -401,7 +401,7 @@ Este defecto **no se corrige**. Es el caso B del Lab 5 y material del módulo 02
 
 ## 13. Anatomía de un spec y aislamiento
 
-Los 14 ficheros de `tests/` tienen la misma forma:
+Los 15 ficheros de `tests/` tienen la misma forma:
 
 ```typescript
 import { test, expect } from '@playwright/test';   // 1. imports

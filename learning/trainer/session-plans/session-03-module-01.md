@@ -38,7 +38,7 @@ npx playwright test --project=chromium tests/login.spec.ts
 - [ ] Verificación semanal de que SauceDemo sigue igual:
 
 ```bash
-npm run test:chromium                       # 69 passed, 10 failed
+npm run test:chromium                       # 77 passed, 10 failed
 npx playwright test -c learning/student/sandbox/01-playwright --project=chromium   # 4 passed, 2 failed
 ```
 
@@ -113,7 +113,7 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 npm run test:chromium
 ```
 
-Mientras corre (~22 s), di la frase que sostiene el módulo:
+Mientras corre (~24 s), di la frase que sostiene el módulo:
 
 > "Este proyecto localiza elementos de una sola manera, 66 veces. Vosotros vais a aprender a **elegir** — y a defender la elección."
 

@@ -59,7 +59,7 @@ npx tsc --noEmit                                   # sin salida
 npm run test:chromium
 ```
 
-Mientras corre, explica: 79 tests, 6 Page Objects, 10 fallos a propósito, un pipeline que analiza los fallos con IA. **Este repositorio es el material del curso.**
+Mientras corre, explica: 87 tests, 6 Page Objects, 10 fallos a propósito, un pipeline que analiza los fallos con IA. **Este repositorio es el material del curso.**
 
 Después abre `pages/login.page.ts` y di la frase que sostiene todo el módulo:
 

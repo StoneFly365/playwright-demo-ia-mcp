@@ -97,7 +97,7 @@ npx tsc --noEmit
 npm run test:chromium
 ```
 
-79 tests, unos 22 segundos, **10 en rojo**. Abre el informe con `npm run test:report`.
+87 tests, unos 24 segundos, **10 en rojo**. Abre el informe con `npm run test:report`.
 
 Aprende a distinguir las tres clases de rojo, porque la IA no las distingue por ti:
 

@@ -204,7 +204,7 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 ## Opcionales según cliente
 
 - [x] `storageState` para no repetir el login en cada test. Solo sin `DEMO_SCENARIO`, para que `cascade` siga tumbando 70 tests (comprobado). En chromium la suite verde pasa de 20,9 s a 19,8 s: el login de SauceDemo es rápido y casi no se nota.
-- [ ] Spec de accesibilidad con axe.
+- [x] Spec de accesibilidad con axe: `tests/accessibility.spec.ts`, 8 tests `@a11y` con WCAG 2.1 A y AA (login, error de login, inventario, detalle, carrito, los dos pasos del checkout y la confirmación). SauceDemo pasa todos en los tres navegadores. `npm run test:a11y` los lanza solos.
 - [ ] Regresión visual con `toHaveScreenshot`.
 - [ ] Usar la rama `arquetipo` para apuntar a una segunda app más parecida al sector del cliente.
 
@@ -269,4 +269,5 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 | 2026-11-10 | La IA devuelve un JSON de forma fija; la validación, la cobertura y el Markdown los hace el código | El mismo principio que el triage: lo que se puede comprobar con reglas no se le pregunta a la IA, y un JSON inválido no llega a convertirse en plan |
 | 2026-11-10 | Un criterio sin respaldo ni en el diseño ni en la app se convierte en duda, no en caso | Un caso inventado daría un test que comprueba algo que nadie ha definido |
 | 2026-11-10 | `--generate` solo genera los casos nuevos de prioridad alta, y después de que una persona revise el plan | La IA propone y una persona decide; generar todo llenaría la suite de casos que ya existen |
+| 2026-11-17 | Los escenarios de fallo y `eval:ai` excluyen los tests `@a11y` | Los escenarios y sus cifras (70 tests) se calibraron sobre la suite funcional; una página que no carga no dice nada de su accesibilidad |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |

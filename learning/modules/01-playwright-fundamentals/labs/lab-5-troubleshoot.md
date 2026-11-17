@@ -96,7 +96,7 @@ grep -rc "cart_item" tests/*.spec.ts | grep -v ":0"
 
 ### Paso 5 — El `.first()` del proyecto
 
-Abre [`tests/cart-sync.spec.ts:30-33`](../../../../tests/cart-sync.spec.ts), el único `.first()` de los 79 tests:
+Abre [`tests/cart-sync.spec.ts:30-33`](../../../../tests/cart-sync.spec.ts), el único `.first()` de los 87 tests:
 
 ```typescript
 await expect(

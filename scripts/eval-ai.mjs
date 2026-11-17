@@ -13,7 +13,8 @@ function playwrightArgs(name) {
     // Reintentos fijos: en CI la config pone 2 y triplicaría el tiempo de los escenarios que fallan siempre.
     const retries = name === "flaky" ? "--retries=1" : "--retries=0";
     if (name === "demo-fail") return ["--grep", "@demo-fail", retries];
-    return ["--grep-invert", "@demo-fail", retries];
+    // Los escenarios se calibraron sobre la suite funcional: la de accesibilidad (@a11y) queda fuera.
+    return ["--grep-invert", '"@demo-fail|@a11y"', retries];
 }
 
 function run(cmd, env = {}) {

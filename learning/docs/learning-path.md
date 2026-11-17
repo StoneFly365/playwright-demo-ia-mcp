@@ -73,7 +73,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Nivel** | 2 MODIFY → 4 DESIGN |
 | **Dependencias** | 00 |
 | **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 12 scripts de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:34` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:117-121` (`filter` + `hasText`); 🔬 `CartPage.cartItems` (`pages/cart.page.ts:7`) — locator roto, 0 elementos, base del Lab 5 |
-| **Entregables** | Suite ejecutada en los tres navegadores (🔬 medido: 79 tests, 21,8 s, 69 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
+| **Entregables** | Suite ejecutada en los tres navegadores (🔬 medido: 87 tests, 23,8 s, 77 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
 
 → **[Ir al módulo](../modules/01-playwright-fundamentals/)**
 

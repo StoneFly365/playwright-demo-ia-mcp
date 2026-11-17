@@ -95,7 +95,7 @@ Lo que va entre paréntesis son los **parámetros** (lo que la función necesita
 
 ## 3. Objetos y desestructuración
 
-**¿Qué?** Un objeto agrupa datos con nombre: `{ total: 79, fallidos: 10 }`.
+**¿Qué?** Un objeto agrupa datos con nombre: `{ total: 87, fallidos: 10 }`.
 
 **¿Cómo se sacan los datos?** Dos formas:
 

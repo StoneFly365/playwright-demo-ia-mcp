@@ -14,7 +14,7 @@ El resto de este documento describe el programa completo (38 h, 10 módulos). No
 
 ## Qué es esto
 
-Este repositorio es una suite E2E de verdad: 79 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, ejecución en tres navegadores, pipeline de GitHub Actions dentro de un contenedor Docker y un análisis de fallos generado por IA. Funciona, se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real.
+Este repositorio es una suite E2E de verdad: 87 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, ejecución en tres navegadores, pipeline de GitHub Actions dentro de un contenedor Docker y un análisis de fallos generado por IA. Funciona, se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real.
 
 El Learning Lab convierte ese proyecto en un laboratorio. No vas a leer teoría sobre Page Objects: vas a abrir los seis que hay aquí y a diagnosticar el defecto real que esconden. No vas a estudiar cómo se depura un test: vas a diagnosticar los diez que fallan a propósito.
 
@@ -147,7 +147,7 @@ npx tsc --noEmit
 La suite del proyecto se ejecuta como siempre y **no se ve afectada**:
 
 ```bash
-npm test                 # 79 tests × 3 navegadores
+npm test                 # 87 tests × 3 navegadores
 npm run test:chromium    # solo Chromium
 ```
 
