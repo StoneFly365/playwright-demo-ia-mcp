@@ -144,6 +144,7 @@ jobs:
       # La instantánea de la página en el fallo (error-context.md) vive en test-results/. Sin ella la IA
       # no ve que el elemento sigue en la página y confunde un test roto con un problema de entorno.
       # test-results.json la cita por ruta absoluta, que es la misma en este contenedor.
+      # Trae también trazas y vídeos: con los secretos JIRA_*, jira:tickets los adjunta sin redactar.
       - name: Download test results (failures)
         uses: actions/download-artifact@v4
         with:
@@ -210,8 +211,9 @@ jobs:
   # una persona cierra y reabre la PR. El check de asserts y la revisión adversarial ya van dentro de heal:ai.
   heal:
     name: Healer (PR en borrador)
-    needs: report
-    if: always() && github.event_name == 'workflow_dispatch' && inputs.heal && inputs.suite != 'eval'
+    needs: [test, report]
+    # Solo si fallaron tests: sin fallos no hay ai-failures-grouped.json y no hay nada que curar.
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.heal && inputs.suite != 'eval' && needs.test.result == 'failure'
     # Fuera del contenedor: hace falta gh, que la imagen de Playwright no trae. Fijado a 24.04 porque
     # ubuntu-latest ya es 26.04 y Playwright 1.58 no tiene navegadores para esa versión.
     runs-on: ubuntu-24.04

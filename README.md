@@ -591,12 +591,12 @@ DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable q
 
 Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Tarda varios minutos, porque el healer ejecuta y depura los tests.
 
-**En CI** lo lanza el job **Healer**, solo a mano: `gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true`. Nunca corre en push ni en PR, porque gasta cuota y abre PR. Descarga el artefacto `ai-report`, ejecuta `heal:ai` sobre la rama elegida y deja `ai-heal.json` en el artefacto `ai-heal` y en el Summary. Necesita:
+**En CI** lo lanza el job **Healer**, solo a mano: `gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true`. Nunca corre en push ni en PR, porque gasta cuota y abre PR, ni cuando no ha fallado ningún test. Descarga el artefacto `ai-report`, ejecuta `heal:ai` sobre la rama elegida y deja `ai-heal.json` en el artefacto `ai-heal` y en el Summary. Necesita:
 
 - El secreto `CLAUDE_CODE_OAUTH_TOKEN`, que se genera con `claude setup-token` y se guarda con `gh secret set CLAUDE_CODE_OAUTH_TOKEN`. Usa la suscripción de quien lo genera.
 - Que el repositorio deje a GitHub Actions abrir PR: **Settings > Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests**.
 
-Las PR que abre el `GITHUB_TOKEN` del workflow no disparan otros workflows: los tests y el guard no se ejecutan solos en la PR del healer. Para que corran, una persona cierra y reabre la PR. El check de asserts y la revisión adversarial sí van dentro de `heal:ai`, antes de abrirla. El dashboard del artefacto `ai-report` se genera antes del healer, así que no incluye su PR.
+Las PR que abre el `GITHUB_TOKEN` del workflow no disparan otros workflows: los tests y el guard no se ejecutan solos en la PR del healer. Para que corran, una persona cierra y reabre la PR. Eso solo vale si se lanzó desde `main`: la PR va contra la rama elegida, y `playwright.yml` y `guard.yml` solo se disparan en las PR contra `main`. Lanzado desde otra rama (útil para probar el job), la PR no pasa nunca por los tests ni por el guard. El check de asserts y la revisión adversarial sí van dentro de `heal:ai`, antes de abrirla. El dashboard del artefacto `ai-report` se genera antes del healer, así que no incluye su PR.
 
 > Con los `@demo-fail`, la corrección correcta es cambiar el valor esperado (`'3'` por `'4'`): la PR sale con `needs-human`, que es lo que debe pasar. **No la fusiones**: esos tests fallan aposta para la demo.
 
@@ -647,7 +647,7 @@ Convierte `ai-tickets.json` en peticiones a la API REST v3 de Jira: título, des
 
 - **Modo simulado** (por defecto): sin credenciales no envía nada. Deja las peticiones completas y la lista de adjuntos en `playwright-report/ai-jira.json`. En CI va dentro del artefacto `ai-report`.
 - **Modo real**: con `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` y `JIRA_PROJECT_KEY` crea los tickets y sube los adjuntos. En local se leen solos de `.env` (que no está en git); en CI, de los secretos del repositorio. `JIRA_ISSUE_TYPE` es opcional (por defecto, `Bug`; tiene que existir en el proyecto). Si el proyecto exige informador al crear por API, se pone la cuenta del token. Volver a lanzarlo crea tickets duplicados.
-- En CI los tickets salen sin adjuntos: la traza y el vídeo se quedan en los jobs de cada navegador.
+- En CI también salen con adjuntos: el job **Reporte IA** descarga los `test-results-*` de cada navegador (trazas, vídeos e instantáneas de los fallos) antes de `jira:tickets`.
 
 Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos no: en un proyecto real, revisa qué contienen antes de activarlo.
 
@@ -683,7 +683,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
   Se redacta antes de recortar, para que un token partido por el corte no se escape.
 - **Sin IA cuando no hace falta.** Una ejecución en verde no llama a la IA. En push y PR tampoco se llama si solo hay tests flaky. La agrupación y la detección de flaky se hacen en código.
 - **Los agentes no leen `.env`.** [`.claude/settings.json`](.claude/settings.json) prohíbe a Claude Code leer `.env` y `.env.*` en este proyecto, también al healer y al revisor. El resto del repositorio sí lo pueden leer: no guardes secretos en otros ficheros.
-- **Jira simulado por defecto.** Sin las variables `JIRA_*` no se envía nada. En CI los tickets saldrían sin adjuntos.
+- **Jira simulado por defecto.** Sin las variables `JIRA_*` no se envía nada. Con ellas, también en CI, se suben la traza y el vídeo sin pasar por el redactor: revisa qué contienen antes de poner los secretos.
 - **El dashboard no se conecta a nada.** Tiene una CSP `default-src 'none'` y vuelve a pasar el redactor por todos los textos.
 
 **Lo que hay que decidir con cada cliente**
