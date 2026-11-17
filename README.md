@@ -358,7 +358,7 @@ flowchart TD
     F -.-> JOB
     W -.-> JOB
 
-    JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json<br/>· report:ai · tickets de Jira · Summary + artefacto ai-report"]
+    JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json y las instantáneas de los fallos<br/>· report:ai · tickets de Jira · Summary + artefacto ai-report"]
     R --> HL["Job: Healer (solo a mano, heal=true)<br/>heal:ai sobre los test_roto · PR en borrador"]
     T --> GU["Job: Guard de asserts<br/>solo PR desde ramas heal/*"]
 ```
