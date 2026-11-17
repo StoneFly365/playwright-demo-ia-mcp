@@ -75,7 +75,7 @@ Regla práctica: **si llevas más de 5 minutos peleándote con una herramienta, 
 
 ## Sobre qué se practica
 
-Sobre este repositorio: una suite E2E real de 79 tests sobre [SauceDemo](https://www.saucedemo.com), con 6 Page Objects, tres navegadores, pipeline de CI y **diez tests que fallan a propósito**. Esos diez fallos no son un error: son el material de los módulos 1 y 6.
+Sobre este repositorio: una suite E2E real de 87 tests sobre [SauceDemo](https://www.saucedemo.com), con 6 Page Objects, tres navegadores, pipeline de CI y **diez tests que fallan a propósito**. Esos diez fallos no son un error: son el material de los módulos 1 y 6.
 
 **Regla de oro:** todo lo que escribas vive en [`learning/student/sandbox/ruta-qa/`](../student/sandbox/ruta-qa/README.md). El código del proyecto (`tests/`, `pages/`, `scripts/`, `prompts/`, `specs/`) es lectura y no se modifica.
 

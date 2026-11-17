@@ -97,7 +97,7 @@ Los **2 fallos son el Lab 5** y son correctos. Los 4 verdes son el punto de part
 | `tests/`, `pages/`, `scripts/`, `prompts/`, `specs/` | ❌ **Solo lectura.** Ningún Lab de este módulo los modifica |
 | `playwright.config.ts` (raíz), `package.json`, `.github/` | ❌ No se tocan |
 
-**Esto incluye [`pages/cart.page.ts`](../../../pages/cart.page.ts), aunque descubras que tiene un locator roto.** Ese defecto es el material del Lab 5 y del módulo 02: corregirlo deja sin ejercicio a los dos.
+**El locator roto del Lab 5 no está en `pages/`.** El proyecto lo corrigió en noviembre de 2026; el Lab trabaja con una copia del Page Object que lo conserva, `learning/student/sandbox/01-playwright/05-cart.page.ts`.
 
 El sandbox del módulo 01 tiene [su propia configuración](../../student/sandbox/01-playwright/playwright.config.ts) —con `baseURL`, los tres navegadores y `testIdAttribute`— separada de la del módulo 00, que sigue siendo lógica pura sin navegador.
 
@@ -145,7 +145,7 @@ Los bloques son **los mismos** que los del [plan de sesión del formador](../../
 | | Puesta en común y cierre del módulo | 10 |
 | | Convocatoria del assessment | 5 |
 
-**La instalación de navegadores ocupa media hora de la sesión 3 y no es negociable.** Son ~500 MB por equipo; con 10 personas en la misma red, es el cuello de botella real del arranque. La suite, en cambio, **no** lo es: 79 tests en Chromium tardan ~22 s.
+**La instalación de navegadores ocupa media hora de la sesión 3 y no es negociable.** Son ~500 MB por equipo; con 10 personas en la misma red, es el cuello de botella real del arranque. La suite, en cambio, **no** lo es: 87 tests en Chromium tardan ~24 s.
 
 **Por qué existe la sesión 6.** La Parte C se defiende sobre el `decisiones.md` del Challenge, y el Challenge exige los Labs 1-5. Con el Lab 5 en la sesión 5, no hay ningún minuto anterior en el que ese documento pueda existir. La sesión 6 es ese minuto.
 

@@ -172,7 +172,7 @@ npx tsc --noEmit
 
 # 4. La suite del proyecto sigue teniendo el tamaño esperado
 npx playwright test --list | tail -1
-# Total: 237 tests in 14 files
+# Total: 264 tests in 16 files
 ```
 
 ## Desviaciones respecto al diseño de la Fase 1

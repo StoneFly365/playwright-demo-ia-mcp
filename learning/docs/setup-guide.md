@@ -145,7 +145,7 @@ Si falla algo en la suite verde, no es cosa tuya: SauceDemo puede haber cambiado
 
 ### La ejecución de la suite completa tarda mucho
 
-Normal: son 237 ejecuciones (79 tests × 3 navegadores) contra un sitio externo. Durante las prácticas usa un solo navegador:
+Normal: son 261 ejecuciones (87 tests × 3 navegadores) contra un sitio externo. Durante las prácticas usa un solo navegador:
 
 ```bash
 npm run test:chromium

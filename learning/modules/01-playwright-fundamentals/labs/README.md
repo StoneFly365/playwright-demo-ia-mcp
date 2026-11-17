@@ -57,7 +57,7 @@ Las cifras son mínimos: si escribes más tests de los pedidos, mejor.
 
 ## Reglas
 
-1. **Solo se trabaja dentro de `learning/student/sandbox/01-playwright/`.** `tests/`, `pages/`, `scripts/` y la configuración raíz no se tocan en ningún Lab de este módulo — **incluido el locator roto de [`pages/cart.page.ts`](../../../../pages/cart.page.ts) que vas a descubrir en el Lab 5**. Ese defecto es el material del módulo 02.
+1. **Solo se trabaja dentro de `learning/student/sandbox/01-playwright/`.** `tests/`, `pages/`, `scripts/` y la configuración raíz no se tocan en ningún Lab de este módulo. El locator roto que vas a descubrir en el Lab 5 está en una copia del Page Object dentro del sandbox, `05-cart.page.ts`, no en `pages/`.
 2. **Nunca se modifica una aserción para llegar a verde.** Si un test falla, el problema está en el locator, en el código o en la aplicación.
 3. **Diagnosticar antes que corregir.** En el Lab 5 el informe se escribe **antes** de tocar nada.
 4. **Toda aserción que escribas lleva mensaje descriptivo**, en castellano y en lenguaje de negocio. Es el estándar de calidad del proyecto y aquí es obligatorio.
@@ -80,4 +80,4 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 npx playwright test -c learning/student/sandbox/01-playwright
 ```
 
-> **Usa `--project=chromium` mientras practicas.** No es por tiempo —la suite entera tarda ~22 s— sino por cortesía: diez personas ejecutando a la vez contra un servicio público y gratuito.
+> **Usa `--project=chromium` mientras practicas.** No es por tiempo —la suite entera tarda ~24 s— sino por cortesía: diez personas ejecutando a la vez contra un servicio público y gratuito.

@@ -12,10 +12,10 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 
 | # | Concepto | Archivo real | Qué debe observar el alumno | Qué debe aprender |
 |---|---|---|---|---|
-| R1 | Anatomía de un spec | [`tests/login.spec.ts:1-20`](../../../tests/login.spec.ts) | `import` → `describe` → `beforeEach` → `test`, en ese orden, en los 14 ficheros | Que un spec tiene una forma canónica |
+| R1 | Anatomía de un spec | [`tests/login.spec.ts:1-20`](../../../tests/login.spec.ts) | `import` → `describe` → `beforeEach` → `test`, en ese orden, en los 15 ficheros | Que un spec tiene una forma canónica |
 | R2 | Configuración del runner | [`playwright.config.ts`](../../../playwright.config.ts) | 31 líneas y ni un timeout escrito | Qué hereda su test sin escribirlo |
 | R3 | `baseURL` y rutas relativas | [`playwright.config.ts:13`](../../../playwright.config.ts) + [`pages/login.page.ts:11`](../../../pages/login.page.ts) | `goto('/')` funciona porque hay `baseURL` | Cómo se cambia de entorno sin tocar tests |
-| R4 | Projects y cross-browser | [`playwright.config.ts:17-30`](../../../playwright.config.ts) | 79 tests × 3 navegadores = 237 ejecuciones | Un test se escribe una vez y corre en tres motores |
+| R4 | Projects y cross-browser | [`playwright.config.ts:17-30`](../../../playwright.config.ts) | 87 tests × 3 navegadores = 261 ejecuciones | Un test se escribe una vez y corre en tres motores |
 | R5 | Tags y filtrado | 10 specs con `{ tag: '@demo-fail' }` + [`package.json:7-8`](../../../package.json) | La suite se parte en verde y roja | Selección de tests por criterio |
 | R6 | Informe HTML | [`playwright.config.ts:9-11`](../../../playwright.config.ts) + `npm run test:report` | Un informe con 10 fallos reales | Leer un informe y llegar al test culpable |
 | R28 | Modo headed | [`package.json:9`](../../../package.json) | El navegador ejecutando el test | Que se puede mirar |
@@ -25,7 +25,7 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 
 | # | Concepto | Archivo real | Qué debe observar el alumno | Qué debe aprender |
 |---|---|---|---|---|
-| R7 | **Auto-waiting** | Toda la suite: **0 esperas explícitas** en 79 tests | Nadie espera y aun así funciona | Que la aserción web-first reintenta hasta su timeout |
+| R7 | **Auto-waiting** | Toda la suite: **0 esperas explícitas** en 87 tests | Nadie espera y aun así funciona | Que la aserción web-first reintenta hasta su timeout |
 | R8 | Métodos sin reintento | [`tests/problem-user-cart.spec.ts:53,54,77,78`](../../../tests/problem-user-cart.spec.ts) | Los 4 únicos `isVisible()`/`textContent()` de la suite | Por qué esos 4 hacen el test dependiente del instante |
 | R27 | Timeout por aserción | [`tests/performance-glitch-user-cart.spec.ts:19,28,38,42`](../../../tests/performance-glitch-user-cart.spec.ts) | `{ timeout: 15000 }` ×4 · 🔬 la latencia real medida es **~5,1 s** | Cuándo un timeout local está justificado, y en qué se diferencia de `waitForTimeout` |
 | R20 | Aserciones web-first | [`tests/cart-badge.spec.ts`](../../../tests/cart-badge.spec.ts) | 4 tipos en un solo fichero | Cuál elegir en cada caso |
@@ -44,7 +44,7 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 | R11b | **`getByLabel` como caso de criterio** 🔬 | **No existe y no puede existir**: 🔬 **0 elementos `<label>`** en las 5 pantallas | La estrategia que recomienda la documentación **no aplica aquí** | Que la elección depende del HTML que te dan — y que esto es un hallazgo de accesibilidad que se reporta |
 | R12 | `getByTestId` y `testIdAttribute` 🔬 | La opción **no está** en [`playwright.config.ts`](../../../playwright.config.ts) · 🔬 **0** sin configurar, **1** con `testIdAttribute: 'data-test'` | El proyecto escribe 66 selectores a mano pudiendo no hacerlo | Que una línea de configuración simplifica 66 selectores |
 | R13 | Locator frágil por clase CSS 🔬 | **12 usos de `.cart_item` en 5 ficheros** | Una clase de estilo usada como contrato de test | Qué distingue un selector de estilo de un contrato de test |
-| R13b | **Locator que no encuentra nada** 🔬 | [`pages/cart.page.ts:7`](../../../pages/cart.page.ts) — 🔬 `[data-test="cart-item"]` resuelve **0**; el DOM real es `<div class="cart_item" data-test="inventory-item">` | El Page Object declara un locator que no existe, y **ningún test lo usa** | **Un locator roto es invisible hasta que alguien lo ejecuta** |
+| R13b | **Locator que no encuentra nada** 🔬 | [`05-cart.page.ts:11`](../../student/sandbox/01-playwright/05-cart.page.ts), copia de lo que tuvo `pages/cart.page.ts:7` hasta noviembre de 2026 — 🔬 `[data-test="cart-item"]` resuelve **0**; el DOM real es `<div class="cart_item" data-test="inventory-item">` | El Page Object declaraba un locator que no existe, y **ningún test lo usaba** | **Un locator roto es invisible hasta que alguien lo ejecuta** |
 | R14 | Encadenado y filtrado | [`tests/product-detail-add-to-cart.spec.ts:117-121`](../../../tests/product-detail-add-to-cart.spec.ts) | `.filter({ hasText }).locator('img')` | Componer locators en vez de escribir un CSS enorme |
 | R15 | `hasText` como opción | [`pages/inventory.page.ts:33`](../../../pages/inventory.page.ts) | Otra sintaxis para lo mismo | Que hay dos formas equivalentes |
 | R16 | `.first()` como síntoma | [`tests/cart-sync.spec.ts:32`](../../../tests/cart-sync.spec.ts) | El único `.first()` de la suite, en una aserción que comprueba muy poco | Que `.first()` **tapa** un locator impreciso en vez de arreglarlo |
@@ -60,8 +60,8 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 
 | # | Concepto | Archivo real | Qué debe observar el alumno | Qué debe aprender |
 |---|---|---|---|---|
-| R25 | `beforeEach` y aislamiento | 13 ficheros | Cada test arranca con sesión limpia | Aislamiento entre tests |
-| R26 | Test sin `beforeEach` | [`tests/route-protection.spec.ts`](../../../tests/route-protection.spec.ts) | El único de los 14 | Que el hook responde a una necesidad, no a un ritual |
+| R25 | `beforeEach` y aislamiento | 14 ficheros | Cada test arranca con sesión limpia | Aislamiento entre tests |
+| R26 | Test sin `beforeEach` | [`tests/route-protection.spec.ts`](../../../tests/route-protection.spec.ts) | El único de los 15 | Que el hook responde a una necesidad, no a un ritual |
 | R30 | **Hueco de cobertura real** | [`tests/inventory.spec.ts:23-71`](../../../tests/inventory.spec.ts) — cubre `za`, `lohi`, `hilo`; **falta `az`** | La suite tiene un hueco identificable | Que escribir un test empieza por detectar qué falta — **base del Lab 4** |
 | R30b | **Segundo hueco** 🔬 | El botón `X` que cierra el mensaje de error del login: 🔬 existe (`[data-test="error-button"]`) y **ningún test lo ejercita** | Comparar [`specs/test-index.md`](../../../specs/test-index.md) con la aplicación | Que los huecos se encuentran comparando cobertura declarada con comportamiento real |
 | R31 | Codegen | **No existe en el repositorio** — ⚠️ **sin validar técnicamente** | — | Herramienta de asistencia y sus límites — [Lab 6 opcional](labs/lab-6-codegen.md) |

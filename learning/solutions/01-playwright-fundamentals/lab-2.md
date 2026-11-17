@@ -29,7 +29,7 @@ test('con espera explícita: el badge muestra 1 tras añadir la Backpack', async
 | Sin espera | **277 ms** | ✅ |
 | Con `waitForTimeout(3000)` | **3.334 ms** | ✅ |
 
-**Respuesta esperada:** cero fiabilidad ganada, 3 segundos pagados. Con 79 tests son casi 4 minutos añadidos por ejecución, ~12 minutos en los tres navegadores. Y no protege de nada: si la aplicación tardara 3,1 s, el test fallaría igual.
+**Respuesta esperada:** cero fiabilidad ganada, 3 segundos pagados. Con 87 tests son más de 4 minutos añadidos por ejecución, ~13 minutos en los tres navegadores. Y no protege de nada: si la aplicación tardara 3,1 s, el test fallaría igual.
 
 ## Paso 3 — Consultar el instante frente a esperar el resultado
 

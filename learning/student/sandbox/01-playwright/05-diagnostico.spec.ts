@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../../../pages/login.page';
 import { InventoryPage } from '../../../../pages/inventory.page';
-import { CartPage } from '../../../../pages/cart.page';
+import { CartPage } from './05-cart.page';
 
 /**
  * LAB 5 — El test que a veces pasa (TROUBLESHOOT)

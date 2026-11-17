@@ -41,7 +41,7 @@
 | Elemento | Locator recomendado | Cifra medida | Nota |
 |---|---|---|---|
 | Título "Your Cart" | `getByTestId('title')` | 1 | 🔬 No es un heading |
-| Líneas de producto | `getByTestId('inventory-item')` | 1 por producto | 🔬 **`[data-test="cart-item"]` → 0 elementos: no existe.** Es el locator roto de [`pages/cart.page.ts:7`](../../../pages/cart.page.ts) |
+| Líneas de producto | `getByTestId('inventory-item')` | 1 por producto | 🔬 **`[data-test="cart-item"]` → 0 elementos: no existe.** Es el locator roto que tuvo [`pages/cart.page.ts:7`](../../../pages/cart.page.ts) hasta noviembre de 2026; hoy solo está en la copia del Lab 5 |
 | Cantidad | `getByTestId('item-quantity')` | 1 | Por texto `'1'` → 2: ambiguo |
 | Botón Checkout | `getByRole('button', { name: 'Checkout' })` | 1 | También `getByTestId('checkout')` |
 | Botón Continue Shopping | `getByRole('button', { name: 'Continue Shopping' })` | 1 | — |

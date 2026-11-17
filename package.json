@@ -6,10 +6,11 @@
     "test:all": "playwright test",
     "test:demo:green": "playwright test --grep-invert @demo-fail",
     "test:demo:fail": "playwright test --grep @demo-fail",
-    "test:scenario:cascade": "cross-env DEMO_SCENARIO=cascade playwright test --grep-invert @demo-fail",
-    "test:scenario:bug": "cross-env DEMO_SCENARIO=bug playwright test --grep-invert @demo-fail",
-    "test:scenario:flaky": "cross-env DEMO_SCENARIO=flaky playwright test --grep-invert @demo-fail --retries=1",
-    "test:scenario:env": "cross-env DEMO_SCENARIO=env playwright test --grep-invert @demo-fail",
+    "test:a11y": "playwright test --grep @a11y",
+    "test:scenario:cascade": "cross-env DEMO_SCENARIO=cascade playwright test --grep-invert \"@demo-fail|@a11y\"",
+    "test:scenario:bug": "cross-env DEMO_SCENARIO=bug playwright test --grep-invert \"@demo-fail|@a11y\"",
+    "test:scenario:flaky": "cross-env DEMO_SCENARIO=flaky playwright test --grep-invert \"@demo-fail|@a11y\" --retries=1",
+    "test:scenario:env": "cross-env DEMO_SCENARIO=env playwright test --grep-invert \"@demo-fail|@a11y\"",
     "test:headed": "playwright test --headed",
     "test:chromium": "playwright test --project=chromium",
     "test:firefox": "playwright test --project=firefox",
@@ -30,6 +31,7 @@
     "ruta-qa:check": "node scripts/ruta-qa-check.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "^1.49.0",
     "@types/node": "^20.19.39",
     "cross-env": "^10.1.0",

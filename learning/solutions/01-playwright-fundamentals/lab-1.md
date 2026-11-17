@@ -1,6 +1,6 @@
 # Solución — Lab 1 (FOLLOW)
 
-**Verificado:** suite del proyecto ejecutada en Chromium: **79 tests, 69 passed, 10 failed, ~22 s**.
+**Verificado:** suite del proyecto ejecutada en Chromium: **87 tests, 77 passed, 10 failed, ~24 s**.
 
 ---
 
@@ -8,7 +8,7 @@
 
 | # | Pregunta | Respuesta |
 |---|---|---|
-| 1 | ¿Cuántas ejecuciones produce `npm test`? | **237**: 79 tests × 3 projects (`chromium`, `firefox`, `webkit`) |
+| 1 | ¿Cuántas ejecuciones produce `npm test`? | **261**: 87 tests × 3 projects (`chromium`, `firefox`, `webkit`) |
 | 2 | ¿Por qué `goto('/')` funciona? | Por `baseURL: 'https://www.saucedemo.com'` en `use` ([`playwright.config.ts:13`](../../../playwright.config.ts)). Las rutas relativas se resuelven contra ella |
 | 3 | ¿Timeout de una aserción? | **5.000 ms.** No está escrito: es el valor por defecto de Playwright. El del test entero es 30.000 ms |
 | 4 | ¿Qué se guarda al fallar? | `trace` y `video`, ambos con `retain-on-failure` ([`playwright.config.ts:14-15`](../../../playwright.config.ts)); más el informe HTML y el JSON de los reporters |
@@ -21,18 +21,18 @@ Cifras de referencia medidas en un equipo de desarrollo (Windows 11, sin proxy).
 
 | # | Comando | Tests | Passed | Failed | Tiempo |
 |---|---|---|---|---|---|
-| 1 | `npm run test:chromium` | 79 | 69 | 10 | ~22 s |
+| 1 | `npm run test:chromium` | 87 | 77 | 10 | ~24 s |
 | 2 | `npx playwright test --project=chromium tests/login.spec.ts` | 8 | 7 | 1 | ~9 s |
 | 3 | `npx playwright test --project=chromium --grep "ordenar"` | 3 | 3 | 0 | ~2 s |
 | 4 | `npm run test:demo:green -- --project=chromium` | 69 | 69 | 0 | ~13 s |
 | 5 | `npm run test:demo:fail -- --project=chromium` | 10 | 0 | 10 | ~11 s |
-| 6 | `npm test` | 237 | 207 | 30 | ~60-75 s |
+| 6 | `npm test` | 261 | 231 | 30 | ~60-75 s |
 
 > Si un alumno obtiene otro número de **tests**, algo se ha modificado en `tests/`. Compruébalo con `git status --short` antes de seguir.
 
 ## Paso 3 — El informe HTML
 
-**1. Reparto de los 10 fallos:** uno por fichero, en 10 de los 14 specs. No están concentrados. Es deliberado: obliga a recorrer el informe en vez de mirar un solo sitio.
+**1. Reparto de los 10 fallos:** uno por fichero, en 10 de los 15 specs. No están concentrados. Es deliberado: obliga a recorrer el informe en vez de mirar un solo sitio.
 
 **2. Clasificación esperada.** Los diez son **fallos de aserción**: el elemento se encuentra y el valor no coincide. Ejemplos:
 
@@ -62,7 +62,7 @@ Valor del paso: es la primera vez que el alumno **ve** que un test es una person
 
 **Respuesta sólida:**
 
-> "30 fallos son exactamente los 10 intencionados × 3 navegadores. Ejecuta `npm run test:demo:green` —debe dar 69 verdes— y `npm run test:demo:fail` —debe dar 10 rojos—. Si eso cuadra, la suite está roja **a propósito**, no rota."
+> "30 fallos son exactamente los 10 intencionados × 3 navegadores. Ejecuta `npm run test:demo:green` —debe dar 77 verdes— y `npm run test:demo:fail` —debe dar 10 rojos—. Si eso cuadra, la suite está roja **a propósito**, no rota."
 
 **Respuesta insuficiente:** "son fallos a propósito" sin advertir que el número 30 ya lo confirma y sin proponer la comprobación.
 
@@ -81,12 +81,12 @@ Es el primer ejercicio del programa en que el alumno tiene que **calcular** con 
 | Ejecuta `npm test` (3 navegadores) para todas las filas y tarda una eternidad | Es parte del aprendizaje: que compare la fila 1 con la 6 |
 | Copia las cifras de este enunciado sin ejecutar | Se detecta en los tiempos: si son idénticos a los de referencia, no ha ejecutado |
 | Intenta "arreglar" un fallo intencionado | Intervención inmediata. Regla 1 del programa |
-| Confunde `--grep` con `--grep-invert` en la fila 4 | Que compare 69 + 10 = 79 y lo deduzca |
+| Confunde `--grep` con `--grep-invert` en la fila 4 | Que compare 77 + 10 = 87 y lo deduzca |
 
 ## Cómo validar
 
 ```bash
-npm run test:chromium                      # 69 passed, 10 failed
+npm run test:chromium                      # 77 passed, 10 failed
 npm run test:demo:fail -- --project=chromium   # 10 failed
 git status --short                         # solo learning/student/
 ```
