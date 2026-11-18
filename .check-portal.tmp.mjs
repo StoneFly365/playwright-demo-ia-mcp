@@ -1,0 +1,12 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch();
+const p = await b.newPage();
+await p.goto('http://localhost:8765/');
+const img = p.locator('.markdown-section img[alt^="Brain QA"]');
+await img.waitFor();
+console.log('title:', await p.title());
+console.log('sidebar:', await p.locator('.app-name').innerText());
+console.log('h1:', await p.locator('.markdown-section h1').first().innerText());
+console.log('img naturalWidth:', await img.evaluate(i => i.naturalWidth));
+await p.screenshot({ path: process.argv[2] });
+await b.close();
