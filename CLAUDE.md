@@ -7,7 +7,7 @@ Antes de abrir cualquier PR, revisa **todos** los `.md` del repositorio (`git ls
 - Cifras: número de tests, ficheros, `@demo-fail`, versiones (Playwright, imagen de Docker, modelos).
 - Lo que se ejecuta dónde: jobs del workflow, secretos y variables, local frente a CI.
 - Estado del `ROADMAP.md`: línea de estado, tabla de fases, pendientes marcados y registro de decisiones.
-- Referencias a ficheros y líneas reales en `learning/` (`npm run ruta-qa:check` y, si se desplazan líneas de `tests/`, `pages/`, `fixtures/` o `scripts/`, revisarlas a mano).
+- Referencias a ficheros y líneas reales en `learning/`: se revisan a mano, porque `npm run ruta-qa:check` solo comprueba el entorno. Sobre todo si el cambio desplaza líneas de `tests/`, `pages/`, `fixtures/` o `scripts/`.
 
 No se reescriben los documentos que son registro histórico con fecha: en `learning/docs/` los de discovery, validación técnica, revisión pedagógica y registro del piloto del módulo 01, y `learning/phase-1-learning-lab-design.md`.
 
