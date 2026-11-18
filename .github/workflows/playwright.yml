@@ -37,7 +37,7 @@ jobs:
     if: github.event.inputs.suite != 'eval'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.58.2-jammy
+      image: mcr.microsoft.com/playwright:v1.64.1-jammy
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -120,7 +120,7 @@ jobs:
     if: always() && github.event.inputs.suite != 'eval'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.58.2-jammy  # mismo Node que los tests; además HOME=/root solo vale dentro del contenedor
+      image: mcr.microsoft.com/playwright:v1.64.1-jammy  # mismo Node que los tests; además HOME=/root solo vale dentro del contenedor
     timeout-minutes: 15
 
     steps:
@@ -280,7 +280,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.suite == 'eval'
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.58.2-jammy
+      image: mcr.microsoft.com/playwright:v1.64.1-jammy
     timeout-minutes: 45
     env:
       DEMO_SCENARIO: ''  # eval:ai pone el escenario de cada ejecución; el de la entrada no debe colarse
