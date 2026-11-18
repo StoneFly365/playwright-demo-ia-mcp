@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3, cuota de IA en CI y fase 5 hechas · Fase 4 hecha en local y en CI (falta crear tickets de Jira desde CI) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-18
+**Estado:** Fases 0 a 5 y cuota de IA en CI hechas, la 4 en local y en CI · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-18
 
 ## Objetivo
 
@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | ✅ |
-| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y en CI; faltan los tickets de Jira desde CI |
+| 4 | Cerrar el circuito | 3-5 días | ✅ en local y en CI |
 | 5 | Argumentos para cliente enterprise | 1 día | ✅ |
 | 6 | Diseñar desde Figma (fase 1 del ciclo de QA) | 2 días | 🟨 construida; falta el fichero de Figma y la primera ejecución real |
 | — | Opcionales según cliente | — | ⬜ |
@@ -160,7 +160,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
 - [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
 - [x] Destino de los tickets: el sandbox de Jira, proyecto `THP`. Sin credenciales, modo simulado. El conector Atlassian no sirve en CI.
-- [ ] Tickets de Jira desde CI (con traza y vídeo: el job Reporte IA descarga los `test-results-*`). Los secretos `JIRA_*` ya están en GitHub desde el 27 de octubre, así que el modo real está activo en CI, pero falta: pasar `JIRA_ISSUE_TYPE` en el workflow (THP usa `Tarea` y el valor por defecto es `Bug`), probarlo con `scenario=bug` y revisar qué llevan la traza y el vídeo.
+- [x] Tickets de Jira desde CI, con traza y vídeo (el job Reporte IA descarga los `test-results-*`). El tipo de incidencia va en la variable del repositorio `JIRA_ISSUE_TYPE` (`Tarea` en THP; PR #36). Probado el 18 de noviembre con `scenario=bug`: THP-3 (Crítica) y THP-4 (Importante), con 6 adjuntos cada uno; adjuntos revisados, sin datos sensibles, y tickets cerrados. El primer intento falló con un 404 porque los secretos `JIRA_*` del 27 de octubre estaban mal; se volvieron a guardar desde el `.env`. El paso lleva `continue-on-error`, así que un fallo de Jira no pone el job en rojo: hay que mirar el log del paso.
 - [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket de Jira. Resultado abajo.
 - [x] Job *Guard de asserts* probado en GitHub (PR #13, cerrada): falla con `needs-human` cuando se cambia `toHaveText('3')` por `'4'` y pasa cuando solo cambia un selector del page object.
 - [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
