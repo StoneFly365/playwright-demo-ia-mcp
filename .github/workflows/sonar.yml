@@ -1,0 +1,53 @@
+name: SonarQube Cloud
+
+# Workflow propio y no un job de playwright.yml: no depende de sus entradas manuales (suite, heal,
+# scenario), sale como check aparte y se relanza sin repetir los tests E2E. Análisis desde CI, no el
+# Automatic Analysis, para subir la cobertura de los tests unitarios de scripts/.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonar-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sonar:
+    name: SonarQube Cloud
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Vacío en las PR desde forks y hasta que se cree el secreto: el análisis se omite sin poner el check en rojo.
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0  # Sonar necesita el historial para el código nuevo y la autoría
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests con cobertura
+        run: npm run test:unit:coverage
+
+      - name: SonarQube Cloud scan
+        if: env.SONAR_TOKEN != ''
+        uses: SonarSource/sonarqube-scan-action@v8.5.0
+
+      - name: Sin SONAR_TOKEN
+        if: env.SONAR_TOKEN == ''
+        run: echo "::notice::Sin el secreto SONAR_TOKEN (o PR desde un fork), se omite el análisis de SonarQube Cloud."
