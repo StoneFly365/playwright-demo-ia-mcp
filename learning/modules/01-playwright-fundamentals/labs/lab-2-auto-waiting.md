@@ -10,7 +10,7 @@ Entender el auto-waiting **rompiéndolo a propósito** y midiendo lo que cuesta:
 
 ## Contexto
 
-En 87 tests de este proyecto hay **cero** `waitForTimeout`, `waitForSelector` y `waitForLoadState`. Casi cualquier tutorial de internet te dirá que metas un `sleep` cuando algo "va rápido"; esta suite demuestra que no hace falta.
+En 88 tests de este proyecto hay **cero** `waitForTimeout`, `waitForSelector` y `waitForLoadState`. Casi cualquier tutorial de internet te dirá que metas un `sleep` cuando algo "va rápido"; esta suite demuestra que no hace falta.
 
 Pero "no hace falta" no se aprende leyéndolo. Se aprende midiendo.
 
@@ -55,7 +55,7 @@ await page.waitForTimeout(3000);
 
 Ejecuta y anota los dos tiempos.
 
-**Responde:** ¿qué has ganado en fiabilidad y qué has pagado en tiempo? Si tu suite tiene 87 tests y cada uno lleva un `waitForTimeout(3000)`, ¿cuánto tarda?
+**Responde:** ¿qué has ganado en fiabilidad y qué has pagado en tiempo? Si tu suite tiene 88 tests y cada uno lleva un `waitForTimeout(3000)`, ¿cuánto tarda?
 
 > Referencia medida durante la construcción de este módulo: **277 ms** sin espera, **3.334 ms** con ella. Mismo resultado.
 

@@ -60,7 +60,7 @@ Eso es toda la configuración: **un servidor MCP es un proceso que el asistente 
 
 ### Subagentes: herramientas acotadas por rol
 
-Segunda idea del módulo, y es puro criterio de QA. En `.claude/agents/` hay tres asistentes especializados, y lo interesante **no es lo que saben hacer, sino lo que no pueden hacer**:
+Segunda idea del módulo, y es puro criterio de QA. En `.claude/agents/` hay cinco asistentes especializados. Los tres de esta tabla son los del ciclo planificar → generar → reparar, y lo interesante **no es lo que saben hacer, sino lo que no pueden hacer**:
 
 | Subagente | Puede | NO puede |
 |---|---|---|

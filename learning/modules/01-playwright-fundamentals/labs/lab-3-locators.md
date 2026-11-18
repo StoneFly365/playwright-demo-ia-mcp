@@ -32,7 +32,7 @@ Aquí ves las demás. Y descubres que no son intercambiables: en esta aplicació
 | `learning/student/sandbox/01-playwright/03-decisiones.md` | **El entregable principal.** Lo creas tú |
 | [`learning/student/sandbox/01-playwright/playwright.config.ts`](../../../student/sandbox/01-playwright/playwright.config.ts) | Lectura del bloque 3.2 |
 | [`pages/login.page.ts:7,15-17`](../../../../pages/login.page.ts) · [`pages/checkout.page.ts:17-19`](../../../../pages/checkout.page.ts) | Lectura: la estrategia actual del proyecto |
-| [`tests/checkout.spec.ts:34`](../../../../tests/checkout.spec.ts) | Lectura: el único `getByRole` de la suite |
+| [`tests/checkout.spec.ts:35`](../../../../tests/checkout.spec.ts) | Lectura: el único `getByRole` de la suite |
 | [`pages/inventory.page.ts:21`](../../../../pages/inventory.page.ts) | Lectura: el desplegable del bloque 3.5 |
 
 ---

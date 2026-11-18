@@ -72,7 +72,7 @@
 
 | Elemento | Locator recomendado | Nota |
 |---|---|---|
-| "Thank you for your order!" | `getByRole('heading', { name: 'Thank you for your order!' })` | 🔬 **El único heading real de todo el flujo**, y el único `getByRole` que usa el proyecto ([`tests/checkout.spec.ts:34`](../../../tests/checkout.spec.ts)) |
+| "Thank you for your order!" | `getByRole('heading', { name: 'Thank you for your order!' })` | 🔬 **El único heading real de todo el flujo**, y el único `getByRole` que usa el proyecto ([`tests/checkout.spec.ts:35`](../../../tests/checkout.spec.ts)) |
 | Texto secundario | `getByTestId('complete-text')` | — |
 | Back Home | `getByTestId('back-to-products')` | — |
 

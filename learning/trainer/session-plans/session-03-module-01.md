@@ -38,7 +38,7 @@ npx playwright test --project=chromium tests/login.spec.ts
 - [ ] Verificación semanal de que SauceDemo sigue igual:
 
 ```bash
-npm run test:chromium                       # 77 passed, 10 failed
+npm run test:chromium                       # 78 passed, 10 failed
 npx playwright test -c learning/student/sandbox/01-playwright --project=chromium   # 4 passed, 2 failed
 ```
 

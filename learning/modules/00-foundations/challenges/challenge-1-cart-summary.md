@@ -10,7 +10,7 @@ Construir un módulo que calcule el resumen económico de un carrito —subtotal
 
 ## Contexto
 
-`pages/checkout.page.ts:11-13` expone tres locators: `subtotalLabel`, `taxLabel` y `totalLabel`. El test `tests/checkout.spec.ts:102-118` comprueba que los tres **son visibles**, y nada más. Nadie verifica que los importes sean correctos.
+`pages/checkout.page.ts:11-13` expone tres locators: `subtotalLabel`, `taxLabel` y `totalLabel`. El test `tests/checkout.spec.ts:103-119` comprueba que los tres **son visibles**, y nada más. Nadie verifica que los importes sean correctos.
 
 Antes de poder verificar esos importes contra la UI —cosa que harás en módulos posteriores— hace falta saber calcularlos. Eso es lo que construyes aquí.
 

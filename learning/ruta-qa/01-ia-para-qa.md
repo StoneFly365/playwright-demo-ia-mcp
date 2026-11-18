@@ -47,15 +47,15 @@ Fíjate en lo que **no** hace: no arregla ningún test. Ninguno de los cuatro pr
 
 **1 · Alucina, y aquí está demostrado.**
 
-[`scripts/report-ai.mjs`](../../scripts/report-ai.mjs) contiene este comentario y esta corrección:
+[`scripts/report-ai.mjs:87-92`](../../scripts/report-ai.mjs) pone él mismo la fecha del informe:
 
 ```javascript
-// El modelo inventa generated_at (a menudo en UTC). Lo sobreescribimos con la
-// hora real de Madrid para que sea fiable en local y en CI.
-grouped.generated_at = new Date().toLocaleString("es-ES", { ... });
+const grouped = {
+    generated_at: new Date().toLocaleString("es-ES", {
+        timeZone: "Europe/Madrid", ...
 ```
 
-El prompt le pide una fecha ISO8601. El modelo devuelve una fecha con formato perfecto **y contenido inventado**: no tiene reloj. El código la sobrescribe. La lección no es "los modelos alucinan": es que **la alucinación llegó con formato correcto**, así que ninguna validación de estructura la habría detectado.
+No siempre fue así. Al principio el prompt le pedía la fecha al modelo, y el modelo devolvía una fecha con formato perfecto **y contenido inventado**: no tiene reloj. El código tuvo que sobrescribirla, y hoy ya no se la pide: la pone el código y el modelo solo la lee. La lección no es "los modelos alucinan": es que **la alucinación llegó con formato correcto**, así que ninguna validación de estructura la habría detectado.
 
 **2 · Validar el formato no es validar el contenido.**
 

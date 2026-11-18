@@ -8,7 +8,7 @@ Ten el repositorio abierto mientras lees. Cada sección termina con un **"Ábrel
 
 ## 0. Por qué un QA necesita esto
 
-Este es el Page Object más simple del proyecto, `pages/login.page.ts`, entero:
+Este es el Page Object más simple del proyecto, `pages/login.page.ts`, sin su último método (`loginAsStandardUser()`, que reutiliza la sesión guardada y se ve en el módulo 03):
 
 ```typescript
 import { Locator, Page } from '@playwright/test';
@@ -132,7 +132,7 @@ precios.length;                                      // contar
 
 `map` recorre el array y devuelve **uno nuevo** con el resultado de aplicar la función a cada elemento. No modifica el original.
 
-**Ábrelo:** [`tests/inventory.spec.ts:42`](../../../tests/inventory.spec.ts):
+**Ábrelo:** [`tests/inventory.spec.ts:43`](../../../tests/inventory.spec.ts):
 
 ```typescript
 const values = prices.map(p => parseFloat(p.replace('$', '')));
@@ -163,7 +163,7 @@ const ordenado = original.sort();
 const ordenado = [...original].sort();  // original intacto
 ```
 
-**Ábrelo:** [`tests/inventory.spec.ts:32`](../../../tests/inventory.spec.ts) — `const sorted = [...names].sort(...)`. Ese `...` no es decorativo. Aparece tres veces en el fichero, siempre por la misma razón.
+**Ábrelo:** [`tests/inventory.spec.ts:33`](../../../tests/inventory.spec.ts) — `const sorted = [...names].sort(...)`. Ese `...` no es decorativo. Aparece tres veces en el fichero, siempre por la misma razón.
 
 ### Trampa 2 — `sort()` sin comparador ordena como texto
 
@@ -182,7 +182,7 @@ Sin comparador, `sort()` convierte cada elemento a texto. `'100'` va antes que `
 
 El comparador recibe dos elementos y devuelve un número: negativo si `a` va antes, positivo si va después, 0 si da igual.
 
-**Ábrelo:** compara [`tests/inventory.spec.ts:32`](../../../tests/inventory.spec.ts) (`b.localeCompare(a)` para texto Z→A) con [`:49`](../../../tests/inventory.spec.ts) (`a - b` para precios). Dos comparadores distintos porque los datos son distintos.
+**Ábrelo:** compara [`tests/inventory.spec.ts:33`](../../../tests/inventory.spec.ts) (`b.localeCompare(a)` para texto Z→A) con [`:50`](../../../tests/inventory.spec.ts) (`a - b` para precios). Dos comparadores distintos porque los datos son distintos.
 
 **QA mindset:** las dos trampas producen un test que pasa hoy y falla el mes que viene cuando alguien añada un producto de $100. Ese es el perfil exacto de un test frágil.
 

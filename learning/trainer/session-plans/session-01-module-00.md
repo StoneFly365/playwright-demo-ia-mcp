@@ -59,11 +59,11 @@ npx tsc --noEmit                                   # sin salida
 npm run test:chromium
 ```
 
-Mientras corre, explica: 87 tests, 6 Page Objects, 10 fallos a propósito, un pipeline que analiza los fallos con IA. **Este repositorio es el material del curso.**
+Mientras corre, explica: 88 tests, 6 Page Objects, 10 fallos a propósito, un pipeline que analiza los fallos con IA. **Este repositorio es el material del curso.**
 
 Después abre `pages/login.page.ts` y di la frase que sostiene todo el módulo:
 
-> "Son 19 líneas. Si entendéis estas 19 líneas, entendéis el 90% del código de este proyecto. Eso es lo que vamos a hacer hoy."
+> "El núcleo son 19 líneas. Si entendéis estas 19 líneas, entendéis el 90% del código de este proyecto. Eso es lo que vamos a hacer hoy."
 
 Declara las tres reglas del programa:
 

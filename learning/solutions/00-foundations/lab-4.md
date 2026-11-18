@@ -21,7 +21,7 @@ Received: [15.99, 29.99, 49.99, 7.99, 9.99]
 return [...precios].sort((a, b) => a - b);
 ```
 
-**Cómo evitarlo:** con números, comparador explícito **siempre**. Referencia real: [`tests/inventory.spec.ts:49`](../../../tests/inventory.spec.ts) usa `(a, b) => a - b` para precios y [`:32`](../../../tests/inventory.spec.ts) usa `localeCompare` para texto. Dos comparadores porque son dos tipos de dato.
+**Cómo evitarlo:** con números, comparador explícito **siempre**. Referencia real: [`tests/inventory.spec.ts:50`](../../../tests/inventory.spec.ts) usa `(a, b) => a - b` para precios y [`:33`](../../../tests/inventory.spec.ts) usa `localeCompare` para texto. Dos comparadores porque son dos tipos de dato.
 
 **Trampa del enunciado:** este fallo solo se manifiesta porque los datos incluyen `7.99` y `9.99` junto a `15.99`. Con `[10, 20, 30]` el orden alfabético coincide con el numérico y el bug quedaría oculto.
 
@@ -65,7 +65,7 @@ La primera aserción del test pasa; falla la segunda.
 return [...nombres].sort((a, b) => a.localeCompare(b));
 ```
 
-**Cómo evitarlo:** una función que recibe un array no debe modificarlo salvo que su nombre lo anuncie. `[...array]` antes de `sort`, `reverse` o `splice`. Referencia real: [`tests/inventory.spec.ts:32,49,66`](../../../tests/inventory.spec.ts) copia con spread las tres veces.
+**Cómo evitarlo:** una función que recibe un array no debe modificarlo salvo que su nombre lo anuncie. `[...array]` antes de `sort`, `reverse` o `splice`. Referencia real: [`tests/inventory.spec.ts:33,50,67`](../../../tests/inventory.spec.ts) copia con spread las tres veces.
 
 **Por qué este es el peor de los tres:** los otros dos fallan en el sitio donde está el error. Este falla en *otro* test, potencialmente en otro fichero, mucho después. Es el perfil exacto de un fallo que se etiqueta como "flaky" y se ignora.
 

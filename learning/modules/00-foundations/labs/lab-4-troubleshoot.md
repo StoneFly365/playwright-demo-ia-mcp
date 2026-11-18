@@ -107,6 +107,6 @@ git commit -m "fix(lab-4): corregidos los tres fallos con diagnóstico documenta
 ## Learning points
 
 - **Diagnosticar y corregir son dos actividades distintas.** Escribir el diagnóstico antes de tocar el código te obliga a entender el fallo en lugar de probar cambios hasta que el rojo desaparezca.
-- Un mensaje de fallo bien escrito contiene la mitad del diagnóstico. Por eso las 300+ aserciones del proyecto real llevan mensaje descriptivo: compara [`tests/inventory.spec.ts:27-30`](../../../../tests/inventory.spec.ts) con un `expect` pelado y verás la diferencia cuando falle a las 3 de la mañana.
+- Un mensaje de fallo bien escrito contiene la mitad del diagnóstico. Por eso las 300+ aserciones del proyecto real llevan mensaje descriptivo: compara [`tests/inventory.spec.ts:28-31`](../../../../tests/inventory.spec.ts) con un `expect` pelado y verás la diferencia cuando falle a las 3 de la mañana.
 - Corregir la aserción en lugar del código es la forma más rápida de convertir una suite en decoración. Es también lo que hará un agente de IA de auto-reparación si nadie lo revisa: se analiza en el módulo 08.
 - Los tres fallos de este Lab son de **causa distinta pero síntoma parecido**. Agrupar fallos por causa raíz —no por síntoma— es exactamente lo que hace [`scripts/triage.mjs`](../../../../scripts/triage.mjs) antes de que el prompt [`prompts/ai-classify.txt`](../../../../prompts/ai-classify.txt) decida si cada causa es un test roto, un bug o un problema de entorno.

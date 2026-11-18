@@ -10,9 +10,9 @@ Escribir dos tests nuevos, completos y en verde, para **huecos de cobertura real
 
 ## Contexto
 
-La suite tiene 87 tests y una tabla de cobertura declarada en [`specs/test-index.md`](../../../../specs/test-index.md). Aun así, tiene huecos.
+La suite tiene 88 tests y una tabla de cobertura declarada en [`specs/test-index.md`](../../../../specs/test-index.md). Aun así, tiene huecos.
 
-El primero está localizado: [`tests/inventory.spec.ts:23-71`](../../../../tests/inventory.spec.ts) cubre tres de las cuatro ordenaciones del catálogo —`za` (Z→A), `lohi` (precio ascendente) y `hilo` (precio descendente)— y **no cubre `az`, la ordenación por nombre de A a Z**. Es el orden por defecto de la aplicación y no lo verifica nadie.
+El primero está localizado: [`tests/inventory.spec.ts:24-72`](../../../../tests/inventory.spec.ts) cubre tres de las cuatro ordenaciones del catálogo —`za` (Z→A), `lohi` (precio ascendente) y `hilo` (precio descendente)— y **no cubre `az`, la ordenación por nombre de A a Z**. Es el orden por defecto de la aplicación y no lo verifica nadie.
 
 El segundo lo buscas tú. Y ese es el ejercicio de verdad: **escribir un test empieza por detectar qué falta**, no por escribir código.
 
@@ -28,7 +28,7 @@ El segundo lo buscas tú. Y ese es el ejercicio de verdad: **escribir un test em
 | Fichero | Papel |
 |---|---|
 | `learning/student/sandbox/01-playwright/04-cobertura.spec.ts` | **El que creas tú.** No existe todavía |
-| [`tests/inventory.spec.ts:23-71`](../../../../tests/inventory.spec.ts) | Referencia: los tres tests de ordenación existentes |
+| [`tests/inventory.spec.ts:24-72`](../../../../tests/inventory.spec.ts) | Referencia: los tres tests de ordenación existentes |
 | [`pages/inventory.page.ts:20-30`](../../../../pages/inventory.page.ts) | `sortBy()`, `getProductNames()`, `getProductPrices()` — los usas |
 | [`specs/test-index.md`](../../../../specs/test-index.md) | La cobertura **declarada**. Punto de partida del test 2 |
 

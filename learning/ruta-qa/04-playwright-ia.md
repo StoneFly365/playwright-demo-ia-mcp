@@ -97,14 +97,14 @@ npx tsc --noEmit
 npm run test:chromium
 ```
 
-87 tests, unos 24 segundos, **10 en rojo**. Abre el informe con `npm run test:report`.
+88 tests, unos 24 segundos, **10 en rojo**. Abre el informe con `npm run test:report`.
 
 Aprende a distinguir las tres clases de rojo, porque la IA no las distingue por ti:
 
 | Clase | Qué significa | Ejemplo aquí |
 |---|---|---|
 | **Bug de la aplicación** | El código de producción está mal | `problem_user`: la UI falla de verdad |
-| **Bug del test** | El test espera algo incorrecto | Los 10 `@demo-fail`: esperan `/home.html` cuando la app va a `/inventory.html` |
+| **Bug del test** | El test espera algo incorrecto | Los 10 `@demo-fail`: por ejemplo, el de login espera `/home.html` cuando la app va a `/inventory.html` |
 | **Fragilidad** | Ni la app ni la expectativa: el test | Un `.first()` sobre un orden que cambió |
 
 Abre [`tests/login.spec.ts:12`](../../tests/login.spec.ts) y localiza el comentario `⚠️ FALLO INTENCIONADO`. **No lo corrijas.** Anota en `04-notas.md` a qué clase pertenece y por qué.

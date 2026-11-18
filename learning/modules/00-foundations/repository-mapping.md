@@ -6,7 +6,7 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 
 | # | Concepto | Archivo real | Qué debe observar el alumno | Qué debe aprender |
 |---|---|---|---|---|
-| M1 | Clase con constructor | [`pages/login.page.ts:3-19`](../../../pages/login.page.ts) | La clase entera cabe en 19 líneas: 1 campo, 1 constructor, 2 métodos | Que un Page Object no es magia: es una clase corriente |
+| M1 | Clase con constructor | [`pages/login.page.ts:3-30`](../../../pages/login.page.ts) | La clase entera cabe en 28 líneas: 1 campo, 1 constructor, 3 métodos | Que un Page Object no es magia: es una clase corriente |
 | M2 | Campo `readonly` de tipo `Locator` | [`pages/login.page.ts:4`](../../../pages/login.page.ts) | `readonly errorMessage: Locator;` se declara arriba y se asigna en el constructor | `readonly` impide reasignar el campo después de construir el objeto |
 | M3 | Parámetro de propiedad | [`pages/login.page.ts:6`](../../../pages/login.page.ts) | `constructor(private readonly page: Page)` — no hay `this.page = page` en ninguna línea | TypeScript crea y asigna el campo por ti cuando pones el modificador en el parámetro |
 | M4 | Método `async` sin valor de retorno | [`pages/login.page.ts:10-12`](../../../pages/login.page.ts) | `async navigate(): Promise<void>` y el `await` de dentro | Todo método que espera al navegador es `async` y devuelve `Promise` |
@@ -19,9 +19,9 @@ Las referencias `fichero:línea` corresponden al estado del repositorio en la ra
 | M11 | Desestructuración de objetos | [`tests/login.spec.ts:7`](../../../tests/login.spec.ts) | `async ({ page }) => {` — las llaves dentro de los paréntesis | Es la misma sintaxis que `const { total } = resultado`, aplicada a un parámetro |
 | M12 | `let` a nivel de bloque y reasignación | [`tests/login.spec.ts:5,8`](../../../tests/login.spec.ts) | `let loginPage: LoginPage;` se declara fuera y se reasigna en cada `beforeEach` | Cuándo `let` es necesario y `const` no vale |
 | M13 | `new` para instanciar una clase | [`tests/login.spec.ts:8`](../../../tests/login.spec.ts) | `loginPage = new LoginPage(page);` — aquí es donde `page` entra en el Page Object | Conectar M3 con su punto de uso |
-| M14 | `map` + `replace` + `parseFloat` | [`tests/inventory.spec.ts:42`](../../../tests/inventory.spec.ts) | Una sola línea transforma `['$29.99', …]` en `[29.99, …]` | Encadenar transformaciones sobre datos extraídos de la UI |
-| M15 | Copia antes de ordenar (spread) | [`tests/inventory.spec.ts:32,49,66`](../../../tests/inventory.spec.ts) | `[...names].sort(...)` — el `...` está ahí a propósito, tres veces | `sort()` modifica el array original; el spread lo protege |
-| M16 | Comparador numérico vs alfabético | [`tests/inventory.spec.ts:32`](../../../tests/inventory.spec.ts) vs [`:49`](../../../tests/inventory.spec.ts) | `(a, b) => b.localeCompare(a)` para texto, `(a, b) => a - b` para números | Por qué `sort()` sin comparador ordena mal los números |
+| M14 | `map` + `replace` + `parseFloat` | [`tests/inventory.spec.ts:43`](../../../tests/inventory.spec.ts) | Una sola línea transforma `['$29.99', …]` en `[29.99, …]` | Encadenar transformaciones sobre datos extraídos de la UI |
+| M15 | Copia antes de ordenar (spread) | [`tests/inventory.spec.ts:33,50,67`](../../../tests/inventory.spec.ts) | `[...names].sort(...)` — el `...` está ahí a propósito, tres veces | `sort()` modifica el array original; el spread lo protege |
+| M16 | Comparador numérico vs alfabético | [`tests/inventory.spec.ts:33`](../../../tests/inventory.spec.ts) vs [`:50`](../../../tests/inventory.spec.ts) | `(a, b) => b.localeCompare(a)` para texto, `(a, b) => a - b` para números | Por qué `sort()` sin comparador ordena mal los números |
 | M17 | Configuración de TypeScript | [`tsconfig.json:5`](../../../tsconfig.json) | `"strict": true` | Qué errores atrapa el compilador antes de que el test se ejecute |
 | M18 | Tipos disponibles en el proyecto | [`tsconfig.json:9`](../../../tsconfig.json) | `"types": ["node", "@playwright/test"]` | De dónde salen `Page`, `Locator`, `test` y `expect` |
 | M19 | `async`/`await` fuera de Playwright | [`scripts/report-ai.mjs:30-168`](../../../scripts/report-ai.mjs) | `await readFile(...)`, `await mkdir(...)` — el mismo `await` sin navegador de por medio | `async`/`await` es JavaScript, no una invención de Playwright |

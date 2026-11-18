@@ -48,7 +48,7 @@ npx playwright test -c learning/student/sandbox/01-playwright --project=chromium
 ### La suite del proyecto (material de lectura)
 
 ```bash
-npm test                 # 87 tests × 3 navegadores (requiere internet y navegadores instalados)
+npm test                 # 88 tests × 3 navegadores (requiere internet y navegadores instalados)
 npm run test:chromium    # solo Chromium, más rápido
 npm run test:demo:green  # solo los tests que pasan
 npm run test:demo:fail   # solo los 10 que fallan a propósito

@@ -51,7 +51,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | **5 h dirigidas (2 sesiones) + 3 h personales + 45 min de assessment ≈ 8,75 h.** Desglose en el [README del módulo](../modules/00-foundations/#duración) |
 | **Nivel** | 1 FOLLOW → 5 TROUBLESHOOT |
 | **Dependencias** | Ninguna |
-| **Repository mapping** | `pages/login.page.ts` (clase completa), `pages/inventory.page.ts` (métodos que devuelven datos), `pages/menu.page.ts` (`this` y reutilización), `tests/login.spec.ts` (desestructuración, `let`, `new`), `tests/inventory.spec.ts:32,42,49` (`map`, spread, comparadores), `tsconfig.json:5,9`, `scripts/report-ai.mjs:127-141` (`async`/`Promise.all` sin navegador) |
+| **Repository mapping** | `pages/login.page.ts` (clase completa), `pages/inventory.page.ts` (métodos que devuelven datos), `pages/menu.page.ts` (`this` y reutilización), `tests/login.spec.ts` (desestructuración, `let`, `new`), `tests/inventory.spec.ts:33,43,50` (`map`, spread, comparadores), `tsconfig.json:5,9`, `scripts/report-ai.mjs:127-141` (`async`/`Promise.all` sin navegador) |
 | **Entregables** | Labs 1-4 en verde (23 tests), Challenge 1 (6+ tests propios), hoja de observación, informe de diagnóstico, assessment ≥ 70 y **apto** en la defensa técnica (O8) |
 
 → **[Ir al módulo](../modules/00-foundations/)**
@@ -72,8 +72,8 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 8 h sesión (4 sesiones) + 3 h personal + 1 h assessment = **12 h** (caso de referencia FOUNDATION); ver la tabla por nivel de entrada en el documento de diseño, sección 11 |
 | **Nivel** | 2 MODIFY → 4 DESIGN |
 | **Dependencias** | 00 |
-| **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 12 scripts de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:34` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:117-121` (`filter` + `hasText`); 🔬 el locator roto que tuvo `CartPage.cartItems` (`pages/cart.page.ts:7`) hasta noviembre de 2026, 0 elementos; el Lab 5 lo usa desde una copia en el sandbox |
-| **Entregables** | Suite ejecutada en los tres navegadores (🔬 medido: 87 tests, 23,8 s, 77 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
+| **Repository mapping** | `tests/login.spec.ts` + `pages/login.page.ts` (par de lectura); `playwright.config.ts` completo; los 14 scripts de ejecución de `package.json`; 🔬 **20 elementos verificados con 7 estrategias de locator** (login, inventario, carrito, checkout, confirmación); `tests/checkout.spec.ts:35` (el único `getByRole`, y el único heading real del flujo); `tests/product-detail-add-to-cart.spec.ts:118-122` (`filter` + `hasText`); 🔬 el locator roto que tuvo `CartPage.cartItems` (`pages/cart.page.ts:7`) hasta noviembre de 2026, 0 elementos; el Lab 5 lo usa desde una copia en el sandbox |
+| **Entregables** | Suite ejecutada en los tres navegadores (🔬 medido: 88 tests, ~24 s, 78 verdes/10 rojos en Chromium); tabla de decisión de locators propia, no un recuento de estrategias usadas; 2 tests nuevos cubriendo la ordenación A→Z (hueco real, sin test); Challenge con importes verificados por valor (🔬 8 % de impuesto confirmado) |
 
 → **[Ir al módulo](../modules/01-playwright-fundamentals/)**
 
@@ -117,8 +117,8 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 6 h + 3 h — **la semana más densa del programa** |
 | **Nivel** | 4 DESIGN |
 | **Dependencias** | 02 |
-| **Repository mapping** | El `beforeEach` idéntico de 12 specs (**A5**: ~237 logins por ejecución completa); `tests/inventory-add-to-cart.spec.ts:15-58` (**A4**: 5 tests clonados); ids mágicos de `tests/product-detail-add-to-cart.spec.ts` + tabla de ids en `specs/add-to-cart-test-plan.md:663-672` (**A6**); `tests/performance-glitch-user-cart.spec.ts` (**A7**: `{ timeout: 15000 }` repetido 5 veces) |
-| **Entregables** | Suite refactorizada con fixture de autenticación por `storageState`, datos externalizados y tipados, y una suite parametrizada. **Con medición del tiempo de ejecución antes y después** |
+| **Repository mapping** | El `beforeEach` idéntico de 12 specs (**A5**: el login único ya existe con `globalSetup` en `fixtures/global-setup.ts`; el ejercicio es pasarlo a un proyecto de setup con fixtures); `tests/inventory-add-to-cart.spec.ts:16-59` (**A4**: 5 tests clonados); ids mágicos de `tests/product-detail-add-to-cart.spec.ts` + tabla de ids en `specs/add-to-cart-test-plan.md:663-672` (**A6**); `tests/performance-glitch-user-cart.spec.ts` (**A7**: `{ timeout: 15000 }` repetido 4 veces) |
+| **Entregables** | Suite refactorizada con el login único de `globalSetup` pasado a un proyecto de setup con fixtures, datos externalizados y tipados, y una suite parametrizada. **Con medición del tiempo de ejecución antes y después** |
 
 > Concentra 4 de los 6 gaps CRITICAL identificados en la Fase 1. No comprimir.
 
@@ -134,7 +134,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 3 h + 2 h |
 | **Nivel** | 5 TROUBLESHOOT |
 | **Dependencias** | 03 |
-| **Repository mapping** | **Los 10 tests `@demo-fail`**, de cinco tipos distintos: URL esperada errónea (`login`, `menu`, `route-protection`), conteo de elementos (`inventory`, `cart-sync`), valor de badge (`cart-badge`, `inventory-add-to-cart`, `product-detail-add-to-cart`), texto de validación (`checkout`), visibilidad (`product-detail`). Más `problem_user` (bug de UI real) y `performance_glitch_user` (latencia real). `trace` y `video` ya configurados en `playwright.config.ts:14-15`. Hallazgos **A2** y **A3** como estudio de "tests que no pueden fallar" |
+| **Repository mapping** | **Los 10 tests `@demo-fail`**, de cinco tipos distintos: URL esperada errónea (`login`, `menu`, `route-protection`), conteo de elementos (`inventory`, `cart-sync`), valor de badge (`cart-badge`, `inventory-add-to-cart`, `product-detail-add-to-cart`), texto de validación (`checkout`), visibilidad (`product-detail`). Más `problem_user` (bug de UI real) y `performance_glitch_user` (latencia real). `trace` y `video` ya configurados en `playwright.config.ts:17-18`. Hallazgos **A2** y **A3** como estudio de "tests que no pueden fallar" |
 | **Entregables** | 5 de los 10 `@demo-fail` diagnosticados sin ver el comentario que revela la corrección, con informe de causa raíz |
 
 > Es el módulo con mejor material disponible del programa: cada fallo intencionado lleva documentada su corrección, que el formador puede ocultar para usarlo como caso ciego.
@@ -166,7 +166,7 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 3 h + 2 h |
 | **Nivel** | 6 OPTIMIZE |
 | **Dependencias** | 04 |
-| **Repository mapping** | `.github/workflows/playwright.yml` **completo**, con sus decisiones reales comentadas: `HOME: /root` por el UID de Firefox (línea 18), `max-parallel: 1` por la cuota de Gemini (línea 29), `continue-on-error` en el paso de IA (línea 54). README:120-193. Hallazgos **B2** (tres versiones de Playwright), **C1** (suite `green` por defecto), **C4** (sin sharding), **C5** (sin concurrencia), **B3** (typecheck ausente) |
+| **Repository mapping** | `.github/workflows/playwright.yml` **completo**, con sus decisiones reales comentadas: `HOME: /root` por el UID de Firefox (línea 30), `continue-on-error` en el paso de IA (línea 159). README:290-370. Hallazgos **B2** (la versión de Playwright vive en tres sitios: `package.json`, lockfile y tag de la imagen; desde la PR #34 coinciden, pero hay que actualizarlas a la vez), **C1** (suite `green` por defecto), **C4** (sin sharding), **C5** (sin concurrencia), **B3** (typecheck ausente) |
 | **Entregables** | PR contra su fork que añade un paso al workflow (typecheck o sharding), ejecutándose en verde |
 
 ---
@@ -196,14 +196,14 @@ Este documento es un **mapa**, no el contenido. Cada módulo se desarrolla por c
 | **Duración** | 3 h + 2 h |
 | **Nivel** | 6 OPTIMIZE |
 | **Dependencias** | 04, 06 |
-| **Repository mapping** | `scripts/report-ai.mjs` completo (243 líneas); los 4 `prompts/*.txt`; `.mcp.json`; los 3 subagentes de `.claude/agents/`; los pasos de IA del workflow (52-69); `specs/add-to-cart-test-plan.md` como evidencia del flujo planner→generator. Hallazgos **D4** (el modelo inventaba `generated_at` y el código lo corrige), **D3** (validación solo con `JSON.parse`), **D1**/**D2** (permisos y superficie de inyección), **B1** (la ruta absoluta que rompe `report:ai` fuera de una máquina) |
+| **Repository mapping** | `scripts/report-ai.mjs` completo (294 líneas); los 4 `prompts/*.txt`; `.mcp.json`; los 5 subagentes de `.claude/agents/`; los pasos de IA del workflow (jobs `report` y `heal`); `specs/add-to-cart-test-plan.md` como evidencia del flujo planner→generator. Hallazgos **D4** (el modelo inventaba `generated_at`; hoy lo pone el código y el modelo solo lo lee), **D3** (validación solo con `JSON.parse`), **D1**/**D2** (permisos y superficie de inyección), **B1** (ya corregido: la ruta absoluta que rompía `report:ai` fuera de una máquina) |
 | **Entregables** | Un prompt modificado con su efecto documentado; pipeline IA ejecutado sobre una ejecución con fallos; un test generado por agente **y revisado críticamente**; tres riesgos identificados de aplicar esto a una app del cliente con datos reales |
 
 > ### 🎯 Parte de este módulo ya existe: la Ruta QA — 6 h
 >
 > La [**Ruta QA**](../ruta-qa/README.md) materializa buena parte de este temario en formato corto y práctico: límites y alucinación con evidencia del propio `report-ai.mjs`, prompting con contrato de salida sobre los cuatro `prompts/*.txt`, generación de tests y su revisión crítica, MCP y subagentes con herramientas acotadas, y debugging asistido sobre los diez `@demo-fail`.
 >
-> **El módulo 08 sigue sin construir como módulo completo.** Lo que la ruta no cubre y este módulo sí deberá: coste y elección de modelo, prompt chaining, validación estructurada más allá de `JSON.parse` (hallazgo D3), auto-reparación y su peligro, y el análisis a fondo de los pasos de IA del workflow (`.github/workflows/playwright.yml:52-69`).
+> **El módulo 08 sigue sin construir como módulo completo.** Lo que la ruta no cubre y este módulo sí deberá: coste y elección de modelo, prompt chaining, validación estructurada más allá de `JSON.parse` (hallazgo D3), auto-reparación y su peligro, y el análisis a fondo de los pasos de IA del workflow (`.github/workflows/playwright.yml`, jobs `report` y `heal`).
 
 ---
 

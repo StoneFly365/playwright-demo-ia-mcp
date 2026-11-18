@@ -26,8 +26,8 @@ Lo que este Lab entrena no es escribir tests: es la habilidad de **leer el resul
 
 | Fichero | Papel |
 |---|---|
-| [`playwright.config.ts`](../../../../playwright.config.ts) | Lectura. 31 líneas: lo que heredas sin escribirlo |
-| [`package.json:5-13`](../../../../package.json) | Lectura. Los 12 scripts de ejecución |
+| [`playwright.config.ts`](../../../../playwright.config.ts) | Lectura. 34 líneas: lo que heredas sin escribirlo |
+| [`package.json:5-18`](../../../../package.json) | Lectura. Los 14 scripts de ejecución |
 | [`specs/test-index.md`](../../../../specs/test-index.md) | Lectura. La cobertura declarada del proyecto |
 | `learning/student/sandbox/01-playwright/01-ejecuciones.md` | **El que creas tú** |
 
@@ -41,7 +41,7 @@ Lo que este Lab entrena no es escribir tests: es la habilidad de **leer el resul
 
 Abre [`playwright.config.ts`](../../../../playwright.config.ts) y responde por escrito, **antes** de ejecutar:
 
-1. ¿Cuántas ejecuciones de test producirá `npm test`? *(pista: no es 87)*
+1. ¿Cuántas ejecuciones de test producirá `npm test`? *(pista: no es 88)*
 2. ¿Por qué `pages/login.page.ts` puede escribir `goto('/')` sin poner la URL completa?
 3. ¿Qué valor de timeout tiene una aserción en este proyecto? *(no está escrito en el fichero — esa es la pregunta)*
 4. ¿Qué se guarda cuando un test falla, y dónde lo configura?
@@ -109,7 +109,7 @@ Escribe la respuesta en `01-ejecuciones.md`:
 - Las 3 líneas del modo headed.
 - La respuesta del Paso 6.
 
-Las cifras de referencia de la ejecución 1, medidas en un equipo de desarrollo: **87 tests, ~24 segundos, 77 verdes y 10 rojos**. Tu tiempo puede variar; el número de tests y de fallos, no.
+Las cifras de referencia de la ejecución 1, medidas en un equipo de desarrollo: **88 tests, ~24 segundos, 78 verdes y 10 rojos** (los 88 incluyen `seed.spec.ts`, el arranque de los agentes). Tu tiempo puede variar; el número de tests y de fallos, no.
 
 ## Validación
 

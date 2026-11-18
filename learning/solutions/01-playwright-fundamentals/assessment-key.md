@@ -12,7 +12,7 @@ Todo el código de esta clave está **ejecutado y verificado** contra la aplicac
 
 ### A1 — 30 fallos tras `npm test` (3 p)
 
-**Respuesta:** 30 = 10 fallos intencionados × 3 navegadores. La suite está **roja a propósito**, no rota. Comprobación: `npm run test:demo:green` (debe dar 77 verdes) y, si se quiere, `npm run test:demo:fail` (10 rojos).
+**Respuesta:** 30 = 10 fallos intencionados × 3 navegadores. La suite está **roja a propósito**, no rota. Comprobación: `npm run test:demo:green` (debe dar 78 verdes por navegador) y, si se quiere, `npm run test:demo:fail` (10 rojos).
 
 | Puntos | Criterio |
 |---|---|
@@ -33,7 +33,7 @@ Todo el código de esta clave está **ejecutado y verificado** contra la aplicac
 ### A3 — El `waitForTimeout(3000)` (4 p)
 
 **(a)** No. Si la aplicación tarda 3,1 s el test falla igual: ha movido el límite, no lo ha eliminado.
-**(b)** 3 segundos por ejecución, **siempre**, se necesiten o no. En una suite de 87 tests, minutos.
+**(b)** 3 segundos por ejecución, **siempre**, se necesiten o no. En una suite de 88 tests, minutos.
 **(c)** Nada: la aserción web-first ya reintenta. Y si la lentitud es real y conocida, `{ timeout: 15000 }` **en esa aserción** — que gasta lo que haga falta y sigue en cuanto se cumple, en lugar de gastar siempre lo mismo.
 
 | Puntos | Criterio |

@@ -74,7 +74,7 @@ La diferencia entre INTERMEDIATE y ADVANCED no es hacer más cosas: es **saber p
 | INTERMEDIATE | Diseña fixtures, externaliza datos y detecta fugas del patrón |
 | ADVANCED | Diseña la arquitectura completa y justifica cada capa por su coste de mantenimiento |
 
-**Se evalúa en:** módulos 02, 03, 09 · **Evidencia:** refactor con `storageState`, arquitectura del capstone
+**Se evalúa en:** módulos 02, 03, 09 · **Evidencia:** paso del login único de `globalSetup` a un proyecto de setup con fixtures, arquitectura del capstone
 
 ## 6. Test Design
 

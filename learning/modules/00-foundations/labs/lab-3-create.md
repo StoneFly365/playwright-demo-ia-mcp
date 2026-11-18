@@ -12,7 +12,7 @@ Implementar desde cero tres funciones tipadas que satisfagan un contrato de test
 
 Este es el flujo de trabajo real de un QA que se incorpora a un equipo: el comportamiento esperado ya está definido (por una historia de usuario, por un criterio de aceptación o, como aquí, por un test), y tu trabajo es hacer que se cumpla.
 
-El repositorio tiene un hueco concreto que este Lab rellena. `pages/inventory.page.ts:28-30` devuelve los precios como `Promise<string[]>` — texto con símbolo de dólar. Cada test que quiere hacer algo con esos precios se los apaña por su cuenta: `tests/inventory.spec.ts:42` repite `parseFloat(p.replace('$', ''))` en tres tests distintos. **No existe ningún módulo de utilidades en el proyecto.** Aquí construyes el que faltaría.
+El repositorio tiene un hueco concreto que este Lab rellena. `pages/inventory.page.ts:28-30` devuelve los precios como `Promise<string[]>` — texto con símbolo de dólar. Cada test que quiere hacer algo con esos precios se los apaña por su cuenta: `tests/inventory.spec.ts:43` repite `parseFloat(p.replace('$', ''))` en dos tests distintos. **No existe ningún módulo de utilidades en el proyecto.** Aquí construyes el que faltaría.
 
 ## Prerrequisitos
 
@@ -25,7 +25,7 @@ El repositorio tiene un hueco concreto que este Lab rellena. `pages/inventory.pa
 |---|---|
 | [`learning/student/sandbox/00-foundations/03-price-utils.ts`](../../../student/sandbox/00-foundations/03-price-utils.ts) | **El que implementas.** |
 | [`learning/student/sandbox/00-foundations/03-price-utils.spec.ts`](../../../student/sandbox/00-foundations/03-price-utils.spec.ts) | **CONTRATO. No lo modifiques.** |
-| [`tests/inventory.spec.ts:39-54`](../../../../tests/inventory.spec.ts) | Referencia de lectura |
+| [`tests/inventory.spec.ts:40-55`](../../../../tests/inventory.spec.ts) | Referencia de lectura |
 | [`pages/inventory.page.ts:28-30`](../../../../pages/inventory.page.ts) | Referencia de lectura |
 
 ---

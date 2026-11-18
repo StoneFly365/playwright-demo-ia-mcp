@@ -10,11 +10,11 @@ Modificar una función que ya funciona para que soporte un caso de uso adicional
 
 ## Contexto
 
-`tests/inventory.spec.ts` valida cuatro ordenaciones del catálogo de SauceDemo: nombre A→Z, nombre Z→A, precio ascendente y precio descendente. Para conseguirlo repite tres veces el mismo bloque de código con pequeñas variaciones (líneas 23-71).
+`tests/inventory.spec.ts` valida tres ordenaciones del catálogo de SauceDemo: nombre Z→A, precio ascendente y precio descendente. Para conseguirlo repite tres veces el mismo bloque de código con pequeñas variaciones (líneas 24-72).
 
 Aquí trabajas sobre una versión reducida del mismo problema. La función `ordenarNombres` ordena de la A a la Z y nada más. Tu trabajo es convertirla en una función que sirva para las dos direcciones **sin duplicar código**.
 
-> Este es exactamente el razonamiento que en el módulo 03 se aplicará a los cinco tests clonados de `tests/inventory-add-to-cart.spec.ts:15-58`. Aquí lo practicas en pequeño.
+> Este es exactamente el razonamiento que en el módulo 03 se aplicará a los cinco tests clonados de `tests/inventory-add-to-cart.spec.ts:16-59`. Aquí lo practicas en pequeño.
 
 ## Prerrequisitos
 
@@ -26,7 +26,7 @@ Aquí trabajas sobre una versión reducida del mismo problema. La función `orde
 | Fichero | Papel |
 |---|---|
 | [`learning/student/sandbox/00-foundations/02-arrays.spec.ts`](../../../student/sandbox/00-foundations/02-arrays.spec.ts) | **El que modificas.** |
-| [`tests/inventory.spec.ts:23-71`](../../../../tests/inventory.spec.ts) | Referencia de lectura. **No lo modifiques.** |
+| [`tests/inventory.spec.ts:24-72`](../../../../tests/inventory.spec.ts) | Referencia de lectura. **No lo modifiques.** |
 
 ---
 

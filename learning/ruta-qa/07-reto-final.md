@@ -65,7 +65,7 @@ Reúne los hechos tú primero (módulo 3):
 | Abre | Anota |
 |---|---|
 | [`pages/menu.page.ts`](../../pages/menu.page.ts) | Qué hace exactamente `resetAppState()`. Son tres clics |
-| [`tests/menu.spec.ts:32`](../../tests/menu.spec.ts) | Qué comprueba hoy el test que existe. Y sobre todo, qué **no** |
+| [`tests/menu.spec.ts:33`](../../tests/menu.spec.ts) | Qué comprueba hoy el test que existe. Y sobre todo, qué **no** |
 | [`pages/inventory.page.ts`](../../pages/inventory.page.ts) | Qué métodos tienes para observar el estado |
 | La aplicación, a mano | Qué pasa de verdad al pulsar Reset con productos en el carrito |
 

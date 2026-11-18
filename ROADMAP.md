@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3 y cuota de IA en CI hechas · Fase 4 hecha en local (falta llevar el healer a CI) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-10
+**Estado:** Fases 0 a 3, cuota de IA en CI y fase 5 hechas · Fase 4 hecha en local y en CI (falta crear tickets de Jira desde CI) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-18
 
 ## Objetivo
 
@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | ✅ |
-| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y probada; falta el healer en CI |
+| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y en CI; faltan los tickets de Jira desde CI |
 | 5 | Argumentos para cliente enterprise | 1 día | ✅ |
 | 6 | Diseñar desde Figma (fase 1 del ciclo de QA) | 2 días | 🟨 construida; falta el fichero de Figma y la primera ejecución real |
 | — | Opcionales según cliente | — | ⬜ |
@@ -127,7 +127,7 @@ No estaba en el plan. La primera evaluación con Gemini en CI salió entera `sin
 - [x] La evaluación solo llama a la clasificación (`AI_CLASSIFY_ONLY`) y no cuenta como fallo lo que la IA no llegó a clasificar.
 - [x] Permisos del workflow: `contents: read` y checkout sin credenciales persistidas.
 - [x] Proveedor configurable: `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL` para cualquier API compatible con la de OpenAI. `GEMINI_API_KEY` sigue funcionando como atajo. `eval:ai` toma el proveedor de lo que registra `report:ai`, sin repetir la lógica.
-- [x] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow ya lo usa si existe el secreto `OPENROUTER_API_KEY`; falta crearlo y poner en la variable `AI_MODEL` el modelo elegido con `npm run eval:ai`. Modelo elegido: `nvidia/nemotron-3-ultra-550b-a55b:free`, 11 de 11 grupos (185 de 185 tests) en local el 26 de octubre, igual que Claude Haiku. De los gratuitos probados, `nemotron-3-super-120b` devolvió 404 y `gemma-4-31b-it`, 429.
+- [x] **OpenRouter** con un modelo gratuito en CI (50 peticiones al día sin créditos). El workflow lo usa si existe el secreto `OPENROUTER_API_KEY`, con el modelo de la variable `AI_MODEL` elegido con `npm run eval:ai`; los dos están creados en el repositorio. Modelo elegido: `nvidia/nemotron-3-ultra-550b-a55b:free`, 11 de 11 grupos (185 de 185 tests) en local el 26 de octubre, igual que Claude Haiku. De los gratuitos probados, `nemotron-3-super-120b` devolvió 404 y `gemma-4-31b-it`, 429.
 - [x] Probar en CI el camino con fallos reales (`suite=fail`) con el job único de reporte. Probado el 26 de octubre con OpenRouter: 30 fallos de `@demo-fail` en 7 grupos, todos `test_roto`, con 3 peticiones (clasificación, resumen y correcciones). Las dos `suite=eval` en CI dieron 11 de 11, como en local.
 
 **Descartado:** Claude por API en CI. Funcionaría con el mismo modelo que en local y costaría menos de 1 $ al mes, pero la clave del repositorio es del plan personal y no se quiere ningún coste adicional.
@@ -156,10 +156,11 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Ejecutar el healer sin intervención (`npm run heal:ai`: `claude -p` con el agente `playwright-test-healer`) solo sobre los grupos `test_roto`. En local, con la suscripción.
 - [x] El mismo healer en CI: job **Healer** del workflow, solo a mano (`heal: true`), con el secreto `CLAUDE_CODE_OAUTH_TOKEN`. El lanzamiento manual admite también `scenario` para reproducir `cascade` y el resto en CI. Las PR que abre `GITHUB_TOKEN` no disparan los tests ni el guard: una persona cierra y reabre la PR (solo si se lanzó desde `main`; desde otra rama la PR va contra ella y no pasa por tests ni guard). Sin fallos, el job no corre. Probado el 17 de noviembre con `scenario=cascade`: 1 grupo `test_roto` (210 tests, confianza alta) y PR #31 en borrador con `needs-human`; el healer propone el mismo cambio que en local (PR #12), `getByRole('button', { name: 'Login' })` en el page object, `menu.spec.ts` y `route-protection.spec.ts`. La prueba destapó que el job Reporte IA no descargaba las instantáneas de la página (`test-results-*`): sin ellas, la IA clasificaba `cascade` como `entorno`. Corregido.
 - [x] Abrir la PR en borrador con `gh pr create`, con el diagnóstico y el resumen del healer en la descripción.
+- [x] Si `origin` es un GitLab, `heal:ai` abre una MR en borrador por la API con `GITLAB_TOKEN` (scope `api`) en vez de la PR (PR #33).
 - [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
 - [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
 - [x] Destino de los tickets: el sandbox de Jira, proyecto `THP`. Sin credenciales, modo simulado. El conector Atlassian no sirve en CI.
-- [ ] Secretos `JIRA_*` en GitHub para crear tickets desde CI (con traza y vídeo: el job Reporte IA descarga los `test-results-*`; revisar qué contienen antes de activarlo).
+- [ ] Tickets de Jira desde CI (con traza y vídeo: el job Reporte IA descarga los `test-results-*`). Los secretos `JIRA_*` ya están en GitHub desde el 27 de octubre, así que el modo real está activo en CI, pero falta: pasar `JIRA_ISSUE_TYPE` en el workflow (THP usa `Tarea` y el valor por defecto es `Bug`), probarlo con `scenario=bug` y revisar qué llevan la traza y el vídeo.
 - [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket de Jira. Resultado abajo.
 - [x] Job *Guard de asserts* probado en GitHub (PR #13, cerrada): falla con `needs-human` cuando se cambia `toHaveText('3')` por `'4'` y pasa cuando solo cambia un selector del page object.
 - [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
@@ -225,7 +226,7 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 - `learning/` cita ficheros y líneas reales de `tests/` y `pages/`. Cualquier cambio que desplace líneas obliga a revisar esas referencias.
 - En CI se usa OpenRouter con un modelo gratuito: 50 peticiones al día sin créditos, y el modelo puede dejar de estar disponible (el 26 de octubre, dos de los tres gratuitos probados devolvían 404 o 429). Si eso pasa, se cambia la variable `AI_MODEL` tras pasar `eval:ai`, o se borra el secreto `OPENROUTER_API_KEY` para volver a Gemini. La capa gratuita de Gemini permite 20 peticiones al día y 5 por minuto. Desde la PR de la cuota, una ejecución de CI con fallos gasta 4 como mucho y una en verde ninguna, aunque tenga flaky. Los escenarios en CI deben ir en serie, y un día con varias ejecuciones de `suite=fail` o `suite=eval` agota la cuota: el 21 de octubre la primera evaluación en CI salió entera `sin_clasificar` por eso. Para usarlo con un cliente hace falta una clave de pago o un proveedor con más cuota.
 - El healer automático puede proponer correcciones incorrectas: la PR siempre la revisa una persona.
-- Los tests nuevos que escriba el agente generator importan de `@playwright/test`. Para que les afecten los escenarios, hay que cambiar ese import por `../fixtures/scenarios`.
+- Los tests nuevos que escriba el agente generator importan de `@playwright/test`, salvo los de `design:ai --generate`, que ya piden el fixture. Para que les afecten los escenarios, hay que cambiar ese import por `../fixtures/scenarios`.
 
 ## Registro de decisiones
 
@@ -272,4 +273,5 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 | 2026-11-17 | Los escenarios de fallo y `eval:ai` excluyen los tests `@a11y` | Los escenarios y sus cifras (70 tests) se calibraron sobre la suite funcional; una página que no carga no dice nada de su accesibilidad |
 | 2026-11-17 | Se corrige `CartPage.cartItems` (`[data-test="cart-item"]`, que no existe, pasa a `[data-test="inventory-item"]`) y el Lab 5 conserva el defecto en una copia del Page Object dentro del sandbox | Un locator roto en `pages/` no debe quedarse en el proyecto por ser material del curso; con la copia, el caso B del Lab 5 sigue igual y el ejercicio del módulo 02 de sustituir `.cart_item` por `cartItems` vuelve a ser posible |
 | 2026-11-17 | Sin regresión visual (`toHaveScreenshot`) | Las capturas de referencia cambian con el navegador y el sistema operativo, y SauceDemo es una web de terceros: cualquier cambio suyo daría falsos fallos. Compensa en una app propia con diseño que vigilar, no en esta demo, que se centra en clasificar fallos funcionales. Las capturas del reporte de Playwright no lo sustituyen: solo se guardan cuando un test falla por otro motivo |
+| 2026-11-18 | Playwright pasa a 1.64.1 exacta (antes `^1.49.0` con 1.58.2 en el lockfile), con la imagen de CI `v1.64.1-jammy`, y no a 1.65.1 | Un `npm install` sin lockfile ya no puede subir de versión sin que nadie lo decida. La 1.65.1 tiene regresiones abiertas en Firefox, WebKit y Chromium 159 (PR #34) |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |

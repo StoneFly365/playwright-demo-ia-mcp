@@ -14,7 +14,7 @@ El resto de este documento describe el programa completo (38 h, 10 módulos). No
 
 ## Qué es esto
 
-Este repositorio es una suite E2E de verdad: 87 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, ejecución en tres navegadores, pipeline de GitHub Actions dentro de un contenedor Docker y un análisis de fallos generado por IA. Funciona, se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real.
+Este repositorio es una suite E2E de verdad: 88 tests sobre [SauceDemo](https://www.saucedemo.com), 6 Page Objects, ejecución en tres navegadores, pipeline de GitHub Actions dentro de un contenedor Docker y un análisis de fallos generado por IA. Funciona, se ejecuta a diario y tiene los defectos que tiene cualquier proyecto real.
 
 El Learning Lab convierte ese proyecto en un laboratorio. No vas a leer teoría sobre Page Objects: vas a abrir los seis que hay aquí y a diagnosticar el defecto real que esconden. No vas a estudiar cómo se depura un test: vas a diagnosticar los diez que fallan a propósito.
 
@@ -111,7 +111,7 @@ Ningún concepto se presenta sin un fichero real que lo ilustre. Ningún ejercic
 
 Tres principios que atraviesan el programa:
 
-1. **Los defectos del repositorio son el material.** Hay 30 problemas de calidad catalogados —locators frágiles, tests que no pueden fallar, una ruta absoluta en `package.json`— y ninguno se ha corregido a propósito. Son los ejercicios.
+1. **Los defectos del repositorio son el material.** Hay 30 problemas de calidad catalogados —locators frágiles, tests que no pueden fallar— y casi ninguno se ha corregido a propósito. Dos sí: B1 (la ruta absoluta de `package.json`) y A1 (el locator roto de `CartPage`), que se conserva como copia en el sandbox para el Lab 5 del módulo 01. El resto son los ejercicios.
 2. **Diagnosticar antes que corregir.** Cambiar el valor esperado de una aserción para que un test pase es la conducta que este programa existe para prevenir.
 3. **QA + IA, nunca IA en lugar de QA.** La IA analiza y sintetiza; el criterio de qué es crítico para el negocio lo pones tú.
 
@@ -147,7 +147,7 @@ npx tsc --noEmit
 La suite del proyecto se ejecuta como siempre y **no se ve afectada**:
 
 ```bash
-npm test                 # 87 tests × 3 navegadores
+npm test                 # 88 tests × 3 navegadores
 npm run test:chromium    # solo Chromium
 ```
 
@@ -172,7 +172,7 @@ Si el punto 3 muestra `pages/` o `tests/` modificados, deshaz esos cambios con `
 
 En este Learning Lab la teoría **nunca** va sola. Cada sección de `theory.md` termina con un **"Ábrelo"** que apunta a un fichero y una línea del proyecto real:
 
-> **Ábrelo:** [`tests/inventory.spec.ts:32`](../tests/inventory.spec.ts) — `const sorted = [...names].sort(...)`. Ese `...` no es decorativo.
+> **Ábrelo:** [`tests/inventory.spec.ts:33`](../tests/inventory.spec.ts) — `const sorted = [...names].sort(...)`. Ese `...` no es decorativo.
 
 Y cada módulo incluye un `repository-mapping.md` que responde a la pregunta que importa: **"¿qué fichero concreto de este repositorio usamos para enseñar este concepto?"** Cuando no existe un ejemplo adecuado, se dice explícitamente en lugar de inventarlo.
 
