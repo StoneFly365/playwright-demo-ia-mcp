@@ -17,6 +17,7 @@
     "test:webkit": "playwright test --project=webkit",
     "test:report": "playwright show-report",
     "test:unit": "node --test scripts/triage.test.mjs scripts/merge-results.test.mjs scripts/dashboard.test.mjs scripts/guard-asserts.test.mjs scripts/circuit.test.mjs scripts/design-ai.test.mjs",
+    "test:unit:coverage": "node -e \"require('fs').mkdirSync('coverage', { recursive: true })\" && node --test --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=lcov --test-reporter-destination=coverage/lcov.info scripts/triage.test.mjs scripts/merge-results.test.mjs scripts/dashboard.test.mjs scripts/guard-asserts.test.mjs scripts/circuit.test.mjs scripts/design-ai.test.mjs",
     "design:ai": "node scripts/design-ai.mjs",
     "report:ai": "node scripts/report-ai.mjs",
     "test:ai": "npm run test && npm run report:ai",

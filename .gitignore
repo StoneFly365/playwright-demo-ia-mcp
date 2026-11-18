@@ -40,3 +40,6 @@ qa-history/
 
 # Sesión guardada por fixtures/global-setup.ts (storageState)
 playwright/.auth/
+
+# Cobertura de los tests unitarios (npm run test:unit:coverage), la lee Sonar en CI
+coverage/
