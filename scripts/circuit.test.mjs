@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { selectGroups, buildPrompt, buildPrBody, changedFiles, gitlabProject } from "./heal-ai.mjs";
 import { buildIssue, planTickets, priorityFor } from "./jira-tickets.mjs";
+import { agentEnv } from "./agent.mjs";
 
 const group = (id, tipo, extra = {}) => ({
     group_id: id, tipo, count: 3, confianza: "alta", evidencia: `evidencia ${id}`, accion: `acción ${id}`,
@@ -112,4 +113,10 @@ test("gitlabProject: la API de GitLab sale de origin; GitHub no es GitLab", () =
     assert.deepEqual(gitlabProject("https://oauth2:secreto@gitlab.example.com/grupo/proyecto.git"), api);
     assert.deepEqual(gitlabProject("git@gitlab.example.com:grupo/proyecto.git"), api);
     assert.equal(gitlabProject("https://github.com/grupo/proyecto.git"), null);
+});
+
+test("los agentes no reciben tokens de GitHub, GitLab, Jira ni de la API de IA", () => {
+    const env = agentEnv({ PATH: "/bin", CLAUDE_CODE_OAUTH_TOKEN: "c", GH_TOKEN: "g", GITHUB_TOKEN: "g", GITLAB_TOKEN: "l",
+        JIRA_API_TOKEN: "j", JIRA_EMAIL: "e", AI_API_KEY: "a", GEMINI_API_KEY: "m", OPENROUTER_API_KEY: "o", DEMO_SCENARIO: "cascade" });
+    assert.deepEqual(Object.keys(env).sort(), ["CLAUDE_CODE_OAUTH_TOKEN", "DEMO_SCENARIO", "PATH"]);
 });

@@ -201,7 +201,11 @@ async function main() {
     const doubts = Boolean(review?.text) && review.verdict !== "APROBADO";
     const needsHuman = reasons.length > 0 || doubts;
     git("commit", "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
-    git("push", "-u", "origin", branch);
+    // En CI el checkout no guarda el token en .git/config (el healer lo podría leer): se pasa solo a este push.
+    const auth = process.env.GITHUB_ACTIONS && process.env.GH_TOKEN
+        ? ["-c", `http.https://github.com/.extraheader=AUTHORIZATION: basic ${Buffer.from(`x-access-token:${process.env.GH_TOKEN}`).toString("base64")}`]
+        : [];
+    git(...auth, "push", "-u", "origin", branch);
     const title = `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`;
     const body = buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time });
     let url;

@@ -186,7 +186,7 @@ playwright-demo-ia-mcp/
 │   ├── jira-tickets.mjs            # Tickets de Jira de los bug_producto (simulado sin credenciales)
 │   ├── guard-asserts.mjs           # Check que marca needs-human si un cambio relaja las pruebas
 │   ├── review-pw.mjs               # Revisión adversarial de un diff de tests (agente revisor)
-│   ├── agent.mjs                   # Lanza un agente de .claude/agents/ con claude -p
+│   ├── agent.mjs                   # Lanza un agente de .claude/agents/ con claude -p, sin tokens en su entorno
 │   ├── guard-asserts.test.mjs      # Tests del check (npm run test:unit)
 │   ├── circuit.test.mjs            # Tests de heal-ai.mjs y jira-tickets.mjs (npm run test:unit)
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
@@ -662,7 +662,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 |---|---|---|---|
 | **Anthropic** (Claude CLI, con tu suscripción, en local) | `report:ai`, `eval:ai` | Por cada grupo de fallos: patrón y huella, número de tests y navegadores, hasta 10 tests (título, fichero, línea y navegador), el error recortado a 1500 caracteres y la instantánea de la página en el fallo (`error-context.md`) recortada a 3000. Todo pasa antes por el redactor. Para el resumen, las correcciones y los tickets solo va un extracto del error de 600 caracteres, sin la instantánea | `test-results.json` completo, el código de los tests, trazas, vídeos, capturas y variables de entorno |
 | **Google** (Gemini API, capa gratuita, en CI) u **OpenRouter** (si existe `OPENROUTER_API_KEY`; reenvía al proveedor del modelo elegido) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
-| **Anthropic** (Claude CLI, en local o en el job **Healer** de CI) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Secretos de CI en variables de entorno: el agente no tiene terminal (`Bash`) para leerlos. **Ojo:** en el job **Healer** el checkout deja el `GITHUB_TOKEN` en `.git/config` para poder hacer push, y el agente sí puede leer ese fichero |
+| **Anthropic** (Claude CLI, en local o en el job **Healer** de CI) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Tokens de GitHub, GitLab, Jira y de la API de IA: los agentes arrancan sin ellos en su entorno, y en el job **Healer** el checkout no guarda el `GITHUB_TOKEN` en `.git/config` (`heal:ai` lo pasa solo al push). **Excepción:** `CLAUDE_CODE_OAUTH_TOKEN` sí llega, porque `claude` lo necesita, y el healer podría escribir y ejecutar un test que lo lea |
 | **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
 | **Anthropic** (Claude CLI, en local) | `design:ai` | La historia de usuario, lo que el agente lea de Figma (capas, textos, componentes y, si la pide, una captura del frame), las instantáneas de la página de la app que recorre por el MCP y los ficheros del repositorio que decida leer. **No pasa por el redactor**: las historias y los diseños de la demo no llevan datos personales | `.env` (misma regla). No tiene terminal (`Bash`) y solo puede escribir en `specs/disenos/` y `specs/figma/`: el script lo comprueba al terminar |
 | **Figma** (MCP remoto `mcp.figma.com`, con el login OAuth de quien lo ejecuta) | `design:ai` | Las peticiones de lectura de los frames de la historia | Nada de la app ni de los tests. Con `--snapshot` no se conecta |
@@ -683,6 +683,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 
   Se redacta antes de recortar, para que un token partido por el corte no se escape.
 - **Sin IA cuando no hace falta.** Una ejecución en verde no llama a la IA. En push y PR tampoco se llama si solo hay tests flaky. La agrupación y la detección de flaky se hacen en código.
+- **Los agentes no reciben tokens.** [`scripts/agent.mjs`](scripts/agent.mjs) quita del entorno de cada agente `GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*` y las claves de IA, porque el healer puede escribir y ejecutar tests que lean `process.env`. Solo queda el token de Claude, que necesita para arrancar.
 - **Los agentes no leen `.env`.** [`.claude/settings.json`](.claude/settings.json) prohíbe a Claude Code leer `.env` y `.env.*` en este proyecto, también al healer y al revisor. El resto del repositorio sí lo pueden leer: no guardes secretos en otros ficheros.
 - **Jira simulado por defecto.** Sin las variables `JIRA_*` no se envía nada. Con ellas, también en CI, se suben la traza y el vídeo sin pasar por el redactor: revisa qué contienen antes de poner los secretos.
 - **El dashboard no se conecta a nada.** Tiene una CSP `default-src 'none'` y vuelve a pasar el redactor por todos los textos.
@@ -690,7 +691,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 **Lo que hay que decidir con cada cliente**
 
 - **Proveedor y condiciones.** Las capas gratuitas y las suscripciones personales no ofrecen las mismas garantías de uso y retención de datos que un contrato de empresa. Hay que revisar las condiciones del proveedor que se use (Gemini API, OpenRouter y el proveedor del modelo, Anthropic, Bedrock o Vertex) antes de enviar datos de un cliente.
-- **Healer y revisor.** Leen código del repositorio sin redactar (todo menos `.env`). En un proyecto con secretos o datos reales en otros ficheros, hay que ampliar la lista de `deny` o ejecutarlos con un proveedor aprobado por el cliente.
+- **Healer y revisor.** Leen código del repositorio sin redactar (todo menos `.env`). En CI, el healer tiene en su entorno el `CLAUDE_CODE_OAUTH_TOKEN` de la suscripción de quien lo generó. En un proyecto con secretos o datos reales en otros ficheros, hay que ampliar la lista de `deny` o ejecutarlos con un proveedor aprobado por el cliente.
 - **Adjuntos de Jira y artefactos de CI.** Las trazas y los vídeos no pasan por el redactor. Hay que revisar qué datos de prueba se usan y la retención de los artefactos.
 
 ---
