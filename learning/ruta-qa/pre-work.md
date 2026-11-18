@@ -55,7 +55,7 @@ Ruta QA — comprobación de entorno
 ────────────────────────────────────────────────────
 ✓ Node.js                    v20.x.x
 ✓ npm y dependencias         npm 10.x.x
-✓ Playwright                 v1.58.2
+✓ Playwright                 v1.64.1
 ✓ Chromium                   lanza correctamente
 ✓ Sandbox de la Ruta QA      configuración y test de comprobación presentes
 ✓ Acceso a saucedemo.com     HTTP 200

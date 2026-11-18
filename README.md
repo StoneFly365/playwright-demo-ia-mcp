@@ -291,7 +291,7 @@ Los escenarios `test:scenario:*` simulan fallos de los que se ven en un proyecto
 
 El proyecto puede ejecutar los tests dentro del contenedor oficial de Playwright. La imagen trae Node, los tres navegadores y todas las dependencias del sistema preinstaladas, garantizando un **entorno idéntico** en local y en CI.
 
-> El tag de la imagen (`v1.58.2-jammy`) debe coincidir con la versión de `@playwright/test` del `package-lock.json`. Si actualizas Playwright, actualiza también el tag en el workflow y en los comandos.
+> El tag de la imagen (`v1.64.1-jammy`) debe coincidir con la versión de `@playwright/test` del `package-lock.json`. Si actualizas Playwright, actualiza también el tag en el workflow y en los comandos.
 
 ### ¿Cuándo usar Docker?
 
@@ -307,12 +307,12 @@ Replica exactamente el entorno del CI. Requiere **Docker Desktop** en ejecución
 
 ```powershell
 # PowerShell (recomendado en Windows)
-docker run --rm -v "${PWD}:/work" -w /work mcr.microsoft.com/playwright:v1.58.2-jammy bash -c "npm ci && npx playwright test"
+docker run --rm -v "${PWD}:/work" -w /work mcr.microsoft.com/playwright:v1.64.1-jammy bash -c "npm ci && npx playwright test"
 ```
 
 ```bash
 # Git Bash (desactiva la conversión de rutas de MSYS)
-MSYS_NO_PATHCONV=1 docker run --rm -v "/$(pwd):/work" -w //work mcr.microsoft.com/playwright:v1.58.2-jammy bash -c "npm ci && npx playwright test"
+MSYS_NO_PATHCONV=1 docker run --rm -v "/$(pwd):/work" -w //work mcr.microsoft.com/playwright:v1.64.1-jammy bash -c "npm ci && npx playwright test"
 ```
 
 El volumen montado (`-v`) persiste el `playwright-report/` generado en tu disco. Para verlo tras el run necesitas Playwright instalado en local:
@@ -878,7 +878,7 @@ La URL base se define una sola vez en `playwright.config.ts`. Los page objects u
 
 ## Tecnologías
 
-- [Playwright](https://playwright.dev/) `1.58`
+- [Playwright](https://playwright.dev/) `1.64`
 - TypeScript `^5.0`
 - Node.js `^20`
 - Claude Code CLI (reporte IA en local)

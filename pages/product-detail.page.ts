@@ -7,7 +7,9 @@ export class ProductDetailPage {
   readonly cartBadge: Locator;
 
   constructor(private readonly page: Page) {
-    this.productName = this.page.locator('[data-test="inventory-item-name"]');
+    // Acotado al bloque del detalle: el inventario usa el mismo data-test y, mientras la
+    // navegación termina, el locator suelto encontraba los 6 nombres (strict mode).
+    this.productName = this.page.locator('.inventory_details_container [data-test="inventory-item-name"]');
     this.productDescription = this.page.locator('[data-test="inventory-item-desc"]');
     this.productPrice = this.page.locator('[data-test="inventory-item-price"]');
     this.cartBadge = this.page.locator('[data-test="shopping-cart-badge"]');
