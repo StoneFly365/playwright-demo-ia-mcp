@@ -36,7 +36,7 @@ Todo lo que sufriste en el módulo 4 —métodos inventados, locators plausibles
 
 ### Cómo está montado aquí
 
-Un fichero, en la raíz del proyecto: [`.mcp.json`](../../.mcp.json)
+Un fichero, en la raíz del proyecto: [`.mcp.json`](../../.mcp.json). Declara dos servidores. El que usa esta ruta es `playwright-test`:
 
 ```json
 {
@@ -44,10 +44,13 @@ Un fichero, en la raíz del proyecto: [`.mcp.json`](../../.mcp.json)
     "playwright-test": {
       "command": "npx",
       "args": ["playwright", "run-test-mcp-server"]
-    }
+    },
+    "sonarqube": { "...": "análisis estático, opcional" }
   }
 }
 ```
+
+El segundo, `sonarqube`, consulta las incidencias de SonarQube Cloud. Necesita Docker y un token propio, así que no lo necesitas para este módulo (está en el [README](../../README.md#análisis-estático-con-sonarqube-cloud)).
 
 Eso es toda la configuración: **un servidor MCP es un proceso que el asistente arranca y que le expone un catálogo de herramientas.** Aquí, 44 herramientas de Playwright, de las que solo necesitas conocer dos familias:
 
@@ -56,7 +59,7 @@ Eso es toda la configuración: **un servidor MCP es un proceso que el asistente 
 | `browser_*` | `browser_navigate`, `browser_snapshot`, `browser_generate_locator` | Conducir un navegador real y leer la página |
 | `test_*` | `test_run`, `test_debug` | Ejecutar y depurar la suite |
 
-> 💡 La primera vez que abras Claude Code en el proyecto **te pedirá aprobar este servidor**. Acepta. Es lo único que tienes que hacer.
+> 💡 La primera vez que abras Claude Code en el proyecto **te pedirá aprobar los servidores**. Acepta `playwright-test`: es lo único que tienes que hacer. Si apruebas también `sonarqube` sin Docker ni token, no arranca y no pasa nada.
 
 ### Subagentes: herramientas acotadas por rol
 

@@ -104,7 +104,7 @@ Los dos saltados son los specs semilla de los módulos 4 y 7.
 
 ## La primera vez que abras Claude Code
 
-Este repositorio trae un servidor MCP declarado en [`.mcp.json`](../../.mcp.json). La primera vez que abras Claude Code en el proyecto, **te pedirá aprobar ese servidor**. Es normal: acepta.
+Este repositorio trae dos servidores MCP declarados en [`.mcp.json`](../../.mcp.json). La primera vez que abras Claude Code en el proyecto, **te pedirá aprobarlos**. Es normal: acepta `playwright-test`, que es el que usa la ruta. El otro, `sonarqube`, es opcional: sin Docker ni token no arranca, y la ruta no lo necesita.
 
 No tienes que instalar, configurar ni modificar nada de MCP. Ni el `.mcp.json`, ni los subagentes de `.claude/agents/`. Ya está todo en el repositorio.
 
