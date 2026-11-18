@@ -1,4 +1,10 @@
-# Playwright E2E · SauceDemo con reporte IA de fallos
+<p align="center">
+  <img src="docs-site/img/brain-qa-logo.jpeg" alt="Brain QA, AI-Powered Playwright Framework" width="480">
+</p>
+
+# Brain QA
+
+**Framework QA Playwright potenciado por IA** · Tech Hub · demo sobre SauceDemo con reporte IA de fallos
 
 Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.saucedemo.com) utilizando [Playwright](https://playwright.dev/) con TypeScript y el patrón **Page Object Model (POM)**.
 
@@ -191,7 +197,7 @@ playwright-demo-ia-mcp/
 │   ├── circuit.test.mjs            # Tests de heal-ai.mjs y jira-tickets.mjs (npm run test:unit)
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
-├── docs-site/                      # Portal Docsify (GitHub Pages)
+├── docs-site/                      # Portal Docsify (GitHub Pages); img/ guarda el logo de Brain QA
 ├── docs/diagramas/                 # Diagrama del circuito para negocio (HTML + fuente archify)
 ├── .claude/agents/                 # Agentes: diseñador de pruebas, planner, generator, healer y revisor adversarial
 ├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)

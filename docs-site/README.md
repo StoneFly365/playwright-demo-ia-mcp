@@ -1,4 +1,8 @@
-# QA Automation &amp; AI Engineering Learning Lab
+<p align="center">
+  <img src="img/brain-qa-logo.jpeg" alt="Brain QA, AI-Powered Playwright Framework" width="420">
+</p>
+
+# Brain QA · QA Automation &amp; AI Engineering Learning Lab
 
 ---
 
