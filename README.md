@@ -578,7 +578,7 @@ Después de `report:ai`, cada tipo de fallo tiene su salida:
 ```bash
 npm run heal:ai                          # todos los test_roto del último report:ai
 npm run heal:ai -- --group G001          # solo ese grupo (se puede repetir)
-npm run heal:ai -- --dry-run             # enseña lo que recibiría el healer; no toca git, GitHub ni la IA
+npm run heal:ai -- --dry-run             # enseña lo que recibiría el healer; no toca git, GitHub/GitLab ni la IA
 DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable que al lanzar los tests
 ```
 
@@ -589,7 +589,7 @@ DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable q
 5. Pasa el check de asserts y la [revisión adversarial](#revisión-adversarial-npm-run-reviewpw). Después confirma, hace push y abre una **PR en borrador** con `gh`, con el diagnóstico, el veredicto del revisor y el resumen del healer. Si el check encuentra algo o el revisor no aprueba el cambio, la PR lleva la etiqueta `needs-human`.
 6. Añade el resultado a `playwright-report/ai-heal.json` y vuelve a tu rama. Si ya había resultados de la misma ejecución (por ejemplo, al curar los grupos de uno en uno con `--group`), los conserva.
 
-Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Tarda varios minutos, porque el healer ejecuta y depura los tests.
+Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Si `origin` es un GitLab, abre una MR en borrador por la API en vez de una PR, y necesita `GITLAB_TOKEN` (token con scope `api`) en vez de `gh`. Tarda varios minutos, porque el healer ejecuta y depura los tests.
 
 **En CI** lo lanza el job **Healer**, solo a mano: `gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true`. Nunca corre en push ni en PR, porque gasta cuota y abre PR, ni cuando no ha fallado ningún test. Descarga el artefacto `ai-report`, ejecuta `heal:ai` sobre la rama elegida y deja `ai-heal.json` en el artefacto `ai-heal` y en el Summary. Necesita:
 
@@ -665,7 +665,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 | **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
 | **Anthropic** (Claude CLI, en local) | `design:ai` | La historia de usuario, lo que el agente lea de Figma (capas, textos, componentes y, si la pide, una captura del frame), las instantáneas de la página de la app que recorre por el MCP y los ficheros del repositorio que decida leer. **No pasa por el redactor**: las historias y los diseños de la demo no llevan datos personales | `.env` (misma regla). No tiene terminal (`Bash`) y solo puede escribir en `specs/disenos/` y `specs/figma/`: el script lo comprueba al terminar |
 | **Figma** (MCP remoto `mcp.figma.com`, con el login OAuth de quien lo ejecuta) | `design:ai` | Las peticiones de lectura de los frames de la historia | Nada de la app ni de los tests. Con `--snapshot` no se conecta |
-| **GitHub** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR: diagnóstico, veredicto del revisor y resumen del healer | — |
+| **GitHub** o **GitLab** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR o MR: diagnóstico, veredicto del revisor y resumen del healer | — |
 | **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día) y el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
 | **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |
 | **CodeRabbit** (app de GitHub del repositorio) | Cada PR | El diff de la PR | — |

@@ -5,8 +5,9 @@
 //
 // Uso: npm run heal:ai [-- --group G001] [-- --dry-run]
 //   --group    solo ese grupo (se puede repetir); sin él, todos los test_roto del último report:ai
-//   --dry-run  enseña lo que se mandaría al healer y no toca git, GitHub ni la IA
+//   --dry-run  enseña lo que se mandaría al healer y no toca git, GitHub/GitLab ni la IA
 // Para un escenario, lanza el healer con la misma variable que los tests: DEMO_SCENARIO=cascade npm run heal:ai
+// Si origin es un GitLab, abre una MR en borrador por la API con GITLAB_TOKEN (scope api); si no, una PR con gh.
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
@@ -109,6 +110,24 @@ function save(runStartTime, entry) {
     writeFileSync(OUT, JSON.stringify(mergeHeal(existing, runStartTime, entry), null, 2) + "\n");
 }
 
+// URL de origin (https, con o sin credenciales, o ssh) a la API de su GitLab. null si el host no es un GitLab.
+// ponytail: detecta GitLab por el nombre del host y no admite puerto en la URL; si hace falta, que lo diga una variable.
+export function gitlabProject(originUrl) {
+    const m = originUrl.match(/^(?:https?:\/\/(?:[^@/]+@)?|(?:ssh:\/\/)?git@)([^/:]+)[/:](.+?)(?:\.git)?\/?$/);
+    return m && /gitlab/i.test(m[1]) ? { api: `https://${m[1]}/api/v4`, id: encodeURIComponent(m[2]) } : null;
+}
+
+// La etiqueta se crea sola en GitLab si no existe.
+async function openGitlabMr(gl, { from, branch, title, body, needsHuman }) {
+    const res = await fetch(`${gl.api}/projects/${gl.id}/merge_requests`, {
+        method: "POST",
+        headers: { "PRIVATE-TOKEN": process.env.GITLAB_TOKEN, "Content-Type": "application/json" },
+        body: JSON.stringify({ source_branch: branch, target_branch: from, title: `Draft: ${title}`, description: body, labels: needsHuman ? LABEL : "" }),
+    });
+    if (!res.ok) throw new Error(`GitLab respondió ${res.status} al abrir la MR: ${await res.text()}. La rama ${branch} ya está subida.`);
+    return (await res.json()).web_url;
+}
+
 const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: "utf8", ...opts }).trim();
 const git = (...args) => run("git", args);
 
@@ -137,7 +156,9 @@ async function main() {
     if (git("status", "--porcelain", "--untracked-files=no")) throw new Error("Hay cambios sin confirmar. Confírmalos o guárdalos antes de lanzar el healer.");
     const from = git("rev-parse", "--abbrev-ref", "HEAD");
     if (from === "HEAD") throw new Error("Estás en un commit suelto: cámbiate a una rama.");
-    run("gh", ["auth", "status"]);
+    const gitlab = gitlabProject(git("remote", "get-url", "origin"));
+    if (gitlab && !process.env.GITLAB_TOKEN) throw new Error("origin es un GitLab: define GITLAB_TOKEN (token con scope api) para abrir la MR.");
+    if (!gitlab) run("gh", ["auth", "status"]);
     const base = git("rev-parse", "HEAD");
     const branch = `heal/${groups.map((g) => g.group_id).join("-")}-${new Date().toISOString().replace(/\D/g, "").slice(0, 14)}`;
     git("switch", "-c", branch);
@@ -181,11 +202,16 @@ async function main() {
     const needsHuman = reasons.length > 0 || doubts;
     git("commit", "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
     git("push", "-u", "origin", branch);
-    if (needsHuman) run("gh", ["label", "create", LABEL, "--force", "--color", "D93F0B", "--description", "La PR automática puede relajar las pruebas: necesita revisión humana"]);
-    const url = run("gh", ["pr", "create", "--draft", "--base", from, "--head", branch,
-        "--title", `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`,
-        "--body-file", "-", ...(needsHuman ? ["--label", LABEL] : [])],
-        { input: buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time }) });
+    const title = `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`;
+    const body = buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time });
+    let url;
+    if (gitlab) {
+        url = await openGitlabMr(gitlab, { from, branch, title, body, needsHuman });
+    } else {
+        if (needsHuman) run("gh", ["label", "create", LABEL, "--force", "--color", "D93F0B", "--description", "La PR automática puede relajar las pruebas: necesita revisión humana"]);
+        url = run("gh", ["pr", "create", "--draft", "--base", from, "--head", branch, "--title", title,
+            "--body-file", "-", ...(needsHuman ? ["--label", LABEL] : [])], { input: body });
+    }
     git("switch", from);
 
     // review guarda solo el veredicto; si el revisor falló, va aparte en review_error para no confundirlo con una aprobación.

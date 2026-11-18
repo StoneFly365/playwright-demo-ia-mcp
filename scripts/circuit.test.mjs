@@ -1,7 +1,7 @@
 // Fase 4: lo que deciden heal-ai.mjs y jira-tickets.mjs sin llamar a la IA, a git ni a Jira.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { selectGroups, buildPrompt, buildPrBody, changedFiles } from "./heal-ai.mjs";
+import { selectGroups, buildPrompt, buildPrBody, changedFiles, gitlabProject } from "./heal-ai.mjs";
 import { buildIssue, planTickets, priorityFor } from "./jira-tickets.mjs";
 
 const group = (id, tipo, extra = {}) => ({
@@ -104,4 +104,12 @@ test("revisión de CodeRabbit: renombrados, veredictos contradictorios y fichero
     assert.equal(parseVerdict("VEREDICTO: APROBADO\nVEREDICTO: RECHAZADO"), null, "contradictorio: sin veredicto");
     const { findRelaxations } = await import("./guard-asserts.mjs");
     assert.equal(findRelaxations("tests/nuevo.spec.ts", null, "test.skip('x', async () => {});").length, 1, "un fichero nuevo con skip cuenta");
+});
+
+test("gitlabProject: la API de GitLab sale de origin; GitHub no es GitLab", () => {
+    const api = { api: "https://gitlab.example.com/api/v4", id: "grupo%2Fproyecto" };
+    assert.deepEqual(gitlabProject("https://gitlab.example.com/grupo/proyecto.git"), api);
+    assert.deepEqual(gitlabProject("https://oauth2:secreto@gitlab.example.com/grupo/proyecto.git"), api);
+    assert.deepEqual(gitlabProject("git@gitlab.example.com:grupo/proyecto.git"), api);
+    assert.equal(gitlabProject("https://github.com/grupo/proyecto.git"), null);
 });
