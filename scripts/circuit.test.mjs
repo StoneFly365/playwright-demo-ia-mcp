@@ -115,8 +115,8 @@ test("gitlabProject: la API de GitLab sale de origin; GitHub no es GitLab", () =
     assert.equal(gitlabProject("https://github.com/grupo/proyecto.git"), null);
 });
 
-test("los agentes no reciben tokens de GitHub, GitLab, Jira ni de la API de IA", () => {
+test("los agentes no reciben tokens de GitHub, GitLab, Jira, Sonar ni de la API de IA", () => {
     const env = agentEnv({ PATH: "/bin", CLAUDE_CODE_OAUTH_TOKEN: "c", GH_TOKEN: "g", GITHUB_TOKEN: "g", GITLAB_TOKEN: "l",
-        JIRA_API_TOKEN: "j", JIRA_EMAIL: "e", AI_API_KEY: "a", GEMINI_API_KEY: "m", OPENROUTER_API_KEY: "o", DEMO_SCENARIO: "cascade" });
+        JIRA_API_TOKEN: "j", JIRA_EMAIL: "e", AI_API_KEY: "a", GEMINI_API_KEY: "m", OPENROUTER_API_KEY: "o", SONAR_TOKEN: "s", SONARQUBE_TOKEN: "q", DEMO_SCENARIO: "cascade" });
     assert.deepEqual(Object.keys(env).sort(), ["CLAUDE_CODE_OAUTH_TOKEN", "DEMO_SCENARIO", "PATH"]);
 });

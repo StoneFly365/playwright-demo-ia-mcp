@@ -1,7 +1,7 @@
 ---
 name: playwright-test-healer
 description: Use this agent when you need to debug and fix failing Playwright tests
-tools: Glob, Grep, Read, LS, Edit, MultiEdit, Write, mcp__playwright-test__browser_console_messages, mcp__playwright-test__browser_evaluate, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_network_requests, mcp__playwright-test__browser_snapshot, mcp__playwright-test__test_debug, mcp__playwright-test__test_list, mcp__playwright-test__test_run
+tools: Glob, Grep, Read, LS, Edit, MultiEdit, Write, mcp__playwright-test__browser_console_messages, mcp__playwright-test__browser_evaluate, mcp__playwright-test__browser_generate_locator, mcp__playwright-test__browser_network_requests, mcp__playwright-test__browser_snapshot, mcp__playwright-test__test_debug, mcp__playwright-test__test_list, mcp__playwright-test__test_run, mcp__sonarqube__search_sonar_issues_in_projects, mcp__sonarqube__list_pull_requests
 model: sonnet
 color: red
 ---
@@ -44,3 +44,10 @@ Key principles:
 - Do not ask user questions, you are not interactive tool, do the most reasonable thing possible to pass the test.
 - Never wait for networkidle or use other discouraged or deprecated apis
 - Never change the id at the start of a test title (`TC-INV-01`, `TC-05`): reports and plans trace tests by it
+
+# Before you finish: SonarQube
+If the `sonarqube` MCP tools are available, read `sonar.projectKey` from `sonar-project.properties` and call
+`search_sonar_issues_in_projects` for that project (with `pullRequest` when working on a PR; find its key with
+`list_pull_requests`). Fix the new issues that affect the files you touched. Sonar only sees the last analysed
+commit, not your local edits. Never weaken an assertion to silence an issue. If the tools are not available or the call fails, carry on without them: it is
+not a reason to fail.
