@@ -189,6 +189,9 @@ jobs:
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           JIRA_PROJECT_KEY: ${{ secrets.JIRA_PROJECT_KEY }}
+          # Variable del repositorio (no secreto): el tipo de incidencia depende del proyecto (THP usa Tarea).
+          # Sin ella llegaría vacía y jira-tickets.mjs no aplicaría su valor por defecto.
+          JIRA_ISSUE_TYPE: ${{ vars.JIRA_ISSUE_TYPE || 'Bug' }}
         run: npm run jira:tickets
 
       # Solo lee los ficheros que ya hay (sin IA ni tests): queda dentro del artefacto ai-report.
