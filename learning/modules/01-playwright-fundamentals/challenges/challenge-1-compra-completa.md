@@ -34,10 +34,10 @@ En un equipo real nadie escribe desde cero lo que ya existe. Aquí tampoco — p
 | | Qué es | Ejemplo concreto |
 |---|---|---|
 | **Material para aprender** | Lo que lees para entender cómo se hacen las cosas en este proyecto | [`tests/checkout.spec.ts`](../../../../tests/checkout.spec.ts) entero, los 6 Page Objects, la teoría |
-| **Reutilización legítima** ✅ | Mecánica ya resuelta que no aporta nada volver a inventar. **Se declara en `decisiones.md`** | El recorrido login → añadir producto → carrito → checkout de [`tests/checkout.spec.ts:12-36`](../../../../tests/checkout.spec.ts); los métodos de `pages/` |
+| **Reutilización legítima** ✅ | Mecánica ya resuelta que no aporta nada volver a inventar. **Se declara en `decisiones.md`** | El recorrido login → añadir producto → carrito → checkout de [`tests/checkout.spec.ts:14-38`](../../../../tests/checkout.spec.ts); los métodos de `pages/` |
 | **Evidencia propia** ❌ no copiable | Lo que se evalúa. No existe en el repositorio: si aparece copiado, no es tuyo | La verificación de los tres importes **por valor** (AC2), el caso límite y el negativo (AC3), la tabla de locators (AC4) y el apartado de qué **no** has automatizado (AC6) |
 
-**El flujo no es el ejercicio: el flujo es el andamio.** `tests/checkout.spec.ts:102-118` comprueba que los importes **se ven**; ninguna línea del repositorio comprueba que **sean correctos**. Ahí empieza tu trabajo.
+**El flujo no es el ejercicio: el flujo es el andamio.** `tests/checkout.spec.ts:103-119` comprueba que los importes **se ven**; ninguna línea del repositorio comprueba que **sean correctos**. Ahí empieza tu trabajo.
 
 ## Restricciones
 
@@ -54,7 +54,7 @@ En un equipo real nadie escribe desde cero lo que ya existe. Aquí tampoco — p
 | # | Criterio |
 |---|---|
 | **AC1** | El flujo completo está cubierto: login → catálogo → carrito → checkout paso 1 → paso 2 → confirmación |
-| **AC2** | Los tres importes (subtotal, impuestos, total) se verifican **con valores**, no solo con visibilidad. Este es el criterio que más pesa: [`tests/checkout.spec.ts:102-118`](../../../../tests/checkout.spec.ts) solo comprueba que se ven, y tu trabajo mejora esa cobertura en vez de repetirla |
+| **AC2** | Los tres importes (subtotal, impuestos, total) se verifican **con valores**, no solo con visibilidad. Este es el criterio que más pesa: [`tests/checkout.spec.ts:103-119`](../../../../tests/checkout.spec.ts) solo comprueba que se ven, y tu trabajo mejora esa cobertura en vez de repetirla |
 | **AC3** | Hay al menos un test negativo de validación del formulario de checkout |
 | **AC4** | Tres o más estrategias de locator, con su tabla de justificación en `decisiones.md` |
 | **AC5** | Verde en `chromium`, `firefox` y `webkit` |

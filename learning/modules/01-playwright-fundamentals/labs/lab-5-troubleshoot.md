@@ -29,7 +29,7 @@ Ninguno de los dos se parece a "el test está mal escrito". Los dos tienen la fo
 | `learning/student/sandbox/01-playwright/05-diagnostico.md` | **El informe. Se escribe antes de corregir** |
 | [`learning/student/sandbox/01-playwright/05-cart.page.ts`](../../../student/sandbox/01-playwright/05-cart.page.ts) | Copia del Page Object del carrito con el defecto del caso B. **Se corrige en el Paso 4** |
 | [`pages/cart.page.ts`](../../../../pages/cart.page.ts) | La versión corregida del proyecto. **Ábrela solo al terminar**, para comparar. No se modifica |
-| [`tests/cart-sync.spec.ts:32`](../../../../tests/cart-sync.spec.ts) | Lectura del Paso 5 |
+| [`tests/cart-sync.spec.ts:33`](../../../../tests/cart-sync.spec.ts) | Lectura del Paso 5 |
 
 ---
 
@@ -97,7 +97,7 @@ grep -rc "cart_item" tests/*.spec.ts | grep -v ":0"
 
 ### Paso 5 — El `.first()` del proyecto
 
-Abre [`tests/cart-sync.spec.ts:30-33`](../../../../tests/cart-sync.spec.ts), el único `.first()` de los 87 tests:
+Abre [`tests/cart-sync.spec.ts:32-35`](../../../../tests/cart-sync.spec.ts), el único `.first()` de los 88 tests:
 
 ```typescript
 await expect(

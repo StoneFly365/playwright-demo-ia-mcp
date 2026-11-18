@@ -165,4 +165,4 @@ El desglose competencia → anclaje → ejercicio → validación → evaluació
 
 **[01 — Playwright Fundamentals](../01-playwright-fundamentals/)**. Requiere haber superado este.
 
-Ahí empieza el navegador: locators, aserciones web-first, `playwright.config.ts` y la ejecución real de los 87 tests del proyecto.
+Ahí empieza el navegador: locators, aserciones web-first, `playwright.config.ts` y la ejecución real de los 88 tests del proyecto.

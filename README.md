@@ -203,7 +203,7 @@ playwright-demo-ia-mcp/
 │       ├── playwright.yml          # Pipeline CI/CD de tests (GitHub Actions)
 │       ├── guard.yml               # Guard de asserts en las PR del healer (check obligatorio)
 │       └── docs.yml                # Publicación del portal en GitHub Pages
-├── CLAUDE.md                       # Reglas para Claude Code: revisar la documentación en cambios de arquitectura
+├── CLAUDE.md                       # Reglas para Claude Code: revisar toda la documentación en cada PR
 ├── playwright.config.ts
 ├── package.json
 └── tsconfig.json
@@ -360,6 +360,7 @@ flowchart TD
 
     JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json y las instantáneas de los fallos<br/>· report:ai · tickets de Jira · Summary + artefacto ai-report"]
     R --> HL["Job: Healer (solo a mano, heal=true)<br/>heal:ai sobre los test_roto · PR en borrador"]
+    T --> LI["Job: Lint de Playwright"]
     T --> GU["Job: Guard de asserts<br/>solo PR desde ramas heal/*"]
 ```
 
@@ -569,7 +570,7 @@ Después de `report:ai`, cada tipo de fallo tiene su salida:
 
 | Tipo | Qué pasa | Cómo |
 |---|---|---|
-| `test_roto` | El healer corrige el test y abre una PR en borrador. Nunca se fusiona sola | `npm run heal:ai`, en local |
+| `test_roto` | El healer corrige el test y abre una PR en borrador. Nunca se fusiona sola | `npm run heal:ai`, en local o en el job **Healer** de CI (a mano) |
 | `bug_producto` | Ticket de Jira con la traza y el vídeo de los tests afectados. El healer no toca estos tests | `npm run jira:tickets`, en local y en CI |
 | `flaky` / `entorno` | Solo el aviso del resumen, sin acción automática | — |
 
@@ -661,13 +662,13 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 |---|---|---|---|
 | **Anthropic** (Claude CLI, con tu suscripción, en local) | `report:ai`, `eval:ai` | Por cada grupo de fallos: patrón y huella, número de tests y navegadores, hasta 10 tests (título, fichero, línea y navegador), el error recortado a 1500 caracteres y la instantánea de la página en el fallo (`error-context.md`) recortada a 3000. Todo pasa antes por el redactor. Para el resumen, las correcciones y los tickets solo va un extracto del error de 600 caracteres, sin la instantánea | `test-results.json` completo, el código de los tests, trazas, vídeos, capturas y variables de entorno |
 | **Google** (Gemini API, capa gratuita, en CI) u **OpenRouter** (si existe `OPENROUTER_API_KEY`; reenvía al proveedor del modelo elegido) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
-| **Anthropic** (Claude CLI, en local) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Secretos de CI, porque se ejecuta en local. No tiene terminal (`Bash`) |
+| **Anthropic** (Claude CLI, en local o en el job **Healer** de CI) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo (comprobado con Read y con Grep). Secretos de CI en variables de entorno: el agente no tiene terminal (`Bash`) para leerlos. **Ojo:** en el job **Healer** el checkout deja el `GITHUB_TOKEN` en `.git/config` para poder hacer push, y el agente sí puede leer ese fichero |
 | **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
 | **Anthropic** (Claude CLI, en local) | `design:ai` | La historia de usuario, lo que el agente lea de Figma (capas, textos, componentes y, si la pide, una captura del frame), las instantáneas de la página de la app que recorre por el MCP y los ficheros del repositorio que decida leer. **No pasa por el redactor**: las historias y los diseños de la demo no llevan datos personales | `.env` (misma regla). No tiene terminal (`Bash`) y solo puede escribir en `specs/disenos/` y `specs/figma/`: el script lo comprueba al terminar |
 | **Figma** (MCP remoto `mcp.figma.com`, con el login OAuth de quien lo ejecuta) | `design:ai` | Las peticiones de lectura de los frames de la historia | Nada de la app ni de los tests. Con `--snapshot` no se conecta |
 | **GitHub** o **GitLab** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR o MR: diagnóstico, veredicto del revisor y resumen del healer | — |
-| **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día) y el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
-| **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |
+| **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día), el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días) y, si se lanza el healer, `ai-heal` con `ai-heal.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
+| **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local y en CI, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |
 | **CodeRabbit** (app de GitHub del repositorio) | Cada PR | El diff de la PR | — |
 
 **Controles que lo respaldan**
@@ -764,7 +765,7 @@ Limitaciones:
 |---|---|
 | `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini u OpenRouter en CI) |
 | `npm run eval:ai` | Sí: una clasificación por escenario. El dashboard nunca lo lanza |
-| `npm run heal:ai` | Sí: el agente healer (Claude CLI, en local). El dashboard nunca lo lanza |
+| `npm run heal:ai` | Sí: el agente healer (Claude CLI, en local o en el job **Healer** de CI). El dashboard nunca lo lanza |
 | `npm run review:pw` | Sí: el agente revisor (Claude CLI, en local). También lo lanza `heal:ai` |
 | `npm run jira:tickets`, `guard:asserts` y `lint` | No |
 | `npm run dashboard`, `dashboard:demo` y la página generada | No. Solo leen ficheros, no ejecutan tests y no necesitan claves |

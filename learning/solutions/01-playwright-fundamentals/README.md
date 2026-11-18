@@ -4,7 +4,7 @@ Todo el código de esta carpeta se ha **ejecutado contra la aplicación real** d
 
 | Fichero | Cubre | Estado verificado |
 |---|---|---|
-| [lab-1.md](lab-1.md) | Tabla de 6 ejecuciones, informe HTML, clasificación de fallos | Suite del proyecto: 87 tests, 77 ✅ / 10 ❌ en Chromium |
+| [lab-1.md](lab-1.md) | Tabla de 6 ejecuciones, informe HTML, clasificación de fallos | Suite del proyecto: 88 tests, 78 ✅ / 10 ❌ en Chromium |
 | [lab-2.md](lab-2.md) | Medición del auto-waiting y de los métodos sin reintento | 5 versiones ejecutadas, con sus tiempos |
 | [lab-3.md](lab-3.md) | Tabla de decisión de 12 elementos + tests de respaldo | 6 tests ✅ |
 | [lab-4.md](lab-4.md) | Ordenación A→Z + segundo hueco de cobertura | 2 tests ✅ en los 3 navegadores |

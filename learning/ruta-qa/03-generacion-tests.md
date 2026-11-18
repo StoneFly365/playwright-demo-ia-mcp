@@ -83,7 +83,7 @@ Antes de tocar la IA, reúne los hechos. Ábrelos tú:
 | Dónde | Qué anotar |
 |---|---|
 | [`pages/inventory.page.ts:20-30`](../../pages/inventory.page.ts) | Los métodos disponibles: `sortBy()`, `getProductNames()`, `getProductPrices()` |
-| [`tests/inventory.spec.ts:23-71`](../../tests/inventory.spec.ts) | Cómo se prueban las otras tres ordenaciones. Los valores exactos: `za`, `lohi`, `hilo` |
+| [`tests/inventory.spec.ts:24-72`](../../tests/inventory.spec.ts) | Cómo se prueban las otras tres ordenaciones. Los valores exactos: `za`, `lohi`, `hilo` |
 | La aplicación | Cuántos productos hay y cuál es el cuarto valor del desplegable |
 
 ### Paso 2 — Genera con contexto (7 min)

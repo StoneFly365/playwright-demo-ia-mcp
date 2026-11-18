@@ -104,7 +104,7 @@ Los binarios vienen de un CDN de Microsoft que el proxy puede bloquear. Alternat
 
 1. Variable de proxy: `HTTPS_PROXY=http://<host>:<puerto> npx playwright install`
 2. Usar solo Chromium: `npx playwright install chromium`
-3. Ejecutar en Docker (README:134-146)
+3. Ejecutar en Docker (README:304-324)
 4. Para el módulo 00 no hacen falta: sáltalo por ahora
 
 ### `'npx' no se reconoce como un comando` (Windows)
@@ -125,13 +125,7 @@ No deberían: el módulo 00 es lógica pura. Si ocurre, estás ejecutando la sui
 
 ### `npm run report:ai` falla en mi equipo
 
-Es **esperado y conocido**. [`package.json:14`](../../package.json) contiene una ruta absoluta de una máquina concreta:
-
-```json
-"report:ai": "cross-env CLAUDE_CODE_GIT_BASH_PATH=\"C:\\Users\\raul.molina\\...\" node scripts/report-ai.mjs"
-```
-
-Es el hallazgo **B1** de la Fase 1 y **es el primer ejercicio del módulo 08**, así que no se corrige antes. Hasta entonces, el reporte IA se ve en CI.
+Necesita la CLI de Claude autenticada (ejecuta `claude` una vez) o, por API, las variables `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL` (sección «Reporte IA» del README del proyecto). Sin ninguna de las dos, usa las salidas ya generadas de [`learning/ruta-qa/ejemplos/`](../ruta-qa/ejemplos/README.md); en CI el reporte se genera igualmente.
 
 ### Los tests del proyecto fallan más de lo esperado
 
@@ -145,7 +139,7 @@ Si falla algo en la suite verde, no es cosa tuya: SauceDemo puede haber cambiado
 
 ### La ejecución de la suite completa tarda mucho
 
-Normal: son 261 ejecuciones (87 tests × 3 navegadores) contra un sitio externo. Durante las prácticas usa un solo navegador:
+Normal: son 264 ejecuciones (88 tests × 3 navegadores) contra un sitio externo. Durante las prácticas usa un solo navegador:
 
 ```bash
 npm run test:chromium

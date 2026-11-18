@@ -110,7 +110,7 @@ Es la misma corrección que recibió el proyecto en noviembre de 2026 ([`pages/c
 
 ## Paso 5 — El `.first()` del proyecto
 
-Sobre [`tests/cart-sync.spec.ts:30-33`](../../../tests/cart-sync.spec.ts):
+Sobre [`tests/cart-sync.spec.ts:32-35`](../../../tests/cart-sync.spec.ts):
 
 1. **Qué comprueba de verdad:** que existe **algún** nombre de producto visible en el carrito. No comprueba *cuál*. El propio mensaje lo delata: "debería corresponder a **uno de** los productos añadidos".
 2. **Reescritura propuesta:**

@@ -25,7 +25,7 @@ Instrumentos de evaluación transversales: los de cada módulo viven en `modules
 |---|---|---|---|
 | 1 | Fundamentos de QA y diseño de test | 20% | Casos de `login.spec.ts` y `cart-edge-cases.spec.ts` |
 | 2 | Web y selectores | 20% | Los 4 estilos de selector del proyecto |
-| 3 | **JavaScript / TypeScript** | **30%** | `inventory.page.ts` completo, `inventory.spec.ts:39-54` |
+| 3 | **JavaScript / TypeScript** | **30%** | `inventory.page.ts` completo, `inventory.spec.ts:40-55` |
 | 4 | Automatización y herramientas | 15% | `playwright.config.ts` |
 | 5 | Git, CI/CD, Docker, IA | 15% | `playwright.yml`, `report-ai.mjs` |
 

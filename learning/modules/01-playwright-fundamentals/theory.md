@@ -22,10 +22,10 @@ El módulo entero va de eso: cómo se localiza un elemento sin ambigüedad, y po
 
 ## 1. Ejecutar la suite
 
-Playwright se ejecuta desde la línea de comandos. El proyecto trae [12 scripts en `package.json`](../../../package.json) que son atajos de lo mismo:
+Playwright se ejecuta desde la línea de comandos. El proyecto trae [14 scripts de ejecución en `package.json`](../../../package.json) que son atajos de lo mismo:
 
 ```bash
-npm test                      # todo: 87 tests × 3 navegadores = 261 ejecuciones
+npm test                      # todo: 88 tests × 3 navegadores = 264 ejecuciones
 npm run test:chromium         # un solo navegador
 npm run test:demo:green       # solo los tests que deberían pasar
 npm run test:demo:fail        # solo los 10 que fallan a propósito
@@ -50,7 +50,7 @@ test('TC-CAT-01 debería mostrar 6 productos en el inventario', { tag: '@demo-fa
 
 Eso es lo que permite partir la suite en dos con `--grep` y `--grep-invert`. La *estrategia* de etiquetado es el módulo 07; aquí solo la usas.
 
-**Ábrelo:** [`package.json:5-13`](../../../package.json) — los 12 scripts. Lee qué hay realmente detrás de `test:demo:green`.
+**Ábrelo:** [`package.json:5-18`](../../../package.json) — los 14 scripts de ejecución. Lee qué hay realmente detrás de `test:demo:green`.
 
 ---
 
@@ -59,7 +59,7 @@ Eso es lo que permite partir la suite en dos con `--grep` y `--grep-invert`. La 
 Una ejecución completa en Chromium tarda **~24 segundos** y termina así:
 
 ```
-  77 passed
+  78 passed
   10 failed
 ```
 
@@ -93,7 +93,7 @@ Confundir las tres es lo que hace que una suite acabe con `expect` retocados has
 
 ## 3. Auto-waiting: por qué nadie espera
 
-En 87 tests de este proyecto hay **cero** `waitForTimeout`, **cero** `waitForSelector` y **cero** `waitForLoadState`. No es un descuido: es cómo funciona Playwright.
+En 88 tests de este proyecto hay **cero** `waitForTimeout`, **cero** `waitForSelector` y **cero** `waitForLoadState`. No es un descuido: es cómo funciona Playwright.
 
 Dos mecanismos, y conviene no mezclarlos:
 
@@ -233,7 +233,7 @@ Y dónde **no**:
 
 Moraleja operativa: **el nombre accesible se comprueba, no se supone.**
 
-**Ábrelo:** [`tests/checkout.spec.ts:34`](../../../tests/checkout.spec.ts) — el **único** `getByRole` de los 87 tests, y da la casualidad de que apunta al único heading real de la aplicación.
+**Ábrelo:** [`tests/checkout.spec.ts:35`](../../../tests/checkout.spec.ts) — el **único** `getByRole` de los 88 tests, y da la casualidad de que apunta al único heading real de la aplicación.
 
 ---
 
@@ -343,7 +343,7 @@ page.getByRole('link', { name: 'Sauce Labs Backpack' }).first()   // ❌
 
 `.first()`, `.nth()` y `.last()` tienen un uso legítimo: cuando el orden **es** el criterio ("el primer resultado de la búsqueda"). Si el orden no es el criterio, son un síntoma.
 
-**Ábrelo:** [`tests/cart-sync.spec.ts:32`](../../../tests/cart-sync.spec.ts) — el único `.first()` de la suite, en una aserción que por eso comprueba muy poco: "el nombre del primer ítem debería ser visible", sin decir de qué producto.
+**Ábrelo:** [`tests/cart-sync.spec.ts:33`](../../../tests/cart-sync.spec.ts) — el único `.first()` de la suite, en una aserción que por eso comprueba muy poco: "el nombre del primer ítem debería ser visible", sin decir de qué producto.
 
 ---
 
@@ -370,7 +370,7 @@ page.getByTestId('inventory-item').filter({ hasText: name })           // métod
 
 **Este es el patrón más valioso del módulo.** Con él se resuelven **todas** las ambigüedades detectadas en la aplicación.
 
-**Ábrelo:** [`tests/product-detail-add-to-cart.spec.ts:117-121`](../../../tests/product-detail-add-to-cart.spec.ts) — el único encadenado con `filter` de la suite, y [`pages/inventory.page.ts:33`](../../../pages/inventory.page.ts) — la otra sintaxis.
+**Ábrelo:** [`tests/product-detail-add-to-cart.spec.ts:118-122`](../../../tests/product-detail-add-to-cart.spec.ts) — el único encadenado con `filter` de la suite, y [`pages/inventory.page.ts:33`](../../../pages/inventory.page.ts) — la otra sintaxis.
 
 ---
 
@@ -427,7 +427,7 @@ El único fichero sin `beforeEach` es [`tests/route-protection.spec.ts`](../../.
 
 **Qué heredas de `playwright.config.ts` sin escribirlo:** `baseURL` (por eso `goto('/')` funciona), los tres navegadores, `trace` y `video` en fallo, `fullyParallel`, y los valores por defecto de Playwright que el proyecto no toca: timeout de test 30 s, timeout de aserción 5 s, `retries: 0` en local y 2 en CI.
 
-**Ábrelo:** [`playwright.config.ts`](../../../playwright.config.ts) entero. Son 31 líneas y cada una tiene un efecto observable.
+**Ábrelo:** [`playwright.config.ts`](../../../playwright.config.ts) entero. Son 34 líneas y cada una tiene un efecto observable.
 
 ---
 
