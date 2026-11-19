@@ -4,12 +4,14 @@
 // borrador. Nunca se fusiona sola.
 //
 // Uso: npm run heal:ai [-- --group G001] [-- --dry-run]
-//   --group    solo ese grupo (se puede repetir); sin él, todos los test_roto del último report:ai
-//   --dry-run  enseña lo que se mandaría al healer y no toca git, GitHub/GitLab ni la IA
+//   --group       solo ese grupo (se puede repetir); sin él, todos los test_roto del último report:ai
+//   --dry-run     enseña lo que se mandaría al healer y no toca git, GitHub/GitLab ni la IA
+//   --no-publish  para tras el commit y deja lo necesario en heal-pending.json (CI: paso sin GH_TOKEN)
+//   --publish     solo push y PR a partir de heal-pending.json (CI: paso con GH_TOKEN, sin agentes)
 // Para un escenario, lanza el healer con la misma variable que los tests: DEMO_SCENARIO=cascade npm run heal:ai
 // Si origin es un GitLab, abre una MR en borrador por la API con GITLAB_TOKEN (scope api); si no, una PR con gh.
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkAgainst } from "./guard-asserts.mjs";
@@ -18,6 +20,7 @@ import { reviewChanges } from "./review-pw.mjs";
 
 const GROUPED = "playwright-report/ai-failures-grouped.json";
 const OUT = "playwright-report/ai-heal.json";
+const PENDING = "playwright-report/heal-pending.json";
 const EDITABLE = /^(tests|pages|fixtures)\//;
 const LABEL = "needs-human";
 
@@ -136,8 +139,48 @@ function runHealer(prompt) {
     return runAgent("playwright-test-healer", prompt, { tools: "Read,Glob,Grep,LS,Edit,MultiEdit,Write,mcp__playwright-test", mcp: true });
 }
 
+// En GitHub Actions el checkout no guarda credenciales: el token va solo al push, por entorno y no en los
+// argumentos, para que no salga en un error. En local, el push normal con las credenciales de cada uno.
+function push(branch) {
+    const token = process.env.GITHUB_ACTIONS ? process.env.GH_TOKEN : null;
+    if (!token) return git("push", "-u", "origin", branch);
+    const env = { ...process.env, HEAL_GIT_AUTH: `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString("base64")}` };
+    try {
+        execFileSync("git", ["--config-env=http.https://github.com/.extraheader=HEAL_GIT_AUTH", "push", "-u", "origin", branch], { env, stdio: "inherit" });
+    } catch (e) {
+        throw new Error(`git push de ${branch} falló (código ${e.status ?? "?"}).`);
+    }
+}
+
+async function publish(p) {
+    if (p.gitlab && !process.env.GITLAB_TOKEN) throw new Error("origin es un GitLab: define GITLAB_TOKEN (token con scope api) para abrir la MR.");
+    if (!p.gitlab) run("gh", ["auth", "status"]);
+    // La descripción y la revisión son de ese commit: si la rama se ha movido, no se publica con ellas.
+    if (git("rev-parse", p.branch) !== p.sha) throw new Error(`La rama ${p.branch} ya no está en el commit revisado (${p.sha}). Revísala a mano; no se publica.`);
+    push(p.branch);
+    let url;
+    if (p.gitlab) {
+        url = await openGitlabMr(p.gitlab, p);
+    } else {
+        if (p.needsHuman) run("gh", ["label", "create", LABEL, "--force", "--color", "D93F0B", "--description", "La PR automática puede relajar las pruebas: necesita revisión humana"]);
+        url = run("gh", ["pr", "create", "--draft", "--base", p.from, "--head", p.branch, "--title", p.title,
+            "--body-file", "-", ...(p.needsHuman ? ["--label", LABEL] : [])], { input: p.body });
+    }
+    git("switch", p.from);
+    save(p.runStartTime, { ...p.entry, pr: url });
+    console.log(`✅ PR en borrador: ${url} · revisión adversarial: ${p.entry.review ?? "no disponible"}`);
+    if (p.needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${p.why.map((r) => `   - ${r}`).join("\n")}`);
+}
+
 async function main() {
     const args = process.argv.slice(2);
+    if (args.includes("--publish")) {
+        if (args.includes("--dry-run")) throw new Error("--publish y --dry-run no van juntos: --publish hace push y abre la PR.");
+        if (!existsSync(PENDING)) return console.log(`✅ No hay ${PENDING}: nada que publicar.`);
+        await publish(JSON.parse(readFileSync(PENDING, "utf8")));
+        return unlinkSync(PENDING);
+    }
+    const noPublish = args.includes("--no-publish");
     const ids = args.flatMap((a, i) => (args[i - 1] === "--group" ? [a] : []));
     if (!existsSync(GROUPED)) throw new Error(`No existe ${GROUPED}. Ejecuta antes los tests y npm run report:ai.`);
     const grouped = JSON.parse(readFileSync(GROUPED, "utf8"));
@@ -152,13 +195,16 @@ async function main() {
         return;
     }
 
+    // Si no, el siguiente --publish abriría la PR del intento anterior.
+    if (existsSync(PENDING)) throw new Error(`Hay una corrección sin publicar en ${PENDING}. Publícala con npm run heal:ai -- --publish o borra el fichero.`);
     // El healer edita ficheros versionados: se empieza siempre desde un árbol limpio y una rama nueva.
     if (git("status", "--porcelain", "--untracked-files=no")) throw new Error("Hay cambios sin confirmar. Confírmalos o guárdalos antes de lanzar el healer.");
     const from = git("rev-parse", "--abbrev-ref", "HEAD");
     if (from === "HEAD") throw new Error("Estás en un commit suelto: cámbiate a una rama.");
     const gitlab = gitlabProject(git("remote", "get-url", "origin"));
-    if (gitlab && !process.env.GITLAB_TOKEN) throw new Error("origin es un GitLab: define GITLAB_TOKEN (token con scope api) para abrir la MR.");
-    if (!gitlab) run("gh", ["auth", "status"]);
+    // Sin --no-publish se comprueba antes de gastar minutos de healer; con él, las credenciales llegan en el paso de publicar.
+    if (!noPublish && gitlab && !process.env.GITLAB_TOKEN) throw new Error("origin es un GitLab: define GITLAB_TOKEN (token con scope api) para abrir la MR.");
+    if (!noPublish && !gitlab) run("gh", ["auth", "status"]);
     const base = git("rev-parse", "HEAD");
     const branch = `heal/${groups.map((g) => g.group_id).join("-")}-${new Date().toISOString().replace(/\D/g, "").slice(0, 14)}`;
     git("switch", "-c", branch);
@@ -200,25 +246,21 @@ async function main() {
     // Si el revisor responde pero sin un veredicto válido, tampoco cuenta como aprobado. Si falla, no se marca.
     const doubts = Boolean(review?.text) && review.verdict !== "APROBADO";
     const needsHuman = reasons.length > 0 || doubts;
-    git("commit", "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
-    git("push", "-u", "origin", branch);
+    // commit-tree en vez de commit: no ejecuta hooks, así que un post-commit dejado por un test no puede
+    // añadir otro commit detrás. sha es exactamente lo que se ha revisado.
+    const sha = git("commit-tree", git("write-tree"), "-p", base, "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
+    // El check y el revisor leen el árbol de trabajo: si no coincide con lo que se confirma, no se publica.
+    const drift = git("diff", "--name-only", sha, "--");
+    if (drift) throw new Error(`Los ficheros han cambiado durante la revisión (${drift.split("\n").join(", ")}). Revisa la rama ${branch} a mano; no se confirma.`);
+    git("update-ref", `refs/heads/${branch}`, sha);
     const title = `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`;
     const body = buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time });
-    let url;
-    if (gitlab) {
-        url = await openGitlabMr(gitlab, { from, branch, title, body, needsHuman });
-    } else {
-        if (needsHuman) run("gh", ["label", "create", LABEL, "--force", "--color", "D93F0B", "--description", "La PR automática puede relajar las pruebas: necesita revisión humana"]);
-        url = run("gh", ["pr", "create", "--draft", "--base", from, "--head", branch, "--title", title,
-            "--body-file", "-", ...(needsHuman ? ["--label", LABEL] : [])], { input: body });
-    }
-    git("switch", from);
-
     // review guarda solo el veredicto; si el revisor falló, va aparte en review_error para no confundirlo con una aprobación.
-    save(grouped.run_start_time ?? null, { groups: groups.map((g) => g.group_id), pr: url, branch, needs_human: needsHuman, reasons, review: review?.verdict ?? null, review_error: review?.error ?? null, summary });
-    const why = [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])];
-    console.log(`✅ PR en borrador: ${url} · revisión adversarial: ${review?.verdict ?? "no disponible"}`);
-    if (needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${why.map((r) => `   - ${r}`).join("\n")}`);
+    const entry = { groups: groups.map((g) => g.group_id), branch, needs_human: needsHuman, reasons, review: review?.verdict ?? null, review_error: review?.error ?? null, summary };
+    const pending = { from, branch, sha, gitlab, title, body, needsHuman, why: [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])], runStartTime: grouped.run_start_time ?? null, entry };
+    if (!noPublish) return publish(pending);
+    writeFileSync(PENDING, JSON.stringify(pending, null, 2) + "\n");
+    console.log(`✅ Rama ${branch} lista. Push y PR: npm run heal:ai -- --publish`);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -230,7 +230,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # deja las credenciales: heal:ai hace push de la rama heal/*
+        uses: actions/checkout@v4
+        with:
+          # Sin el token en .git/config, el healer no lo puede leer. El paso de publicar lo pasa solo al push.
+          persist-credentials: false
 
       - name: Install dependencies
         run: npm ci
@@ -253,11 +256,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Healer
+      # Dos pasos para que GH_TOKEN no exista en ningún proceso mientras corren los agentes: con Write y
+      # test_run, el healer podría ejecutar un test que lea el entorno de sus procesos padre (/proc/<pid>/environ).
+      - name: Healer (sin GH_TOKEN)
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: npm run heal:ai -- --no-publish
+
+      - name: Push y PR en borrador
+        env:
           GH_TOKEN: ${{ github.token }}
-        run: npm run heal:ai
+        run: npm run heal:ai -- --publish
 
       - name: Show healer result
         if: always()
@@ -266,7 +275,7 @@ jobs:
           if [ -f playwright-report/ai-heal.json ]; then
             node -e "const h=require('./playwright-report/ai-heal.json');for(const e of h.heals??[])console.log('- '+e.groups.join(', ')+': '+(e.pr??'sin cambios, no hay PR')+(e.needs_human?' · needs-human':''))" >> $GITHUB_STEP_SUMMARY
           else
-            echo "_Sin ai-heal.json: no había grupos test_roto o el healer falló (revisa el paso 'Healer')._" >> $GITHUB_STEP_SUMMARY
+            echo "_Sin ai-heal.json: no había grupos test_roto o el healer falló (revisa los pasos 'Healer' y 'Push y PR')._" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Upload healer result
