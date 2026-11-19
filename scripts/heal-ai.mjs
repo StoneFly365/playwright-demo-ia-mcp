@@ -155,6 +155,8 @@ function push(branch) {
 async function publish(p) {
     if (p.gitlab && !process.env.GITLAB_TOKEN) throw new Error("origin es un GitLab: define GITLAB_TOKEN (token con scope api) para abrir la MR.");
     if (!p.gitlab) run("gh", ["auth", "status"]);
+    // La descripción y la revisión son de ese commit: si la rama se ha movido, no se publica con ellas.
+    if (git("rev-parse", p.branch) !== p.sha) throw new Error(`La rama ${p.branch} ya no está en el commit revisado (${p.sha}). Revísala a mano; no se publica.`);
     push(p.branch);
     let url;
     if (p.gitlab) {
@@ -173,6 +175,7 @@ async function publish(p) {
 async function main() {
     const args = process.argv.slice(2);
     if (args.includes("--publish")) {
+        if (args.includes("--dry-run")) throw new Error("--publish y --dry-run no van juntos: --publish hace push y abre la PR.");
         if (!existsSync(PENDING)) return console.log(`✅ No hay ${PENDING}: nada que publicar.`);
         await publish(JSON.parse(readFileSync(PENDING, "utf8")));
         return unlinkSync(PENDING);
@@ -192,6 +195,8 @@ async function main() {
         return;
     }
 
+    // Si no, el siguiente --publish abriría la PR del intento anterior.
+    if (existsSync(PENDING)) throw new Error(`Hay una corrección sin publicar en ${PENDING}. Publícala con npm run heal:ai -- --publish o borra el fichero.`);
     // El healer edita ficheros versionados: se empieza siempre desde un árbol limpio y una rama nueva.
     if (git("status", "--porcelain", "--untracked-files=no")) throw new Error("Hay cambios sin confirmar. Confírmalos o guárdalos antes de lanzar el healer.");
     const from = git("rev-parse", "--abbrev-ref", "HEAD");
@@ -241,12 +246,15 @@ async function main() {
     // Si el revisor responde pero sin un veredicto válido, tampoco cuenta como aprobado. Si falla, no se marca.
     const doubts = Boolean(review?.text) && review.verdict !== "APROBADO";
     const needsHuman = reasons.length > 0 || doubts;
-    git("commit", "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
+    // commit-tree en vez de commit: no ejecuta hooks, así que un post-commit dejado por un test no puede
+    // añadir otro commit detrás. sha es exactamente lo que se ha revisado.
+    const sha = git("commit-tree", git("write-tree"), "-p", base, "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
+    git("update-ref", `refs/heads/${branch}`, sha);
     const title = `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`;
     const body = buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time });
     // review guarda solo el veredicto; si el revisor falló, va aparte en review_error para no confundirlo con una aprobación.
     const entry = { groups: groups.map((g) => g.group_id), branch, needs_human: needsHuman, reasons, review: review?.verdict ?? null, review_error: review?.error ?? null, summary };
-    const pending = { from, branch, gitlab, title, body, needsHuman, why: [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])], runStartTime: grouped.run_start_time ?? null, entry };
+    const pending = { from, branch, sha, gitlab, title, body, needsHuman, why: [...reasons, ...(doubts ? [`revisión adversarial: ${review.verdict}`] : [])], runStartTime: grouped.run_start_time ?? null, entry };
     if (!noPublish) return publish(pending);
     writeFileSync(PENDING, JSON.stringify(pending, null, 2) + "\n");
     console.log(`✅ Rama ${branch} lista. Push y PR: npm run heal:ai -- --publish`);
