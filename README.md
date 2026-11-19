@@ -46,6 +46,7 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
   - [Qué analiza](#qué-analiza)
   - [Ver los resultados](#ver-los-resultados)
   - [MCP de Sonar para los agentes](#mcp-de-sonar-para-los-agentes)
+- [Dependencias y GitHub Actions](#dependencias-y-github-actions)
 - [Qué datos salen y hacia dónde](#qué-datos-salen-y-hacia-dónde)
 - [Dashboard QA Intelligence](#dashboard-qa-intelligence)
   - [Qué lee y qué enseña](#qué-lee-y-qué-enseña)
@@ -211,6 +212,7 @@ playwright-demo-ia-mcp/
 ├── .mcp.json                       # Servidores MCP: Playwright (run-test-mcp-server) y SonarQube (opcional)
 ├── .mcp.figma.json                 # Playwright + Figma (remoto oficial), solo para design:ai
 ├── .github/
+│   ├── dependabot.yml              # PR semanales con las actualizaciones de npm y de las actions
 │   ├── pull_request_template.md    # Plantilla de PR con la línea Docs: que pide CLAUDE.md
 │   └── workflows/
 │       ├── playwright.yml          # Pipeline CI/CD de tests (GitHub Actions)
@@ -715,6 +717,18 @@ setx SONARQUBE_ORG "<clave de la organización>"
 [`.vscode/extensions.json`](.vscode/extensions.json) recomienda **SonarQube for IDE** (`SonarSource.sonarlint-vscode`): marca las incidencias mientras escribes, antes del push. En modo conectado con la organización de SonarQube Cloud usa el mismo perfil de reglas y las mismas exclusiones que el análisis de CI, y respeta las incidencias ya aceptadas en la interfaz. Cobertura, duplicados y *quality gate* siguen saliendo solo del CI. El resto de `.vscode/` no se versiona.
 
 `heal:ai` y `design:ai` no lo usan: [`scripts/agent.mjs`](scripts/agent.mjs) quita `SONAR_TOKEN` y `SONARQUBE_TOKEN` del entorno de los agentes, igual que el resto de tokens, así que el servidor no arranca y el agente sigue sin él.
+
+---
+
+## Dependencias y GitHub Actions
+
+El framework no despliega nada y todas sus dependencias son de desarrollo, así que el riesgo de seguridad real está en la cadena de suministro y en los secretos de CI. Lo cubren tres medidas:
+
+- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)): cada semana, una PR con las versiones menores de npm agrupadas, otra con las GitHub Actions y una por cada versión mayor, para revisarla a mano. Las alertas de seguridad abren PR al momento, fuera del calendario. `@playwright/test` queda fuera: va atado a la imagen de Docker de CI y se sube a mano junto con ella.
+- **Actions fijadas a SHA**: todos los `uses:` apuntan a un commit, con la versión en un comentario (`actions/checkout@<sha>  # v4.4.0`). Un tag se puede mover para que apunte a otro código; un SHA no. Es la regla S7637 de Sonar. Dependabot actualiza el SHA y el comentario.
+- **Secret scanning y push protection** de GitHub, activos en el repositorio: GitHub rechaza un push que lleve un token reconocible.
+
+No hay más análisis a propósito: Semgrep o CodeQL solaparían con Sonar, y un DAST sobre SauceDemo escanearía una app ajena sin permiso.
 
 ---
 
