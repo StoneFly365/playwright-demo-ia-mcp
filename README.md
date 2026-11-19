@@ -679,8 +679,8 @@ Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos n
 
 La configuración está en [`sonar-project.properties`](sonar-project.properties):
 
-- **Código fuente:** todo el repositorio salvo `learning/`, `docs-site/`, `docs/`, `node_modules/` y las salidas (`playwright-report/`, `test-results/`, `coverage/`). Lo que más aporta es `scripts/*.mjs`: procesos lanzados con `spawn`, claves de la IA, el token de Jira y el HTML del dashboard.
-- **Tests:** `scripts/*.test.mjs` y `tests/`. Sonar los analiza con sus reglas de tests y no cuentan como código fuente.
+- **Código:** todo el repositorio salvo `learning/`, `docs-site/`, `docs/`, `node_modules/` y las salidas (`playwright-report/`, `test-results/`, `coverage/`). Lo que más aporta es `scripts/*.mjs`: procesos lanzados con `spawn`, claves de la IA, el token de Jira y el HTML del dashboard. SonarQube Cloud ya no admite `sonar.sources` ni `sonar.tests`: el alcance se recorta solo con `sonar.exclusions`.
+- **Tests:** fuera del análisis (`tests/` y `scripts/*.test.mjs`). Los E2E ya los revisan el lint y el check de asserts, y los unitarios aportan la cobertura.
 - **Cobertura:** la de `npm run test:unit:coverage`, que ejecuta los mismos tests que `test:unit` y deja `coverage/lcov.info` (no se versiona). Solo se mide en `scripts/`: `tests/`, `pages/` y `fixtures/` son E2E y quedan fuera.
 - **`secret_sauce`** (la contraseña pública de SauceDemo) no hace saltar ninguna regla: el primer análisis no dio ni incidencias ni *Security Hotspots* de credenciales, así que no hay exclusión. Si apareciera, se marca como *Safe* en la interfaz.
 
