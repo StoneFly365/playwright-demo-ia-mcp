@@ -249,6 +249,9 @@ async function main() {
     // commit-tree en vez de commit: no ejecuta hooks, así que un post-commit dejado por un test no puede
     // añadir otro commit detrás. sha es exactamente lo que se ha revisado.
     const sha = git("commit-tree", git("write-tree"), "-p", base, "-m", `fix(heal): ${groups.map((g) => g.group_id).join(", ")} propuesto por el healer`, "-m", "Corrección automática de los grupos test_roto del triage de IA. Pendiente de revisión.");
+    // El check y el revisor leen el árbol de trabajo: si no coincide con lo que se confirma, no se publica.
+    const drift = git("diff", "--name-only", sha, "--");
+    if (drift) throw new Error(`Los ficheros han cambiado durante la revisión (${drift.split("\n").join(", ")}). Revisa la rama ${branch} a mano; no se confirma.`);
     git("update-ref", `refs/heads/${branch}`, sha);
     const title = `heal: ${groups.map((g) => g.group_id).join(", ")} (test_roto)`;
     const body = buildPrBody({ groups, summary, reasons, review, runStartTime: grouped.run_start_time });
