@@ -42,6 +42,10 @@ Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.
   - [Revisión adversarial (`npm run review:pw`)](#revisión-adversarial-npm-run-reviewpw)
   - [Lint de Playwright (`npm run lint`)](#lint-de-playwright-npm-run-lint)
   - [Tickets de Jira (`npm run jira:tickets`)](#tickets-de-jira-npm-run-jiratickets)
+- [Análisis estático con SonarQube Cloud](#análisis-estático-con-sonarqube-cloud)
+  - [Qué analiza](#qué-analiza)
+  - [Ver los resultados](#ver-los-resultados)
+  - [MCP de Sonar para los agentes](#mcp-de-sonar-para-los-agentes)
 - [Qué datos salen y hacia dónde](#qué-datos-salen-y-hacia-dónde)
 - [Dashboard QA Intelligence](#dashboard-qa-intelligence)
   - [Qué lee y qué enseña](#qué-lee-y-qué-enseña)
@@ -79,7 +83,7 @@ Suite E2E lista para producción que enseña, sobre una web real, cómo damos va
 
 ## Cómo encaja todo
 
-Los agentes de [`.claude/agents/`](.claude/agents/) diseñan, crean y reparan los tests. El diseñador parte de una historia de usuario y de su diseño, que lee por el servidor MCP de Figma declarado aparte en [`.mcp.figma.json`](.mcp.figma.json). Usan el navegador y el runner a través del servidor MCP de Playwright definido en [`.mcp.json`](.mcp.json). Después, `report:ai` lee los resultados de la ejecución y la IA explica los fallos.
+Los agentes de [`.claude/agents/`](.claude/agents/) diseñan, crean y reparan los tests. El diseñador parte de una historia de usuario y de su diseño, que lee por el servidor MCP de Figma declarado aparte en [`.mcp.figma.json`](.mcp.figma.json). Usan el navegador y el runner a través del servidor MCP de Playwright definido en [`.mcp.json`](.mcp.json). El mismo fichero declara el MCP de SonarQube, opcional: si está disponible, el generator y el healer revisan las incidencias nuevas de los ficheros que tocan antes de terminar. Después, `report:ai` lee los resultados de la ejecución y la IA explica los fallos.
 
 ```mermaid
 flowchart LR
@@ -100,6 +104,8 @@ flowchart LR
     HU[("specs/historias/")] --> D
     FIG{{"MCP figma<br/>mcp.figma.com"}} <-->|"get_metadata · get_design_context"| D
     D <--> MCP
+    SQ{{"MCP sonarqube (opcional)<br/>sonarsource/sonarqube-mcp"}}
+    G & H -.->|"incidencias nuevas<br/>de los ficheros tocados"| SQ
 
     T --> RUN["npx playwright test<br/>Chromium · Firefox · WebKit"]
     RUN <--> APP
@@ -201,13 +207,15 @@ playwright-demo-ia-mcp/
 ├── docs/diagramas/                 # Diagrama del circuito para negocio (HTML + fuente archify)
 ├── .claude/agents/                 # Agentes: diseñador de pruebas, planner, generator, healer y revisor adversarial
 ├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
-├── .mcp.json                       # Servidor MCP de Playwright (playwright run-test-mcp-server)
+├── sonar-project.properties        # Configuración del análisis de SonarQube Cloud
+├── .mcp.json                       # Servidores MCP: Playwright (run-test-mcp-server) y SonarQube (opcional)
 ├── .mcp.figma.json                 # Playwright + Figma (remoto oficial), solo para design:ai
 ├── .github/
 │   ├── pull_request_template.md    # Plantilla de PR con la línea Docs: que pide CLAUDE.md
 │   └── workflows/
 │       ├── playwright.yml          # Pipeline CI/CD de tests (GitHub Actions)
 │       ├── guard.yml               # Guard de asserts en las PR del healer (check obligatorio)
+│       ├── sonar.yml               # Análisis de SonarQube Cloud con la cobertura de los tests unitarios
 │       └── docs.yml                # Publicación del portal en GitHub Pages
 ├── CLAUDE.md                       # Reglas para Claude Code: revisar toda la documentación en cada PR
 ├── playwright.config.ts
@@ -368,6 +376,7 @@ flowchart TD
     R --> HL["Job: Healer (solo a mano, heal=true)<br/>heal:ai sobre los test_roto · PR en borrador"]
     T --> LI["Job: Lint de Playwright"]
     T --> GU["Job: Guard de asserts<br/>solo PR desde ramas heal/*"]
+    T --> SO["Workflow SonarQube Cloud (sonar.yml)<br/>test:unit:coverage · análisis"]
 ```
 
 > Los tres navegadores van en paralelo y el reporte IA se genera **una sola vez** con los resultados de los tres ([`scripts/merge-results.mjs`](scripts/merge-results.mjs)): como mucho 4 llamadas a la IA por ejecución, y un fallo que se repite en los tres navegadores sale como un único grupo. En push y PR, si lo único que hay son tests flaky, no se llama a la IA. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`.
@@ -662,6 +671,40 @@ Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos n
 
 ---
 
+## Análisis estático con SonarQube Cloud
+
+[SonarQube Cloud](https://sonarcloud.io) analiza el código en cada push a `main` y en cada PR, desde el workflow [`sonar.yml`](.github/workflows/sonar.yml) y no con el *Automatic Analysis*, para poder subir la cobertura. Complementa a las otras capas de revisión, no las sustituye: el lint y el check de asserts saben qué hace frágil un test de Playwright o qué relaja una aserción, y Sonar no; Sonar mira todo el código, sobre todo `scripts/`, que no revisa nada más.
+
+### Qué analiza
+
+La configuración está en [`sonar-project.properties`](sonar-project.properties):
+
+- **Código:** todo el repositorio salvo `learning/`, `docs-site/`, `docs/`, `node_modules/` y las salidas (`playwright-report/`, `test-results/`, `coverage/`). Lo que más aporta es `scripts/*.mjs`: procesos lanzados con `spawn`, claves de la IA, el token de Jira y el HTML del dashboard. SonarQube Cloud ya no admite `sonar.sources` ni `sonar.tests`: el alcance se recorta solo con `sonar.exclusions`.
+- **Tests:** fuera del análisis (`tests/` y `scripts/*.test.mjs`). Los E2E ya los revisan el lint y el check de asserts, y los unitarios aportan la cobertura.
+- **Cobertura:** la de `npm run test:unit:coverage`, que ejecuta los mismos tests que `test:unit` y deja `coverage/lcov.info` (no se versiona). Solo se mide en `scripts/`: `tests/`, `pages/` y `fixtures/` son E2E y quedan fuera.
+- **`secret_sauce`** (la contraseña pública de SauceDemo) no hace saltar ninguna regla: el primer análisis no dio ni incidencias ni *Security Hotspots* de credenciales, así que no hay exclusión. Si apareciera, se marca como *Safe* en la interfaz.
+
+En CI, sin el secreto `SONAR_TOKEN` (antes de configurarlo o en una PR desde un fork) el análisis se omite y el check sale en verde con un aviso. Es un workflow aparte de `playwright.yml`: no espera a los tests E2E ni los retrasa.
+
+### Ver los resultados
+
+En el proyecto de SonarQube Cloud (*sonarcloud.io > organización > proyecto*): incidencias, hotspots, cobertura y duplicados, con la vista del código nuevo de cada PR. Con la app de GitHub de SonarQube Cloud instalada, la PR lleva además el resumen de la *quality gate*.
+
+### MCP de Sonar para los agentes
+
+[`.mcp.json`](.mcp.json) declara el [servidor MCP oficial](https://github.com/SonarSource/sonarqube-mcp-server) (`sonarsource/sonarqube-mcp`, por Docker y en solo lectura). El generator y el healer, antes de terminar, consultan las incidencias del proyecto o de la PR y corrigen las nuevas de los ficheros que han tocado. Si el servidor no está disponible, siguen sin él. Sonar solo ve el último commit analizado, no los cambios sin subir.
+
+Para usarlo en local hace falta Docker y exportar las variables antes de abrir Claude Code. Nunca van en el repositorio:
+
+```bash
+export SONARQUBE_TOKEN=<token de usuario de sonarcloud.io>   # My Account > Security
+export SONARQUBE_ORG=<clave de la organización>
+```
+
+`heal:ai` y `design:ai` no lo usan: [`scripts/agent.mjs`](scripts/agent.mjs) quita `SONAR_TOKEN` y `SONARQUBE_TOKEN` del entorno de los agentes, igual que el resto de tokens, así que el servidor no arranca y el agente sigue sin él.
+
+---
+
 ## Qué datos salen y hacia dónde
 
 Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máquina o del pipeline, hacia dónde, y qué controles hay. El dashboard no aparece porque no envía nada.
@@ -670,7 +713,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 |---|---|---|---|
 | **Anthropic** (Claude CLI, con tu suscripción, en local) | `report:ai`, `eval:ai` | Por cada grupo de fallos: patrón y huella, número de tests y navegadores, hasta 10 tests (título, fichero, línea y navegador), el error recortado a 1500 caracteres y la instantánea de la página en el fallo (`error-context.md`) recortada a 3000. Todo pasa antes por el redactor. Para el resumen, las correcciones y los tickets solo va un extracto del error de 600 caracteres, sin la instantánea | `test-results.json` completo, el código de los tests, trazas, vídeos, capturas y variables de entorno |
 | **Google** (Gemini API, capa gratuita, en CI) u **OpenRouter** (si existe `OPENROUTER_API_KEY`; reenvía al proveedor del modelo elegido) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
-| **Anthropic** (Claude CLI, en local o en el job **Healer** de CI) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo con las herramientas del agente (comprobado con Read y con Grep), pero no impide que el healer escriba y ejecute con `test_run` un test que lo lea. En CI no hay `.env`. Tokens de la lista de [`agent.mjs`](scripts/agent.mjs) (`GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*` y las claves de IA): se quitan del entorno de los agentes; cualquier otra variable sí llega. En el job **Healer**, `GH_TOKEN` solo existe en el paso de publicar, que no lanza agentes: ahí lo usan `gh` (comprobar la sesión y abrir la PR) y el push, que lo recibe como cabecera por entorno. El checkout no lo guarda en `.git/config`. **Excepción:** `CLAUDE_CODE_OAUTH_TOKEN` sí llega, porque `claude` lo necesita, y el healer podría escribir y ejecutar un test que lo lea. Tampoco está cubierto que un test deje un hook de git (`.git/hooks/pre-push`) que el paso de publicar ejecute con `GH_TOKEN` |
+| **Anthropic** (Claude CLI, en local o en el job **Healer** de CI) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo con las herramientas del agente (comprobado con Read y con Grep), pero no impide que el healer escriba y ejecute con `test_run` un test que lo lea. En CI no hay `.env`. Tokens de la lista de [`agent.mjs`](scripts/agent.mjs) (`GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*`, `SONAR_TOKEN`, `SONARQUBE_TOKEN` y las claves de IA): se quitan del entorno de los agentes; cualquier otra variable sí llega. En el job **Healer**, `GH_TOKEN` solo existe en el paso de publicar, que no lanza agentes: ahí lo usan `gh` (comprobar la sesión y abrir la PR) y el push, que lo recibe como cabecera por entorno. El checkout no lo guarda en `.git/config`. **Excepción:** `CLAUDE_CODE_OAUTH_TOKEN` sí llega, porque `claude` lo necesita, y el healer podría escribir y ejecutar un test que lo lea. Tampoco está cubierto que un test deje un hook de git (`.git/hooks/pre-push`) que el paso de publicar ejecute con `GH_TOKEN` |
 | **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
 | **Anthropic** (Claude CLI, en local) | `design:ai` | La historia de usuario, lo que el agente lea de Figma (capas, textos, componentes y, si la pide, una captura del frame), las instantáneas de la página de la app que recorre por el MCP y los ficheros del repositorio que decida leer. **No pasa por el redactor**: las historias y los diseños de la demo no llevan datos personales | `.env` (misma regla). No tiene terminal (`Bash`) y solo puede escribir en `specs/disenos/` y `specs/figma/`: el script lo comprueba al terminar |
 | **Figma** (MCP remoto `mcp.figma.com`, con el login OAuth de quien lo ejecuta) | `design:ai` | Las peticiones de lectura de los frames de la historia | Nada de la app ni de los tests. Con `--snapshot` no se conecta |
@@ -678,6 +721,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 | **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día), el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días) y, si se lanza el healer, `ai-heal` con `ai-heal.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
 | **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local y en CI, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |
 | **CodeRabbit** (app de GitHub del repositorio) | Cada PR | El diff de la PR | — |
+| **SonarQube Cloud** (`sonarcloud.io`) | El workflow `sonar.yml` en cada push a `main` y PR; en local, el MCP de Sonar con el token de quien lo use | El código del repositorio (salvo las exclusiones de `sonar-project.properties`) y la cobertura de los tests unitarios. El MCP solo hace consultas de lectura | Resultados de los tests E2E, informes de la IA y secretos. Sin `SONAR_TOKEN` no sale nada |
 
 **Controles que lo respaldan**
 
@@ -691,7 +735,7 @@ Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máqu
 
   Se redacta antes de recortar, para que un token partido por el corte no se escape.
 - **Sin IA cuando no hace falta.** Una ejecución en verde no llama a la IA. En push y PR tampoco se llama si solo hay tests flaky. La agrupación y la detección de flaky se hacen en código.
-- **Los agentes no reciben los tokens conocidos.** [`scripts/agent.mjs`](scripts/agent.mjs) quita del entorno de cada agente `GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*` y las claves de IA, porque el healer puede escribir y ejecutar tests que lean `process.env`. Es una lista: una variable que no esté en ella sí llega (por ejemplo, `CLAUDE_CODE_OAUTH_TOKEN`, que `claude` necesita). En CI, además, el healer corre en un paso sin `GH_TOKEN`, para que tampoco esté en sus procesos padre.
+- **Los agentes no reciben los tokens conocidos.** [`scripts/agent.mjs`](scripts/agent.mjs) quita del entorno de cada agente `GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*`, los tokens de Sonar y las claves de IA, porque el healer puede escribir y ejecutar tests que lean `process.env`. Es una lista: una variable que no esté en ella sí llega (por ejemplo, `CLAUDE_CODE_OAUTH_TOKEN`, que `claude` necesita). En CI, además, el healer corre en un paso sin `GH_TOKEN`, para que tampoco esté en sus procesos padre.
 - **Los agentes no leen `.env` con sus herramientas.** [`.claude/settings.json`](.claude/settings.json) prohíbe a Claude Code leer `.env` y `.env.*` en este proyecto, también al healer y al revisor. No cubre los tests: el healer puede escribir y ejecutar con `test_run` un test que lea `.env`. En CI no existe; en local, quien lance el healer tiene que contar con ello. El resto del repositorio sí lo pueden leer: no guardes secretos en otros ficheros.
 - **Jira simulado por defecto.** Sin las variables `JIRA_*` no se envía nada. Con ellas, también en CI, se suben la traza y el vídeo sin pasar por el redactor: revisa qué contienen antes de poner los secretos.
 - **El dashboard no se conecta a nada.** Tiene una CSP `default-src 'none'` y vuelve a pasar el redactor por todos los textos.
@@ -894,4 +938,5 @@ La URL base se define una sola vez en `playwright.config.ts`. Los page objects u
 - Claude Code CLI (reporte IA en local)
 - Google Gemini `gemini-flash-latest` u OpenRouter (reporte IA en CI)
 - Playwright MCP + agentes planner / generator / healer
+- [SonarQube Cloud](https://sonarcloud.io) y su MCP oficial (análisis estático)
 - [axe-core](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) `@axe-core/playwright 4.14.0` (accesibilidad)

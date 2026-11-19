@@ -3,8 +3,9 @@
 import { spawn } from "node:child_process";
 
 // Los agentes no reciben los tokens que no necesitan: con Write y test_run pueden escribir y ejecutar
-// un test que lea process.env. CLAUDE_CODE_OAUTH_TOKEN sí llega, porque claude lo necesita para arrancar.
-const AGENT_ENV_DENY = /^(GH_TOKEN|GITHUB_TOKEN|GITLAB_TOKEN|JIRA_\w+|AI_API_KEY|GEMINI_API_KEY|OPENROUTER_API_KEY)$/;
+// un test que lea process.env. Sin SONARQUBE_TOKEN, el MCP de Sonar de .mcp.json no arranca en heal:ai
+// ni en design:ai, y el agente sigue sin él. CLAUDE_CODE_OAUTH_TOKEN sí llega, porque claude lo necesita para arrancar.
+const AGENT_ENV_DENY = /^(GH_TOKEN|GITHUB_TOKEN|GITLAB_TOKEN|JIRA_\w+|AI_API_KEY|GEMINI_API_KEY|OPENROUTER_API_KEY|SONAR_TOKEN|SONARQUBE_TOKEN)$/;
 export const agentEnv = (env) => Object.fromEntries(Object.entries(env).filter(([k]) => !AGENT_ENV_DENY.test(k)));
 
 export function runAgent(agent, prompt, { tools, mcp = false, echo = true } = {}) {

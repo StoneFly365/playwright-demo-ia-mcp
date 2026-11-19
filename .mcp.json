@@ -6,6 +6,23 @@
         "playwright",
         "run-test-mcp-server"
       ]
+    },
+    "sonarqube": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--init",
+        "--pull=always",
+        "-i",
+        "--rm",
+        "-e",
+        "SONARQUBE_TOKEN",
+        "-e",
+        "SONARQUBE_ORG",
+        "-e",
+        "SONARQUBE_READ_ONLY=true",
+        "sonarsource/sonarqube-mcp"
+      ]
     }
   }
 }

@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 5 y cuota de IA en CI hechas, la 4 en local y en CI (falta publicar la PR del healer desde un job aislado) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-19
+**Estado:** Fases 0 a 5 y cuota de IA en CI hechas, la 4 en local y en CI (falta publicar la PR del healer desde un job aislado) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · SonarQube Cloud integrado, pendiente de crear el proyecto y el secreto · Última actualización: 2026-11-19
 
 ## Objetivo
 
@@ -209,6 +209,7 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 - [x] `storageState` para no repetir el login en cada test. Solo sin `DEMO_SCENARIO`, para que `cascade` siga tumbando 70 tests (comprobado). En chromium la suite verde pasa de 20,9 s a 19,8 s: el login de SauceDemo es rápido y casi no se nota.
 - [x] Spec de accesibilidad con axe: `tests/accessibility.spec.ts`, 8 tests `@a11y` con WCAG 2.1 A y AA (login, error de login, inventario, detalle, carrito, los dos pasos del checkout y la confirmación). SauceDemo pasa todos en los tres navegadores. `npm run test:a11y` los lanza solos.
 - Regresión visual con `toHaveScreenshot`: descartada, no es un pendiente. Motivo en el [registro de decisiones](#registro-de-decisiones) (17 de noviembre). Si un cliente la pide, en una rama propia.
+- [x] Análisis estático con SonarQube Cloud: workflow `sonar.yml` en push a `main` y PR con la cobertura de `npm run test:unit:coverage`, `sonar-project.properties` y el MCP oficial en `.mcp.json` para que el generator y el healer revisen las incidencias nuevas. Proyecto `StoneFly365_playwright-demo-ia-mcp` creado; `secret_sauce` no salta en el primer análisis (automático), así que no lleva exclusión. Falta el secreto `SONAR_TOKEN` y desactivar el Automatic Analysis.
 - [ ] Usar la rama `arquetipo` para apuntar a una segunda app más parecida al sector del cliente.
 
 ---
@@ -280,4 +281,5 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 | 2026-11-18 | Los tokens se quitan del entorno de los agentes y el checkout del healer no persiste credenciales, en vez de solo prohibir leer `.git/` | El healer tiene `Write` y `test_run`: puede escribir y ejecutar un test que lea `.git/config`, `process.env` o el entorno de sus procesos padre (`/proc/<pid>/environ`), así que una regla de `Read` no basta y el token no puede estar en el paso que lanza los agentes. Lo que el agente no tiene no lo puede filtrar (revisión de CodeRabbit en la PR #38) |
 | 2026-11-18 | Playwright pasa a 1.64.1 exacta (antes `^1.49.0` con 1.58.2 en el lockfile), con la imagen de CI `v1.64.1-jammy`, y no a 1.65.1 | Un `npm install` sin lockfile ya no puede subir de versión sin que nadie lo decida. La 1.65.1 tiene regresiones abiertas en Firefox, WebKit y Chromium 159 (PR #34) |
 | 2026-11-18 | El proyecto pasa a llamarse Brain QA, con logo en `docs-site/img/` | Un nombre corto y menos técnico para presentarlo fuera del equipo. El logo va en `docs-site/` porque es lo que se publica en el portal y el README puede enlazarlo con una ruta relativa |
+| 2026-11-18 | SonarQube Cloud complementa el lint, el check de asserts y el revisor adversarial, no los sustituye. Análisis desde CI en un workflow propio, y el MCP de Sonar en `.mcp.json` pero fuera de `heal:ai` y `design:ai` | Las tres capas conocen Playwright (qué hace frágil un test, qué relaja una aserción, a qué apunta un `expect`) y Sonar no; Sonar cubre lo que no revisaba nadie: `scripts/*.mjs`, con `spawn`, claves de IA, el token de Jira y el HTML del dashboard, más la cobertura de los tests unitarios. Desde CI y no con el Automatic Analysis, porque este no sube cobertura. Los agentes automáticos no reciben `SONARQUBE_TOKEN`, igual que el resto de tokens: el MCP queda para las sesiones interactivas |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |
