@@ -701,6 +701,19 @@ export SONARQUBE_TOKEN=<token de usuario de sonarcloud.io>   # My Account > Secu
 export SONARQUBE_ORG=<clave de la organización>
 ```
 
+En Windows, con Claude Code dentro de VS Code:
+
+```powershell
+setx SONARQUBE_TOKEN "<token de usuario de sonarcloud.io>"
+setx SONARQUBE_ORG "<clave de la organización>"
+```
+
+`setx` solo llega a los procesos nuevos: cierra VS Code entero (*File > Exit*, sin ningún `Code.exe` en el Administrador de tareas) y ábrelo desde el menú Inicio. Recargar la ventana no basta, y el servidor falla con «environment variable or property must be set». Mejor un token propio para el MCP que reutilizar el del secreto `SONAR_TOKEN`: si se filtra desde tu equipo, se revoca sin romper el CI.
+
+### En el editor
+
+[`.vscode/extensions.json`](.vscode/extensions.json) recomienda **SonarQube for IDE** (`SonarSource.sonarlint-vscode`): marca las incidencias mientras escribes, antes del push. En modo conectado con la organización de SonarQube Cloud usa el mismo perfil de reglas y las mismas exclusiones que el análisis de CI, y respeta las incidencias ya aceptadas en la interfaz. Cobertura, duplicados y *quality gate* siguen saliendo solo del CI. El resto de `.vscode/` no se versiona.
+
 `heal:ai` y `design:ai` no lo usan: [`scripts/agent.mjs`](scripts/agent.mjs) quita `SONAR_TOKEN` y `SONARQUBE_TOKEN` del entorno de los agentes, igual que el resto de tokens, así que el servidor no arranca y el agente sigue sin él.
 
 ---
