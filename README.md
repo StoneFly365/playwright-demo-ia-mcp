@@ -682,7 +682,7 @@ La configuración está en [`sonar-project.properties`](sonar-project.properties
 - **Código fuente:** todo el repositorio salvo `learning/`, `docs-site/`, `docs/`, `node_modules/` y las salidas (`playwright-report/`, `test-results/`, `coverage/`). Lo que más aporta es `scripts/*.mjs`: procesos lanzados con `spawn`, claves de la IA, el token de Jira y el HTML del dashboard.
 - **Tests:** `scripts/*.test.mjs` y `tests/`. Sonar los analiza con sus reglas de tests y no cuentan como código fuente.
 - **Cobertura:** la de `npm run test:unit:coverage`, que ejecuta los mismos tests que `test:unit` y deja `coverage/lcov.info` (no se versiona). Solo se mide en `scripts/`: `tests/`, `pages/` y `fixtures/` son E2E y quedan fuera.
-- **Falso positivo conocido:** `secret_sauce` es la contraseña pública de SauceDemo. La regla de credenciales en el código (`typescript:S2068`) se ignora en `tests/`, `pages/` y `fixtures/`. Si sale como *Security Hotspot*, esa exclusión no le aplica: se marca como *Safe* en la interfaz.
+- **`secret_sauce`** (la contraseña pública de SauceDemo) no hace saltar ninguna regla: el primer análisis no dio ni incidencias ni *Security Hotspots* de credenciales, así que no hay exclusión. Si apareciera, se marca como *Safe* en la interfaz.
 
 En CI, sin el secreto `SONAR_TOKEN` (antes de configurarlo o en una PR desde un fork) el análisis se omite y el check sale en verde con un aviso. Es un workflow aparte de `playwright.yml`: no espera a los tests E2E ni los retrasa.
 
