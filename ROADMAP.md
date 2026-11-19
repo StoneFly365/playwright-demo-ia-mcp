@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 3, cuota de IA en CI y fase 5 hechas · Fase 4 hecha en local y en CI (falta crear tickets de Jira desde CI) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-19
+**Estado:** Fases 0 a 5 y cuota de IA en CI hechas, la 4 en local y en CI (falta publicar la PR del healer desde un job aislado) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · Última actualización: 2026-11-19
 
 ## Objetivo
 
@@ -27,7 +27,7 @@ Que el cliente vea un fallo real convertirse en diagnóstico, clasificación y c
 | 2 | La IA clasifica, no solo resume | 2-3 días | ✅ |
 | 3 | Medir el acierto de la IA | 1 día | ✅ (falta cronometrar un triage a mano) |
 | 3b | Cuota de IA en CI (fuera del plan inicial) | 0,5 días | ✅ |
-| 4 | Cerrar el circuito | 3-5 días | 🟨 hecha en local y en CI; faltan los tickets de Jira desde CI |
+| 4 | Cerrar el circuito | 3-5 días | ✅ en local y en CI (falta publicar la PR del healer desde un job aislado) |
 | 5 | Argumentos para cliente enterprise | 1 día | ✅ |
 | 6 | Diseñar desde Figma (fase 1 del ciclo de QA) | 2 días | 🟨 construida; falta el fichero de Figma y la primera ejecución real |
 | — | Opcionales según cliente | — | ⬜ |
@@ -160,7 +160,7 @@ Página local de solo lectura para enseñar en la demo el paso de los tests a lo
 - [x] Tickets de Jira por API REST para los grupos `bug_producto` (`npm run jira:tickets`), con traza y vídeo adjuntos. Sin credenciales es modo simulado y deja las peticiones en `ai-jira.json`; en CI va en cada reporte.
 - [x] Modo real de Jira probado contra el sandbox (proyecto `THP`, tipo `Tarea`, credenciales en `.env`): el escenario `bug` crea THP-1 y THP-2 con sus 6 y 2 adjuntos.
 - [x] Destino de los tickets: el sandbox de Jira, proyecto `THP`. Sin credenciales, modo simulado. El conector Atlassian no sirve en CI.
-- [ ] Tickets de Jira desde CI (con traza y vídeo: el job Reporte IA descarga los `test-results-*`). Los secretos `JIRA_*` ya están en GitHub desde el 27 de octubre, así que el modo real está activo en CI, pero falta: pasar `JIRA_ISSUE_TYPE` en el workflow (THP usa `Tarea` y el valor por defecto es `Bug`), probarlo con `scenario=bug` y revisar qué llevan la traza y el vídeo.
+- [x] Tickets de Jira desde CI, con traza y vídeo (el job Reporte IA descarga los `test-results-*`). El tipo de incidencia va en la variable del repositorio `JIRA_ISSUE_TYPE` (`Tarea` en THP; PR #36). Probado el 18 de noviembre con `scenario=bug`: THP-3 (Crítica) y THP-4 (Importante), con 6 adjuntos cada uno; adjuntos revisados, sin datos sensibles, y tickets cerrados. El primer intento falló con un 404 porque los secretos `JIRA_*` del 27 de octubre estaban mal; se volvieron a guardar desde el `.env`. El paso lleva `continue-on-error`, así que un fallo de Jira no pone el job en rojo: hay que mirar el log del paso.
 - [x] Prueba de punta a punta en local (chromium, 23 de octubre): `cascade` acaba en PR y `bug` en ticket de Jira. Resultado abajo.
 - [x] Job *Guard de asserts* probado en GitHub (PR #13, cerrada): falla con `needs-human` cuando se cambia `toHaveText('3')` por `'4'` y pasa cuando solo cambia un selector del page object.
 - [x] Prioridad de Jira según la severidad (`bloqueante` → la más urgente del proyecto; en THP, `alta` → Crítica y `media` → Importante), para que el color se vea en el tablero.
@@ -279,4 +279,5 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 | 2026-11-19 | La publicación del healer se ata al SHA revisado y el commit se hace con `git commit-tree`; el job de publicación aislado queda para otra PR | La descripción y la revisión de la PR son de un commit concreto: si la rama se mueve, no deben publicarse con ellas. `commit-tree` no ejecuta hooks, así que un `post-commit` no puede colar otro commit. Aislar el push en otro job cambia la estructura del workflow y no cabe en esta PR (revisión de CodeRabbit en la PR #38) |
 | 2026-11-18 | Los tokens se quitan del entorno de los agentes y el checkout del healer no persiste credenciales, en vez de solo prohibir leer `.git/` | El healer tiene `Write` y `test_run`: puede escribir y ejecutar un test que lea `.git/config`, `process.env` o el entorno de sus procesos padre (`/proc/<pid>/environ`), así que una regla de `Read` no basta y el token no puede estar en el paso que lanza los agentes. Lo que el agente no tiene no lo puede filtrar (revisión de CodeRabbit en la PR #38) |
 | 2026-11-18 | Playwright pasa a 1.64.1 exacta (antes `^1.49.0` con 1.58.2 en el lockfile), con la imagen de CI `v1.64.1-jammy`, y no a 1.65.1 | Un `npm install` sin lockfile ya no puede subir de versión sin que nadie lo decida. La 1.65.1 tiene regresiones abiertas en Firefox, WebKit y Chromium 159 (PR #34) |
+| 2026-11-18 | El proyecto pasa a llamarse Brain QA, con logo en `docs-site/img/` | Un nombre corto y menos técnico para presentarlo fuera del equipo. El logo va en `docs-site/` porque es lo que se publica en el portal y el README puede enlazarlo con una ruta relativa |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |
