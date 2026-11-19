@@ -55,7 +55,7 @@ export function normalizeTests(report) {
         list(suite?.suites).forEach(walk);
     };
     list(report.suites).forEach(walk);
-    return { startTime: str(s.startTime), durationMs: n("duration"), total, passed, failed, skipped, flaky, executed: total - skipped, browsers: [...browsers].sort() };
+    return { startTime: str(s.startTime), durationMs: n("duration"), total, passed, failed, skipped, flaky, executed: total - skipped, browsers: [...browsers].sort((a, b) => a.localeCompare(b)) };
 }
 
 export function normalizeGroup(g, i) {
@@ -99,7 +99,7 @@ export function normalizeAnalysis(raw, warnings) {
         aiRequests: int(raw.ai_requests),
         failedTests: int(raw.total_failed_tests),
         flakyTests: int(raw.total_flaky_tests),
-        groups: groups.map(normalizeGroup),
+        groups: groups.map((g, i) => normalizeGroup(g, i)),
     };
 }
 
@@ -350,7 +350,7 @@ export function loadHistory(historyDir) {
     const load = (kind, revive) => {
         const dir = path.join(historyDir, kind);
         if (!existsSync(dir)) return [];
-        return readdirSync(dir).filter((f) => f.endsWith(".json")).sort().reverse().flatMap((f) => {
+        return readdirSync(dir).filter((f) => f.endsWith(".json")).sort((a, b) => a.localeCompare(b)).reverse().flatMap((f) => {
             const a = readArtifact(path.join(dir, f), { json: true });
             if (a.status === "ok" && isObj(a.value) && a.value.schema === SCHEMA && str(a.value.id)) return [revive(a.value)];
             warnings.push(`${kind}/${f} del historial no se ha podido leer (${a.status === "ok" ? "formato_desconocido" : a.status}).`);
