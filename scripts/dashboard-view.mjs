@@ -51,7 +51,7 @@ export function actionsFor(groupId, heal, jira) {
 }
 
 export function browsersOf(groups) {
-    return [...new Set(groups.flatMap((g) => g.browsers))].sort();
+    return [...new Set(groups.flatMap((g) => g.browsers))].sort((a, b) => a.localeCompare(b));
 }
 
 export function evalMetrics(ev) {

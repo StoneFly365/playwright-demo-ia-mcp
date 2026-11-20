@@ -258,7 +258,7 @@ const run = (cmd, args) => execFileSync(cmd, args, { encoding: "utf8" });
 
 const fingerprint = (f) => {
     try {
-        return createHash("sha1").update(readFileSync(f)).digest("hex");
+        return createHash("sha256").update(readFileSync(f)).digest("hex");
     } catch {
         return "borrado";
     }
@@ -319,14 +319,18 @@ async function main() {
         const before = changedFiles();
         log("Ejecutando el agente qa-test-designer (claude -p). Puede tardar unos minutos...");
         const tools = ["Read,Glob,Grep,LS,Write,mcp__playwright-test", ...(source === "figma-mcp" ? ["mcp__figma"] : [])].join(",");
+        // Sin throw dentro de un finally (S1143): taparía el error del agente, que se guarda y va como causa.
+        let agentError;
         try {
             await runAgent("qa-test-designer", prompt, { tools, mcp: source === "figma-mcp" ? MCP_FIGMA : true });
-        } finally {
-            if (!existsSync(files.design) && previo) {
-                writeFileSync(files.design, previo);
-                throw new Error(`El agente no ha escrito un resultado nuevo. Se ha restaurado el anterior en ${files.design}.`);
-            }
+        } catch (e) {
+            agentError = e;
         }
+        if (!existsSync(files.design) && previo) {
+            writeFileSync(files.design, previo);
+            throw new Error(`El agente no ha escrito un resultado nuevo. Se ha restaurado el anterior en ${files.design}.`, { cause: agentError });
+        }
+        if (agentError) throw agentError;
         const outside = changedOutside(before);
         if (outside.length) throw new Error(`El agente ha tocado ficheros fuera de specs/disenos/ y specs/figma/: ${outside.join(", ")}. Revísalos a mano.`);
     }
