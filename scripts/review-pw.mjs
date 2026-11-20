@@ -16,7 +16,7 @@ const PATHS = ["tests", "pages", "fixtures", "playwright.config.ts"];
 
 // Solo vale una línea completa "VEREDICTO: X". Si hay varias que se contradicen, no hay veredicto.
 export function parseVerdict(text) {
-    const found = new Set([...(text ?? "").matchAll(/^\s*VEREDICTO:\s*(APROBADO|DUDAS|RECHAZADO)\s*$/gm)].map((m) => m[1]));
+    const found = new Set([...(text ?? "").matchAll(/^[ \t]*VEREDICTO:[ \t]*(APROBADO|DUDAS|RECHAZADO)[ \t\r]*$/gm)].map((m) => m[1]));
     return found.size === 1 ? [...found][0] : null;
 }
 
@@ -47,9 +47,10 @@ function lintFiles(files) {
 
 // Revisa el árbol de trabajo frente a `base`. Los ficheros nuevos solo entran si ya están en el índice (git add).
 export async function reviewChanges(base, { context, echo = true } = {}) {
-    const diff = git("diff", "--no-renames", base, "--", ...PATHS);
+    // --end-of-options: una base que empiece por "-" es una ref inválida, no una opción de git.
+    const diff = git("diff", "--no-renames", "--end-of-options", base, "--", ...PATHS);
     if (!diff.trim()) return null;
-    const files = git("diff", "--name-only", "--no-renames", base, "--", ...PATHS).split("\n").filter((f) => SCOPE.test(f));
+    const files = git("diff", "--name-only", "--no-renames", "--end-of-options", base, "--", ...PATHS).split("\n").filter((f) => SCOPE.test(f));
     const guardReasons = checkAgainst(base);
     const lint = lintFiles(files);
     const text = await runAgent("playwright-adversarial-reviewer", buildReviewPrompt({ diff, guardReasons, lint, context }), { tools: "Read,Grep,Glob", echo });
