@@ -1,0 +1,25 @@
+# Dependabot: PR semanales con las actualizaciones de npm y de las GitHub Actions.
+# Las actions están fijadas a SHA (S7637); Dependabot actualiza el SHA y el comentario de versión.
+# Las alertas de seguridad abren PR al momento, fuera de este calendario.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      # Una sola PR para lo menor; las versiones mayores llegan por separado para revisarlas a mano.
+      npm-menores:
+        update-types: [minor, patch]
+    ignore:
+      # @playwright/test va atado a la imagen de Docker de CI (mcr.microsoft.com/playwright:vX-jammy):
+      # se sube a mano junto con la imagen.
+      - dependency-name: "@playwright/test"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
