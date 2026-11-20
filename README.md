@@ -135,6 +135,13 @@ flowchart LR
 node ~/.claude/skills/archify/bin/archify.mjs deliver workflow docs/diagramas/qa-ia-negocio.workflow.json docs/diagramas/qa-ia-negocio.html --quality showcase
 ```
 
+**Controles alrededor de la IA.** Dos diagramas responden a las preguntas sobre arnés, agentes, MCP y guardrails:
+
+- [`qa-ia-capas.html`](docs/diagramas/qa-ia-capas.html) muestra qué rodea a la IA. Las capas, de dentro afuera, son el arnés, los guardrails de entrada y salida, los guardrails de cambio y la persona que decide. Su fuente es [`qa-ia-capas.architecture.json`](docs/diagramas/qa-ia-capas.architecture.json).
+- [`qa-ia-controles.html`](docs/diagramas/qa-ia-controles.html) muestra por dónde pasa un fallo, paso a paso, y qué control aplica cada paso. Su fuente es [`qa-ia-controles.workflow.json`](docs/diagramas/qa-ia-controles.workflow.json).
+
+Se regeneran con la misma orden: cambia el tipo (`architecture` o `workflow`) y los nombres de fichero.
+
 ---
 
 ## Learning Lab
@@ -205,7 +212,7 @@ playwright-demo-ia-mcp/
 │   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
 ├── learning/                       # Material del Learning Lab
 ├── docs-site/                      # Portal Docsify (GitHub Pages); img/ guarda el logo de Brain QA
-├── docs/diagramas/                 # Diagrama del circuito para negocio (HTML + fuente archify)
+├── docs/diagramas/                 # Diagramas archify (HTML + fuente): circuito para negocio y controles alrededor de la IA
 ├── .claude/agents/                 # Agentes: diseñador de pruebas, planner, generator, healer y revisor adversarial
 ├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
 ├── sonar-project.properties        # Configuración del análisis de SonarQube Cloud

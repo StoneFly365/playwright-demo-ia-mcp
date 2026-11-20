@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Qué rodea a la IA",
+    "quality_profile": "showcase",
+    "legend": {
+      "mode": "hidden"
+    },
+    "viewBox": [
+      1210,
+      720
+    ]
+  },
+  "components": [
+    {
+      "id": "agentes",
+      "type": "cloud",
+      "label": "Agentes de IA",
+      "sublabel": "5 roles · cualquier modelo",
+      "pos": [
+        510,
+        300
+      ],
+      "size": [
+        170,
+        72
+      ]
+    },
+    {
+      "id": "herramientas",
+      "type": "security",
+      "label": "Herramientas limitadas",
+      "sublabel": "cada agente, las suyas",
+      "pos": [
+        510,
+        200
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "external",
+      "label": "MCP",
+      "sublabel": "navegador · Figma · Sonar",
+      "pos": [
+        510,
+        414
+      ],
+      "size": [
+        170,
+        56
+      ]
+    },
+    {
+      "id": "enmascarar",
+      "type": "security",
+      "label": "Enmascarar secretos",
+      "sublabel": "antes de la IA",
+      "pos": [
+        286,
+        306
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "validar",
+      "type": "security",
+      "label": "Validar la respuesta",
+      "sublabel": "solo categorías cerradas",
+      "pos": [
+        750,
+        306
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "revisor",
+      "type": "cloud",
+      "label": "Revisor adversarial",
+      "sublabel": "otro agente, solo lee",
+      "pos": [
+        90,
+        306
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "guard",
+      "type": "security",
+      "label": "Guard de asserts",
+      "sublabel": "check obligatorio",
+      "pos": [
+        970,
+        306
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "humano",
+      "type": "frontend",
+      "label": "Revisión humana",
+      "sublabel": "PR en borrador",
+      "pos": [
+        970,
+        560
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "eval",
+      "type": "backend",
+      "label": "Eval con golden set",
+      "sublabel": "npm run eval:ai",
+      "pos": [
+        750,
+        40
+      ],
+      "size": [
+        150,
+        56
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Arnés · Claude Code",
+      "wraps": [
+        "agentes",
+        "herramientas",
+        "mcp"
+      ],
+      "pad": 16
+    },
+    {
+      "kind": "security-group",
+      "label": "Guardrails de entrada y salida",
+      "wraps": [
+        "agentes",
+        "herramientas",
+        "mcp",
+        "enmascarar",
+        "validar"
+      ],
+      "pad": 36
+    },
+    {
+      "kind": "security-group",
+      "label": "Guardrails de cambio",
+      "wraps": [
+        "agentes",
+        "herramientas",
+        "mcp",
+        "enmascarar",
+        "validar",
+        "revisor",
+        "guard"
+      ],
+      "pad": 56
+    },
+    {
+      "kind": "region",
+      "label": "Una persona decide",
+      "wraps": [
+        "agentes",
+        "herramientas",
+        "mcp",
+        "enmascarar",
+        "validar",
+        "revisor",
+        "guard",
+        "humano"
+      ],
+      "pad": 76
+    }
+  ],
+  "connections": [
+    {
+      "from": "enmascarar",
+      "to": "agentes",
+      "label": "entrada",
+      "variant": "emphasis"
+    },
+    {
+      "from": "agentes",
+      "to": "validar",
+      "label": "salida",
+      "variant": "emphasis"
+    },
+    {
+      "from": "validar",
+      "to": "guard",
+      "label": "arreglo",
+      "variant": "emphasis"
+    },
+    {
+      "from": "guard",
+      "to": "humano",
+      "label": "aprueba o no",
+      "variant": "emphasis",
+      "labelAt": [
+        1045,
+        380
+      ]
+    },
+    {
+      "from": "eval",
+      "to": "validar",
+      "label": "mide el acierto",
+      "variant": "dashed",
+      "labelAt": [
+        825,
+        110
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Arnés",
+      "items": [
+        "Claude Code envuelve a cada agente",
+        "Solo las herramientas y los MCP de su rol",
+        "Sin acceso a .env ni a credenciales ajenas"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Guardrails",
+      "items": [
+        "Entrada: secretos enmascarados antes de la IA",
+        "Salida: lo que no es una categoría válida se descarta",
+        "Cambio: un arreglo que relaja una prueba se bloquea"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Medir y decidir",
+      "items": [
+        "El acierto se mide con escenarios de respuesta conocida",
+        "La IA abre PR en borrador, nunca fusiona",
+        "Relajar una prueba exige el visto bueno de una persona"
+      ]
+    }
+  ]
+}
