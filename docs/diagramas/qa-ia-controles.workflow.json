@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Por dónde pasa un fallo",
+    "quality_profile": "showcase",
+    "legend": { "mode": "hidden" }
+  },
+  "lanes": [
+    { "id": "flujo", "label": "Del fallo a la decisión" },
+    { "id": "medir", "label": "Medición", "variant": "exception" }
+  ],
+  "phases": [
+    { "id": "entrada", "label": "Entrada", "fromCol": 0, "toCol": 0 },
+    { "id": "salida", "label": "Salida", "fromCol": 1, "toCol": 2 },
+    { "id": "cambio", "label": "Cambio", "fromCol": 3, "toCol": 4, "variant": "emphasis" },
+    { "id": "decidir", "label": "Decisión", "fromCol": 5, "toCol": 5 }
+  ],
+  "mainPath": ["enmascarar", "clasificar", "validar", "healer", "bloquear", "persona"],
+  "nodes": [
+    { "id": "enmascarar", "lane": "flujo", "col": 0, "width": 152, "type": "security", "label": "Enmascarar", "sublabel": "guardrail · sin IA" },
+    { "id": "clasificar", "lane": "flujo", "col": 1, "width": 152, "type": "cloud", "label": "La IA clasifica", "sublabel": "dentro del arnés" },
+    { "id": "validar", "lane": "flujo", "col": 2, "width": 152, "type": "security", "label": "Validar respuesta", "sublabel": "guardrail · sin IA" },
+    { "id": "healer", "lane": "flujo", "col": 3, "width": 152, "type": "cloud", "label": "Healer propone", "sublabel": "agente · MCP" },
+    { "id": "bloquear", "lane": "flujo", "col": 4, "width": 152, "type": "security", "label": "Revisor y guard", "sublabel": "guardrail de cambio" },
+    { "id": "persona", "lane": "flujo", "col": 5, "width": 152, "type": "frontend", "label": "Persona decide", "sublabel": "PR en borrador" },
+    { "id": "eval", "lane": "medir", "col": 1, "width": 152, "type": "backend", "label": "Eval golden set", "sublabel": "npm run eval:ai" }
+  ],
+  "edges": [
+    { "from": "enmascarar", "to": "clasificar", "variant": "emphasis" },
+    { "from": "clasificar", "to": "validar", "variant": "emphasis" },
+    { "from": "validar", "to": "healer", "label": "test roto", "variant": "emphasis" },
+    { "from": "healer", "to": "bloquear", "variant": "emphasis" },
+    { "from": "bloquear", "to": "persona", "variant": "emphasis" },
+    { "from": "eval", "to": "clasificar", "label": "mide el acierto", "variant": "dashed", "role": "branch" }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Entrada y salida", "items": ["Los secretos se enmascaran antes de llegar a la IA", "Si la respuesta no es una categoría válida, se descarta"] },
+    { "dot": "rose", "title": "Cambio", "items": ["Un segundo agente busca el bug que el arreglo podría esconder", "Si el arreglo relaja una prueba, el guard bloquea la PR"] },
+    { "dot": "emerald", "title": "Decisión", "items": ["La IA abre PR en borrador, nunca fusiona", "Relajar una prueba exige el visto bueno de una persona"] }
+  ]
+}

@@ -25,5 +25,6 @@ Qué revisar:
 
 1. **`README.md`**: las secciones que describen lo que ha cambiado, el diagrama de "Cómo encaja todo", el árbol de "Estructura del proyecto" y el índice si se añade o se renombra una sección.
 2. **Diagrama de negocio** (`docs/diagramas/qa-ia-negocio.workflow.json`): solo si cambia un paso que vería negocio (qué se ejecuta, qué hace la IA, quién decide, adónde va un fallo). Es abstracto a propósito: no le añadas detalle técnico. Si cambias el JSON, regenera el HTML con la orden del README y súbelo en el mismo commit.
+3. **Diagramas de controles** (`docs/diagramas/qa-ia-capas.architecture.json` y `qa-ia-controles.workflow.json`): solo si cambia un control alrededor de la IA (qué se enmascara o valida, qué bloquea un arreglo, qué herramientas o permisos tiene un agente, quién aprueba). Igual que el de negocio: regenera el HTML y súbelo en el mismo commit.
 
 La descripción de la PR lleva siempre una línea `Docs:` que diga qué se revisó, qué se actualizó o por qué no aplica.
