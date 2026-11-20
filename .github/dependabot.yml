@@ -15,6 +15,9 @@ updates:
       # @playwright/test va atado a la imagen de Docker de CI (mcr.microsoft.com/playwright:vX-jammy):
       # se sube a mano junto con la imagen.
       - dependency-name: "@playwright/test"
+      # @types/node va a juego con la versión mínima de Node soportada (22): la mayor se sube a mano con ella.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /

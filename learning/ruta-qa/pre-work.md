@@ -14,7 +14,7 @@ La Ruta QA empieza cuando el entorno ya funciona. Este documento es lo único qu
 
 | Requisito | Para qué | Imprescindible |
 |---|---|---|
-| [Node.js 20+](https://nodejs.org) | Todo | ✅ |
+| [Node.js 22+](https://nodejs.org) | Todo | ✅ |
 | Git | Clonar el repositorio | ✅ |
 | Acceso de red a `saucedemo.com`, npm y GitHub | La aplicación bajo prueba | ✅ |
 | [Claude Code](https://claude.ai/code) | Módulos 4 y 5 | 🟡 Recomendado |
