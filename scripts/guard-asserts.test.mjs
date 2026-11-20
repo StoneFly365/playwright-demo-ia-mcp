@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import { checkAgainst, extractAssertions, findRelaxations, SCOPE } from "./guard-asserts.mjs";
 
 // Mismo estilo que tests/cart-badge.spec.ts: expect en varias líneas con mensaje propio.
@@ -59,5 +60,7 @@ test("solo vigila tests, page objects, fixtures y la configuración", () => {
 });
 
 test("una ref base que empieza por \"-\" no se toma como opción de git", () => {
-    assert.throws(() => checkAgainst("--output=guard-pwned.txt"), /bad revision/);
+    // El mensaje de git varía según la versión y el entorno: lo que importa es que falle y no escriba nada.
+    assert.throws(() => checkAgainst("--output=guard-pwned.txt"));
+    assert.ok(!existsSync("guard-pwned.txt"), "git no debe tomar la ref como --output");
 });
