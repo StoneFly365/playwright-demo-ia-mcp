@@ -78,10 +78,11 @@ export function findRelaxations(file, before, after) {
 const git = (...args) => execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 
 export function checkAgainst(baseRef) {
-    const changed = git("diff", "--name-only", "--no-renames", baseRef, "--").split("\n").filter((f) => SCOPE.test(f));
+    // --end-of-options: una base que empiece por "-" es una ref inválida, no una opción de git.
+    const changed = git("diff", "--name-only", "--no-renames", "--end-of-options", baseRef, "--").split("\n").filter((f) => SCOPE.test(f));
     return changed.flatMap((file) => {
         let before = null;
-        try { before = git("show", `${baseRef}:${file}`); } catch { /* fichero nuevo */ }
+        try { before = git("show", "--end-of-options", `${baseRef}:${file}`); } catch { /* fichero nuevo */ }
         const after = existsSync(file) ? readFileSync(file, "utf8") : null;
         return findRelaxations(file, before, after);
     });

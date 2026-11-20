@@ -103,6 +103,8 @@ test("revisión de CodeRabbit: renombrados, veredictos contradictorios y fichero
     const { parseVerdict } = await import("./review-pw.mjs");
     assert.equal(parseVerdict("Antes pensé VEREDICTO: APROBADO, pero no.\nVEREDICTO: RECHAZADO"), "RECHAZADO", "solo cuenta la línea completa");
     assert.equal(parseVerdict("VEREDICTO: APROBADO\nVEREDICTO: RECHAZADO"), null, "contradictorio: sin veredicto");
+    assert.equal(parseVerdict("Hola\r\nVEREDICTO: DUDAS\r\nfin"), "DUDAS", "acepta saltos de línea CRLF");
+    assert.equal(parseVerdict("VEREDICTO:\nAPROBADO"), null, "el veredicto no cruza líneas");
     const { findRelaxations } = await import("./guard-asserts.mjs");
     assert.equal(findRelaxations("tests/nuevo.spec.ts", null, "test.skip('x', async () => {});").length, 1, "un fichero nuevo con skip cuenta");
 });

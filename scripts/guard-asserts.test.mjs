@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { extractAssertions, findRelaxations, SCOPE } from "./guard-asserts.mjs";
+import { checkAgainst, extractAssertions, findRelaxations, SCOPE } from "./guard-asserts.mjs";
 
 // Mismo estilo que tests/cart-badge.spec.ts: expect en varias líneas con mensaje propio.
 const BASE = `
@@ -56,4 +56,8 @@ test("borrar un fichero o tocar la configuración pide revisión humana; un fich
 test("solo vigila tests, page objects, fixtures y la configuración", () => {
     assert.ok(["tests/a.spec.ts", "pages/login.page.ts", "fixtures/scenarios.ts", "playwright.config.ts"].every((f) => SCOPE.test(f)));
     assert.ok(!["README.md", "scripts/report-ai.mjs", "learning/tests/a.spec.ts"].some((f) => SCOPE.test(f)));
+});
+
+test("una ref base que empieza por \"-\" no se toma como opción de git", () => {
+    assert.throws(() => checkAgainst("--output=guard-pwned.txt"), /bad revision/);
 });
