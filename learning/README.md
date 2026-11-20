@@ -44,7 +44,7 @@ Detalle y justificación de cada uno en [docs/prerequisites.md](docs/prerequisit
 **Imprescindibles**
 - Fundamentos de QA y de web (HTML, DOM, URL)
 - Manejo básico de terminal
-- [Node.js 20+](https://nodejs.org/)
+- [Node.js 22+](https://nodejs.org/)
 - Cuenta de GitHub
 - Acceso de red a `saucedemo.com`, npm y GitHub
 

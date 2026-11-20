@@ -40,11 +40,11 @@ function run(cmd, args, { input = null, timeout = 30000 } = {}) {
   });
 }
 
-// 1 · Node 20+
+// 1 · Node 22+
 {
   const major = Number(process.versions.node.split(".")[0]);
-  add(major >= 20, "Node.js", `v${process.versions.node}`,
-      "Instala Node.js 20 o superior: https://nodejs.org");
+  add(major >= 22, "Node.js", `v${process.versions.node}`,
+      "Instala Node.js 22 o superior: https://nodejs.org");
 }
 
 // 2 · npm y dependencias instaladas

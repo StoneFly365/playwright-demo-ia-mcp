@@ -1,7 +1,7 @@
 # Roadmap · De suite de ejemplo a QA que se diagnostica sola
 
 **Inicio:** 2026-10-21
-**Estado:** Fases 0 a 5 y cuota de IA en CI hechas, la 4 en local y en CI (falta publicar la PR del healer desde un job aislado) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · SonarQube Cloud integrado, pendiente de crear el proyecto y el secreto · Última actualización: 2026-11-19
+**Estado:** Fases 0 a 5 y cuota de IA en CI hechas, la 4 en local y en CI (falta publicar la PR del healer desde un job aislado) · Proveedor de IA configurable y OpenRouter en CI · Fase 6 (Diseñar desde Figma) en local, pendiente de probar con un fichero real · SonarQube Cloud integrado, pendiente de crear el proyecto y el secreto · Última actualización: 2026-11-20
 
 ## Objetivo
 
@@ -284,4 +284,5 @@ Caso de uso de Leroy Merlin (ADEO): la diapositiva ordena el QA con IA en cinco 
 | 2026-11-18 | El proyecto pasa a llamarse Brain QA, con logo en `docs-site/img/` | Un nombre corto y menos técnico para presentarlo fuera del equipo. El logo va en `docs-site/` porque es lo que se publica en el portal y el README puede enlazarlo con una ruta relativa |
 | 2026-11-18 | SonarQube Cloud complementa el lint, el check de asserts y el revisor adversarial, no los sustituye. Análisis desde CI en un workflow propio, y el MCP de Sonar en `.mcp.json` pero fuera de `heal:ai` y `design:ai` | Las tres capas conocen Playwright (qué hace frágil un test, qué relaja una aserción, a qué apunta un `expect`) y Sonar no; Sonar cubre lo que no revisaba nadie: `scripts/*.mjs`, con `spawn`, claves de IA, el token de Jira y el HTML del dashboard, más la cobertura de los tests unitarios. Desde CI y no con el Automatic Analysis, porque este no sube cobertura. Los agentes automáticos no reciben `SONARQUBE_TOKEN`, igual que el resto de tokens: el MCP queda para las sesiones interactivas |
 | 2026-11-19 | Seguridad con Dependabot, actions fijadas a SHA y el secret scanning de GitHub; sin Semgrep, CodeQL ni DAST | El framework no despliega nada y solo tiene dependencias de desarrollo: el riesgo está en las dependencias, las actions y los secretos de CI. Semgrep y CodeQL solapan con Sonar, y un DAST sobre SauceDemo escanearía una app ajena sin permiso |
+| 2026-11-20 | Node.js 22 como versión mínima (antes 20), con `@types/node` en `^22` y sus versiones mayores fuera de Dependabot | Node 20 dejó de tener soporte en abril de 2026 y CI ya usa 22. Unos tipos de Node más nuevos que el mínimo dejarían usar en el editor APIs que no existen en la máquina de un alumno, y nada lo detectaría: no hay `tsc` en CI (PR #50 cerrada) |
 | 2026-10-26 | Un único proveedor por API compatible con la de OpenAI (`AI_*`) y Gemini como atajo, en vez de un cliente por proveedor | Gemini y OpenRouter ya hablan el mismo formato; un cliente genérico cubre ambos y los gateways de empresa sin código nuevo |

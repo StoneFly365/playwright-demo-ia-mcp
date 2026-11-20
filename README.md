@@ -229,14 +229,14 @@ playwright-demo-ia-mcp/
 
 ## Requisitos previos
 
-- [Node.js](https://nodejs.org/) v20 o superior (npm se instala con Node)
+- [Node.js](https://nodejs.org/) v22 o superior (npm se instala con Node)
 - [Claude Code CLI](https://claude.ai/code) — opcional, solo para `report:ai` en local (ver [Instalación](#instalación))
 
 > **¿Varias versiones de Node?** Usa [nvm](https://github.com/nvm-sh/nvm) para instalar y cambiar entre versiones sin conflictos:
 >
 > ```bash
-> nvm install 20   # instala Node.js 20 (incluye npm)
-> nvm use 20       # activa esa versión en la sesión actual
+> nvm install 22   # instala Node.js 22 (incluye npm)
+> nvm use 22       # activa esa versión en la sesión actual
 > ```
 >
 > En Windows usa [nvm-windows](https://github.com/coreybutler/nvm-windows) (misma sintaxis).
@@ -724,8 +724,8 @@ setx SONARQUBE_ORG "<clave de la organización>"
 
 El framework no despliega nada y todas sus dependencias son de desarrollo, así que el riesgo de seguridad real está en la cadena de suministro y en los secretos de CI. Lo cubren tres medidas:
 
-- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)): cada semana, una PR con las versiones menores de npm agrupadas, otra con las GitHub Actions y una por cada versión mayor, para revisarla a mano. Las alertas de seguridad abren PR al momento, fuera del calendario. `@playwright/test` queda fuera: va atado a la imagen de Docker de CI y se sube a mano junto con ella.
-- **Actions fijadas a SHA**: todos los `uses:` apuntan a un commit, con la versión en un comentario (`actions/checkout@<sha>  # v4.4.0`). Un tag se puede mover para que apunte a otro código; un SHA no. Es la regla S7637 de Sonar. Dependabot actualiza el SHA y el comentario.
+- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)): cada semana, una PR con las versiones menores de npm agrupadas, otra con las GitHub Actions y una por cada versión mayor, para revisarla a mano. Las alertas de seguridad abren PR al momento, fuera del calendario. `@playwright/test` queda fuera: va atado a la imagen de Docker de CI y se sube a mano junto con ella. Las versiones mayores de `@types/node` también: van a juego con la versión mínima de Node soportada (22), y se suben a mano cuando suba ese mínimo.
+- **Actions fijadas a SHA**: todos los `uses:` apuntan a un commit, con la versión en un comentario (`actions/checkout@<sha>  # v7.0.1`). Un tag se puede mover para que apunte a otro código; un SHA no. Es la regla S7637 de Sonar. Dependabot actualiza el SHA y el comentario.
 - **Secret scanning y push protection** de GitHub, activos en el repositorio: GitHub rechaza un push que lleve un token reconocible.
 
 No hay más análisis a propósito: Semgrep o CodeQL solaparían con Sonar, y un DAST sobre SauceDemo escanearía una app ajena sin permiso.
