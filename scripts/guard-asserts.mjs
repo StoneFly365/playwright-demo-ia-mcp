@@ -18,14 +18,22 @@ const stripComments = (src) => src.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|
 // Índice del paréntesis que cierra el que está en `open`, saltándose los strings.
 function closeParen(src, open) {
     let depth = 0;
-    for (let i = open; i < src.length; i++) {
+    let i = open;
+    while (i < src.length) {
         const c = src[i];
-        if (c === "'" || c === '"' || c === "`") {
-            for (i++; i < src.length && src[i] !== c; i++) if (src[i] === "\\") i++;
-        } else if (c === "(") depth++;
+        if (c === "'" || c === '"' || c === "`") i = closeQuote(src, i);
+        else if (c === "(") depth++;
         else if (c === ")" && --depth === 0) return i;
+        i++;
     }
     return -1;
+}
+
+// Índice de la comilla que cierra el string que abre la de `start`, saltándose los escapes.
+function closeQuote(src, start) {
+    let j = start + 1;
+    while (j < src.length && src[j] !== src[start]) j += src[j] === "\\" ? 2 : 1;
+    return j;
 }
 
 const norm = (s) => s.replace(/\s+/g, " ").trim();

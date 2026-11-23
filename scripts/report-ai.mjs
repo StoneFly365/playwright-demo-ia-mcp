@@ -2,7 +2,7 @@
 import { readFile, mkdir, writeFile, access } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import path from "node:path";
-import { extractFailures, groupFailures, isOnlyFlaky } from "./triage.mjs";
+import { extractFailures, groupFailures, isOnlyFlaky, stripMarkdownFences } from "./triage.mjs";
 
 const REPORT_DIR = "playwright-report";
 const INPUT_JSON = "test-results.json";
@@ -260,13 +260,6 @@ function runClaudeCli(promptText, stdinText, label) {
         child.stdin.write(stdinText);
         child.stdin.end();
     });
-}
-
-function stripMarkdownFences(s) {
-    const t = (s ?? "").trim();
-    if (/^```json/i.test(t)) return t.replace(/^```json\s*/i, "").replace(/\s*```$/i, "").trim();
-    if (/^```/.test(t))      return t.replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
-    return t;
 }
 
 async function exists(p) {

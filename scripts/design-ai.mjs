@@ -49,9 +49,10 @@ export function parseFigmaUrl(url) {
 }
 
 export function parseStory(md, id) {
-    const titulo = /^#\s+(.+)$/m.exec(md)?.[1]?.trim() ?? id;
+    // [ \t] y no \s: \s también casa saltos de línea, se solapa con (.+) y la regex retrocede.
+    const titulo = /^#[ \t]+(\S.*)$/m.exec(md)?.[1]?.trim() ?? id;
     const figma = [...md.matchAll(/\*\*Figma:\*\*\s*(\S+)/g)].map((m) => parseFigmaUrl(m[1])).filter(Boolean);
-    const criterios = [...md.matchAll(/^\s*-\s*\*\*(CA\d+)\.\*\*\s*(.+)$/gm)].map((m) => ({ id: m[1], texto: m[2].trim() }));
+    const criterios = [...md.matchAll(/^[ \t]*-[ \t]*\*\*(CA\d+)\.\*\*[ \t]*(\S.*)$/gm)].map((m) => ({ id: m[1], texto: m[2].trim() }));
     return { id, titulo, figma, criterios, placeholder: figma.some((f) => f.fileKey === PLACEHOLDER) };
 }
 

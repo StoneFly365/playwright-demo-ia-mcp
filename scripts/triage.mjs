@@ -40,7 +40,8 @@ export function extractFailures(report) {
 // así que se agrupa por el patrón del fallo y el elemento implicado, no por la primera línea.
 export function fingerprint(error) {
     const network = error.match(/(?:net::ERR_|NS_ERROR_)([A-Z_]+)/)?.[1];
-    const locator = error.match(/^Locator:\s+(.+)$/m)?.[1]
+    // [ \t] y no \s: \s también casa saltos de línea, se solapa con (.+) y la regex retrocede.
+    const locator = error.match(/^Locator:[ \t]+(\S.*)$/m)?.[1]
         ?? error.match(/waiting for ((?:locator|getBy\w+)\(.+\))\s*$/m)?.[1];
     const matcher = error.match(/expect\((?:locator|page)\)\.(?:not\.)?(\w+)/)?.[1];
     const api = error.match(/^\w*Error: (\w+\.\w+):/m)?.[1];
@@ -50,7 +51,7 @@ export function fingerprint(error) {
         return { pattern: "elemento_no_encontrado", key: `elemento_no_encontrado|${locator}` };
     }
     if (matcher) {
-        const target = locator ?? `page.${matcher} ${error.match(/^Expected(?: pattern)?:\s+(.+)$/m)?.[1] ?? ""}`;
+        const target = locator ?? `page.${matcher} ${error.match(/^Expected(?: pattern)?:[ \t]+(\S.*)$/m)?.[1] ?? ""}`;
         return { pattern: "valor_inesperado", key: `valor_inesperado|${target.trim()}` };
     }
     if (api && /Timeout \d+ms exceeded/.test(error)) return { pattern: "timeout", key: `timeout|${api}` };
@@ -104,6 +105,16 @@ function readContext(path) {
     return redact(readFileSync(path, "utf8")).slice(0, MAX_CONTEXT_CHARS);
 }
 
+// Quita la valla de Markdown (```json ... ```) con la que a veces responde la IA. Sin regex que retroceda:
+// el cierre se quita con endsWith y los espacios con trim.
+export function stripMarkdownFences(s) {
+    let t = (s ?? "").trim();
+    if (!t.startsWith("```")) return t;
+    t = t.replace(/^```(?:json)?/i, "");
+    if (t.endsWith("```")) t = t.slice(0, -3);
+    return t.trim();
+}
+
 // Solo salen hacia la IA los campos de groupFailures; aun así se enmascara lo que pueda ser sensible.
 const REDACTIONS = [
     [/\beyJ[\w-]+\.[\w-]+\.[\w-]+/g, "[JWT]"],
@@ -113,7 +124,7 @@ const REDACTIONS = [
     [/\b[\w.+-]+@[\w-]+\.[\w.-]+\b/g, "[EMAIL]"],
     [/(https?:\/\/[^\s"'<>?#]+)\?[^\s"'<>#]+/g, "$1?[REDACTED]"],
     [/(\bfill\(\s*)(["'`])(?:(?!\2).)*\2/g, "$1$2[REDACTED]$2"],
-    [/^(\s*- textbox [^\n:]*?): .+$/gm, "$1: [REDACTED]"],
+    [/^([ \t]*- textbox [^\n:]*): .+$/gm, "$1: [REDACTED]"],
     [/(?:[A-Za-z]:)?[\\/](?:Users|home)[\\/]\w[^\\/\s"']*/g, "~"],
 ];
 

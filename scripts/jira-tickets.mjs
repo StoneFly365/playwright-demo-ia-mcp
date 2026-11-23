@@ -95,7 +95,8 @@ export function planTickets({ tickets, grouped, report, projectKey, issueType })
 }
 
 function jiraApi(env) {
-    const base = env.JIRA_BASE_URL.replace(/\/+$/, "");
+    let base = env.JIRA_BASE_URL;
+    while (base.endsWith("/")) base = base.slice(0, -1);
     const auth = `Basic ${Buffer.from(`${env.JIRA_EMAIL}:${env.JIRA_API_TOKEN}`).toString("base64")}`;
     const call = async (p, init = {}) => {
         // Sin seguir redirecciones: una 307 reenviaría las credenciales y los adjuntos a otro destino.

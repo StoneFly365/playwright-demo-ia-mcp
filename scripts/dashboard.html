@@ -438,7 +438,7 @@ const tone = (t, el) => { el.classList.add(`tone-${t}`); return el; };
 function fmtDate(v) {
   if (!v) return null;
   const d = new Date(v);
-  return /^\d{4}-\d\d-\d\dT/.test(v) && !isNaN(d) ? d.toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" }) : v;
+  return /^\d{4}-\d\d-\d\dT/.test(v) && !Number.isNaN(d.getTime()) ? d.toLocaleString("es-ES", { dateStyle: "medium", timeStyle: "short" }) : v;
 }
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const fmtPct = (p) => (p == null ? null : `${p} %`);
@@ -743,7 +743,7 @@ function renderHistory() {
   // Gráfico de columnas, de la más antigua a la más reciente. Clic = ver esa ejecución.
   const chrono = [...runs].sort((a, b) => String(a.id).localeCompare(String(b.id)));
   const bar = (v, c, what) => { const b = h("div", { class: `b tone-${c}`, title: `${what}: ${v ?? "n/d"}` }); b.style.height = `${((v ?? 0) / max) * 100}%`; return b; };
-  const shortDate = (r) => (r.id && !isNaN(new Date(r.id)) ? new Date(r.id).toLocaleDateString("es-ES", { day: "2-digit", month: "short" }) : "—");
+  const shortDate = (r) => (r.id && !Number.isNaN(new Date(r.id).getTime()) ? new Date(r.id).toLocaleDateString("es-ES", { day: "2-digit", month: "short" }) : "—");
   const chart = h("div", { class: "card" },
     h("h4", {}, "Fallidos y flaky por ejecución", h("span", { class: "spacer" }), legend([{ label: "Fallidos", v: "", color: "var(--coral)" }, { label: "Flaky", v: "", color: "var(--flaky)" }])),
     h("div", { class: "hchart", role: "img", "aria-label": chrono.map((r) => `${fmtDate(r.id) ?? "sin fecha"}: ${r.tests?.failed ?? "n/d"} fallidos, ${r.tests?.flaky ?? "n/d"} flaky`).join("; ") },

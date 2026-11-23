@@ -64,3 +64,8 @@ test("una ref base que empieza por \"-\" no se toma como opción de git", () => 
     assert.throws(() => checkAgainst("--output=guard-pwned.txt"));
     assert.ok(!existsSync("guard-pwned.txt"), "git no debe tomar la ref como --output");
 });
+
+test("los paréntesis y comillas escapadas dentro de un string no cierran la aserción", () => {
+    const src = String.raw`await expect(page.getByText('a) \' (b')).toHaveText("x \" )", { timeout: 1 });`;
+    assert.deepEqual(extractAssertions(src), [String.raw`toHaveText("x \" )", { timeout: 1 })`]);
+});
