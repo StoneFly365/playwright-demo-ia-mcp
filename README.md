@@ -347,7 +347,7 @@ npm run test:report
 
 ### Docker en CI (GitHub Actions)
 
-El workflow [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) ejecuta el job dentro de la imagen mediante `container:`. No necesita pasos de `setup-node` ni `playwright install`: la imagen ya lo trae todo.
+El workflow [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) ejecuta el job dentro de la imagen mediante `container:`. No necesita pasos de `setup-node` ni `playwright install`: la imagen ya lo trae todo. En todos los jobs las dependencias se instalan con `npm ci --ignore-scripts`: ninguna necesita scripts de instalación, y así una dependencia comprometida no ejecuta código en CI.
 
 Se dispara con `push` o `pull_request` a `main`, o manualmente. En `push` y `pull_request` ejecuta la suite verde (excluye `@demo-fail`). En el lanzamiento manual se elige la suite con el input `suite`: `green` (por defecto), `fail` o `all`. Con `scenario` se activa un escenario de fallo de la demo (`cascade`, `bug`, `flaky` o `env`, como `npm run test:scenario:*`), y con `heal` se lanza el [healer](#healer-automático-npm-run-healai) al terminar el reporte.
 
@@ -373,7 +373,7 @@ flowchart TD
 
     subgraph JOB ["Cada job · contenedor mcr.microsoft.com/playwright"]
         direction TB
-        S1["npm ci"] --> S2["npx playwright test --project=NAVEGADOR"]
+        S1["npm ci --ignore-scripts"] --> S2["npx playwright test --project=NAVEGADOR"]
         S2 --> S3["Artefactos: test-results.json<br/>y playwright-report-NAVEGADOR"]
     end
 
