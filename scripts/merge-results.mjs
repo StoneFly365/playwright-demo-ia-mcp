@@ -2,7 +2,8 @@
 // Une los test-results.json de cada navegador (generados por --project=X en jobs en paralelo)
 // en uno solo, para llamar a report:ai una vez por ejecución en lugar de una por navegador.
 // Uso: node scripts/merge-results.mjs <salida.json> <entrada1.json> [entrada2.json ...]
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, realpathSync, writeFileSync } from "node:fs";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 // Los ficheros comparten el mismo árbol de suites/specs (es el mismo código), solo que
@@ -51,13 +52,22 @@ export function mergeReports(reports) {
     };
 }
 
+// Ruta canónica dentro del directorio de trabajo (el repo). La salida puede no existir aún: se canoniza su
+// carpeta, que sí existe, y se le pega el nombre. Fuera del repo, o a través de un enlace que salga, falla.
+export function insideCwd(p) {
+    const base = realpathSync(process.cwd());
+    const full = path.join(realpathSync(path.dirname(path.resolve(p))), path.basename(p));
+    if (!full.startsWith(base + path.sep)) throw new Error(`${p} queda fuera del directorio de trabajo`);
+    return full;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const [, , outPath, ...inPaths] = process.argv;
     if (!outPath || inPaths.length < 1) {
         console.error("Uso: merge-results.mjs <salida.json> <entrada1.json> [entrada2.json ...]");
         process.exit(1);
     }
-    const reports = inPaths.map((p) => JSON.parse(readFileSync(p, "utf8")));
-    writeFileSync(outPath, JSON.stringify(mergeReports(reports)), "utf8");
+    const reports = inPaths.map((p) => JSON.parse(readFileSync(insideCwd(p), "utf8")));
+    writeFileSync(insideCwd(outPath), JSON.stringify(mergeReports(reports)), "utf8");
     console.log(`Unidos ${inPaths.length} ficheros en ${outPath}`);
 }

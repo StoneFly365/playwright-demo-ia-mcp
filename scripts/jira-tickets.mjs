@@ -94,12 +94,26 @@ export function planTickets({ tickets, grouped, report, projectKey, issueType })
     });
 }
 
+// Solo Jira Cloud por HTTPS (el script usa la API v3, que es de Cloud): las credenciales y los adjuntos
+// no pueden salir hacia otro host aunque JIRA_BASE_URL venga mal o manipulada. Devuelve el origen, sin ruta.
+export function jiraOrigin(raw) {
+    let url;
+    try { url = new URL(raw); } catch { throw new Error("JIRA_BASE_URL no es una URL válida."); }
+    if (url.protocol !== "https:" || !url.hostname.endsWith(".atlassian.net") || url.username || url.password) {
+        throw new Error("JIRA_BASE_URL tiene que ser https://<sitio>.atlassian.net (Jira Cloud).");
+    }
+    return url.origin;
+}
+
 function jiraApi(env) {
-    const base = env.JIRA_BASE_URL.replace(/\/+$/, "");
+    const base = jiraOrigin(env.JIRA_BASE_URL);
     const auth = `Basic ${Buffer.from(`${env.JIRA_EMAIL}:${env.JIRA_API_TOKEN}`).toString("base64")}`;
     const call = async (p, init = {}) => {
+        // Solo rutas de la API dentro del mismo origen: un id o una clave raros no pueden saltar a otro endpoint.
+        const url = new URL(p, base);
+        if (url.origin !== base || !url.pathname.startsWith("/rest/api/3/") || url.pathname.includes("..")) throw new Error(`Ruta de Jira no permitida: ${p}`);
         // Sin seguir redirecciones: una 307 reenviaría las credenciales y los adjuntos a otro destino.
-        const res = await fetch(`${base}${p}`, { ...init, redirect: "error", headers: { Authorization: auth, Accept: "application/json", ...init.headers } });
+        const res = await fetch(url, { ...init, redirect: "error", headers: { Authorization: auth, Accept: "application/json", ...init.headers } });
         if (!res.ok) throw new Error(`Jira respondió ${res.status} en ${p}: ${(await res.text()).slice(0, 300)}`);
         return res.json();
     };
@@ -114,7 +128,7 @@ async function projectFields({ call }, projectKey, issueType) {
     const types = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes?maxResults=200`);
     const type = (types.issueTypes ?? types.values ?? []).find((t) => t.name === issueType);
     if (!type) throw new Error(`El proyecto ${projectKey} no tiene el tipo de incidencia "${issueType}". Cambia JIRA_ISSUE_TYPE.`);
-    const meta = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes/${type.id}?maxResults=200`);
+    const meta = await call(`/rest/api/3/issue/createmeta/${key}/issuetypes/${encodeURIComponent(type.id)}?maxResults=200`);
     const fields = meta.fields ?? meta.values ?? [];
     const reporter = fields.some((f) => f.fieldId === "reporter" && f.required);
     return {
@@ -132,12 +146,12 @@ async function createIssue(jira, plan, extraFields) {
         const form = new FormData();
         for (const p of present) form.append("file", await openAsBlob(p), `${path.basename(path.dirname(p))}-${path.basename(p)}`);
         try {
-            attached = (await jira.call(`/rest/api/3/issue/${key}/attachments`, { method: "POST", headers: { "X-Atlassian-Token": "no-check" }, body: form })).length;
+            attached = (await jira.call(`/rest/api/3/issue/${encodeURIComponent(key)}/attachments`, { method: "POST", headers: { "X-Atlassian-Token": "no-check" }, body: form })).length;
         } catch (e) {
             console.warn(`⚠️  ${key} creado, pero los adjuntos fallaron: ${e.message}`);
         }
     }
-    return { key, url: `${jira.base}/browse/${key}`, attached };
+    return { key, url: `${jira.base}/browse/${encodeURIComponent(key)}`, attached };
 }
 
 async function main() {

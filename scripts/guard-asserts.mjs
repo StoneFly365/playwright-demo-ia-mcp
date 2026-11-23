@@ -77,8 +77,13 @@ export function findRelaxations(file, before, after) {
 
 const git = (...args) => execFileSync("git", args, { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
 
+// Una ref (rama, tag, SHA, HEAD~1, origin/main, main@{1}): empieza por letra, número o "_" y solo lleva
+// los caracteres de una ref. Nunca puede ser una opción de git ni meter espacios u otros argumentos.
+export const REF = /^\w[\w./^~@{}-]*$/;
+
 export function checkAgainst(baseRef) {
-    // --end-of-options: una base que empiece por "-" es una ref inválida, no una opción de git.
+    if (!REF.test(baseRef)) throw new Error(`Ref base no válida: ${JSON.stringify(baseRef)}`);
+    // --end-of-options: defensa adicional por si la validación cambia; git trata la base como revisión, no como opción.
     const changed = git("diff", "--name-only", "--no-renames", "--end-of-options", baseRef, "--").split("\n").filter((f) => SCOPE.test(f));
     return changed.flatMap((file) => {
         let before = null;

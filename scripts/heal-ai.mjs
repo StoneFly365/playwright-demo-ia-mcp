@@ -25,6 +25,8 @@ const EDITABLE = /^(tests|pages|fixtures)\//;
 const LABEL = "needs-human";
 
 const log = (msg) => console.log(`👉 ${msg}`);
+// Lo que viene de ficheros o de la IA va a una sola línea: un salto no puede fingir otra línea del log.
+const oneLine = (s) => String(s).replace(/[\r\n]+/g, " ");
 
 export function selectGroups(grouped, ids = []) {
     return (grouped?.groups ?? []).filter((g) => g.tipo === "test_roto" && (!ids.length || ids.includes(g.group_id)));
@@ -168,8 +170,8 @@ async function publish(p) {
     }
     git("switch", p.from);
     save(p.runStartTime, { ...p.entry, pr: url });
-    console.log(`✅ PR en borrador: ${url} · revisión adversarial: ${p.entry.review ?? "no disponible"}`);
-    if (p.needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${p.why.map((r) => `   - ${r}`).join("\n")}`);
+    console.log(`✅ PR en borrador: ${oneLine(url)} · revisión adversarial: ${oneLine(p.entry.review ?? "no disponible")}`);
+    if (p.needsHuman) console.log(`⚠️  Marcada ${LABEL}:\n${p.why.map((r) => `   - ${oneLine(r)}`).join("\n")}`);
 }
 
 async function main() {

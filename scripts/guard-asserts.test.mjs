@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { checkAgainst, extractAssertions, findRelaxations, SCOPE } from "./guard-asserts.mjs";
+import { checkAgainst, extractAssertions, findRelaxations, REF, SCOPE } from "./guard-asserts.mjs";
 
 // Mismo estilo que tests/cart-badge.spec.ts: expect en varias líneas con mensaje propio.
 const BASE = `
@@ -63,4 +63,10 @@ test("una ref base que empieza por \"-\" no se toma como opción de git", () => 
     // El mensaje de git varía según la versión y el entorno: lo que importa es que falle y no escriba nada.
     assert.throws(() => checkAgainst("--output=guard-pwned.txt"));
     assert.ok(!existsSync("guard-pwned.txt"), "git no debe tomar la ref como --output");
+});
+
+test("acepta las refs que usan el guard y el healer y rechaza lo que no es una ref", () => {
+    assert.ok(["origin/main", "main", "HEAD~1", "HEAD^", "main@{1}", "a638cb544f3eb5b91b1a472b2384008a67e91895", "feat/x-y_z.1"].every((r) => REF.test(r)));
+    assert.ok(!["", "-x", "--output=x", "main x", "main\n--output=x", "/etc/passwd", "a;b"].some((r) => REF.test(r)));
+    assert.throws(() => checkAgainst("main --output=x"), /Ref base no válida/);
 });

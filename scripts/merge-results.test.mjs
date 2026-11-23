@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mergeReports } from "./merge-results.mjs";
+import { realpathSync } from "node:fs";
+import path from "node:path";
+import { insideCwd, mergeReports } from "./merge-results.mjs";
 
 // Misma forma que produce Playwright con --project=X: un árbol de suites/specs,
 // cada spec con los tests de un único navegador.
@@ -69,4 +71,10 @@ test("mergeReports une los errores de arranque de cada fichero", () => {
     a.errors = [{ message: "fallo al lanzar chromium" }];
     const merged = mergeReports([a, fileReport("firefox", "passed")]);
     assert.equal(merged.errors.length, 1);
+});
+
+test("insideCwd: dentro del repo vale, fuera falla", () => {
+    assert.equal(insideCwd("test-results.json"), path.join(realpathSync(process.cwd()), "test-results.json"));
+    assert.throws(() => insideCwd("../fuera.json"), /fuera del directorio de trabajo/);
+    assert.throws(() => insideCwd(path.resolve("/", "fuera.json")), /fuera del directorio de trabajo/);
 });

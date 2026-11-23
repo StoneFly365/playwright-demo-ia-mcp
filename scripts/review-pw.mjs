@@ -8,7 +8,7 @@
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { checkAgainst, SCOPE } from "./guard-asserts.mjs";
+import { checkAgainst, REF, SCOPE } from "./guard-asserts.mjs";
 import { runAgent } from "./agent.mjs";
 
 export const VERDICTS = ["APROBADO", "DUDAS", "RECHAZADO"];
@@ -47,7 +47,8 @@ function lintFiles(files) {
 
 // Revisa el árbol de trabajo frente a `base`. Los ficheros nuevos solo entran si ya están en el índice (git add).
 export async function reviewChanges(base, { context, echo = true } = {}) {
-    // --end-of-options: una base que empiece por "-" es una ref inválida, no una opción de git.
+    if (!REF.test(base)) throw new Error(`Ref base no válida: ${JSON.stringify(base)}`);
+    // --end-of-options: defensa adicional por si la validación cambia; git trata la base como revisión, no como opción.
     const diff = git("diff", "--no-renames", "--end-of-options", base, "--", ...PATHS);
     if (!diff.trim()) return null;
     const files = git("diff", "--name-only", "--no-renames", "--end-of-options", base, "--", ...PATHS).split("\n").filter((f) => SCOPE.test(f));

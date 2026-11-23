@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { selectGroups, buildPrompt, buildPrBody, changedFiles, gitlabProject } from "./heal-ai.mjs";
-import { buildIssue, planTickets, priorityFor } from "./jira-tickets.mjs";
+import { buildIssue, jiraOrigin, planTickets, priorityFor } from "./jira-tickets.mjs";
 import { agentEnv } from "./agent.mjs";
 
 const group = (id, tipo, extra = {}) => ({
@@ -121,4 +121,12 @@ test("los agentes no reciben tokens de GitHub, GitLab, Jira, Sonar ni de la API 
     const env = agentEnv({ PATH: "/bin", CLAUDE_CODE_OAUTH_TOKEN: "c", GH_TOKEN: "g", GITHUB_TOKEN: "g", GITLAB_TOKEN: "l",
         JIRA_API_TOKEN: "j", JIRA_EMAIL: "e", AI_API_KEY: "a", GEMINI_API_KEY: "m", OPENROUTER_API_KEY: "o", SONAR_TOKEN: "s", SONARQUBE_TOKEN: "q", DEMO_SCENARIO: "cascade" });
     assert.deepEqual(Object.keys(env).sort(), ["CLAUDE_CODE_OAUTH_TOKEN", "DEMO_SCENARIO", "PATH"]);
+});
+
+test("jiraOrigin: solo Jira Cloud por HTTPS y sin ruta", () => {
+    assert.equal(jiraOrigin("https://empresa.atlassian.net/"), "https://empresa.atlassian.net");
+    assert.equal(jiraOrigin("https://empresa.atlassian.net/jira/software"), "https://empresa.atlassian.net");
+    for (const bad of ["http://empresa.atlassian.net", "https://atlassian.net.evil.com", "https://evil.com/.atlassian.net", "https://u:p@empresa.atlassian.net", "no es url"]) {
+        assert.throws(() => jiraOrigin(bad), /JIRA_BASE_URL/, bad);
+    }
 });
