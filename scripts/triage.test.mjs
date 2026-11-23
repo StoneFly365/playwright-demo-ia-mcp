@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fingerprint, groupFailures, redact, isOnlyFlaky } from "./triage.mjs";
+import { fingerprint, groupFailures, redact, isOnlyFlaky, stripMarkdownFences } from "./triage.mjs";
 
 // Mensajes reales de los escenarios de fixtures/scenarios.ts (sin ANSI, recortados).
 const CLICK_TIMEOUT = `TimeoutError: locator.click: Timeout 10000ms exceeded.
@@ -114,4 +114,20 @@ test("redact enmascara datos sensibles", () => {
 test("redact no toca lo que no es sensible", () => {
     const safe = `import { test } from '@playwright/test';\n- button "Login" [ref=e9]\nExpected: "5"\nExpected pattern: /.*\\/home\\.html$/`;
     assert.equal(redact(safe), safe);
+});
+
+test("stripMarkdownFences quita la valla de Markdown y deja el resto igual", () => {
+    assert.equal(stripMarkdownFences('```json\n{"a":1}\n```'), '{"a":1}');
+    assert.equal(stripMarkdownFences('```JSON\n[1]\n```  \n'), "[1]");
+    assert.equal(stripMarkdownFences("```\n[1]\n```"), "[1]");
+    assert.equal(stripMarkdownFences('  {"a":1}  '), '{"a":1}');
+    assert.equal(stripMarkdownFences("```json\n[1]"), "[1]");
+    assert.equal(stripMarkdownFences(null), "");
+});
+
+test("redact y fingerprint siguen igual con líneas en blanco delante", () => {
+    assert.equal(redact('\n\n    - textbox "Password" [ref=e5]: secret_sauce'), '\n\n    - textbox "Password" [ref=e5]: [REDACTED]');
+    const error = "Error: x\n\n\nexpect(locator).toHaveText(expected) failed\n\nLocator:   locator('#a')\nExpected: 1\n";
+    assert.equal(fingerprint(error).key, "valor_inesperado|locator('#a')");
+    assert.equal(fingerprint("expect(page).toHaveURL(expected) failed\n\nExpected pattern:  /inventory/\n").key, "valor_inesperado|page.toHaveURL /inventory/");
 });
