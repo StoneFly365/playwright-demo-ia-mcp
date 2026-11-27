@@ -1,976 +1,115 @@
-<p align="center">
-  <img src="docs-site/img/brain-qa-logo.jpeg" alt="Brain QA, AI-Powered Playwright Framework" width="480">
-</p>
+# Plantilla Playwright + IA
 
-# Brain QA
+Base para empezar la automatización E2E de un proyecto nuevo con Playwright, agentes de Claude Code y un reporte de fallos con IA. No trae tests: solo el framework, el pipeline y las convenciones.
 
-**Framework QA Playwright potenciado por IA** · Tech Hub · demo sobre SauceDemo con reporte IA de fallos
+## Primeros pasos
 
-Proyecto de automatización de pruebas end-to-end sobre [SauceDemo](https://www.saucedemo.com) utilizando [Playwright](https://playwright.dev/) con TypeScript y el patrón **Page Object Model (POM)**.
+Requisitos: Node 22 o superior y, para los agentes, [Claude Code](https://claude.com/claude-code).
 
-## Índice
+```bash
+npm ci
+npx playwright install --with-deps
+cp .env.example .env        # rellena al menos BASE_URL
+npx playwright test         # ejecuta el seed contra BASE_URL
+```
 
-- [¿Qué demuestra esta demo?](#qué-demuestra-esta-demo)
-- [Cómo encaja todo](#cómo-encaja-todo)
-- [Learning Lab](#learning-lab)
-- [Usuarios de SauceDemo](#usuarios-de-saucedemo)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Requisitos previos](#requisitos-previos)
-- [Instalación](#instalación)
-  - [Claude Code CLI (opcional, solo para `report:ai` en local)](#claude-code-cli-opcional-solo-para-reportai-en-local)
-- [Ejecución de los tests](#ejecución-de-los-tests)
-- [Docker](#docker)
-  - [¿Cuándo usar Docker?](#cuándo-usar-docker)
-  - [Ejecutar los tests en Docker (local)](#ejecutar-los-tests-en-docker-local)
-  - [Docker en CI (GitHub Actions)](#docker-en-ci-github-actions)
-  - [Flujo del pipeline](#flujo-del-pipeline)
-- [Diseñar desde Figma (`design:ai`)](#diseñar-desde-figma-designai)
-  - [Qué hace](#qué-hace)
-  - [Preparar el MCP de Figma](#preparar-el-mcp-de-figma)
-  - [Uso](#uso)
-  - [Qué sale](#qué-sale)
-- [Reporte IA (`report:ai`)](#reporte-ia-reportai)
-  - [Proveedor de IA](#proveedor-de-ia)
-  - [Ficheros generados](#ficheros-generados)
-  - [Acierto de la IA](#acierto-de-la-ia)
-  - [Ejemplo de salida](#ejemplo-de-salida)
-  - [Uso en local](#uso-en-local)
-  - [Uso en CI (GitHub Actions)](#uso-en-ci-github-actions)
-- [Cerrar el circuito (fase 4)](#cerrar-el-circuito-fase-4)
-  - [Healer automático (`npm run heal:ai`)](#healer-automático-npm-run-healai)
-  - [Check de asserts (`guard-asserts.mjs`)](#check-de-asserts-guard-assertsmjs)
-  - [Revisión adversarial (`npm run review:pw`)](#revisión-adversarial-npm-run-reviewpw)
-  - [Lint de Playwright (`npm run lint`)](#lint-de-playwright-npm-run-lint)
-  - [Tickets de Jira (`npm run jira:tickets`)](#tickets-de-jira-npm-run-jiratickets)
-- [Análisis estático con SonarQube Cloud](#análisis-estático-con-sonarqube-cloud)
-  - [Qué analiza](#qué-analiza)
-  - [Ver los resultados](#ver-los-resultados)
-  - [MCP de Sonar para los agentes](#mcp-de-sonar-para-los-agentes)
-- [Dependencias y GitHub Actions](#dependencias-y-github-actions)
-- [Qué datos salen y hacia dónde](#qué-datos-salen-y-hacia-dónde)
-- [Dashboard QA Intelligence](#dashboard-qa-intelligence)
-  - [Qué lee y qué enseña](#qué-lee-y-qué-enseña)
-  - [No mezclar ejecuciones](#no-mezclar-ejecuciones)
-  - [Historial](#historial)
-  - [Qué llama a modelos y qué no](#qué-llama-a-modelos-y-qué-no)
-  - [Privacidad](#privacidad)
-  - [En CI](#en-ci)
-  - [Caché de clasificaciones: descartada por ahora](#caché-de-clasificaciones-descartada-por-ahora)
-- [Modo headless](#modo-headless)
-- [Configuración (`playwright.config.ts`)](#configuración-playwrightconfigts)
-- [Decisiones de diseño](#decisiones-de-diseño)
-  - [Page Object Model](#page-object-model)
-  - [Id en el título de cada test](#id-en-el-título-de-cada-test)
-  - [Accesibilidad con axe](#accesibilidad-con-axe)
-  - [Selectores `data-test`](#selectores-data-test)
-  - [`baseURL` en config](#baseurl-en-config)
-- [Tecnologías](#tecnologías)
+Después, para el proyecto concreto:
 
----
+1. **Seed.** Adapta [`tests/seed.spec.ts`](tests/seed.spec.ts) para que deje la app lista: si hay login, que inicie sesión con credenciales de `.env`. Es lo que usan los agentes para arrancar.
+2. **Sesión compartida.** Si casi todos los tests necesitan login, haz un `globalSetup` que guarde el `storageState` en `playwright/.auth/` (ya está en `.gitignore`) y úsalo desde [`fixtures/test.ts`](fixtures/test.ts).
+3. **Page objects** en `pages/`, uno por página o componente, y fixtures que los expongan en `fixtures/test.ts`.
+4. **Primeros tests** con los agentes: `playwright-test-planner` explora la app y escribe el plan en `specs/`, `playwright-test-generator` lo convierte en tests.
+5. **CI.** Define la variable `BASE_URL` y los secretos que vayas a usar (ver [CI](#ci)). Pon la clave del proyecto en [`sonar-project.properties`](sonar-project.properties).
 
-## ¿Qué demuestra esta demo?
+## Estructura
 
-Suite E2E lista para producción que enseña, sobre una web real, cómo damos valor en QA automation:
+```
+.claude/agents/      Agentes: planner, generator, healer, revisor adversarial y diseñador de pruebas
+.claude/settings.json  Permisos de los agentes (no leen .env)
+.github/             Workflows (tests + reporte IA + healer, guard de asserts, Sonar) y plantilla de PR
+.mcp.json            MCP de Playwright (y de SonarQube, opcional) para los agentes
+.mcp.figma.json      MCP de Figma para design:ai
+docs/diagramas/      Diagramas del circuito y de los controles alrededor de la IA
+fixtures/test.ts     test y expect del proyecto: los tests importan de aquí
+pages/               Page objects
+prompts/             Prompts del reporte IA
+scripts/             Reporte IA, triage, healer, guard de asserts, revisor, Jira, dashboard, design:ai
+specs/               Planes de prueba, historias (specs/historias/) y diseños
+tests/               Specs E2E (seed.spec.ts incluido)
+```
 
-- **Diseño de pruebas desde Figma** — la IA lee la historia de usuario y el diseño por el MCP de Figma, recorre la app y propone casos, criterios de aceptación y las diferencias entre diseño y app antes de escribir un test.
-- **Page Object Model** — 6 páginas encapsuladas, tests legibles y mantenibles.
-- **Cobertura multi-navegador** — 88 tests por navegador (264 en total) en Chromium, Firefox y WebKit.
-- **Accesibilidad** — axe comprueba WCAG 2.1 AA en las pantallas del flujo de compra.
-- **Fallos intencionados** — tests que fallan aposta para demostrar el diagnóstico, no esconderlo.
-- **Reporte IA automático** — cada fallo analizado y explicado por IA en el pipeline CI/CD.
-- **Circuito cerrado** — los tests rotos acaban en una PR del healer y los bugs de producto en un ticket de Jira. Si una PR automática relaja un test, GitHub bloquea el merge hasta que una persona lo apruebe.
+## Comandos
 
----
+| Comando | Qué hace |
+|---|---|
+| `npm test` | Todos los tests, los tres navegadores |
+| `npm run test:chromium` / `test:firefox` / `test:webkit` | Un solo navegador |
+| `npm run test:headed` | Con el navegador visible |
+| `npm run test:a11y` | Tests etiquetados `@a11y` (con `@axe-core/playwright`) |
+| `npm run test:report` | Abre el informe HTML |
+| `npm run lint` | `eslint-plugin-playwright` sobre `tests/`, `pages/` y `fixtures/` |
+| `npm run test:unit` | Tests unitarios de los scripts |
+| `npm run report:ai` | Analiza los fallos de la última ejecución con IA |
+| `npm run test:ai` | Tests y reporte IA seguidos |
+| `npm run heal:ai` | El healer corrige los `test_roto` y abre una PR/MR en borrador |
+| `npm run review:pw` | Revisión adversarial del diff de tests |
+| `npm run guard:asserts` | Comprueba que un cambio no relaja aserciones |
+| `npm run jira:tickets` | Tickets de Jira para los `bug_producto` (simulado sin credenciales) |
+| `npm run design:ai -- HU-XXX` | Diseña las pruebas de una historia de `specs/historias/` a partir de Figma y de la app |
+| `npm run dashboard` | Dashboard local con los resultados y el análisis de la IA |
 
 ## Cómo encaja todo
 
-Los agentes de [`.claude/agents/`](.claude/agents/) diseñan, crean y reparan los tests. El diseñador parte de una historia de usuario y de su diseño, que lee por el servidor MCP de Figma declarado aparte en [`.mcp.figma.json`](.mcp.figma.json). Usan el navegador y el runner a través del servidor MCP de Playwright definido en [`.mcp.json`](.mcp.json). El mismo fichero declara el MCP de SonarQube, opcional: si está disponible, el generator y el healer revisan las incidencias nuevas de los ficheros que tocan antes de terminar. Después, `report:ai` lee los resultados de la ejecución y la IA explica los fallos.
-
 ```mermaid
 flowchart LR
-    APP(["SauceDemo"])
-
-    subgraph AGENTS ["Agentes Claude Code · .claude/agents/"]
+    APP(["App bajo prueba<br/>BASE_URL"])
+    subgraph AGENTS ["Agentes · .claude/agents/"]
         direction TB
-        D["qa-test-designer<br/>npm run design:ai"] -->|"plan · criterios<br/>discrepancias"| SP[("specs/")]
-        P["planner"] -->|"plan de test"| SP
+        D["qa-test-designer<br/>design:ai"] --> SP[("specs/")]
+        P["planner"] --> SP
         SP --> G["generator"]
-        G -->|"escribe spec"| T[("tests/ + pages/")]
+        G --> T[("tests/ + pages/")]
         H["healer"] -->|"corrige"| T
     end
-
-    MCP{{"MCP playwright-test<br/>playwright run-test-mcp-server"}}
-    P & G & H <-->|"browser_* · test_run · test_debug"| MCP
-    MCP <--> APP
-    HU[("specs/historias/")] --> D
-    FIG{{"MCP figma<br/>mcp.figma.com"}} <-->|"get_metadata · get_design_context"| D
-    D <--> MCP
-    SQ{{"MCP sonarqube (opcional)<br/>sonarsource/sonarqube-mcp"}}
-    G & H -.->|"incidencias nuevas<br/>de los ficheros tocados"| SQ
-
-    T --> RUN["npx playwright test<br/>Chromium · Firefox · WebKit"]
-    RUN <--> APP
-    RUN --> JSON[("test-results.json")]
-
-    subgraph AI ["npm run report:ai · scripts/report-ai.mjs"]
-        direction TB
-        CHK{"¿Hay fallos<br/>o flaky?"} -->|"no"| OK["ai-summary.txt<br/>sin llamar a la IA"]
-        CHK -->|"sí"| GR["1. Agrupar en código<br/>scripts/triage.mjs<br/>flaky · redacción"]
-        GR --> CL["2. La IA clasifica los grupos no flaky<br/>test_roto · bug_producto · entorno<br/>prompts/ai-classify.txt"]
-        CL --> PAR["3. En paralelo:<br/>resumen · correcciones · tickets de bugs"]
-    end
-
-    JSON --> CHK
-    LLM(["Claude CLI en local<br/>API en CI: Gemini u OpenRouter"])
-    CL & PAR <--> LLM
-    PAR --> OUT[("playwright-report/<br/>ai-summary.txt · ai-corrections.md<br/>ai-tickets.json · ai-failures-grouped.json")]
-    OUT -->|"test_roto · npm run heal:ai"| H
-    H --> PR["PR en borrador<br/>guard-asserts: needs-human<br/>si relaja una aserción"]
-    OUT -->|"bug_producto · npm run jira:tickets"| JIRA(["Jira<br/>simulado sin credenciales"])
+    MCP{{"MCP playwright-test"}}
+    P & G & H & D <--> MCP <--> APP
+    T --> RUN["npx playwright test"] --> JSON[("test-results.json")]
+    JSON --> AI["report:ai<br/>agrupa y enmascara en código<br/>la IA clasifica"]
+    AI -->|"test_roto · heal:ai"| H
+    H --> PR["PR/MR en borrador<br/>guard de asserts + revisor adversarial"]
+    AI -->|"bug_producto · jira:tickets"| JIRA(["Jira"])
 ```
 
-**Versión para negocio.** El mismo circuito sin detalle técnico está en [`docs/diagramas/qa-ia-negocio.html`](docs/diagramas/qa-ia-negocio.html): descárgalo y ábrelo en el navegador, porque GitHub no renderiza HTML. Su fuente es [`qa-ia-negocio.workflow.json`](docs/diagramas/qa-ia-negocio.workflow.json). Si cambia el flujo, edita el JSON y regenera el HTML desde la raíz del repositorio con el skill [archify](https://github.com/tt-a1i/archify). No viene con el repositorio: necesitas tenerlo instalado como skill de Claude Code en `~/.claude/skills/archify`.
+### Reporte IA (`report:ai`)
+
+El código agrupa los fallos por causa, marca los flaky y enmascara datos sensibles ([`scripts/triage.mjs`](scripts/triage.mjs)). La IA solo clasifica cada grupo como `test_roto`, `bug_producto` o `entorno`, y con eso redacta el resumen, las correcciones y los tickets. Una ejecución en verde no llama a la IA. Salida en `playwright-report/ai-*`.
+
+Proveedor, por orden: `AI_API_KEY` + `AI_BASE_URL` + `AI_MODEL` (cualquier API compatible con OpenAI), `GEMINI_API_KEY`, o en local sin clave el CLI de Claude con tu suscripción.
+
+### Healer (`heal:ai`)
+
+Solo actúa sobre los `test_roto`. Crea una rama `heal/*`, lanza el agente healer, rechaza cambios fuera de `tests/`, `pages/` y `fixtures/`, pasa el guard de asserts y el revisor adversarial, y abre una PR en borrador (GitHub, con `gh`) o una MR en borrador (GitLab, con `GITLAB_TOKEN`). Si algo no cuadra, la etiqueta `needs-human`. Nunca se fusiona sola.
+
+## CI
+
+Los workflows de [`.github/workflows/`](.github/workflows/) son de GitHub Actions. En un repositorio de GitLab hay que portarlos a `.gitlab-ci.yml`; los scripts no dependen de la plataforma.
+
+| Workflow | Qué hace | Necesita |
+|---|---|---|
+| `playwright.yml` | Tests en los tres navegadores, lint, reporte IA, tickets de Jira, dashboard y, a mano (`heal: true`), el healer | Variable `BASE_URL`. Secretos `GEMINI_API_KEY` u `OPENROUTER_API_KEY` (+ variable `AI_MODEL`), `JIRA_*` (opcional), `CLAUDE_CODE_OAUTH_TOKEN` (healer) |
+| `guard.yml` | Bloquea las PR `heal/*` que relajan una aserción, salvo la etiqueta `asserts-aprobados` | — |
+| `sonar.yml` | Análisis de SonarQube con la cobertura de los tests unitarios | Secreto `SONAR_TOKEN` |
+
+## Qué datos salen y hacia dónde
+
+Antes de usarlo con datos de un cliente, revisa esto con quien tenga que aprobarlo:
+
+- **Proveedor de IA.** `report:ai` envía, por cada grupo de fallos, el error y la instantánea de la página en el fallo, recortados y enmascarados (emails, tokens, cookies, contraseñas, query strings, valores de formularios). Las capas gratuitas y las suscripciones personales no dan las mismas garantías de retención que un contrato de empresa.
+- **Agentes (healer, revisor, design:ai).** Leen código del repositorio y páginas de la app **sin enmascarar**. No pueden leer `.env` con sus herramientas ([`.claude/settings.json`](.claude/settings.json)) y [`scripts/agent.mjs`](scripts/agent.mjs) les quita del entorno los tokens conocidos, pero el healer puede ejecutar tests. No guardes secretos fuera de `.env`.
+- **Jira y artefactos de CI.** Las trazas y los vídeos no pasan por el enmascarado: revisa qué datos de prueba se usan.
+
+Los diagramas de [`docs/diagramas/`](docs/diagramas/) (ábrelos en el navegador) explican el circuito para negocio y los controles alrededor de la IA. Sus fuentes son los `.json`; se regeneran con el skill [archify](https://github.com/tt-a1i/archify):
 
 ```bash
 node ~/.claude/skills/archify/bin/archify.mjs deliver workflow docs/diagramas/qa-ia-negocio.workflow.json docs/diagramas/qa-ia-negocio.html --quality showcase
 ```
-
-**Controles alrededor de la IA.** Dos diagramas responden a las preguntas sobre arnés, agentes, MCP y guardrails:
-
-- [`qa-ia-capas.html`](docs/diagramas/qa-ia-capas.html) muestra qué rodea a la IA. Las capas, de dentro afuera, son el arnés, los guardrails de entrada y salida, los guardrails de cambio y la persona que decide. Su fuente es [`qa-ia-capas.architecture.json`](docs/diagramas/qa-ia-capas.architecture.json).
-- [`qa-ia-controles.html`](docs/diagramas/qa-ia-controles.html) muestra por dónde pasa un fallo, paso a paso, y qué control aplica cada paso. Su fuente es [`qa-ia-controles.workflow.json`](docs/diagramas/qa-ia-controles.workflow.json).
-
-Se regeneran con la misma orden: cambia el tipo (`architecture` o `workflow`) y los nombres de fichero.
-
----
-
-## Learning Lab
-
-Este repositorio es además el laboratorio de **QA Automation & AI Engineering Learning Lab**, un programa de formación que usa el propio proyecto como material: cada concepto se enseña sobre un fichero y una línea reales, y los defectos deliberados de la suite son los ejercicios de diagnóstico.
-
-El material formativo vive íntegramente en [`learning/`](learning/) y **no modifica el código de automatización**: `tests/`, `pages/`, `scripts/`, `prompts/`, `specs/` y la configuración raíz permanecen intactos.
-
-→ **[learning/README.md](learning/README.md)**
-
----
-
-## Usuarios de SauceDemo
-
-Los tests usan estos usuarios de prueba, todos con contraseña `secret_sauce`:
-
-| Usuario | Comportamiento | Test |
-|---|---|---|
-| `standard_user` | Login correcto, flujo normal | mayoría de specs |
-| `locked_out_user` | Login bloqueado, muestra error | `login.spec.ts` |
-| `problem_user` | Login OK, bugs de UI en catálogo/carrito | `problem-user-cart.spec.ts` |
-| `performance_glitch_user` | Login OK, latencia alta | `performance-glitch-user-cart.spec.ts` |
-
-> Credenciales oficiales en la página de login de [SauceDemo](https://www.saucedemo.com); tabla aquí como referencia rápida usada por esta suite.
-
----
-
-## Estructura del proyecto
-
-```
-playwright-demo-ia-mcp/
-├── pages/
-│   ├── login.page.ts               # POM: página de login
-│   ├── inventory.page.ts           # POM: catálogo de productos
-│   ├── product-detail.page.ts      # POM: detalle de producto
-│   ├── cart.page.ts                # POM: carrito de compras
-│   ├── checkout.page.ts            # POM: proceso de checkout
-│   └── menu.page.ts                # POM: menú lateral
-├── fixtures/
-│   ├── global-setup.ts             # Login único de standard_user (storageState)
-│   └── scenarios.ts                # Escenarios de fallo de la demo (DEMO_SCENARIO)
-├── tests/                          # 16 ficheros, 88 tests (incluye seed.spec.ts, arranque de los agentes)
-├── specs/                          # Planes de test y documentación QA
-│   ├── historias/                  # Historias de usuario con sus criterios y sus frames de Figma (fase 1)
-│   ├── figma/                      # Guía del diseño de la demo e instantánea del frame (modo sin conexión)
-│   └── disenos/                    # Salida de design:ai: <HU>.design.json y <HU>.plan.md
-├── prompts/                        # Prompts usados por el reporte IA
-├── scripts/
-│   ├── design-ai.mjs               # Fase 1: historia + Figma + app → plan de pruebas (agente qa-test-designer)
-│   ├── design-ai.test.mjs          # Tests de design-ai.mjs (npm run test:unit)
-│   ├── fixtures/design-ai/         # Copia fija de HU-001.md para esos tests
-│   ├── report-ai.mjs               # Script de análisis IA de resultados
-│   ├── triage.mjs                  # Agrupación, flaky y redacción, sin IA
-│   ├── triage.test.mjs             # Tests de triage.mjs (npm run test:unit)
-│   ├── merge-results.mjs           # Une los resultados de los 3 navegadores en CI
-│   ├── merge-results.test.mjs      # Tests de merge-results.mjs (npm run test:unit)
-│   ├── dashboard.mjs               # Dashboard QA Intelligence: lee los artefactos, sin IA
-│   ├── dashboard-view.mjs          # Métricas y filtros del dashboard (también van dentro de la página)
-│   ├── dashboard.html              # Plantilla de la página del dashboard
-│   ├── dashboard.test.mjs          # Tests del dashboard (npm run test:unit)
-│   ├── heal-ai.mjs                 # Healer automático sobre los test_roto y PR en borrador
-│   ├── jira-tickets.mjs            # Tickets de Jira de los bug_producto (simulado sin credenciales)
-│   ├── guard-asserts.mjs           # Check que marca needs-human si un cambio relaja las pruebas
-│   ├── review-pw.mjs               # Revisión adversarial de un diff de tests (agente revisor)
-│   ├── agent.mjs                   # Lanza un agente de .claude/agents/ con claude -p; quita del entorno los tokens de una lista
-│   ├── guard-asserts.test.mjs      # Tests del check (npm run test:unit)
-│   ├── circuit.test.mjs            # Tests de heal-ai.mjs y jira-tickets.mjs (npm run test:unit)
-│   └── ruta-qa-check.mjs           # Comprobación de entorno de la Ruta QA
-├── learning/                       # Material del Learning Lab
-├── docs-site/                      # Portal Docsify (GitHub Pages); img/ guarda el logo de Brain QA
-├── docs/diagramas/                 # Diagramas archify (HTML + fuente): circuito para negocio y controles alrededor de la IA
-├── .claude/agents/                 # Agentes: diseñador de pruebas, planner, generator, healer y revisor adversarial
-├── eslint.config.mjs               # Lint de Playwright (eslint-plugin-playwright)
-├── sonar-project.properties        # Configuración del análisis de SonarQube Cloud
-├── .mcp.json                       # Servidores MCP: Playwright (run-test-mcp-server) y SonarQube (opcional)
-├── .mcp.figma.json                 # Playwright + Figma (remoto oficial), solo para design:ai
-├── .github/
-│   ├── dependabot.yml              # PR semanales con las actualizaciones de npm y de las actions
-│   ├── pull_request_template.md    # Plantilla de PR con la línea Docs: que pide CLAUDE.md
-│   └── workflows/
-│       ├── playwright.yml          # Pipeline CI/CD de tests (GitHub Actions)
-│       ├── guard.yml               # Guard de asserts en las PR del healer (check obligatorio)
-│       ├── sonar.yml               # Análisis de SonarQube Cloud con la cobertura de los tests unitarios
-│       └── docs.yml                # Publicación del portal en GitHub Pages
-├── CLAUDE.md                       # Reglas para Claude Code: revisar toda la documentación en cada PR
-├── playwright.config.ts
-├── package.json
-└── tsconfig.json
-```
-
----
-
-## Requisitos previos
-
-- [Node.js](https://nodejs.org/) v22 o superior (npm se instala con Node)
-- [Claude Code CLI](https://claude.ai/code) — opcional, solo para `report:ai` en local (ver [Instalación](#instalación))
-
-> **¿Varias versiones de Node?** Usa [nvm](https://github.com/nvm-sh/nvm) para instalar y cambiar entre versiones sin conflictos:
->
-> ```bash
-> nvm install 22   # instala Node.js 22 (incluye npm)
-> nvm use 22       # activa esa versión en la sesión actual
-> ```
->
-> En Windows usa [nvm-windows](https://github.com/coreybutler/nvm-windows) (misma sintaxis).
-
----
-
-## Instalación
-
-```bash
-npm install
-npx playwright install    # Chromium, Firefox y WebKit
-```
-
-### Claude Code CLI (opcional, solo para `report:ai` en local)
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-Ejecuta `claude` una vez para autenticarte y sigue el login. En CI el AI report se genera por API (Gemini u OpenRouter), así que el CLI no hace falta allí.
-
----
-
-## Ejecución de los tests
-
-```bash
-# Modo headless (por defecto) — los 3 navegadores
-npm test
-npm run test:all        # alias explícito de lo anterior
-
-# Un solo navegador
-npm run test:chromium
-npm run test:firefox
-npm run test:webkit
-
-# Modo headed (navegador visible)
-npm run test:headed
-
-# Demo: separar suite verde de fallos intencionados
-npm run test:demo:green   # solo tests que pasan (excluye @demo-fail)
-npm run test:demo:fail    # solo los fallos intencionados (@demo-fail)
-
-# Accesibilidad: axe con las reglas WCAG 2.1 A y AA
-npm run test:a11y
-
-# Demo: escenarios de fallo realistas (excluyen @demo-fail)
-npm run test:scenario:cascade   # cambio del frontend: unos 70 tests caen por una sola causa
-npm run test:scenario:bug       # bug de producto: el badge del carrito cuenta uno de más
-npm run test:scenario:flaky     # fallan en el primer intento y pasan al reintentar
-npm run test:scenario:env       # entorno caído: el servidor rechaza las conexiones
-
-# Ver el informe HTML tras la ejecución
-npm run test:report
-
-# Comprobar el entorno antes de la Ruta QA del Learning Lab
-npm run ruta-qa:check
-```
-
-Los tests se ejecutan en **Chromium, Firefox y WebKit** (definidos como `projects` en `playwright.config.ts`).
-
-Los fallos intencionados llevan el tag `@demo-fail`. `test:demo:green` demuestra la suite en verde; `test:demo:fail` aísla los fallos que alimentan el AI report.
-
-Los escenarios `test:scenario:*` simulan fallos de los que se ven en un proyecto real, sin tocar los tests: el fixture [`fixtures/scenarios.ts`](fixtures/scenarios.ts) lee `DEMO_SCENARIO` y modifica la página antes de cada test. Sin la variable, la suite se comporta igual.
-
----
-
-## Docker
-
-El proyecto puede ejecutar los tests dentro del contenedor oficial de Playwright. La imagen trae Node, los tres navegadores y todas las dependencias del sistema preinstaladas, garantizando un **entorno idéntico** en local y en CI.
-
-> El tag de la imagen (`v1.64.1-jammy`) debe coincidir con la versión de `@playwright/test` del `package-lock.json`. Si actualizas Playwright, actualiza también el tag en el workflow y en los comandos.
-
-### ¿Cuándo usar Docker?
-
-- **CI/CD:** entorno reproducible sin instalar navegadores en cada run.
-- **Consistencia entre equipos:** mismo navegador, misma versión, mismo SO. Elimina el "en mi máquina funciona".
-- **Reproducir el CI en local** antes de subir cambios.
-
-Para el desarrollo diario iterando tests, ejecuta `npm test` directamente: Docker añade una capa más lenta sin beneficio en ese caso.
-
-### Ejecutar los tests en Docker (local)
-
-Replica exactamente el entorno del CI. Requiere **Docker Desktop** en ejecución y ejecutarse desde la raíz del proyecto.
-
-```powershell
-# PowerShell (recomendado en Windows)
-docker run --rm -v "${PWD}:/work" -w /work mcr.microsoft.com/playwright:v1.64.1-jammy bash -c "npm ci && npx playwright test"
-```
-
-```bash
-# Git Bash (desactiva la conversión de rutas de MSYS)
-MSYS_NO_PATHCONV=1 docker run --rm -v "/$(pwd):/work" -w //work mcr.microsoft.com/playwright:v1.64.1-jammy bash -c "npm ci && npx playwright test"
-```
-
-El volumen montado (`-v`) persiste el `playwright-report/` generado en tu disco. Para verlo tras el run necesitas Playwright instalado en local:
-
-```bash
-npm ci
-npm run test:report
-```
-
-### Docker en CI (GitHub Actions)
-
-El workflow [`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) ejecuta el job dentro de la imagen mediante `container:`. No necesita pasos de `setup-node` ni `playwright install`: la imagen ya lo trae todo. En todos los jobs las dependencias se instalan con `npm ci --ignore-scripts`: ninguna necesita scripts de instalación, y así una dependencia comprometida no ejecuta código en CI.
-
-Se dispara con `push` o `pull_request` a `main`, o manualmente. En `push` y `pull_request` ejecuta la suite verde (excluye `@demo-fail`). En el lanzamiento manual se elige la suite con el input `suite`: `green` (por defecto), `fail` o `all`. Con `scenario` se activa un escenario de fallo de la demo (`cascade`, `bug`, `flaky` o `env`, como `npm run test:scenario:*`), y con `heal` se lanza el [healer](#healer-automático-npm-run-healai) al terminar el reporte.
-
-```bash
-# Lanzar el workflow manualmente (requiere gh CLI)
-gh workflow run "Playwright Tests"                 # suite verde
-gh workflow run "Playwright Tests" -f suite=fail   # solo fallos intencionados
-gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true   # cascade y PR del healer
-
-# Seguir el último run en vivo
-gh run watch
-```
-
-### Flujo del pipeline
-
-```mermaid
-flowchart TD
-    T["push / pull_request a main · manual"] --> M{"Matrix por navegador<br/>(3 jobs en paralelo)"}
-
-    M --> C["Job: chromium"]
-    M --> F["Job: firefox"]
-    M --> W["Job: webkit"]
-
-    subgraph JOB ["Cada job · contenedor mcr.microsoft.com/playwright"]
-        direction TB
-        S1["npm ci --ignore-scripts"] --> S2["npx playwright test --project=NAVEGADOR"]
-        S2 --> S3["Artefactos: test-results.json<br/>y playwright-report-NAVEGADOR"]
-    end
-
-    C -.-> JOB
-    F -.-> JOB
-    W -.-> JOB
-
-    JOB --> R["Job: Reporte IA (uno por ejecución)<br/>tests unitarios · une los 3 test-results.json y las instantáneas de los fallos<br/>· report:ai · tickets de Jira · Summary + artefacto ai-report"]
-    R --> HL["Job: Healer (solo a mano, heal=true)<br/>heal:ai sobre los test_roto · PR en borrador"]
-    T --> LI["Job: Lint de Playwright"]
-    T --> GU["Job: Guard de asserts<br/>solo PR desde ramas heal/*"]
-    T --> SO["Workflow SonarQube Cloud (sonar.yml)<br/>test:unit:coverage · análisis"]
-```
-
-> Los tres navegadores van en paralelo y el reporte IA se genera **una sola vez** con los resultados de los tres ([`scripts/merge-results.mjs`](scripts/merge-results.mjs)): como mucho 4 llamadas a la IA por ejecución, y un fallo que se repite en los tres navegadores sale como un único grupo. En push y PR, si lo único que hay son tests flaky, no se llama a la IA. Para ver el **AI report** analizar fallos reales, lanza el workflow a mano con `suite=fail` o `suite=all`.
-
----
-
-## Diseñar desde Figma (`design:ai`)
-
-Es la primera fase del ciclo de QA: las pruebas se diseñan a partir de la historia de usuario y de su diseño, antes de escribir un test. Las fases siguientes ya estaban: el generator automatiza, el healer mantiene y `report:ai` analiza.
-
-### Qué hace
-
-```mermaid
-flowchart LR
-    HU[("specs/historias/HU-001.md<br/>criterios CA1..CA7<br/>enlaces a Figma")] --> A
-    FIG{{"MCP figma<br/>o instantánea specs/figma/"}} --> A
-    APP{{"MCP playwright-test<br/>la app real"}} --> A
-    A["Agente qa-test-designer<br/>(la IA propone)"] --> J[("HU-001.design.json")]
-    J --> V["design-ai.mjs (código, sin IA)<br/>valida el JSON · cobertura de criterios"]
-    V --> PLAN[("HU-001.plan.md<br/>casos · Given/When/Then · trazabilidad<br/>discrepancias · dudas para negocio")]
-    PLAN -->|"una persona lo revisa<br/>--render --generate"| G["Agente generator<br/>tests/hu-001/"]
-    G --> CI["Suite · report:ai · heal:ai · Jira"]
-```
-
-Mismo principio que el resto del repositorio: **la IA hace lo que requiere criterio y el código lo determinista**.
-
-- **La IA** (agente [`qa-test-designer`](.claude/agents/qa-test-designer.md)) lee la historia, lee los frames de Figma por MCP (`get_metadata` y `get_design_context`) y recorre la app con el MCP de Playwright. Con eso propone:
-  - los criterios en Given/When/Then;
-  - los casos de prueba, uno por flujo de usuario (no uno por criterio), cada uno trazado a sus criterios y con los localizadores reales de la app. No fusiona en un mismo caso criterios con otra precondición u otro objetivo, negativos o límites, ni criterios con una discrepancia o una duda abierta;
-  - las **discrepancias entre diseño y app**: qué dice Figma, qué hace la app y a qué criterio afecta;
-  - las **dudas para negocio**: criterios que no tienen respaldo ni en el diseño ni en la app. En esos casos no se inventa un caso de prueba.
-- **El código** ([`scripts/design-ai.mjs`](scripts/design-ai.mjs)):
-  - saca de la historia los criterios y los enlaces de Figma;
-  - decide si se usa el MCP de Figma o la instantánea;
-  - **valida** el JSON: no admite criterios inventados u olvidados, casos sin criterio ni casos sobre un criterio sin respaldo (ese va como duda, y la duda tiene que estar). Cada resultado esperado empieza por el criterio que comprueba (`[CA1] …`, o `[CA1, CA2] …` si cubre varios), y cada criterio del caso tiene al menos uno. Las discrepancias y las dudas solo pueden nombrar criterios que existen;
-  - calcula la **cobertura de criterios**;
-  - escribe el plan en el formato del planner, para que el generator lo use tal cual;
-  - comprueba que el agente solo ha escrito en `specs/disenos/` y `specs/figma/`.
-- **Una persona decide.** El plan es una propuesta. Los tests se generan solo cuando alguien lo revisa y lanza `--generate`, y salen importando el fixture de escenarios, así que también les afectan `DEMO_SCENARIO` y el triage.
-
-Ideas tomadas de [CoverIQ/Figma-UI-Test-Planner](https://github.com/CoverIQ/Figma-UI-Test-Planner) (la cadena historia → plan → casos → automatización) y de [figma-playwright-gen-ai](https://github.com/meeviefranc/figma-playwright-gen-ai) (emparejar las capas del diseño con los localizadores). La diferencia es que aquí Figma se lee por MCP y no por la API REST, y que se contrasta con la app real.
-
-### Preparar el MCP de Figma
-
-[`.mcp.figma.json`](.mcp.figma.json) declara el servidor remoto oficial (`https://mcp.figma.com/mcp`) junto al de Playwright. Va aparte de `.mcp.json` para que el resto de agentes (healer, revisor) y las sesiones normales de `claude` no carguen Figma ni pidan autenticarse. Necesita un asiento **Dev** o **Full** de Figma.
-
-1. Abre `claude --mcp-config .mcp.figma.json` en la raíz del repositorio, ejecuta `/mcp`, elige **figma** y autentícate en el navegador. Se hace una vez por máquina.
-2. Crea el diseño de la demo con la guía [`specs/figma/README.md`](specs/figma/README.md): dos frames de SauceDemo con dos discrepancias a propósito.
-3. Pon el `FILE_KEY` y los `node-id` en las líneas `Figma:` de [`specs/historias/HU-001.md`](specs/historias/HU-001.md).
-
-Mientras la historia tenga `FILE_KEY`, el script usa sola la instantánea [`specs/figma/HU-001.figma.json`](specs/figma/HU-001.figma.json). Esa instantánea está escrita a mano según la guía. Cada ejecución con Figma real la reescribe con lo que devuelve el MCP, de modo que siempre hay una copia para la demo sin conexión.
-
-### Uso
-
-```bash
-npm run design:ai -- HU-001              # Figma por MCP (o la instantánea, si la historia aún no tiene fichero)
-npm run design:ai -- HU-001 --snapshot   # lo mismo, forzando la instantánea: no se conecta a Figma
-npm run design:ai -- HU-001 --dry-run    # enseña el prompt del agente y no llama a la IA
-npm run design:ai -- HU-001 --render     # sin IA: valida el JSON existente y reescribe el plan
-npm run design:ai -- HU-001 --render --generate   # tras revisar el plan: tests de los casos nuevos de prioridad alta
-npm run design:ai -- HU-001 --render --generate --all   # todos los casos nuevos
-```
-
-Usa Claude CLI con tu suscripción, igual que `heal:ai`. Necesita acceso a la app, porque el agente la recorre.
-
-### Qué sale
-
-| Fichero | Contenido |
-|---|---|
-| `specs/disenos/HU-001.design.json` | La propuesta de la IA, con la forma fija de las instrucciones del agente |
-| `specs/disenos/HU-001.plan.md` | Resumen de cobertura, discrepancias, dudas, criterios con su trazabilidad y casos en formato planner |
-| `specs/figma/HU-001.figma.json` | Instantánea del diseño, solo cuando se lee de Figma |
-| `tests/hu-001/*.spec.ts` | Con `--generate`: los tests que escribe el generator, pendientes de revisar |
-
-> **Para la demo:** un caso que comprueba algo que está en el diseño y no en la app, como el subtotal del carrito (D1), da un test que **falla**. Es lo esperado: `report:ai` lo clasifica como `bug_producto` y `jira:tickets` abre el ticket. Así se ve el ciclo completo, del diseño a Jira.
-
----
-
-## Reporte IA (`report:ai`)
-
-El script `report:ai` analiza los resultados de la última ejecución y genera cuatro ficheros de salida en `playwright-report/`.
-
-Lo que se puede decidir con reglas lo hace el código, en [`scripts/triage.mjs`](scripts/triage.mjs):
-- **Agrupa** los fallos por causa: patrón del fallo más el elemento implicado. No usa la primera línea del error, porque los mensajes personalizados de los `expect` la cambian en cada test.
-- **Marca como flaky** los tests que fallaron y pasaron al reintentar.
-- **Enmascara datos sensibles** antes de enviar nada a la IA: emails, tokens, cookies, query strings, valores escritos en formularios y rutas con nombre de usuario.
-
-La IA solo **clasifica** los grupos que no son flaky, como `test_roto`, `bug_producto` o `entorno`, con confianza, evidencia y acción recomendada. Para decidir, compara lo que espera el test con la instantánea de la página en el momento del fallo (`error-context.md`). Con esa clasificación redacta el resumen y las correcciones, y abre tickets solo para los `bug_producto`.
-
-### Proveedor de IA
-
-El script elige el proveedor según el entorno:
-
-- **Cualquier API compatible con la de OpenAI** (OpenRouter, Gemini, el gateway de un cliente...): con `AI_API_KEY`, `AI_BASE_URL` y `AI_MODEL`. Es lo que se usa para cambiar de proveedor sin tocar código.
-- **Atajo de Gemini:** si no hay `AI_API_KEY` pero sí `GEMINI_API_KEY`, usa **Google Gemini** (`gemini-flash-latest`, free tier).
-- **En local, sin ninguna clave:** el CLI de Claude (`claude`) con tu suscripción. No requiere API key.
-
-Gana la primera opción que tenga clave (ver `API` en [`scripts/report-ai.mjs`](scripts/report-ai.mjs)). El proveedor y el modelo quedan en `ai-failures-grouped.json` y `ai-eval.json`, y los enseña el dashboard. Ejemplo con OpenRouter:
-
-```bash
-AI_API_KEY=sk-or-... AI_BASE_URL=https://openrouter.ai/api/v1 AI_MODEL=<modelo>:free npm run eval:ai
-```
-
-El flujo completo del script está en el diagrama de [Cómo encaja todo](#cómo-encaja-todo).
-
-### Ficheros generados
-
-| Fichero | Descripción |
-|---------|-------------|
-| `playwright-report/ai-summary.txt` | Resumen ejecutivo: totales, estado global y conclusión |
-| `playwright-report/ai-corrections.md` | Posibles causas y correcciones para cada fallo |
-| `playwright-report/ai-tickets.json` | Tickets en formato Jira (JSON importable), solo para los `bug_producto` |
-| `playwright-report/ai-failures-grouped.json` | Grupos de fallos con su clasificación: tipo, confianza, evidencia y acción |
-
-### Acierto de la IA
-
-`npm run eval:ai` ejecuta cada escenario de fallo en chromium, lanza `report:ai` y compara el tipo que asigna la IA a cada grupo con la respuesta esperada de [`specs/ai-golden.json`](specs/ai-golden.json). El resultado queda en `playwright-report/ai-eval.md` y, con los mismos datos, en `ai-eval.json` (lo lee el [dashboard](#dashboard-qa-intelligence)). Solo hace la llamada de clasificación (una por escenario), no el resumen ni las correcciones. En CI se lanza a mano con `suite=eval` (usa el proveedor de CI) y la cifra sale en el resumen de la ejecución. Si la IA no responde, por ejemplo por cuota agotada, esos grupos salen como no evaluados y no cuentan en la cifra.
-
-> En CI se usa OpenRouter con un modelo gratuito: 50 peticiones al día sin créditos (con Gemini, 20 al día y 5 por minuto). Una evaluación gasta 4, y una ejecución de CI con fallos, otras 4 como mucho (el reporte es uno para los tres navegadores). Una CI en verde no gasta ninguna, aunque haya algún test flaky.
-
-Última medición (Claude Haiku 5.5, en local, 21 de octubre de 2026): **11 de 11 grupos bien clasificados, que cubren 185 de 185 tests fallados**. Con `nvidia/nemotron-3-ultra-550b-a55b:free` por OpenRouter, la misma cifra en local y en dos ejecuciones de CI (26 de octubre de 2026).
-
-| Escenario | Esperado | Grupos | Acierto | Tiempo del reporte |
-|---|---|---|---|---|
-| `demo-fail` | test_roto | 7 | 7/7 | 57 s |
-| `cascade` | test_roto | 1 | 1/1 | 23 s |
-| `bug` | bug_producto | 2 | 2/2 | 34 s |
-| `env` | entorno | 1 | 1/1 | 21 s |
-| `flaky` | flaky (lo decide el código) | 1 | 1/1 | 19 s |
-
-> Son 5 escenarios controlados y una sola ejecución: demuestra que la clasificación funciona, no que acierte siempre en un proyecto real. Para medirlo en un proyecto real, añade sus fallos conocidos a `specs/ai-golden.json`.
-
-### Ejemplo de salida
-
-> Salida real de `npm run test:scenario:bug -- --project=chromium` seguido de `npm run report:ai`. El escenario hace que el badge del carrito cuente un producto de más.
-
-`ai-summary.txt`:
-
-```
-RESUMEN DE EJECUCIÓN – PLAYWRIGHT E2E 🎭
-Fecha: 21 de octubre de 2026, a las 13:55
-
-RESULTADO GLOBAL
-Total de pruebas ejecutadas: 70
-✅ Pruebas correctas:           35
-❌ Pruebas fallidas:            35
-⏭️ Pruebas omitidas:            0
-⚠️ Pruebas inestables (flaky):  0
-
-ATENCIÓN REQUERIDA
-El contador del carrito muestra un producto de más en 34 pruebas (fallo de la aplicación). Al añadir un solo artículo, el número del carrito marca 2 mientras el texto del propio carrito indica 1.
-El contador del carrito cuenta 4 productos cuando la lista muestra 3, en la prueba con el usuario problem_user (fallo de la aplicación).
-
-CONCLUSIÓN
-Los 35 fallos son defectos reales de la aplicación en el contador del carrito, no errores de las pruebas. Es un riesgo para producción, porque un cliente vería cifras incorrectas en su carrito, así que hay un bloqueo que conviene resolver antes de publicar. El resto de las pruebas, 35 en total, sí han pasado correctamente.
-
-ACCIONES RECOMENDADAS
-1. Abrir una incidencia de fallo de la aplicación sobre el contador del carrito, usando el caso de las 34 pruebas como referencia.
-2. Incluir en esa incidencia el caso del usuario problem_user, que muestra 4 cuando la lista tiene 3 productos.
-3. No modificar las pruebas: fallan porque la aplicación se comporta mal, no porque estén mal escritas.
-4. Repetir la ejecución tras la corrección y no publicar hasta que las pruebas del contador del carrito pasen.
-```
-
-Fragmento de `ai-corrections.md`:
-
-```markdown
-### G001 – bug_producto – Error: El badge del carrito debería mostrar 1 tras añadir la Sauce Labs Bolt T-S…
-
-🔍 **Diagnóstico:** El badge muestra "2" con un solo producto añadido, y el botón del carrito dice "Cart, 1 items". La página contradice su propio estado. La instantánea solo muestra la Sauce Labs Bolt T-Shirt en el inventario, y el test espera 1 (confianza: alta).
-
-🔧 **Pasos para corregir:**
-1. Abrir bug a producto: el badge del carrito muestra 2 con un solo producto añadido y no coincide con el texto accesible "Cart, 1 items".
-2. Adjuntar el error de `expect(locator).toHaveText(expected)` (Expected: "1", Received: "2") y la instantánea del fallo.
-3. No modificar los tests: dejarlos fallando como evidencia del bug.
-```
-
-### Uso en local
-
-```bash
-# Requiere haber ejecutado los tests antes (ver "Ejecución de los tests")
-npm run report:ai
-
-# Alternativa: tests + reporte en un único comando
-npm run test:ai
-
-# Medir el acierto de la IA con los escenarios de fallo
-npm run eval:ai
-```
-
-### Uso en CI (GitHub Actions)
-
-El reporte se ejecuta automáticamente en el job **Reporte IA**, una vez por ejecución y con los resultados de los tres navegadores juntos. El resumen aparece en la pestaña **Summary** del workflow sin necesidad de descargar ningún artefacto, y los ficheros completos están en el artefacto `ai-report`.
-
-Requiere el secret `GEMINI_API_KEY` configurado en el repositorio:
-**Settings > Secrets and variables > Actions > New repository secret**
-
-Crea una key gratuita (sin tarjeta) en [aistudio.google.com/apikey](https://aistudio.google.com/apikey).
-
-Para usar **OpenRouter** en su lugar, añade el secreto `OPENROUTER_API_KEY` y la variable de repositorio `AI_MODEL` (**Settings > Secrets and variables > Actions > Variables**) con el modelo elegido tras pasar `npm run eval:ai`. Si existe el secreto, OpenRouter tiene prioridad sobre Gemini; si falta `AI_MODEL`, el reporte falla con un mensaje que lo dice.
-
----
-
-## Cerrar el circuito (fase 4)
-
-Después de `report:ai`, cada tipo de fallo tiene su salida:
-
-| Tipo | Qué pasa | Cómo |
-|---|---|---|
-| `test_roto` | El healer corrige el test y abre una PR en borrador. Nunca se fusiona sola | `npm run heal:ai`, en local o en el job **Healer** de CI (a mano) |
-| `bug_producto` | Ticket de Jira con la traza y el vídeo de los tests afectados. El healer no toca estos tests | `npm run jira:tickets`, en local y en CI |
-| `flaky` / `entorno` | Solo el aviso del resumen, sin acción automática | — |
-
-### Healer automático (`npm run heal:ai`)
-
-```bash
-npm run heal:ai                          # todos los test_roto del último report:ai
-npm run heal:ai -- --group G001          # solo ese grupo (se puede repetir)
-npm run heal:ai -- --dry-run             # enseña lo que recibiría el healer; no toca git, GitHub/GitLab ni la IA
-npm run heal:ai -- --no-publish          # para tras el commit y deja la PR preparada en heal-pending.json (no empieza si ya hay una)
-npm run heal:ai -- --publish             # solo push y PR de lo que dejó --no-publish (sin agentes), si la rama sigue en el commit revisado
-DEMO_SCENARIO=cascade npm run heal:ai    # con un escenario: la misma variable que al lanzar los tests
-```
-
-1. Lee `playwright-report/ai-failures-grouped.json` y se queda solo con los grupos `test_roto`. Aunque se pida a mano un `bug_producto`, no lo cura.
-2. Exige un árbol de trabajo limpio y crea una rama `heal/<grupos>-<fecha>`.
-3. Lanza `claude -p` con el agente `playwright-test-healer` y el servidor MCP de [`.mcp.json`](.mcp.json). Le pasa el diagnóstico de cada grupo y unas reglas: cambiar lo mínimo, no relajar asserts y no tocar nada fuera de `tests/`, `pages/` y `fixtures/`.
-4. Si toca otros ficheros, para y no abre PR. Si no cambia nada, borra la rama.
-5. Pasa el check de asserts y la [revisión adversarial](#revisión-adversarial-npm-run-reviewpw). Después confirma, hace push y abre una **PR en borrador** con `gh`, con el diagnóstico, el veredicto del revisor y el resumen del healer. Si el check encuentra algo o el revisor no aprueba el cambio, la PR lleva la etiqueta `needs-human`.
-6. Añade el resultado a `playwright-report/ai-heal.json` y vuelve a tu rama. Si ya había resultados de la misma ejecución (por ejemplo, al curar los grupos de uno en uno con `--group`), los conserva.
-
-Usa tu suscripción de Claude (el agente va con Sonnet) y necesita `gh` autenticado. Si `origin` es un GitLab, abre una MR en borrador por la API en vez de una PR, y necesita `GITLAB_TOKEN` (token con scope `api`) en vez de `gh`. Tarda varios minutos, porque el healer ejecuta y depura los tests.
-
-**En CI** lo lanza el job **Healer**, solo a mano: `gh workflow run "Playwright Tests" -f scenario=cascade -f heal=true`. Nunca corre en push ni en PR, porque gasta cuota y abre PR, ni cuando no ha fallado ningún test. Descarga el artefacto `ai-report` y ejecuta `heal:ai` sobre la rama elegida en dos pasos: `--no-publish` (healer, check, revisor y commit) sin `GH_TOKEN`, y `--publish` (push y PR) con `GH_TOKEN` y sin agentes. Así el token no está en ningún proceso mientras corren los agentes. El commit se hace con `git commit-tree`, que no ejecuta hooks, y `--publish` se niega si la rama ya no está en ese commit. **Riesgo que queda:** los dos pasos comparten el checkout, así que un test del healer podría dejar un `.git/hooks/pre-push` que se ejecute con `GH_TOKEN` al hacer el push. La solución es publicar desde otro job con un checkout limpio; está pendiente en el [ROADMAP](ROADMAP.md). Deja `ai-heal.json` en el artefacto `ai-heal` y en el Summary. Necesita:
-
-- El secreto `CLAUDE_CODE_OAUTH_TOKEN`, que se genera con `claude setup-token` y se guarda con `gh secret set CLAUDE_CODE_OAUTH_TOKEN`. Usa la suscripción de quien lo genera.
-- Que el repositorio deje a GitHub Actions abrir PR: **Settings > Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests**.
-
-Las PR que abre el `GITHUB_TOKEN` del workflow no disparan otros workflows: los tests y el guard no se ejecutan solos en la PR del healer. Para que corran, una persona cierra y reabre la PR. Eso solo vale si se lanzó desde `main`: la PR va contra la rama elegida, y `playwright.yml` y `guard.yml` solo se disparan en las PR contra `main`. Lanzado desde otra rama (útil para probar el job), la PR no pasa nunca por los tests ni por el guard. El check de asserts y la revisión adversarial sí van dentro de `heal:ai`, antes de abrirla. El dashboard del artefacto `ai-report` se genera antes del healer, así que no incluye su PR.
-
-> Con los `@demo-fail`, la corrección correcta es cambiar el valor esperado (`'3'` por `'4'`): la PR sale con `needs-human`, que es lo que debe pasar. **No la fusiones**: esos tests fallan aposta para la demo.
-
-### Check de asserts (`guard-asserts.mjs`)
-
-Es la protección que no depende de la IA. Si la clasificación se equivocara y el healer "arreglara" un bug real bajando la expectativa, el check lo marca. Compara cada aserción por su matcher y sus argumentos, sin el sujeto, porque cambiar un selector es justo lo que debe poder hacer el healer. Pide revisión humana si:
-
-- desaparece una aserción o cambia su valor esperado, o se le añade `.not`;
-- se añade `test.skip`, `test.fixme` o `test.fail`;
-- aparece un timeout nuevo o `test.slow()`;
-- se borra un fichero de `tests/`, `pages/` o `fixtures/`, o cambia `playwright.config.ts`.
-
-```bash
-npm run guard:asserts -- main     # compara main con tu árbol de trabajo
-```
-
-En CI corre en su propio workflow ([`guard.yml`](.github/workflows/guard.yml)), solo en las PR que salen de ramas `heal/*`. Falla si encuentra algo. Es un **check obligatorio de `main`**: mientras está en rojo, GitHub no deja fusionar la PR, tampoco a los administradores. En las demás PR sale como omitido, que cuenta como superado.
-
-Cuando el cambio es legítimo (el valor antiguo estaba mal), una persona lo aprueba poniendo la etiqueta **`asserts-aprobados`** en la PR. El check se vuelve a ejecutar y pasa. La aprobación vale solo para los commits revisados: si llega otro, el workflow retira la etiqueta y el check vuelve a mirar el cambio.
-
-### Revisión adversarial (`npm run review:pw`)
-
-El agente [`playwright-adversarial-reviewer`](.claude/agents/playwright-adversarial-reviewer.md) solo lee: intenta demostrar que el cambio está mal. Busca, de más a menos grave:
-
-- **Ocultar un bug:** un locator que apunta a otro elemento (más amplio, con `.first()` o con un `filter` que no casa con nada), una comprobación más laxa o un paso que desaparece.
-- **Locators ambiguos o frágiles.**
-- **Riesgos de flaky.**
-- **Convenciones del repositorio:** page objects, imports de `fixtures/scenarios`, tests `@demo-fail` y líneas citadas en `learning/`.
-- **Alcance:** apariciones del mismo patrón que se han quedado sin corregir.
-
-Para cada hallazgo intenta construir el caso concreto en el que el test nuevo pasaría con la aplicación rota. Recibe el diff, el resultado del check de asserts y el lint de los ficheros cambiados. Responde con `VEREDICTO: APROBADO`, `DUDAS` o `RECHAZADO` y una lista de hallazgos.
-
-```bash
-npm run review:pw -- main      # cualquier cambio en tests/, pages/, fixtures/ o la configuración frente a main
-```
-
-`heal:ai` lo lanza solo antes de abrir cada PR. Para las PR de personas se lanza a mano. Usa Claude CLI con tu suscripción (Sonnet).
-
-Cubre lo que el check de asserts no mira, que es el sujeto de cada `expect`. Probado con una trampa: cambiar `inventoryPage.cartBadge` por `inventoryPage.cartBadge.filter({ hasText: 'vacío' })` en un `not.toBeVisible()`. El check no ve nada, y el revisor lo rechaza: el locator no casa con ningún elemento, así que el test pasaría aunque el badge apareciera con el carrito vacío.
-
-### Lint de Playwright (`npm run lint`)
-
-[`eslint-plugin-playwright`](https://github.com/playwright-community/eslint-plugin-playwright) con su configuración recomendada, sin IA, sobre `tests/`, `pages/` y `fixtures/`. Detecta `await` que faltan, `waitForTimeout`, `force: true`, `test.only` y `skip`, y aserciones que no esperan al elemento. En CI es el job **Lint de Playwright**, en cada push y PR. Falla con cualquier error o si aparece un aviso más de los 17 que hay hoy (13 `no-useless-not` y 4 condicionales en `problem-user-cart.spec.ts`): esa deuda queda a la vista y no puede crecer. Si se corrige alguno, baja `--max-warnings` en `package.json`.
-
-### Tickets de Jira (`npm run jira:tickets`)
-
-Convierte `ai-tickets.json` en peticiones a la API REST v3 de Jira: título, descripción, tests afectados, solución sugerida, etiquetas (severidad, componente y ejecución) y **prioridad**. La prioridad sale de la severidad, por posición entre las que admite el proyecto (`bloqueante` toma la más urgente), o por nombre con `JIRA_PRIORITY_MAP="bloqueante=Highest,alta=High,media=Medium,baja=Low"`. Así el icono de color de la prioridad sale en la tarjeta. Para colorear la tarjeta entera, en un tablero de Jira Software está en *Configuración del tablero > Colores de las tarjetas > Prioridad*. Adjunta la traza y el vídeo de hasta 3 tests del grupo, solo si son de la misma ejecución que el análisis.
-
-- **Modo simulado** (por defecto): sin credenciales no envía nada. Deja las peticiones completas y la lista de adjuntos en `playwright-report/ai-jira.json`. En CI va dentro del artefacto `ai-report`.
-- **Modo real**: con `JIRA_BASE_URL`, `JIRA_EMAIL`, `JIRA_API_TOKEN` y `JIRA_PROJECT_KEY` crea los tickets y sube los adjuntos. En local se leen solos de `.env` (que no está en git); en CI, de los secretos del repositorio. `JIRA_ISSUE_TYPE` es opcional (por defecto, `Bug`; tiene que existir en el proyecto); en CI es una variable del repositorio, no un secreto (**Settings > Secrets and variables > Actions > Variables**). Si el proyecto exige informador al crear por API, se pone la cuenta del token. Volver a lanzarlo crea tickets duplicados.
-- En CI también salen con adjuntos: el job **Reporte IA** descarga los `test-results-*` de cada navegador (trazas, vídeos e instantáneas de los fallos) antes de `jira:tickets`.
-
-Los textos pasan por el mismo redactor que el triage. Las trazas y los vídeos no: en un proyecto real, revisa qué contienen antes de activarlo.
-
----
-
-## Análisis estático con SonarQube Cloud
-
-[SonarQube Cloud](https://sonarcloud.io) analiza el código en cada push a `main` y en cada PR, desde el workflow [`sonar.yml`](.github/workflows/sonar.yml) y no con el *Automatic Analysis*, para poder subir la cobertura. Complementa a las otras capas de revisión, no las sustituye: el lint y el check de asserts saben qué hace frágil un test de Playwright o qué relaja una aserción, y Sonar no; Sonar mira todo el código, sobre todo `scripts/`, que no revisa nada más.
-
-### Qué analiza
-
-La configuración está en [`sonar-project.properties`](sonar-project.properties):
-
-- **Código:** todo el repositorio salvo `learning/`, `docs-site/`, `docs/`, `node_modules/` y las salidas (`playwright-report/`, `test-results/`, `coverage/`). Lo que más aporta es `scripts/*.mjs`: procesos lanzados con `spawn`, claves de la IA, el token de Jira y el HTML del dashboard. SonarQube Cloud ya no admite `sonar.sources` ni `sonar.tests`: el alcance se recorta solo con `sonar.exclusions`.
-- **Tests:** fuera del análisis (`tests/` y `scripts/*.test.mjs`). Los E2E ya los revisan el lint y el check de asserts, y los unitarios aportan la cobertura.
-- **Cobertura:** la de `npm run test:unit:coverage`, que ejecuta los mismos tests que `test:unit` y deja `coverage/lcov.info` (no se versiona). Solo se mide en `scripts/`: `tests/`, `pages/` y `fixtures/` son E2E y quedan fuera.
-- **`secret_sauce`** (la contraseña pública de SauceDemo) no hace saltar ninguna regla: el primer análisis no dio ni incidencias ni *Security Hotspots* de credenciales, así que no hay exclusión. Si apareciera, se marca como *Safe* en la interfaz.
-
-En CI, sin el secreto `SONAR_TOKEN` (antes de configurarlo o en una PR desde un fork) el análisis se omite y el check sale en verde con un aviso. Es un workflow aparte de `playwright.yml`: no espera a los tests E2E ni los retrasa.
-
-### Ver los resultados
-
-En el proyecto de SonarQube Cloud (*sonarcloud.io > organización > proyecto*): incidencias, hotspots, cobertura y duplicados, con la vista del código nuevo de cada PR. Con la app de GitHub de SonarQube Cloud instalada, la PR lleva además el resumen de la *quality gate*.
-
-### MCP de Sonar para los agentes
-
-[`.mcp.json`](.mcp.json) declara el [servidor MCP oficial](https://github.com/SonarSource/sonarqube-mcp-server) (`sonarsource/sonarqube-mcp`, por Docker y en solo lectura). El generator y el healer, antes de terminar, consultan las incidencias del proyecto o de la PR y corrigen las nuevas de los ficheros que han tocado. Si el servidor no está disponible, siguen sin él. Sonar solo ve el último commit analizado, no los cambios sin subir.
-
-Para usarlo en local hace falta Docker y exportar las variables antes de abrir Claude Code. Nunca van en el repositorio:
-
-```bash
-export SONARQUBE_TOKEN=<token de usuario de sonarcloud.io>   # My Account > Security
-export SONARQUBE_ORG=<clave de la organización>
-```
-
-En Windows, con Claude Code dentro de VS Code:
-
-```powershell
-setx SONARQUBE_TOKEN "<token de usuario de sonarcloud.io>"
-setx SONARQUBE_ORG "<clave de la organización>"
-```
-
-`setx` solo llega a los procesos nuevos: cierra VS Code entero (*File > Exit*, sin ningún `Code.exe` en el Administrador de tareas) y ábrelo desde el menú Inicio. Recargar la ventana no basta, y el servidor falla con «environment variable or property must be set». Mejor un token propio para el MCP que reutilizar el del secreto `SONAR_TOKEN`: si se filtra desde tu equipo, se revoca sin romper el CI.
-
-### En el editor
-
-[`.vscode/extensions.json`](.vscode/extensions.json) recomienda **SonarQube for IDE** (`SonarSource.sonarlint-vscode`): marca las incidencias mientras escribes, antes del push. En modo conectado con la organización de SonarQube Cloud usa el mismo perfil de reglas y las mismas exclusiones que el análisis de CI, y respeta las incidencias ya aceptadas en la interfaz. Cobertura, duplicados y *quality gate* siguen saliendo solo del CI. El resto de `.vscode/` no se versiona.
-
-`heal:ai` y `design:ai` no lo usan: [`scripts/agent.mjs`](scripts/agent.mjs) quita `SONAR_TOKEN` y `SONARQUBE_TOKEN` del entorno de los agentes, igual que el resto de tokens, así que el servidor no arranca y el agente sigue sin él.
-
----
-
-## Dependencias y GitHub Actions
-
-El framework no despliega nada y todas sus dependencias son de desarrollo, así que el riesgo de seguridad real está en la cadena de suministro y en los secretos de CI. Lo cubren tres medidas:
-
-- **Dependabot** ([`.github/dependabot.yml`](.github/dependabot.yml)): cada semana, una PR con las versiones menores de npm agrupadas, otra con las GitHub Actions y una por cada versión mayor, para revisarla a mano. Las alertas de seguridad abren PR al momento, fuera del calendario. `@playwright/test` queda fuera: va atado a la imagen de Docker de CI y se sube a mano junto con ella. Las versiones mayores de `@types/node` también: van a juego con la versión mínima de Node soportada (22), y se suben a mano cuando suba ese mínimo.
-- **Actions fijadas a SHA**: todos los `uses:` apuntan a un commit, con la versión en un comentario (`actions/checkout@<sha>  # v7.0.1`). Un tag se puede mover para que apunte a otro código; un SHA no. Es la regla S7637 de Sonar. Dependabot actualiza el SHA y el comentario.
-- **Secret scanning y push protection** de GitHub, activos en el repositorio: GitHub rechaza un push que lleve un token reconocible.
-
-No hay más análisis a propósito: Semgrep o CodeQL solaparían con Sonar, y un DAST sobre SauceDemo escanearía una app ajena sin permiso.
-
----
-
-## Qué datos salen y hacia dónde
-
-Resumen para quien tenga que aprobar el uso en un cliente: qué sale de la máquina o del pipeline, hacia dónde, y qué controles hay. El dashboard no aparece porque no envía nada.
-
-| Destino | Quién lo envía | Qué sale | Qué no sale |
-|---|---|---|---|
-| **Anthropic** (Claude CLI, con tu suscripción, en local) | `report:ai`, `eval:ai` | Por cada grupo de fallos: patrón y huella, número de tests y navegadores, hasta 10 tests (título, fichero, línea y navegador), el error recortado a 1500 caracteres y la instantánea de la página en el fallo (`error-context.md`) recortada a 3000. Todo pasa antes por el redactor. Para el resumen, las correcciones y los tickets solo va un extracto del error de 600 caracteres, sin la instantánea | `test-results.json` completo, el código de los tests, trazas, vídeos, capturas y variables de entorno |
-| **Google** (Gemini API, capa gratuita, en CI) u **OpenRouter** (si existe `OPENROUTER_API_KEY`; reenvía al proveedor del modelo elegido) | `report:ai`, `eval:ai` en el pipeline | Lo mismo que la fila anterior | Lo mismo que la fila anterior |
-| **Anthropic** (Claude CLI, en local o en el job **Healer** de CI) | `heal:ai` | El diagnóstico de los grupos `test_roto` (los mismos campos redactados) y, además, **lo que el agente lea o ejecute**: ficheros del repositorio y las instantáneas de la página de los tests que lanza a través del servidor MCP. **Esto no pasa por el redactor** | `.env`: [`.claude/settings.json`](.claude/settings.json) prohíbe leerlo con las herramientas del agente (comprobado con Read y con Grep), pero no impide que el healer escriba y ejecute con `test_run` un test que lo lea. En CI no hay `.env`. Tokens de la lista de [`agent.mjs`](scripts/agent.mjs) (`GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*`, `SONAR_TOKEN`, `SONARQUBE_TOKEN` y las claves de IA): se quitan del entorno de los agentes; cualquier otra variable sí llega. En el job **Healer**, `GH_TOKEN` solo existe en el paso de publicar, que no lanza agentes: ahí lo usan `gh` (comprobar la sesión y abrir la PR) y el push, que lo recibe como cabecera por entorno. El checkout no lo guarda en `.git/config`. **Excepción:** `CLAUDE_CODE_OAUTH_TOKEN` sí llega, porque `claude` lo necesita, y el healer podría escribir y ejecutar un test que lo lea. Tampoco está cubierto que un test deje un hook de git (`.git/hooks/pre-push`) que el paso de publicar ejecute con `GH_TOKEN` |
-| **Anthropic** (Claude CLI, en local) | `review:pw` | El diff de `tests/`, `pages/`, `fixtures/` y `playwright.config.ts`, el resultado del check de asserts, el lint y los ficheros que el agente decida leer. Sin redactar | `.env` (misma regla). Nada se ejecuta: el agente solo lee |
-| **Anthropic** (Claude CLI, en local) | `design:ai` | La historia de usuario, lo que el agente lea de Figma (capas, textos, componentes y, si la pide, una captura del frame), las instantáneas de la página de la app que recorre por el MCP y los ficheros del repositorio que decida leer. **No pasa por el redactor**: las historias y los diseños de la demo no llevan datos personales | `.env` (misma regla). No tiene terminal (`Bash`) y solo puede escribir en `specs/disenos/` y `specs/figma/`: el script lo comprueba al terminar |
-| **Figma** (MCP remoto `mcp.figma.com`, con el login OAuth de quien lo ejecuta) | `design:ai` | Las peticiones de lectura de los frames de la historia | Nada de la app ni de los tests. Con `--snapshot` no se conecta |
-| **GitHub** o **GitLab** | `heal:ai` | La rama `heal/*` con el cambio y la descripción de la PR o MR: diagnóstico, veredicto del revisor y resumen del healer | — |
-| **GitHub Actions** (artefactos) | El pipeline | Informe HTML de Playwright (30 días), trazas y vídeos de los tests fallidos (7 días), `test-results.json` (1 día), el artefacto `ai-report` con los `ai-*`, el dashboard y `ai-jira.json` (30 días) y, si se lanza el healer, `ai-heal` con `ai-heal.json` (30 días). Los ve quien tenga acceso de lectura al repositorio | — |
-| **Tu Jira** (`JIRA_BASE_URL`) | `jira:tickets`, solo con las variables `JIRA_*` | Título, descripción, tests afectados y solución sugerida (redactados), etiquetas, prioridad y, en local y en CI, **la traza y el vídeo de hasta 3 tests por ticket, sin redactar**. Una traza lleva el DOM, las peticiones de red y la consola de la sesión | Sin credenciales es modo simulado y no sale nada |
-| **CodeRabbit** (app de GitHub del repositorio) | Cada PR | El diff de la PR | — |
-| **SonarQube Cloud** (`sonarcloud.io`) | El workflow `sonar.yml` en cada push a `main` y PR; en local, el MCP de Sonar con el token de quien lo use | El código del repositorio (salvo las exclusiones de `sonar-project.properties`) y la cobertura de los tests unitarios. El MCP solo hace consultas de lectura | Resultados de los tests E2E, informes de la IA y secretos. Sin `SONAR_TOKEN` no sale nada |
-
-**Controles que lo respaldan**
-
-- **Lista de campos permitidos.** Hacia la IA solo salen los campos que construye `groupFailures` en [`scripts/triage.mjs`](scripts/triage.mjs). El informe de Playwright no se envía entero.
-- **Redactor** (`redact` en `triage.mjs`, con tests en [`scripts/triage.test.mjs`](scripts/triage.test.mjs)). Enmascara:
-  - JWT y cabeceras `Authorization`, `Cookie` y `Set-Cookie`;
-  - valores de `password`, `secret`, `token` y `api_key`;
-  - emails y query strings de las URLs;
-  - lo que se escribe con `fill()` y los valores de los campos de texto de la instantánea;
-  - las rutas con nombre de usuario.
-
-  Se redacta antes de recortar, para que un token partido por el corte no se escape.
-- **Sin IA cuando no hace falta.** Una ejecución en verde no llama a la IA. En push y PR tampoco se llama si solo hay tests flaky. La agrupación y la detección de flaky se hacen en código.
-- **Los agentes no reciben los tokens conocidos.** [`scripts/agent.mjs`](scripts/agent.mjs) quita del entorno de cada agente `GH_TOKEN`, `GITHUB_TOKEN`, `GITLAB_TOKEN`, `JIRA_*`, los tokens de Sonar y las claves de IA, porque el healer puede escribir y ejecutar tests que lean `process.env`. Es una lista: una variable que no esté en ella sí llega (por ejemplo, `CLAUDE_CODE_OAUTH_TOKEN`, que `claude` necesita). En CI, además, el healer corre en un paso sin `GH_TOKEN`, para que tampoco esté en sus procesos padre.
-- **Los agentes no leen `.env` con sus herramientas.** [`.claude/settings.json`](.claude/settings.json) prohíbe a Claude Code leer `.env` y `.env.*` en este proyecto, también al healer y al revisor. No cubre los tests: el healer puede escribir y ejecutar con `test_run` un test que lea `.env`. En CI no existe; en local, quien lance el healer tiene que contar con ello. El resto del repositorio sí lo pueden leer: no guardes secretos en otros ficheros.
-- **Jira simulado por defecto.** Sin las variables `JIRA_*` no se envía nada. Con ellas, también en CI, se suben la traza y el vídeo sin pasar por el redactor: revisa qué contienen antes de poner los secretos.
-- **El dashboard no se conecta a nada.** Tiene una CSP `default-src 'none'` y vuelve a pasar el redactor por todos los textos.
-
-**Lo que hay que decidir con cada cliente**
-
-- **Proveedor y condiciones.** Las capas gratuitas y las suscripciones personales no ofrecen las mismas garantías de uso y retención de datos que un contrato de empresa. Hay que revisar las condiciones del proveedor que se use (Gemini API, OpenRouter y el proveedor del modelo, Anthropic, Bedrock o Vertex) antes de enviar datos de un cliente.
-- **Healer y revisor.** Leen código del repositorio sin redactar (todo menos `.env`, salvo con un test que ejecute el healer). En CI, el healer tiene en su entorno el `CLAUDE_CODE_OAUTH_TOKEN` de la suscripción de quien lo generó. En un proyecto con secretos o datos reales en otros ficheros, hay que ampliar la lista de `deny` o ejecutarlos con un proveedor aprobado por el cliente.
-- **Adjuntos de Jira y artefactos de CI.** Las trazas y los vídeos no pasan por el redactor. Hay que revisar qué datos de prueba se usan y la retención de los artefactos.
-
----
-
-## Dashboard QA Intelligence
-
-Una página web local que enseña el flujo completo de una ejecución: tests → grupos de fallos → clasificación → evidencia → acción recomendada → acierto de la IA. **No usa IA**: lee los ficheros que ya han generado Playwright, `report:ai` y `eval:ai`, y no vuelve a generar nada.
-
-```bash
-npm run dashboard               # lee test-results.json y playwright-report/ → playwright-report/qa-dashboard.html
-npm run dashboard -- --save     # además guarda esta ejecución (y la evaluación, si hay) en el historial
-npm run dashboard:demo          # datos de ejemplo de learning/ruta-qa/ejemplos → qa-dashboard-demo.html
-npm run dashboard -- --dir <carpeta>   # otra carpeta, p. ej. el artefacto ai-report descargado de CI
-```
-
-Abre el `.html` generado directamente en el navegador: no necesita servidor, conexión, dependencias nuevas ni claves de IA. Para trabajar en la interfaz sin gastar cuota, usa `dashboard:demo` o cualquier carpeta con artefactos ya generados.
-
-### Qué lee y qué enseña
-
-| Artefacto | Lo genera | En el dashboard | Si falta |
-|---|---|---|---|
-| `test-results.json` | Playwright (o `merge-results.mjs` en CI) | Total, pasados, fallidos, omitidos, flaky, % de éxito, navegadores, identificador de la ejecución | Las métricas de tests salen como `n/d` y el resto de ficheros no se puede vincular a una ejecución |
-| `ai-failures-grouped.json` | `report:ai` | Grupos con categoría, origen, confianza, evidencia, acción, tests, navegadores, error e instantánea; filtros y búsqueda | No hay grupos ni distribución por categoría |
-| `ai-summary.txt`, `ai-corrections.md`, `ai-tickets.json` | `report:ai` | Resumen, correcciones sugeridas y tickets propuestos | Se indica que no existen |
-| `ai-heal.json` | `heal:ai` | Acción ejecutada en cada grupo curado: la PR en borrador del healer, si lleva `needs-human` y si la revisión adversarial la aprobó o no estuvo disponible | Se indica que no hay acciones registradas |
-| `ai-jira.json` | `jira:tickets` | Acción ejecutada en cada grupo `bug_producto`: el ticket creado en Jira, o preparado sin enviar en modo simulado | Se indica que no hay acciones registradas |
-| `ai-eval.json` (o `ai-eval.md` antiguo) | `eval:ai` | Acierto por grupos y por tests, tests en grupos correctos e incorrectos, resultado por escenario, proveedor y fecha | Estado vacío que explica cómo generarla |
-
-Un fichero inexistente, vacío, con JSON malformado o con un formato antiguo no rompe la página: la sección **Artefactos leídos** dice qué se ha podido usar y por qué no.
-
-- **Tests y grupos van por separado.** Los tests cuentan una vez por navegador; un grupo es una causa (70 tests de `cascade` son 1 grupo). Nunca se suman.
-- **Origen de la clasificación.** `flaky` lo decide el código (*Determinista*); `test_roto`, `bug_producto` y `entorno`, la IA; `sin_clasificar` es que la clasificación falló. Las categorías son las mismas cinco del triage.
-- **Pendientes de revisión.** Los artefactos no guardan un estado de revisión. Se marcan los `sin_clasificar` y los de la IA con confianza distinta de `alta`.
-- **Recomendado no es ejecutado.** La acción, las correcciones y los tickets que propone la IA salen como propuestas. Lo que la fase 4 hizo de verdad sale aparte, como **acción ejecutada**: la PR del healer (`ai-heal.json`) y el ticket de Jira (`ai-jira.json`), en la tarjeta de cada grupo y en la sección de recomendaciones. Si no se ha lanzado `heal:ai` ni `jira:tickets`, se dice que no hay acciones registradas. El dashboard es de solo lectura: no lanza el healer, no abre PR y no crea tickets. Solo enlaza a la PR y al ticket, y solo si el enlace es `https`.
-- **Peticiones a la IA y proveedor.** Desde esta versión `report:ai` guarda en `ai-failures-grouped.json` el proveedor y el número de peticiones que hizo (`ai_requests`, reintentos incluidos). En informes anteriores salen como `n/d`. No hay datos de tokens ni de coste, así que no se muestran.
-- Cada indicador explica cómo se calcula en el desplegable **Cómo se calcula cada indicador**, al final de la página.
-
-### No mezclar ejecuciones
-
-`report:ai` guarda ahora `run_start_time` (la hora de inicio que pone Playwright en `test-results.json`), y el dashboard solo asocia el análisis a la ejecución si coincide. En informes anteriores compara los contadores de fallos y flaky y la fecha de los ficheros. `ai-heal.json` y `ai-jira.json` también guardan `run_start_time` y solo se muestran si coincide con la de `test-results.json` (o, si falta ese fichero, con la del análisis); si vienen de una versión anterior, se vinculan por fecha. `ai-summary.txt`, `ai-corrections.md` y `ai-tickets.json` no llevan identificador: solo se muestran si son posteriores a `test-results.json`. Lo que es de otra ejecución no se muestra y aparece un aviso. Esto importa porque `report:ai` no borra los ficheros de la ejecución anterior cuando no tiene nada que analizar.
-
-### Historial
-
-`--save` copia los datos normalizados de la ejecución actual a `qa-history/runs/<hora-de-inicio>.json` y los de la evaluación a `qa-history/evals/<fecha>.json`. La carpeta es local y no está en git. El selector **Ejecución** de la cabecera y la tabla **Historial** permiten ver cada una por separado.
-
-Para añadir una ejecución al historial, encadena los tres pasos y abre la página:
-
-```bash
-# bash (Git Bash, terminal de VS Code)
-PLAYWRIGHT_HTML_OPEN=never npm test; npm run report:ai; npm run dashboard -- --save; start playwright-report/qa-dashboard.html
-```
-
-```powershell
-# PowerShell
-$env:PLAYWRIGHT_HTML_OPEN = "never"; npm test; npm run report:ai; npm run dashboard -- --save; start playwright-report\qa-dashboard.html
-```
-
-- Van con `;` y no con `&&`: si hay tests fallidos, `npm test` termina con error y `&&` cortaría la cadena antes de `report:ai`. Por eso aquí no sirve `npm run test:ai`.
-- `PLAYWRIGHT_HTML_OPEN=never` evita que Playwright se quede sirviendo su informe HTML (`Serving HTML report at …`) cuando hay fallos, que bloquea la cadena hasta pulsar Ctrl+C.
-- `report:ai` consume cuota de IA y no da una estimación de tiempo: termina con `✅ AI Reporting finalizado correctamente`.
-
-Limitaciones:
-
-- Solo se guarda lo que se guarda a mano: lanza `--save` cuando `report:ai` haya terminado. Si ya existe una copia de esa ejecución, no se sobrescribe; borra el fichero si necesitas rehacerla.
-- Una ejecución sin `test-results.json` no tiene identificador y no se puede guardar. Una evaluación que solo tiene `ai-eval.md` tampoco.
-- Las evaluaciones tienen su propio historial y no se asocian a una ejecución: `eval:ai` lanza cinco ejecuciones seguidas y deja en disco la última.
-- La demo nunca lee ni escribe el historial.
-
-### Qué llama a modelos y qué no
-
-| Componente | ¿Llama a la IA? |
-|---|---|
-| `npm run report:ai` | Sí: clasificación, resumen, correcciones y tickets (Claude CLI en local, Gemini u OpenRouter en CI) |
-| `npm run eval:ai` | Sí: una clasificación por escenario. El dashboard nunca lo lanza |
-| `npm run heal:ai` | Sí: el agente healer (Claude CLI, en local o en el job **Healer** de CI). El dashboard nunca lo lanza |
-| `npm run review:pw` | Sí: el agente revisor (Claude CLI, en local). También lo lanza `heal:ai` |
-| `npm run jira:tickets`, `guard:asserts` y `lint` | No |
-| `npm run dashboard`, `dashboard:demo` y la página generada | No. Solo leen ficheros, no ejecutan tests y no necesitan claves |
-
-La página lleva una Content-Security-Policy `default-src 'none'`, que bloquea cualquier conexión de red, y los tests unitarios comprueban que ni el script ni la página contienen llamadas de red, procesos ni claves.
-
-### Privacidad
-
-El dashboard no envía nada a ningún sitio. Muestra lo mismo que ya contienen los artefactos, que salen redactados de `triage.mjs`, y además vuelve a pasar el redactor por todos los textos, por si el informe es antiguo. Los datos se escriben dentro de la página como texto, nunca como HTML, así que un mensaje de error no puede inyectar código. No incluye capturas, vídeos ni trazas. Aun así, el `.html` contiene errores e instantáneas de la página: trátalo como el resto del artefacto `ai-report`. **No se publica en GitHub Pages.**
-
-### En CI
-
-Los jobs **Reporte IA** y **Acierto de la IA** generan `qa-dashboard.html` con los ficheros que ya tienen y lo suben dentro de sus artefactos (`ai-report`, `ai-eval`). Es un paso que solo lee ficheros: no gasta cuota de IA, no repite los tests, no pide permisos nuevos y, si fallara, no tumba el job. Para verlo, descarga el artefacto y abre el `.html`.
-
-### Caché de clasificaciones: descartada por ahora
-
-Se valoró guardar las clasificaciones para no volver a pedirlas. No compensa en esta fase: la huella del grupo no basta como clave, porque la evidencia que decide (el error completo y la instantánea de la página) cambia aunque la huella sea la misma. Una caché segura tendría que usar como clave todo lo que se envía a la IA más el prompt, el modelo y la taxonomía, y guardar los contextos redactados. Eso cambia el comportamiento del triage y merece su propia rama. El ahorro que sí hay ya está hecho: un solo reporte por ejecución en CI, nada de IA si solo hay flaky (`AI_SKIP_FLAKY_ONLY`) y una evaluación que solo clasifica.
-
----
-
-## Modo headless
-
-El modo **headless** ejecuta los tests sin abrir ventana de navegador. Es el modo por defecto y el recomendado para CI/CD.
-
-```bash
-# Un fichero específico
-npx playwright test tests/login.spec.ts
-
-# Un test por nombre (grep)
-npx playwright test --grep "debería redirigir a la página de inventario"
-
-# Con reintentos y tracing
-npx playwright test --retries=2 --trace=on
-```
-
----
-
-## Configuración (`playwright.config.ts`)
-
-| Parámetro | Valor |
-|-----------|-------|
-| `baseURL` | `https://www.saucedemo.com` |
-| `testDir` | `./tests` |
-| `reporter` | HTML + JSON (local) · GitHub + HTML + JSON (CI) |
-| `trace` | `retain-on-failure` |
-| `video` | `retain-on-failure` |
-| Browsers | Chromium · Firefox · WebKit |
-| Reintentos en CI | 2 |
-| Workers en CI | 4 |
-| `globalSetup` | `fixtures/global-setup.ts`, solo sin `DEMO_SCENARIO` |
-
-**Sesión guardada (`storageState`).** [`fixtures/global-setup.ts`](fixtures/global-setup.ts) inicia sesión una vez con `standard_user` y guarda la sesión en `playwright/.auth/` (fuera de git). Los specs de `standard_user` la cargan con `test.use(standardUserSession)` y su `beforeEach` llama a `loginPage.loginAsStandardUser()`, que va directo al inventario si hay sesión y entra por el formulario si no. Login, protección de rutas, `problem_user` y `performance_glitch_user` siguen entrando por el formulario. Con `DEMO_SCENARIO` no se guarda sesión y todos entran por el formulario: así `cascade` sigue tumbando los 70 tests. La cookie de SauceDemo dura 10 minutos; si caduca a mitad de ejecución, los tests vuelven a entrar por el formulario.
-
----
-
-## Decisiones de diseño
-
-### Page Object Model
-Cada página tiene su propia clase en `/pages`. Los tests solo orquestan el flujo de negocio; los selectores y acciones quedan encapsulados en los page objects.
-
-```typescript
-// pages/login.page.ts
-export class LoginPage {
-  readonly errorMessage: Locator;
-
-  constructor(private readonly page: Page) {
-    this.errorMessage = this.page.locator('[data-test="error"]');
-  }
-
-  async navigate(): Promise<void> {
-    await this.page.goto('/');
-  }
-
-  async login(username: string, password: string): Promise<void> {
-    await this.page.locator('[data-test="username"]').fill(username);
-    await this.page.locator('[data-test="password"]').fill(password);
-    await this.page.locator('[data-test="login-button"]').click();
-  }
-}
-```
-
-```typescript
-// tests/login.spec.ts
-test('TC-LOGIN-02 debería mostrar error cuando las credenciales no corresponden a ningún usuario', async () => {
-  await loginPage.login('wrong_user', 'wrong_password');
-
-  await expect(loginPage.errorMessage).toBeVisible();
-  await expect(loginPage.errorMessage).toContainText(
-    'Username and password do not match any user in this service',
-  );
-});
-```
-
-El test no conoce selectores ni pasos de UI, solo llama métodos del page object.
-
-### Id en el título de cada test
-Cada test empieza por un id `TC-<AREA>-NN` (`TC-LOGIN-02`, `TC-CHK-09`), el mismo que en el plan de `specs/` y en [`specs/test-index.md`](specs/test-index.md). Así un fallo del informe o del dashboard se traza al caso del plan sin buscar por texto. El planner asigna los ids continuando la numeración de cada área, el generator los pone en el título y en el nombre del fichero, y el healer nunca los cambia.
-
-### Accesibilidad con axe
-[`tests/accessibility.spec.ts`](tests/accessibility.spec.ts) pasa [axe](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) con las reglas WCAG 2.1 de nivel A y AA por las pantallas del flujo de compra: login (también con el mensaje de error), inventario, detalle, carrito, los dos pasos del checkout y la confirmación. Si hay violaciones, el test falla y el mensaje dice la regla, su impacto y los elementos afectados. Hoy SauceDemo pasa todas.
-
-Los tests llevan la etiqueta `@a11y` y los escenarios de fallo (`npm run test:scenario:*` y `eval:ai`) los excluyen: los escenarios y sus cifras (70 tests en `cascade`, `env` y `flaky`) se calibraron sobre la suite funcional, y una página que no carga no dice nada de su accesibilidad. En la suite normal y en CI se ejecutan con el resto.
-
-### Selectores `data-test`
-Se usan los atributos `data-test` que provee SauceDemo, los más resilientes ante cambios de estilos o estructura HTML. La excepción es el menú lateral ([`pages/menu.page.ts`](pages/menu.page.ts)), que usa selectores por `id` (`#react-burger-menu-btn`, `#logout_sidebar_link`…).
-
-### `baseURL` en config
-La URL base se define una sola vez en `playwright.config.ts`. Los page objects usan rutas relativas, lo que simplifica un eventual cambio de entorno.
-
----
-
-## Tecnologías
-
-- [Playwright](https://playwright.dev/) `1.64`
-- TypeScript `^5.0`
-- Node.js `^20`
-- Claude Code CLI (reporte IA en local)
-- Google Gemini `gemini-flash-latest` u OpenRouter (reporte IA en CI)
-- Playwright MCP + agentes planner / generator / healer
-- [SonarQube Cloud](https://sonarcloud.io) y su MCP oficial (análisis estático)
-- [axe-core](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) `@axe-core/playwright 4.14.0` (accesibilidad)

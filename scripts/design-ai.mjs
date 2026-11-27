@@ -5,7 +5,7 @@
 // escribe el plan en Markdown, en el formato que ya entiende el agente generator.
 //
 // Uso: npm run design:ai -- HU-001 [--snapshot] [--render] [--generate] [--dry-run]
-//   --snapshot  no llama al MCP de Figma: usa specs/figma/HU-001.figma.json (modo demo sin conexión)
+//   --snapshot  no llama al MCP de Figma: usa specs/figma/HU-001.figma.json (sin conexión a Figma)
 //   --render    no llama a la IA: valida y vuelve a escribir el plan desde specs/disenos/HU-001.design.json
 //   --generate  al terminar, lanza el agente generator con los casos de prioridad alta que no existen aún
 //   --dry-run   enseña el prompt que recibiría el agente y no llama a la IA
@@ -246,7 +246,7 @@ export function buildGeneratorPrompt(story, casos, files) {
         "",
         "Reglas:",
         `- Guarda cada test en ${files.tests}/ con un nombre de fichero que empiece por el id del caso en minúsculas y siga con el título (tc-05-mostrar-el-subtotal.spec.ts).`,
-        "- Importa test y expect de '../../fixtures/scenarios' (no de '@playwright/test'), para que les afecten los escenarios de la demo.",
+        "- Importa test y expect de '../../fixtures/test' (no de '@playwright/test'), como el resto de tests/.",
         "- Usa los page objects de ../../pages cuando cubran el paso. No modifiques pages/ ni fixtures/.",
         "- Cada expect lleva un mensaje en español que diga qué debería pasar, como en el resto de tests/.",
         `- Pon en el título del describe el id de la historia (${story.id}) y en el del test el id del caso.`,

@@ -7,7 +7,7 @@ import {
     selectForGeneration, buildGeneratorPrompt, paths, changedOutside, esperadoCriterios,
 } from "./design-ai.mjs";
 
-// Copia fija de la historia: la de specs/historias/ cambia al poner el FILE_KEY real (ver specs/figma/README.md).
+// Copia fija de la historia y de su instantánea de diseño, independientes de specs/.
 const story = parseStory(readFileSync("scripts/fixtures/design-ai/HU-001.md", "utf8"), "HU-001");
 
 const caso = (id, criterios, extra = {}) => ({
@@ -158,13 +158,13 @@ test("no se vuelven a generar los casos que ya tienen fichero de test", () => {
 
 test("el generator importa del fixture de escenarios y escribe en la carpeta de la historia", () => {
     const p = buildGeneratorPrompt(story, [caso("TC-01", ["CA1"])], paths("HU-001"));
-    assert.ok(p.includes("'../../fixtures/scenarios'") && p.includes("tests/hu-001/") && p.includes("TC-01 caso TC-01"));
+    assert.ok(p.includes("'../../fixtures/test'") && p.includes("tests/hu-001/") && p.includes("TC-01 caso TC-01"));
     assert.match(p, /no lo sobrescribas/);
 });
 
 // Solo lo que se mantiene tanto en la instantánea escrita a mano como en la que reescribe una ejecución con Figma.
 test("la instantánea del diseño se puede leer y trae frames con capas", () => {
-    const snap = JSON.parse(readFileSync("specs/figma/HU-001.figma.json", "utf8"));
+    const snap = JSON.parse(readFileSync("scripts/fixtures/design-ai/HU-001.figma.json", "utf8"));
     assert.ok(["simulada", "figma-mcp"].includes(snap.origen));
     assert.ok(snap.frames.length > 0 && snap.frames.every((f) => Array.isArray(f.capas)));
 });

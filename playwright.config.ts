@@ -1,10 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// URL de la aplicación bajo prueba: BASE_URL en .env (local) o en la variable del repositorio (CI).
+// Node 22 carga .env sin dependencias: process.loadEnvFile.
+try {
+  process.loadEnvFile();
+} catch {
+  // Sin .env: vale con las variables del entorno.
+}
+if (!process.env.BASE_URL) throw new Error('Falta BASE_URL: copia .env.example a .env y rellénala.');
+
 export default defineConfig({
   testDir: './tests',
-  // Login único con storageState. Con DEMO_SCENARIO no corre: los tests entran por el formulario
-  // y el escenario cascade sigue tumbándolos todos.
-  globalSetup: process.env.DEMO_SCENARIO ? undefined : './fixtures/global-setup.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -13,7 +19,7 @@ export default defineConfig({
     ? [['github'], ['html'], ['json', { outputFile: 'test-results.json' }]]
     : [['html'], ['json', { outputFile: 'test-results.json' }]],
   use: {
-    baseURL: 'https://www.saucedemo.com',
+    baseURL: process.env.BASE_URL,
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },

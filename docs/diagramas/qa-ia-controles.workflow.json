@@ -7,8 +7,7 @@
     "legend": { "mode": "hidden" }
   },
   "lanes": [
-    { "id": "flujo", "label": "Del fallo a la decisión" },
-    { "id": "medir", "label": "Medición", "variant": "exception" }
+    { "id": "flujo", "label": "Del fallo a la decisión" }
   ],
   "phases": [
     { "id": "entrada", "label": "Entrada", "fromCol": 0, "toCol": 0 },
@@ -23,16 +22,14 @@
     { "id": "validar", "lane": "flujo", "col": 2, "width": 152, "type": "security", "label": "Validar respuesta", "sublabel": "guardrail · sin IA" },
     { "id": "healer", "lane": "flujo", "col": 3, "width": 152, "type": "cloud", "label": "Healer propone", "sublabel": "agente · MCP" },
     { "id": "bloquear", "lane": "flujo", "col": 4, "width": 152, "type": "security", "label": "Revisor y guard", "sublabel": "guardrail de cambio" },
-    { "id": "persona", "lane": "flujo", "col": 5, "width": 152, "type": "frontend", "label": "Persona decide", "sublabel": "PR en borrador" },
-    { "id": "eval", "lane": "medir", "col": 1, "width": 152, "type": "backend", "label": "Eval golden set", "sublabel": "npm run eval:ai" }
+    { "id": "persona", "lane": "flujo", "col": 5, "width": 152, "type": "frontend", "label": "Persona decide", "sublabel": "PR en borrador" }
   ],
   "edges": [
     { "from": "enmascarar", "to": "clasificar", "variant": "emphasis" },
     { "from": "clasificar", "to": "validar", "variant": "emphasis" },
     { "from": "validar", "to": "healer", "label": "test roto", "variant": "emphasis" },
     { "from": "healer", "to": "bloquear", "variant": "emphasis" },
-    { "from": "bloquear", "to": "persona", "variant": "emphasis" },
-    { "from": "eval", "to": "clasificar", "label": "mide el acierto", "variant": "dashed", "role": "branch" }
+    { "from": "bloquear", "to": "persona", "variant": "emphasis" }
   ],
   "cards": [
     { "dot": "cyan", "title": "Entrada y salida", "items": ["Los secretos se enmascaran antes de llegar a la IA", "Si la respuesta no es una categoría válida, se descarta"] },

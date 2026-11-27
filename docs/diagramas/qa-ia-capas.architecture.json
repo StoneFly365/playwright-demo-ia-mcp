@@ -124,20 +124,6 @@
         150,
         60
       ]
-    },
-    {
-      "id": "eval",
-      "type": "backend",
-      "label": "Eval con golden set",
-      "sublabel": "npm run eval:ai",
-      "pos": [
-        750,
-        40
-      ],
-      "size": [
-        150,
-        56
-      ]
     }
   ],
   "boundaries": [
@@ -221,16 +207,6 @@
         1045,
         380
       ]
-    },
-    {
-      "from": "eval",
-      "to": "validar",
-      "label": "mide el acierto",
-      "variant": "dashed",
-      "labelAt": [
-        825,
-        110
-      ]
     }
   ],
   "cards": [
@@ -256,7 +232,6 @@
       "dot": "emerald",
       "title": "Medir y decidir",
       "items": [
-        "El acierto se mide con escenarios de respuesta conocida",
         "La IA abre PR en borrador, nunca fusiona",
         "Relajar una prueba exige el visto bueno de una persona"
       ]

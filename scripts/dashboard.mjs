@@ -2,7 +2,7 @@
 // Dashboard local de QA Intelligence. Lee los artefactos que ya existen (test-results.json y los
 // ai-* de playwright-report/) y genera una página HTML estática con los datos dentro.
 // Solo lee ficheros: no ejecuta tests, no llama a ningún modelo y no necesita claves.
-// Uso: npm run dashboard [-- --save] [-- --demo] [-- --dir <carpeta>] [-- --out <fichero.html>]
+// Uso: npm run dashboard [-- --save] [-- --dir <carpeta>] [-- --out <fichero.html>]
 import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +12,6 @@ import { redact } from "./triage.mjs";
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const SCHEMA = 1;
 export const HISTORY_DIR = "qa-history";
-const DEMO_DIR = "learning/ruta-qa/ejemplos";
 const AI_TIPOS = new Set(["test_roto", "bug_producto", "entorno"]);
 const CONFIANZAS = new Set(["alta", "media", "baja"]);
 
@@ -270,7 +269,7 @@ export function normalizeEval(raw) {
     };
 }
 
-// ai-eval.json lo escribe eval-ai.mjs desde esta versión; de evaluaciones anteriores solo queda el .md.
+// ponytail: lectura de ai-eval.json sin script que lo genere; vuelve a tener sentido con un golden set del proyecto.
 export function loadEval(dir = ".") {
     const reportDir = reportDirOf(dir);
     const json = readArtifact(path.join(reportDir, "ai-eval.json"), { json: true });
@@ -406,24 +405,19 @@ export function buildData({ dir = ".", demo = false, historyDir = HISTORY_DIR } 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     const args = process.argv.slice(2);
     const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined; };
-    const demo = args.includes("--demo");
-    const dir = demo ? DEMO_DIR : opt("--dir") ?? ".";
-    const out = opt("--out") ?? `playwright-report/qa-dashboard${demo ? "-demo" : ""}.html`;
+    const dir = opt("--dir") ?? ".";
+    const out = opt("--out") ?? "playwright-report/qa-dashboard.html";
 
-    const { current, currentEval, ...data } = buildData({ dir, demo });
+    const { current, currentEval, ...data } = buildData({ dir });
     if (args.includes("--save")) {
-        if (demo) {
-            console.log("👉 --save se ignora en modo demo: los datos de ejemplo no entran en el historial.");
-        } else {
-            const save = (kind, item, what) => {
-                const status = saveSnapshot(HISTORY_DIR, kind, item);
-                console.log(status === "guardado" ? `👉 ${what} guardada en ${snapshotPath(HISTORY_DIR, kind, item.id)}`
-                    : status === "ya_existe" ? `⚠️  Ya hay una copia de esta ${what.toLowerCase()} en ${snapshotPath(HISTORY_DIR, kind, item.id)}: no se sobrescribe. Bórrala si quieres rehacerla (por ejemplo, tras volver a generar los informes).`
-                    : `⚠️  ${what} sin identificador (falta test-results.json o solo hay ai-eval.md): no se guarda en el historial.`);
-            };
-            save("runs", current, "Ejecución");
-            if (currentEval) save("evals", currentEval, "Evaluación");
-        }
+        const save = (kind, item, what) => {
+            const status = saveSnapshot(HISTORY_DIR, kind, item);
+            console.log(status === "guardado" ? `👉 ${what} guardada en ${snapshotPath(HISTORY_DIR, kind, item.id)}`
+                : status === "ya_existe" ? `⚠️  Ya hay una copia de esta ${what.toLowerCase()} en ${snapshotPath(HISTORY_DIR, kind, item.id)}: no se sobrescribe. Bórrala si quieres rehacerla (por ejemplo, tras volver a generar los informes).`
+                : `⚠️  ${what} sin identificador (falta test-results.json o solo hay ai-eval.md): no se guarda en el historial.`);
+        };
+        save("runs", current, "Ejecución");
+        if (currentEval) save("evals", currentEval, "Evaluación");
     }
     for (const w of [...current.warnings, ...data.warnings]) console.log(`⚠️  ${w}`);
     mkdirSync(path.dirname(out), { recursive: true });

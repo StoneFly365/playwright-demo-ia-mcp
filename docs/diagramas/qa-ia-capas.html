@@ -5169,7 +5169,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <path data-edge-from="agentes" data-edge-to="validar" data-edge-label="salida" data-edge-key="1" data-composition-points="680,336;750,336" d="M 680 336 L 750 336" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="validar" data-edge-to="guard" data-edge-label="arreglo" data-edge-key="2" data-composition-points="900,336;970,336" d="M 900 336 L 970 336" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
         <path data-edge-from="guard" data-edge-to="humano" data-edge-label="aprueba o no" data-edge-key="3" data-composition-points="1045,366;1045,560" d="M 1045 366 L 1045 560" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="eval" data-edge-to="validar" data-edge-label="mide el acierto" data-edge-key="4" data-composition-points="825,96;825,306" d="M 825 96 L 825 306" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
 
         <!-- Components -->
         <g id="node-agentes" data-node-id="agentes" data-node-label="Agentes de IA" tabindex="0" role="button" aria-label="Focus Agentes de IA, 5 roles · cualquier modelo, Una persona decide › Guardrails de cambio › Guardrails de entrada y salida › Arnés · Claude Code" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="5 roles · cualquier modelo" data-node-context="Una persona decide › Guardrails de cambio › Guardrails de entrada y salida › Arnés · Claude Code">
@@ -5268,17 +5267,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <text data-detail="context" x="1045" y="604" class="t-muted" font-size="9" text-anchor="middle">PR en borrador</text>
         </g>
 
-        <g id="node-eval" data-node-id="eval" data-node-label="Eval con golden set" tabindex="0" role="button" aria-label="Focus Eval con golden set, npm run eval:ai, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="npm run eval:ai" data-node-context="Architecture component">
-          <title>Eval con golden set · npm run eval:ai · Architecture component</title>
-          <rect x="750" y="40" width="150" height="56" rx="6" class="c-mask"/>
-          <rect x="750" y="40" width="150" height="56" rx="6" class="c-backend" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(756 46) scale(0.6875)">
-            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
-          </g>
-          <text data-node-label="" data-detail-anchor="" x="825" y="66" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Eval con golden set</text>
-        <text data-detail="context" x="825" y="82" class="t-muted" font-size="9" text-anchor="middle">npm run eval:ai</text>
-        </g>
-
         <!-- Connection labels -->
         <g data-detail="context" data-edge-from="enmascarar" data-edge-to="agentes" data-edge-label="entrada" data-edge-key="0">
           <rect x="451.2" y="316" width="43.6" height="14" rx="3" class="c-mask"/>
@@ -5295,10 +5283,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
         <g data-detail="context" data-edge-from="guard" data-edge-to="humano" data-edge-label="aprueba o no" data-edge-key="3">
           <rect x="1011.2" y="370" width="67.6" height="14" rx="3" class="c-mask"/>
           <text x="1045" y="380" class="t-backend" font-size="8" text-anchor="middle">aprueba o no</text>
-        </g>
-        <g data-detail="context" data-edge-from="eval" data-edge-to="validar" data-edge-label="mide el acierto" data-edge-key="4">
-          <rect x="784" y="100" width="82" height="14" rx="3" class="c-mask"/>
-          <text x="825" y="110" class="t-messagebus" font-size="8" text-anchor="middle">mide el acierto</text>
         </g>
 
         <!-- Boundary labels (foreground masks keep routes out of titles) -->
@@ -5540,7 +5524,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
           <h3>Medir y decidir</h3>
         </div>
         <ul>
-          <li>&bull; El acierto se mide con escenarios de respuesta conocida</li>
           <li>&bull; La IA abre PR en borrador, nunca fusiona</li>
           <li>&bull; Relajar una prueba exige el visto bueno de una persona</li>
         </ul>

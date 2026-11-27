@@ -692,7 +692,7 @@ function renderEval() {
   const caveat = h("p", { class: "small muted" }, "Son escenarios controlados, diseñados en este proyecto, y una sola ejecución por evaluación: demuestran que la clasificación funciona, no que acierte en cualquier proyecto. El escenario flaky lo decide el código y no cuenta en la cifra; los grupos sin_clasificar tampoco (la IA no respondió).");
   const title = head("sparkles", "Evaluación de la IA", "violet");
   if (!ev) return fill("evaluacion", title,
-    empty("No hay evaluación disponible: falta ", code("playwright-report/ai-eval.json"), " (o ", code("ai-eval.md"), "). Se genera con ", code("npm run eval:ai"), ", que ejecuta los escenarios y consume cuota de IA; el dashboard nunca lo lanza."), caveat);
+    empty("No hay evaluación disponible: falta ", code("playwright-report/ai-eval.json"), " (o ", code("ai-eval.md"), "). La plantilla no trae el script de evaluación: hace falta un golden set de fallos reales del proyecto."), caveat);
   const picker = DATA.evals.length > 1 ? h("label", { class: "small muted" }, "Evaluación ", h("select", { onchange: (e) => { state.eval = Number(e.target.value); renderEval(); } },
     DATA.evals.map((e, i) => h("option", { value: i, selected: i === state.eval }, `${fmtDate(e.id) ?? "sin fecha"} · ${e.source === "historial" ? "historial" : "actual"}`)))) : null;
   if (ev.markdown) return fill("evaluacion", title, picker,
@@ -798,7 +798,7 @@ function renderDefinitions() {
       def("Peticiones a la IA", "ai_requests de ai-failures-grouped.json: peticiones de report:ai al proveedor, reintentos incluidos. No hay datos de tokens ni de coste."),
       def("Acciones ejecutadas", "Lo que registran heal:ai (ai-heal.json: la PR en borrador del healer) y jira:tickets (ai-jira.json: los tickets creados o preparados en modo simulado). Las acciones recomendadas son propuestas de la IA; las ejecutadas, hechos."),
       def("Vínculo", "El análisis se asocia a la ejecución por run_start_time. Los ficheros sin identificador (resumen, correcciones, tickets) solo se aceptan si son posteriores a test-results.json."),
-      def("Acierto de la IA", "De ai-eval.json (npm run eval:ai): grupos bien clasificados / grupos evaluados, y lo mismo ponderado por tests."))));
+      def("Acierto de la IA", "De ai-eval.json: grupos bien clasificados / grupos evaluados, y lo mismo ponderado por tests."))));
 }
 
 function renderRun() {

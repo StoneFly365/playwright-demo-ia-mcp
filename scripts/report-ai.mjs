@@ -47,7 +47,7 @@ async function main() {
 
     // Sin fallos no hay nada que analizar. Con solo flaky, en push/PR tampoco se llama a la
     // IA: un test que falla y pasa al reintentar no merece gastar cuota en cada ejecución
-    // (AI_SKIP_FLAKY_ONLY lo pone la CI; en local o con suite=fail/eval sí se analiza).
+    // (AI_SKIP_FLAKY_ONLY lo pone la CI; en local o lanzado a mano sí se analiza).
     if (failures.length === 0 || (onlyFlaky && process.env.AI_SKIP_FLAKY_ONLY)) {
         const message = failures.length === 0
             ? `Sin fallos: ${stats.passed} de ${stats.total} pruebas pasaron. No hay nada que analizar con IA.`
@@ -104,14 +104,6 @@ async function main() {
         provider: PROVIDER,
         ai_requests: aiRequests,
     }, null, 2);
-
-    // eval-ai.mjs solo mide la clasificación: el resto de llamadas gastaría cuota sin aportar nada.
-    if (process.env.AI_CLASSIFY_ONLY) {
-        await writeOutput(path.join(REPORT_DIR, "ai-failures-grouped.json"), withRunInfo());
-        if (errors.length) throw new Error(errors.join("\n"));
-        success("Clasificación terminada (AI_CLASSIFY_ONLY)");
-        return;
-    }
 
     // page_context y el error completo ya han servido para clasificar; al resto de prompts les basta un extracto.
     const brief = {

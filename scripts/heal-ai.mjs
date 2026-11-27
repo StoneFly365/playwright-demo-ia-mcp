@@ -8,7 +8,6 @@
 //   --dry-run     enseña lo que se mandaría al healer y no toca git, GitHub/GitLab ni la IA
 //   --no-publish  para tras el commit y deja lo necesario en heal-pending.json (CI: paso sin GH_TOKEN)
 //   --publish     solo push y PR a partir de heal-pending.json (CI: paso con GH_TOKEN, sin agentes)
-// Para un escenario, lanza el healer con la misma variable que los tests: DEMO_SCENARIO=cascade npm run heal:ai
 // Si origin es un GitLab, abre una MR en borrador por la API con GITLAB_TOKEN (scope api); si no, una PR con gh.
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from "node:fs";
@@ -43,7 +42,7 @@ export function changedFiles(statusZ) {
     return files;
 }
 
-export function buildPrompt(groups, scenario) {
+export function buildPrompt(groups) {
     const block = (g) => [
         `## ${g.group_id} · ${g.count} tests · confianza ${g.confianza ?? "?"}`,
         `Huella del fallo (patrón | elemento): ${g.fingerprint ?? "no disponible"}`,
@@ -56,7 +55,6 @@ export function buildPrompt(groups, scenario) {
     ].filter((l) => l != null).join("\n");
     return [
         "Corrige SOLO los tests de estos grupos de fallos. El triage de IA los ha clasificado como test_roto: la aplicación funciona y el test está desactualizado.",
-        scenario ? `Los fallos se reproducen con la variable de entorno DEMO_SCENARIO=${scenario}, que ya está puesta en este proceso.` : null,
         "",
         "Reglas:",
         "- Ejecuta y depura solo los tests del grupo, no la suite completa. La lista puede estar recortada: si la huella incluye un locator, búscalo en todo tests/, pages/ y fixtures/ y corrige todas sus apariciones, no solo la del page object.",
@@ -189,7 +187,7 @@ async function main() {
         console.log(`✅ No hay grupos test_roto${ids.length ? ` con ${ids.join(", ")}` : ""}: nada que corregir.`);
         return;
     }
-    const prompt = buildPrompt(groups, process.env.DEMO_SCENARIO);
+    const prompt = buildPrompt(groups);
     if (args.includes("--dry-run")) {
         console.log(prompt);
         return;
